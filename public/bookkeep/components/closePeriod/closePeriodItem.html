@@ -1,0 +1,120 @@
+<div class="close-period-item">
+    <div>
+        <div class="news-stuff-container">
+            <div class="nav-box-stuff">
+                <div class="tab-nav-stuff">
+                    <a class="btn btn-fab btn-fab-mini btn-info"
+                       ui-sref="frame.closePeriod"
+                       title="вернуться">
+                        <i class="material-icons">reply</i>
+                    </a>
+                </div>
+
+                <div class="tab-nav-stuff diff-period">
+                    <span>дата <span ng-bind="$ctrl.item.date"></span></span>
+                </div>
+                <div class="tab-nav-stuff default">
+                    <span ng-bind="$ctrl.item.name"></span>
+                </div>
+                <div class="tab-nav-stuff">
+                    <h4 class="name-box">отстатки по {{$ctrl.item.virtualAccount.name}}</h4>
+                </div>
+                <div class="tab-nav-stuff pull-right">
+                    <a class="btn btn-raised btn-success"
+                       ng-click="$ctrl.activeSA()" ng-show="!$ctrl.item.actived"
+                       title="провести инвентаризацию">
+                        <span>провести<br> период</span>
+                    </a>
+                    <a class="btn btn-raised btn-warning"
+                       ng-click="$ctrl.activeSA()" ng-show="$ctrl.item.actived"
+                       title="отменить проводку">
+                        <span>отменить<br>проводку</span>
+                    </a>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+                <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            название
+                        </div>
+                        <div class="td-lists-header text-center col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <span class="list-header">
+                                сальдо конец
+                            </span><br>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header  left">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">дебет</div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div ng-repeat="currency in $ctrl.currencyArr" style="width: {{$ctrl.currencyWidth}}%;float: left;">
+                                        <span class="text-center" ng-bind="currency"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header  left">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">кредит</div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div ng-repeat="currency in $ctrl.currencyArr" style="width: {{$ctrl.currencyWidth}}%;float: left;">
+                                        <span class="text-center" ng-bind="currency"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin ware"  ng-repeat="item in $ctrl.item.data">
+                        <div class="td-list  col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <span ng-bind="item.account.name"></span>
+                        </div>
+                        <div class="td-list-box  col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div ng-repeat="currency in $ctrl.currencyArr" style="width: {{$ctrl.currencyWidth}}%;float: left;">
+                                        <span class="text-center" ng-bind="item.debet[currency]"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div ng-repeat="currency in $ctrl.currencyArr" style="width: {{$ctrl.currencyWidth}}%;float: left;">
+                                        <span class="text-center" ng-bind="item.credit[currency]"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="stuff-admin ware"><strong>
+                        <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <span> Итого </span>
+                        </div>
+                        <div class="td-list-box col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div ng-repeat="currency in $ctrl.currencyArr" style="width: {{$ctrl.currencyWidth}}%;float: left;">
+                                        <span class="text-center" ng-bind="$ctrl.item.debet[currency]"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div ng-repeat="currency in $ctrl.currencyArr" style="width: {{$ctrl.currencyWidth}}%;float: left;">
+                                        <span class="text-center" ng-bind="$ctrl.item.credit[currency]"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </strong>
+                    </div>
+
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

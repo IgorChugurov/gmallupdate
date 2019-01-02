@@ -1,0 +1,47 @@
+<div class="currency">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Изменение курса валют</h4>
+        </div>
+    </div>
+    <div class="container">
+        <div class="cart-detail">
+            <p class="info-text">Основная валюта всегда имеет значение 1. Курсы других валют устанавливаются по отношению к основной валюте.<br>
+               Например, основная валюта гривна. Ее курс равен 1.<br> Вторая валюта доллар. Курс гривны к доллару
+            составляет 20 грн.<br> Соответственно, в систему необходимо внести курс 1/20=0.05</p>
+
+            <table class="table table-currency" style="width: 100%">
+                <thead>
+                <th style="width: 20%">валюта</th>
+                <th style="width: 40%">курс</th>
+                <th style="width: 40%">обозначение для валюты</th>
+                </thead>
+                <tr ng-repeat="(key,c) in $ctrl.item.currency track by $index">
+                    <td ng-bind="key"></td>
+                    <td>
+                        <input class="form-control"
+                               ng-model="$ctrl.item.currency[key][0]"
+                               ng-disabled="$ctrl.item.mainCurrency==key"
+                               type="number" ng-blur="$ctrl.save()">
+                    </td>
+                    <td>
+                        <input class="form-control"
+                               ng-model="$ctrl.item.currency[key][2]" ng-blur="$ctrl.save()">
+                    </td>
+                </tr>
+            </table>
+            <hr>
+            <p class="info-text">Если в вашем магазине есть ценовой фильтр, а валюта учета товаров отличается от валюты сайта,
+            то для того, чтобы получать корректную выборку по цене, необходимо после изменения курса пересчитать цены товаров  с учетом изменненного курса</p>
+            <a class="btn btn-success btn-block" ng-click="$ctrl.recalculatePrice()">
+               <span class="">пересчитать цену товаров</span>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

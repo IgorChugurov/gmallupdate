@@ -1,0 +1,91 @@
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <article class="col-lg-8 col-md-8 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <label  >основная валюта <span>Гривна</span></label>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal"ng-submit="updateCurrency()" name="myForm">
+                            <div class="form-group">
+                               <label  for="rur" class="col-md-6 control-label">Введите курс евро</label>
+                                <div class="col-md-6">
+                                    <input name="rur" type="text" class="form-control" id="rur" placeholder="введите курс евро" ng-model="config.currency['EUR'][0]" pattern="[0-9-\.]{1,7}" required>
+                                    <span ng-show="myForm.rur.$error.pattern">What?! Fucking buster!</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="usd" class="col-md-6 control-label">Введите курс доллара</label>
+                                <div class="col-md-6">
+                                    <input  type="text" class="form-control" id="usd" placeholder="введите курс доллара" ng-model="config.currency['USD'][0]" pattern="[0-9-\.]{1,7}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="az" class="col-md-6 control-label">Введите коэффициент A-Z</label>
+                                <div class="col-md-6">
+                                    <input  type="text" class="form-control" id="az" placeholder="Введите коэффициент A-Z" ng-model="config.parse.az" pattern="[0-9-\.]{1,7}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="az" class="col-md-6 control-label">Введите коэффициент A-Z ЗАКАЗ</label>
+                                <div class="col-md-6">
+                                    <input  type="text" class="form-control" id="az" placeholder="Введите коэффициент A-Z" ng-model="config.parse.azzakaz" pattern="[0-9-\.]{1,7}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="scars" class="col-md-6 control-label">Введите коэффициент S-cars</label>
+                                <div class="col-md-6">
+                                    <input  type="text" class="form-control" id="scars" placeholder="Введите коэффициент S-cars" ng-model="config.parse.scars" pattern="[0-9-\.]{1,7}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="scarsZ" class="col-md-6 control-label">Введите коэффициент S-cars заказ</label>
+                                <div class="col-md-6">
+                                    <input  type="text" class="form-control" id="scarsZ" placeholder="Введите коэффициент S-cars заказ " ng-model="config.parse.scarsZakaz" pattern="[0-9-\.]{1,7}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label  for="scars" class="col-md-6 control-label">Стоимость норма-часа</label>
+                                <div class="col-md-6">
+                                    <input  type="text" class="form-control" id="scars" placeholder="Введите стоимость норма/часа" ng-model="config.normaHour" pattern="[0-9-\.]{1,7}" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <button  type="submit" class="btn btn-large btn-info save mt40" ng-disabled="disabledButton"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить</button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <div class="alert alert-success" ng-show="showMessage">
+                            <a  class="close" data-dismiss="alert">&times;</a>
+                            <strong>Обновлено!</strong>
+                        </div>
+
+                        <!--<form name="LovelyForm">
+                            <input type="text" name="LovelyMimimi" placeholder="mimimi" ng-model="mimimi" mimimi/>
+                            <span ng-show="LovelyForm.LovelyMimimi.$error.mimimi">Mimimi, please</span>
+                            <span>{{mimimi}}</span>
+                        </form>-->
+
+                       <!-- <div  ng-show="showMessage">
+
+                            <p style="font-size: 18px;" class="bg-success">Курсы обновлены!</p>
+                        </div>-->
+                    </div>
+                </div>
+
+
+
+            </article>
+
+        </div>
+
+
+    </div>
+</div>
+

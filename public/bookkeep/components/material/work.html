@@ -1,0 +1,79 @@
+<div class="material">
+   <!-- <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-info"
+               ui-sref="frame.warehouse"
+               title="вернуться">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+
+    </div>-->
+    <div class="clearfix"></div>
+    <div class="col-lg-12 col-md-12 col-sm-12  col-xs-12">
+        <div class="cart-detail">
+            <h3 ng-show="$ctrl.item._id">Редактирование</h3>
+            <h3 ng-hide="$ctrl.item._id">Создание</h3>
+            <form ng-submit="$ctrl.create(form)" novalidate name="form">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                        <label for="name1" class="control-label">наименование работы</label>
+                        <input type="text"id="name1" class="form-control name"
+                               name="name"
+                               ng-minlength='3'
+                               ng-maxlength="100"
+                               ng-model="$ctrl.item.name"
+                               placeholder="наименование работы"
+                               autocomplete="off"
+                               ng-model-options="{'updateOn':'default blur','debounce':{'default':300,'blur':0}}"
+                               ng-change="$ctrl.refreshData($ctrl.item.name)"
+                               required/>
+                    </div>
+                    <span class="help-block" ng-show="form.name.$invalid" ng-messages="form.name.$error">
+                            <span ng-message="required">Минимальная длина 3 символа</span>
+                            <span ng-message="minlength">Минимальная длина 3 символа</span>
+                            <span ng-message="maxlength">Максимальная длина 100 символов</span>
+                    </span>
+                    <div class="all-sku" ng-repeat="w in $ctrl.works">
+                        <p>
+                            <a ng-click="$ctrl.editWork(w)"><strong ng-bind="w.name"></strong> </a>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 ">
+                    <div class="form-group ">
+                        <label for="sku1" class="control-label">нормочас</label>
+                        <input type="number"id="sku1" class="form-control name"
+                               name="sku1"
+                               ng-model="$ctrl.item.workingHour"
+                               ng-model-options="{'updateOn':'default blur','debounce':{'default':300,'blur':0}}"
+                               ng-change="$ctrl.saveField('workingHour')"
+                               placeholder="нормочас"/>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <!--<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                        <button ng-show="$ctrl.item._id" class="btn btn-raised btn-danger btn-block" type="button" ng-click="$ctrl.deleteItem()">
+                            <span>удалить</span>
+                        </button>
+                    </div>
+                </div>-->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <button class="btn btn-raised btn-success btn-block" type="submit">
+                            <span ng-show="$ctrl.item._id">перейти к новому</span>
+                            <span ng-show="!$ctrl.item._id">создать</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+            </form>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

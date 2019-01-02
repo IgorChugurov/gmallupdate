@@ -1,0 +1,102 @@
+.notification  {
+    padding-top: 160px;
+    padding-bottom: 40px;
+}
+/*.notification.notification-mobile {
+    padding-top: 180px;
+}*/
+.notification .thumbnail {
+    border-color: #999;
+    margin-bottom: 10px;
+    padding: 0;
+}
+.notification .label-action {
+    width: 60px;
+    padding: 5px 17px;
+    border-right: 1px solid #999;
+    background-color: #ccc;
+}
+.notification .note-type,
+.notification .note-desc {
+    height: 60px;
+    font-size: 16px;
+    border-right: 1px solid #999;
+}
+.notification .note-type {
+    font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.notification .note-desc {
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.notification .note-desc h3 {
+    font-size: 16px;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+.notification h4 {
+    margin-bottom: 0;
+}
+.notification .notification-btn,
+.notification .notification-block {
+    padding-right: 0;
+    padding-left: 0;
+}
+.notification .comment-note .form-group .form-control {
+    margin-bottom: 0;
+}
+.notification .comment-note {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.notification .tab-nav-stuff .note-type-link {
+    padding: 19px 15px 18px 15px;
+    border-right: 1px solid #999;
+    position: relative;
+    display: inline-block;
+}
+.notification .tab-nav-stuff .badge {
+    position: absolute;
+    right: -5px;
+}
+
+@media (max-width: 400px) {
+
+    .notification .note-type {
+        border-right: 0;
+    }
+    .notification .note-desc {
+        border-right: 0;
+    }
+    .notification .notification-block {
+        border-bottom: 1px solid #666;
+    }
+    .notification .comment-note {
+        display: none;
+    }
+
+}
+/*.notification-mobile.notification {
+    margin-top: 170px;
+}
+.notification-mobile .notification .note-type {
+    border-right: 0;
+}
+.notification-mobile .notification .note-desc {
+    border-right: 0;
+}
+.notification-mobile .notification .notification-block {
+    border-bottom: 1px solid #999;
+}
+.notification-mobile .notification .comment-note {
+    display: none;
+}*/
+
+
+

@@ -1,0 +1,185 @@
+extends layout
+
+block content
+  div(ng-cloak)
+    toaster-container
+    div(class="navbar navbar-fixed-top")
+        ul(class="left-menu")
+          li
+            a(ui-sref="frame", title="главная")
+              i(class="material-icons") homes
+          li
+            a(class="pull-left",href="/bookkeep/warehouse")
+              i(class="material-icons") casino
+              br
+              span склад
+          li
+            a(class="pull-left",href="/bookkeep/pns")
+              i(class="material-icons") cart
+              br
+              span Поступления
+          li
+            a(class="pull-left",href="/bookkeep/suppliers")
+              i(class="material-icons") cart
+              br
+              span Поставщики
+          li
+            a(class="pull-left",href="/bookkeep/account")
+              i(class="material-icons") cart
+              br
+              span Счета
+          li
+            a(class="pull-left",href="/bookkeep/sampleEntries")
+              i(class="material-icons") cart
+              br
+              span шаблоны проводок
+          li
+            a(class="pull-left",href="/bookkeep/producer")
+              i(class="material-icons") cart
+              br
+              span производители
+        div(class="dropdown pull-right right-menu navbar-menu")
+          a(class='dropdown-toggle',data-target="#",data-toggle="dropdown")
+            i(class="material-icons menu-icon") apps
+          ul(class="dropdown-menu")
+            li
+              a(href='/bookkeep/pns/new')
+                //i(class="material-icons link-warning") settings
+                | + приходная накладная
+            li
+              a(href='/bookkeep/material')
+                //i(class="material-icons link-warning") settings
+                | + товар
+            li
+              a(href='/',target="blank")
+                i(class="material-icons link-warning") airplay
+                | перейти на сайт
+        div()
+          a
+            span(class="for-saving save",ng-class="{'saving':global.get('saving').val}")
+              | сохранено
+
+
+    div( ui-view)
+    audio(id="soundChat",style='display:none;',controls='controls')
+      source(src='sounds/chat.mp3')
+  - var socketHref=socketHost+'/socket.io/socket.io.js'
+  script(type='text/javascript').
+    var storeHost = !{JSON.stringify(storeHost)};
+    var accountHost = !{JSON.stringify(accountHost)};
+    var socketHost = !{JSON.stringify( socketHost )};
+    var notificationHost = !{JSON.stringify( notificationHost )};
+    var userHost = !{JSON.stringify( userHost )};
+    var stuffHost = !{JSON.stringify( stuffHost )};
+    var orderHost = !{JSON.stringify( orderHost )};
+    var photoHost = !{JSON.stringify( photoHost )};
+    var photoUpload = !{JSON.stringify( photoUpload )};
+    var globalStoreId = !{JSON.stringify( store._id )};
+    var storeTemp = !{JSON.stringify(store)};
+    var mobileFromServer = !{JSON.stringify(mobile)};
+    var local = !{JSON.stringify(local)};
+  script(src=socketHref)
+  - var favicon = photoHost+"/"+store.favicon
+  script.
+    (function () {
+      var link = document.createElement( 'link' );
+      link.type = 'image/x-icon';
+      link.rel = 'shortcut icon';
+      link.href = "#{favicon}";
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }());
+
+
+
+  if(true)
+    script(src="crawler.scripts164.min.js")
+    script(src='contentdev_scripts.min.js')
+    script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru.js")
+    script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru-ru.js")
+    script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru-ua.js")
+    script(src='scripts/myPrototype.js')
+    script(src='scripts/angular-node.js')
+    script(src='modules/account/js/app.js')
+    script(src='modules/account/js/controllers.js')
+    script(src='modules/account/js/services.js')
+    script(src='modules/account/js/directives.js')
+    script(src='scripts/service.global.js')
+
+    script(src="bookkeep/scripts/variables.js")
+
+
+
+
+    script(src="bookkeep/components/account/scripts/account.component.js")
+    script(src="bookkeep/components/account/scripts/accounts.component.js")
+    script(src="bookkeep/components/account/scripts/account.service.js")
+
+    // склад
+    script(src="bookkeep/components/warehouse/js/warehouse.component.js")
+    script(src="bookkeep/components/material/js/material.component.js")
+    script(src="bookkeep/components/material/js/material.service.js")
+
+    // приходные накладные
+    script(src="bookkeep/components/pn/js/pn.component.js")
+    script(src="bookkeep/components/pn/js/pn.service.js")
+
+    // поставщики
+    script(src="bookkeep/components/supplier/js/supplier.component.js")
+    // шаблоны проводок
+    script(src="bookkeep/components/sampleEntries/js/sampleEntries.component.js")
+    // производители
+    script(src="bookkeep/components/producer/js/producer.component.js")
+  if(true)
+    script(src='components/sign-login/scripts/sign-login.component.js')
+    script(src='components/directives/check-password-match.directive.js')
+
+      //services
+    script(src='components/services/factory.exeption.js')
+    script(src='components/services/confirm.factory.js')
+    script(src='components/services/interceptor.factory.js')
+    script(src='components/storeSetting/scripts/store-seller.service.js')
+
+
+    script(src='scripts/service.helper.js')
+    script(src='scripts/service.email.js')
+
+
+      // notification
+    script(src='components/notification/scripts/service.notification.js')
+    script(src='components/notification/scripts/controller.notification.js')
+
+      // chat
+    script(src='components/chat/scripts/service.chat.js')
+    script(src='components/chat/scripts/controller.chat.js')
+    script(src='components/chat/scripts/directive.chat.js')
+    script(src='components/chat/scripts/chat.component.js')
+
+      // dialogs
+    script(src='components/dialogs/scripts/service.dialog.js')
+    script(src='components/dialogs/scripts/controller.dialog.js')
+    script(src='components/dialogs/scripts/directive.dialog.js')
+
+      // user
+    script(src='components/user/scripts/service.user.js')
+    script(src='components/user/scripts/controller.user.js')
+    script(src='components/user/scripts/directive.user.js')
+
+    script(src='components/storeSetting/scripts/store-seller.service.js')
+    script(src='components/storeSetting/scripts/component.storeSetting.js')
+
+      // directives
+    script(src='components/directives/directive.focus-element.js')
+    script(src='components/directives/directive.select-drop-down.js')
+    script(src='components/paginator/scripts/component.paginator.js')
+    script(src='components/directives/directive.lost-focus.js')
+    script(src='components/directives/ng-autocomplite-city.directive.js')
+
+
+
+    script(src='scripts/service.anchorSmoothScroll.js')
+
+    script(src='scripts/directive.datePicker.js')
+    script(src='scripts/directive.editNote.js')
+
+
+

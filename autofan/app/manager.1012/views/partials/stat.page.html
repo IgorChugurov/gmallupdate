@@ -1,0 +1,184 @@
+<div class="container" ng-hide="$state.includes('mainFrame.stat.edit')||$state.includes('mainFrame.news.editNewsGallery')">
+    <div class="main">
+        <div class="row">
+                <!--<div class="col-sm-5 col-md-5">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                                <span class="glyphicon glyphicon-folder-close"></span>
+                                Выбор раздела  -
+
+                            <select  ng-model="section"
+                                     ng-options="opt as opt.label for opt in sections|orderBy:'index' ">
+                            </select>
+
+                        </div>
+
+                    </div>
+                    <accordion close-others="false">
+                        &lt;!&ndash;<div class="panel panel-default">
+                            <accordion-group  is-open="true">
+                                <accordion-heading>
+                                    <span class="glyphicon glyphicon-folder-close"></span>
+                                    Выбор раздела  -
+                                    <span ng-bind="section.label"></span>
+                                </accordion-heading>
+                                <select  ng-model="$parent.section"
+                                         ng-options="opt as opt.label for opt in sections|orderBy:'index' ">
+                                </select>
+                            </accordion-group>
+                        </div>&ndash;&gt;
+                        <div class="panel panel-default">
+                            <accordion-group  is-open="isopenCategory">
+                                <accordion-heading>
+                                    <span class="glyphicon glyphicon-folder-close"></span>
+                                    Категории<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopenCategory, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <a href=""ng-click="choiceCategory()" ng-class="{activeCategory:activeCategory==''}">Все</a>
+                                    </li>
+                                    <li ng-repeat="sec in categoryList|orderBy:'index'"class="list-group-item">
+                                        <a  href=""ng-click="choiceCategory(sec)" ng-class="{activeCategory:activeCategory==sec._id}">{{sec.name[config.DL]}}</a>
+                                    </li>
+                                </ul>
+                            </accordion-group>
+                        </div>
+                        <div class="panel panel-default">
+                            <accordion-group  is-open="isopenBrand">
+                                <accordion-heading>
+                                    <span class="glyphicon glyphicon-folder-close"></span>
+                                    Бренды<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopenBrand, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <a href="" ng-click="choiceBrand()" ng-class="{activeCategory:activeBrand==''}">Все</a>
+                                    </li>
+                                    <li ng-repeat="br in brandList|orderBy:'index'"class="list-group-item">
+                                        <a href="" ng-click="choiceBrand(br)" ng-class="{activeCategory:activeBrand==br._id}">{{br.name[config.DL]}}</a>
+                                    </li>
+                                </ul>
+                            </accordion-group>
+                       </div>
+                        <div class="panel panel-default">
+                           &lt;!&ndash; <pre>!!{{collectionTag}}</pre>&ndash;&gt;
+                            <accordion-group  is-open="isopenCollection">
+                               &lt;!&ndash; <pre>!!{{collectionTag}}</pre>&ndash;&gt;
+                                <accordion-heading>
+                                    <span class="glyphicon glyphicon-folder-close"></span>
+                                    Коллекции<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopenCollection, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <a href="" data-ng-click="clearBrandTag(collectionTag)"class="btn btn-sm btn-default text-right" ng-show="collectionList.length>0" style="margin-bottom: 5px">
+                                    <span class="glyphicon glyphicon-remove"></span> сбросить
+                                </a>
+                                &lt;!&ndash;<pre>!!{{collectionTag}}</pre>&ndash;&gt;
+                                <ul class="list-group" ng-show="collectionList.length>0">
+                                    &lt;!&ndash;<li><pre>!!{{collectionTag}}</pre></li>&ndash;&gt;
+                                    <li class="list-group-item">
+                                        <label form="col0">
+                                        <input type="radio" id="col0" name="collection"
+                                               ng-model="collectionTag.val"
+                                               value="">
+                                        Все</label>
+                                    </li>
+                                    <li ng-repeat="collection in collectionList" class="list-group-item">
+                                        <label form="col{{$index}}">
+                                                <input type="radio" id="col{{$index}}"name="collection"
+                                                       ng-model="$parent.collectionTag.val"
+                                                       ng-value="collection._id">
+                                                {{collection.name[config.DL]}}</label>
+                                    </li>
+                                </ul>
+                            </accordion-group>
+                        </div>
+
+                        <div class="panel panel-default">
+
+                            <accordion-group  is-open="isopenFilter">
+                                <accordion-heading>
+                                    <span class="glyphicon glyphicon-folder-close"></span>
+                                    Фильтры<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopenFilter, 'glyphicon-chevron-right': !isopen}"></i>
+                                </accordion-heading>
+                                <a href="" data-ng-click="clearFilter()"class="btn btn-sm btn-default text-right" ng-show="filtersList.length>0" style="margin-bottom: 5px">
+                                    <span class="glyphicon glyphicon-remove"></span> сбросить
+                                </a>
+                                <ul class="list-group">
+                                    <li ng-repeat="filter in filtersList" class="list-group-item">
+                                        <h4 ng-bind="filter.name[config.DL]| uppercase" align="center"></h4>
+                                        <ul class="list">
+                                            <li > <label>
+                                                <input type="radio"
+                                                       ng-model="filter.value"
+                                                       value="">
+                                                Все</label>
+                                            </li>
+                                            <li data-ng-repeat="tag in filter.tags"><label>
+                                                <input type="radio"
+                                                       ng-model="filter.value"
+                                                       ng-value="tag._id">
+                                                {{tag.name[config.DL]}}</label>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </accordion-group>
+                        </div>
+                    </accordion>
+                </div>
+-->
+
+
+
+                <div class="col-sm-7 col-md-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Новости</h3>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="col-md-5 text-left col-md-offset-1">
+                                            <input type="text" placeholder="пошук" ng-model="searchNews" class="search-query"/>
+                                        </div>
+                                        <div class="col-md-5  col-md-offset-1">
+                                            <a href=""class="btn btn-success" type="button"  ng-click="editNews()">новая</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                                <ul  class="nav nav-pills nav-stacked">
+                                    <li
+                                        class="pull-left col-lg-12 col-md-10 col-xs-10"
+                                        ng-repeat="news in filteredList=( newsList|orderBy:'index'|filter:searchNews)">
+                                        <a ng-click="editNews(news)" class="control-label col-lg-6 col-md-6 col-xs-6" href="">
+                                            <span ng-bind="news.name[config.DL]"></span>
+                                        </a>
+
+                                        <div class="col-lg-6 btn-group">
+                                            <a ng-click="editNewsGallery(news)" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-camera"></span></a>
+                                            <a ng-click="editNews(news)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                            <a ng-click="deleteNews(news)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                        </div>
+                                        <div class="clearfix"></div>
+
+                                    </li>
+
+
+                                </ul>
+
+
+                            <a data-ng-click="setPage()" class="btn btn-sm btn-success" ng-show="newsList.length<totalItems">
+                                <span class="glyphicon glyphicon-resize-vertical"></span> еще</a>
+
+
+                            <div ng-show="filteredList.length<=0" class="alert alert-success"><h3>Нет объектов</h3></div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+<div ui-view></div>

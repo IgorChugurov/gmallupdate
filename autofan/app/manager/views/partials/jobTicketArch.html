@@ -1,0 +1,93 @@
+<div ng-hide="$state.includes('mainFrame.jobTicketArch.view')">
+    <div class="main col-lg-10 col-lg-offset-1">
+        <div class="row">
+            <mongo-paginator-all type="order" page="paginate.page" row="paginate.row" rows-per-page="500" total-items="paginate.totalItems"></mongo-paginator-all>
+                <div class="col-sm-12 col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p class="panel-title">ВЫПОЛНЕННЫЕ наряд-заказы<span class="pull-right" style="margin-top: 5px; font-size: 26px;">AUTOFAN</span></p>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="col-md-4 ">
+                                            <input type="text" placeholder="поиск" ng-model="searchJobTicket" class="search-query"/>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table">
+                                <tr>
+                                    <th>открыт</th>
+                                    <th>закрыт</th>
+                                    <th>vin</th>
+                                    <th>модель</th>
+                                    <th>сумма</th>
+                                    <th class="text-center">удалить</th>
+                                    <th class="text-center">шаблон</th>
+                                </tr>
+                                <tr ng-repeat="jobTicket in jobTicketsList=( jobTickets|filter:searchJobTicket)">
+                                    <td>
+                                        <a ng-click="viewJobTicket(jobTicket)">
+                                            <span  ng-bind="moment(jobTicket.date).format('ll')"></span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span ng-bind="moment(jobTicket.dateClose).format('ll')"></span>
+                                    </td>
+                                    <td>
+                                        <a ng-click="viewJobTicket(jobTicket)" >
+                                            <span ng-bind="jobTicket.customer.vin"></span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span  ng-bind="jobTicket.customer.model"></span>
+                                    </td>
+                                    <td>
+                                        <span  ng-bind="(jobTicket.resSum).toFixed(2)"></span><span> €</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a ng-click="deleteJobTicket(jobTicket)">
+                                            <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="text-success" ng-click="cloneJobTicket(jobTicket)">
+                                            клонировать
+                                        </a>
+                                    </td>
+
+                                </tr>
+                            </table>
+                            <div ng-show="filteredList.length<=0" class="alert alert-success"><h3>Нет объектов</h3></div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+<div ui-view></div>
+            
+<script type="text/ng-template" id="myModalContentDD.html">
+        <div class="modal-header">
+            
+            <h3 style="color:red"> Удалить?</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form" >
+            <div class="form-group" >
+                <label>подтверждение</label>
+                <input type="password" class="form-control" ng-model="pswd"  required/>        
+            </div></form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok(pswd)">Удалить</button>
+            <button class="btn btn-warning" ng-click="cancel()">Отмена</button>
+        </div>
+    </script>
+            
+            
+            

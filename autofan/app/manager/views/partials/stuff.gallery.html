@@ -1,0 +1,103 @@
+</br>
+</br>
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <div class="col-lg-12 back">
+                <button class="btn btn-default pull-left" ng-click="backToList()">вернуться в список</button>
+            </div>
+            <br />
+
+            <div class="container">
+                <h3>Галерея  <span ng-bind="stuff.name[config.DL]"></span></h3>
+
+
+                <div class=" thumbnail pull-left" ng-repeat='photo in gallery'>
+                    <img ng-src="{{photo.thumb}}" />
+
+                        <div class="row" style="margin-top: 5px" >
+                            <div class="col-lg-8" >
+                                <select  ng-show="stuff.category.mainFilter.tags.length>0"  style="width: 150px"
+                                          ng-model="photo.tag"
+                                          ng-options="opt._id as opt.name[config.DL] for opt in stuff.category.mainFilter.tags|orderBy:'index' ">
+                                    <option value="">выберите тег</option>
+                                    <!--<option ng-repeat="tag in stuff.category.mainFilter.tags|orderBy:'index' " value="{{tad._id}}">{{tag.name[confi-->g.DL]}}</option>
+
+                                </select>
+
+                            </div>
+                            <div class="col-lg-4">
+                                <select ng-model="photo.index" ng-options="v for v in photoIndexArray">
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="row"  style="margin-top: 5px">
+                            <div class="col-lg-6">
+                                <a class="btn btn-success btn-sm" ng-click="updateStuffGallery()" ng-disabled="saveDisabled"><span class="glyphicon glyphicon-floppy-disk"></span>сохранить</a>
+                            </div>
+                            <div class="col-lg-6">
+                                <a class="btn btn-danger btn-sm pull-right" ng-click="deletePhoto(photo._id)"><span class="glyphicon glyphicon-trash"> </span>удалить</a>
+                            </div>
+                        </div>
+
+
+
+
+                </div>
+
+
+
+
+                <div class="thumbnail pull-left loading" ng-hide="gallery.length>12">
+                    <img ng-src="{{myFileSrc}}" alt="выберите фото" />
+                    <div  >
+                        <div class="row" >
+                            <div class="col-lg-8">
+                                <!--<select  id="photo" class="form-control" ng-show="stuff.category.mainFilter.tags.length>0" ui-select2
+                                         ng-model="mainFilterTag"
+                                         ng-change="changeCategory(stuff.category);"
+                                         ng-options="opt._id as opt.name[config.DL] for opt in stuff.category.mainFilter.tags|orderBy:'index' ">
+                                    <option value="">выберите тег</option>
+
+                                </select>-->
+                                <select  id="photo"  ng-show="stuff.category.mainFilter.tags.length>0" style="width: 150px"
+                                         ng-model="mainFilterTag"
+                                         ng-options="opt._id as opt.name[config.DL] for opt in stuff.category.mainFilter.tags|orderBy:'index' ">
+
+                                    <option value="">выберите тег</option>
+                                   <!-- <option ng-repeat="tag in stuff.category.mainFilter.tags|orderBy:'index' " value="{{tad._id}}">{{tag.name[config.DL]}}</option>-->
+
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <select ng-model="photoIndex" ng-options="v for v in photoIndexArray">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin-top: 5px">
+                            <div class="col-lg-6">
+                                <a class="btn btn-success pull-left" type = "button" value = "выбрать" ng-disabled="noChange"
+                                   onclick ="javascript:document.getElementById('imagefile').click();">выбрать</a>
+                            </div>
+                            <div class="col-lg-6">
+                                <a class="btn btn-info pull-right" ng-click="uploadFile()" ng-disabled="noLoad">загрузить</a>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+                </div>
+
+
+                <input type="file" file-read="myFile" name="image" id="imagefile" style='visibility: hidden;'/>
+            </div>
+        </div>
+    </div>
+</div>

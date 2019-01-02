@@ -1,0 +1,54 @@
+<div class="container">
+<div class="main">
+    <div class="row">
+        <div class="col-lg-12 back">
+            <button class="btn btn-default pull-left" ng-click="backToList()">повернутись в список</button>
+        </div>
+        <br />
+
+
+        <article class="col-lg-4 col-md-4 col-sm-12">
+            <div class="pull-left" style="margin-right: 30px;">
+                <h3>Торт</h3>
+                <div class="thumbnail back pull-left">
+                    <img ng-src="{{myFileSrc}}" />
+                    <div>
+                        <input type="file" file-read="myFile" name="image" id="imagefile" style='visibility: hidden;'/>
+                        <input type = "button" class="btn btn-success" value="выбор фото" ng-disabled="noChange" onclick ="javascript:document.getElementById('imagefile').click();">
+                        <button  class="btn btn-info pull-right" ng-click="uploadImg()" ng-disabled="noLoad">загрузить</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </article>
+        <form name="myForm" class="form form-horizontal" ng-submit="updateGroup()">
+
+        <article class="col-lg-4 col-md-4 col-sm-12">
+
+            <h3>Опис торту</h3>
+            <p>Найменування</p>
+            <div class="col-lg-6 col-md-6 col-sm-6 row">
+                <input  type="text" class="form-control" id="inputText3" placeholder="введіть найменування" ng-model="group.name" required>
+            </div>
+            <br />
+            <p>Короткий опис</p>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 back row">
+                <textarea placeholder="короткий опис" ng-model="group.desc">
+                </textarea>
+            </div>
+            <div class="back col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                <p>Індекс</p>
+                <input type="text" class="pfoto"  placeholder="введіть індекс"  ng-model="group.index" required/>
+            </div>
+
+            <div class="pull-right back ">
+                <button class="btn btn-large btn-info save mt40" type="submit">зберегти</button>
+            </div>
+        </article>
+
+        </form>
+
+
+    </div>
+</div>
+</div>

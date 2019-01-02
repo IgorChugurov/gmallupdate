@@ -1,0 +1,54 @@
+/*.select-brand-tag .modal-header {
+    background-color:  #eee;
+    padding: 12px 20px;
+    border-bottom: 3px solid #d5d5d5;
+}
+.select-brand-tag .cancel {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 15px;
+    height: 15px;
+    background: url("../../../img/icon/clear.png");
+    background-size: 15px;
+}*/
+.select-brand-tag li {
+    list-style: none;
+}
+.select-brand-tag. .modal-body .box-control {
+    padding:0;
+    background-color: #fff
+}
+.select-brand-tag .modal-body .filter-box{
+    border-bottom: 1px solid #666;
+    padding-left: 0;
+    padding-right: 0;
+    color: #4caf50;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 18px;
+    padding: 10px;
+    cursor: not-allowed;
+}
+.select-brand-tag .modal-body .tag-box {
+    border: 1px solid #999;
+    padding: 10px 15px ;
+    color: #999;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.select-brand-tag .modal-body .tag-box:hover {
+    background-color: #ccc;
+}
+.select-brand-tag .modal-body .box-border-top {
+    margin-top: 42px;
+    border-top: 1px solid #666;
+    padding-right: 0;
+}
+.select-brand-tag .category-tree {
+    padding-left: 0;
+    border-left: 1px solid #999;
+    margin-left: 100px;
+}

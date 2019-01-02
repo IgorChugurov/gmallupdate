@@ -1,0 +1,84 @@
+<div class="select-modal edit">
+    <div class="modal-header">
+        <h4 class="modal-title text-center">Документы</h4>
+        <a class="cancel" ng-click="$ctrl.cancel()"></a>
+    </div>
+    <div class="modal-body">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 ">
+            <div class="form-group label-floating">
+                <label for="name" class="control-label">название подразделения</label>
+                <ui-select ng-model="$ctrl.virtualAccount"
+                           id="name"
+                           skip-focusser="true"
+                           search-enabled="true"
+                           ng-change="$ctrl.changeVirtualAccount()"
+                           title="выберите субсчет">
+                    <ui-select-match  placeholder="субсчет">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <div class="header-table">
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        документ
+                    </div>
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        название
+                    </div>
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        {{$ctrl.fieldName}}
+                    </div>
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        дата
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="stuff-admin"  ng-repeat="d in $ctrl.items">
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <a ng-click="$ctrl.goToDoc(d)">
+                                <span ng-bind="d.ed"></span>
+                            </a>
+
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <a ng-click="$ctrl.goToDoc(d)"><span ng-bind="d.name"></span></a>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group" ng-if="!d.sumCurrency">
+                            <span ng-bind="d.sum"></span> <span ng-bind="d.currency"></span>
+                        </div>
+                        <div class="form-group" ng-if="d.sumCurrency">
+                            <span ng-repeat="(c,val) in d.sumCurrency" ng-show="val">
+                                <span  ng-bind="val"></span> - <span ng-bind="c"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <span ng-bind="d.date"></span>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="clearfix"></div>
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn btn-lg btn-success btn-raised btn-block" type="button" ng-click="$ctrl.ok()">ok</a>
+    </div>
+    <div class="clearfix"></div>
+</div>

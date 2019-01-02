@@ -1,0 +1,905 @@
+<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css" />
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <spinner enable="sendFile||buttonDisabled"></spinner>
+
+
+            <div class="col-lg-12">
+                <div class="well well-sm " id="formContainer">
+
+                    <form class="form-horizontal"  name="formLCustomer" ng-submit="saveCustomer(formLCustomer)" id="formLCustomer" novalidate>
+                        <fieldset>
+                            <legend class="text-center header">Наряд-заказ от <span ng-bind="moment(jobTicket.date).format('ll')"></span><span class="pull-right">AUTOFAN</span></legend>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <span class="col-md-2 col-md-offset-1"><b class="iconColor pull-right">клиент</b></span>
+                                        <div class="col-md-8">
+                                            <select ng-model="customer.id" ui-select2 id="customer" ng-change="changeCustomer(customer.id)" ng-disabled="jobTicket._id">
+                                                <option value="">выберите VIN</option>
+                                                <option data-ng-repeat="c in customers" value="{{c._id}}">{{c.vin}}</option>
+                                            </select>
+                                            <select ng-model="customer.id" ui-select2 id="customerName" ng-change="changeCustomer(customer.id)" ng-disabled="jobTicket._id">
+                                                <option value="">выберите имя</option>
+                                                <option data-ng-repeat="c in customers" value="{{c._id}}">{{c.name}}</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-success " style="padding-top: 7px;">
+                                                <span class="glyphicon glyphicon-save"></span>
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-ng-click="deleteCustomer()" style="padding-top: 7px;">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                            <!--<a ng-disabled="!customer._id"data-ng-click="deleteCustomer()"><i class="fa fa-trash"></i></span></a>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <!--<label>vin</label>-->
+                                        <span class="col-md-2 col-md-offset-1" style="margin-top: 2px;">vin</span>
+                                        <div class="col-md-8">
+                                            <input ng-model="customer.vin" id="vin" name="vin" type="text" placeholder="vin" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-md-2 col-md-offset-1">имя</span>
+                                        <div class="col-md-8">
+                                            <input ng-model="customer.name" id="name" name="name" type="text" placeholder="name" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <span class="col-md-2 col-md-offset-1">e-mail</i></span>
+                                        <div class="col-md-8">
+                                            <input ng-model="customer.email" id="email" name="email" type="text" placeholder="email" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="col-md-2">model</i></span>
+                                        <div class="col-md-9">
+                                            <input ng-model="customer.model" id="model" name="model" type="text" placeholder="model" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-md-2">телефон</i></span>
+                                        <div class="col-md-9">
+                                            <input ng-model="customer.phone" id="phone" name="phone" type="text" placeholder="phone" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-md-2">пробег</i></span>
+                                        <div class="col-md-9">
+                                            <input ng-model="jobTicket.mile" id="mile" name="mile" type="text" placeholder="пробег" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <hr>
+                        <div class="col-lg-3 text-center">
+                            <b style="{{style}}">Долг  <span ng-bind="(jobTicket.balance).toFixed(2)"></span> грн</b>
+                        </div>
+                        <div class="col-lg-3 text-center">
+                            <b>Всего по наряду  <span ng-bind="(getTotalSpark()+getTotalJobs()).toFixed(2)"></span> грн</b>
+                        </div>
+                        <div class="col-lg-3 text-center">
+                            <b>Всего оплачено  <span ng-bind="(getTotalPay()).toFixed(2)"></span> грн</b>
+                        </div>
+                        <div class="col-lg-3 text-center">
+                            <b style="{{((jobTicket.balance+getTotalJobs()+getTotalSpark()-getTotalPay())>0)?'color:red':''}}">Остаток суммы  <span ng-bind="(jobTicket.balance+getTotalJobs()+getTotalSpark()-getTotalPay()).toFixed(2)"></span> грн</b>
+                        </div>
+                    <div class="clearfix"></div>
+                    <hr>
+
+
+
+
+                    <div class="row">
+                        <accordion close-others="false" ng-init="collapse={};">
+
+                        <div class="col-lg-12">
+                            <accordion-group ng-init="collapse.isOpenSpark = true" is-open="collapse.isOpenSpark">
+                                <accordion-heading>
+                                    <span >Стоимость запчастей</span>
+                                    <!--<span class=" glyphicon" ng-class="{'glyphicon-chevron-up': isOpenSpark, 'glyphicon-chevron-down': !isOpenSpark}"> </span>-->
+                                </accordion-heading>
+                                    <form ng-submit="$parent.findSpark(sparkCode.val)">
+                                    <div class="form-group">
+                                        <span class="col-md-3">код запчасти</span>
+                                        <div class="input-group col-lg-5">
+                                            <input type="text" class="mb form-control" data-ng-model="sparkCode.val" placeholder="код запчасти">
+
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-success" type="submit"><span>найти</span></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </form>
+                                    <div class="form-group">
+                                        <!--<span class="col-md-3">код запчасти</span>-->
+                                        <div class="input-group">
+                                            <input style="width: 250px;" type="text"   data-ng-model="handleSpark.code" placeholder="код запчасти">
+                                            <input style="width: 250px;" type="text"  data-ng-model="handleSpark.name" placeholder="название">
+                                            <input style="width: 250px;" type="text"  data-ng-model="handleSpark.price" placeholder="цена">
+
+
+                                        <button class="btn btn-success" data-ng-click="addSpark(handleSpark)"><span>добавить</span></button>
+
+                                        </div>
+                                    </div>
+                                    <table class="table table-bordered">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Код</th>
+                                            <th>Наименование</th>
+                                            <th>Кол-во</th>
+                                            <th>Цена</th>
+                                            <th>Сумма</th>
+                                            <th><a data-ng-click="showElements.ship=!showElements.ship">ПР</a></th>
+                                            <th class="text-center">Удалить</th>
+                                        </tr>
+                                        <tr ng-repeat="j in jobTicket.sparks">
+                                            <td ng-bind="$index+1"></td>
+                                            <td>
+                                                <input ng-model="j.code">
+                                            </td>
+                                            <td>
+                                                <input ng-model="j.name">
+                                            </td>
+                                            <td>
+                                                <select class="btn btn-color mb" ng-model="j.q">
+                                                    <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                                </select>
+                                            </td>
+                                            <td ><!--<span ng-bind="j.price*j.q"></span>--><input data-ng-model="j.price" style="width: 70px;"> <span>грн</span></td>
+                                            <td ><span ng-bind="j.price*j.q"></span><span>грн</span></td>
+                                            <td><input style="width: 70px;" data-ng-show="showElements.ship" type="text" data-ng-model="j.shipPrice"></td>
+                                            <td class="text-center">
+                                                <a data-ng-click="deleteSpark($index)">
+                                                    <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th colspan="3"> Итого</th>
+                                            <th colspan="2"><span  ng-bind="(getTotalSpark()).toFixed(2)"></span> грн</th>
+
+                                        </tr>
+                                    </table>
+
+                            </accordion-group>
+                        </div>
+                        <div class="col-lg-12">
+
+                            <accordion-group ng-init="isOpenJob = true" is-open="isOpenJob">
+                                <accordion-heading>
+                                    <span >Стоимость работ по ремонту и обслуживанию</span>
+
+                                    <!--<span class=" glyphicon glyphicon-chevron-down"
+                                    ng-class="{'glyphicon-chevron-down': isOpenJob, 'glyphicon-chevron-right': !isOpenJob}"> </span>-->
+                                </accordion-heading>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <form class="form-horizontal"  name="formLCustomer" ng-submit="saveCustomer(formLCustomer)" id="formLCustomer" novalidate>
+                                            <fieldset>
+                                                <p class="iconColor col-lg-12 text-center mb">Работы по обслуживанию и ремонту автомобиля</p>
+                                                <div class="row">
+                                                    <div class="col-lg-5">
+                                                        <div class="form-group">
+
+                                                            <div class="col-md-9">
+                                                                <select  ng-model="jobType.id" ui-select2="select2Options.job" id="jobType" ng-change="changeJobType(jobType.id)">
+                                                                    <option value="">выберите  вид работ</option>
+                                                                    <option data-ng-repeat="t in jobTypes" value="{{t._id}}">{{t.name}}</option>
+                                                                </select>
+                                                            </div>
+                                                            <span class="col-md-3">вид</span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-md-3">
+                                                                <input type="text" style="width: 100%"  data-ng-model="jobType.ratio" placeholder="коэф">
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control"  data-ng-model="jobType.name" placeholder="вид работы">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" data-ng-click="saveJobType()" class="btn btn-success">
+                                                                <span class="glyphicon glyphicon-save"></span>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger" data-ng-click="deleteJobType()">
+                                                                <span class="glyphicon glyphicon-trash"></span>
+                                                            </button>
+                                                        </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-7">
+                                                        <div class="form-group">
+
+                                                            <div class="col-md-6">
+                                                                <select   ng-model="jobName.id" ui-select2 id="jobName"
+                                                                          ng-change="changeJobName(jobName.id)">
+                                                                    <option value="">выберите название работ</option>
+                                                                    <option data-ng-repeat="n in jobNames" value="{{n._id}}">{{n.name}}</option>
+                                                                </select>
+                                                            </div>
+                                                            <span class="col-md-4">название работ</span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-md-3">
+                                                                <input type="text" style="width: 100%" data-ng-model="jobName.norma" placeholder="норма/час">
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" data-ng-model="jobName.name" placeholder="наименование">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" data-ng-click="saveJobName()" class="btn btn-success">
+                                                                <span class="glyphicon glyphicon-save"></span>
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger" data-ng-click="deleteJobName()">
+                                                                <span class="glyphicon glyphicon-trash"></span>
+                                                            </button>
+                                                        </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <button class="btn btn-primary col-lg-4 col-lg-offset-4 mb" style="font-size: 18px;"  data-ng-click="addJob()" ng-disabled="!jobName.id" type="button"><span> добавить в наряд-заказ</span></button>
+
+                                                </div>
+                                            </fieldset>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered" style="overflow-x: auto">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Наименование</th>
+                                        <th>Кол-во</th>
+                                        <th>Цена</th>
+                                        <th>Сумма</th>
+                                        <th>Выполнил</th>
+                                        <th>Факт</th>
+                                        <th class="text-center">Удалить</th>
+                                    </tr>
+                                    <tr ng-repeat="j in jobTicket.jobs">
+                                        <td ng-bind="$index+1"></td>
+                                        <td ng-bind="j.name"></td>
+                                        <td>
+                                            <select class="btn btn-color mb" ng-model="j.q">
+                                                <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <span ng-bind="(j.norma*normaHour*getTypeRatio(j.jobType)).toFixed(2)"></span> грн</td>
+                                        </td>
+                                        <td >
+                                            <span ng-bind="(j.norma*j.q*normaHour*getTypeRatio(j.jobType)).toFixed(2)"></span> грн</td>
+
+                                        <td>
+
+                                            <select class="btn btn-color mb" ng-model="j.worker" ng-change="changeWorker(j,j.worker)" ng-options="opt._id as opt.name for opt in G.workers">
+                                                <option value="">Выберите сотрудника</option>
+
+                                                <!--<option ng-repeat="opt in G.workers" value="{{opt._id}}" >{{opt.name}}</option>-->
+                                            </select>
+                                           <!-- <br>
+                                            <span ng-bind="getNameWorker(j.worker)"></span>-->
+                                        </td>
+                                        <td>
+                                            <input type="text"  data-ng-model="j.sum" placeholder="факт" style="width: 70px;">
+                                        </td>
+                                        <td class="text-center">
+                                            <a data-ng-click="deleteJob($index)">
+                                                <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th colspan="3"> Итого</th>
+                                        <th><span  ng-bind="getTotalJobs().toFixed(2)"></span> грн</th>
+                                        <th colspan="3"></th>
+                                    </tr>
+                                </table>
+                            </accordion-group>
+                            <!--<table class="table table-bordered" style="overflow-x: auto">
+                                <caption class="iconColor mb">Стоимость работ по ремонту и обслуживанию</caption>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Наименование</th>
+                                    <th>Кол-во</th>
+                                    <th>Цена</th>
+                                    <th>Сумма</th>
+                                    <th>Выполнил</th>
+                                    <th>Факт</th>
+                                    <th class="text-center">Удалить</th>
+                                </tr>
+                                <tr ng-repeat="j in jobTicket.jobs">
+                                    <td ng-bind="$index+1"></td>
+                                    <td ng-bind="j.name"></td>
+                                    <td>
+                                        <select class="btn btn-color mb" ng-model="j.q">
+                                            <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <span ng-bind="(j.norma*normaHour*getTypeRatio(j.jobType)).toFixed(2)"></span> грн</td>
+                                    </td>
+                                    <td >
+                                        <span ng-bind="(j.norma*j.q*normaHour*getTypeRatio(j.jobType)).toFixed(2)"></span> грн</td>
+
+                                    <td>
+
+                                        <select class="btn btn-color mb" ng-model="j.worker" ng-change="changeWorker(j,j.worker)">
+                                            <option value="">Выберите сотрудника</option>
+                                            <option ng-repeat="opt in G.workers" value="{{opt._id}}" >{{opt.name}}</option>
+                                        </select>
+                                        <br>
+                                        <span ng-bind="getNameWorker(j.worker)"></span>
+                                    </td>
+                                    <td>
+                                        <input type="text"  data-ng-model="j.sum" placeholder="факт" style="width: 70px;">
+                                    </td>
+                                    <td class="text-center">
+                                        <a data-ng-click="deleteJob($index)">
+                                            <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                        </a>-->
+                            <!--<button type="button" class="btn btn-danger btn-xs"
+                                    data-ng-click="deleteJob($index)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>-->
+                            <!--</td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th colspan="3"> Итого</th>
+                            <th><span  ng-bind="getTotalJobs().toFixed(2)"></span> грн</th>
+                            <th colspan="3"></th>
+                        </tr>
+                    </table>-->
+
+                        </div>
+                        <!--<div class="col-lg-10 col-md-offset-1">
+
+                            <p class="iconColor mb text-center">Стоимость запчастей</p>
+                            <div class="form-group">
+                                <span class="col-md-3">код запчасти</span>
+                                <div class="input-group col-lg-5">
+                                    <input type="text" class="mb form-control" data-ng-model="sparkCode" placeholder="код запчасти">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-success" data-ng-click="findSpark(sparkCode)"><span>найти</span></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <div class="input-group">
+                                    <input type="text"  data-ng-model="handleSpark.code" placeholder="код запчасти">
+                                    <input type="text"  data-ng-model="handleSpark.name" placeholder="название">
+                                    <input type="text"  data-ng-model="handleSpark.price" placeholder="цена">
+
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-success" data-ng-click="addSpark(handleSpark)"><span>добавить</span></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Код</th>
+                                    <th>Наименование</th>
+                                    <th>Кол-во</th>
+                                    <th>Цена</th>
+                                    <th>Сумма</th>
+                                    <th><a data-ng-click="showElements.ship=!showElements.ship">ПР</a></th>
+                                    <th class="text-center">Удалить</th>
+                                </tr>
+                                <tr ng-repeat="j in jobTicket.sparks">
+                                    <td ng-bind="$index+1"></td>
+                                    <td>
+                                        <input ng-model="j.code">
+                                    </td>
+                                    <td>
+                                        <input ng-model="j.name">
+                                    </td>
+                                    <td>
+                                        <select class="btn btn-color mb" ng-model="j.q">
+                                            <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                        </select>
+                                    </td>
+                                    <td ><input data-ng-model="j.price" style="width: 70px;"> <span>грн</span></td>
+                                    <td ><span ng-bind="j.price*j.q"></span><span>грн</span></td>
+                                    <td><input style="width: 70px;" data-ng-show="showElements.ship" type="text" data-ng-model="j.shipPrice"></td>
+                                    <td class="text-center">-->
+                                        <!--<button type="button" class="btn btn-danger"
+                                                data-ng-click="deleteSpark($index)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                        <a data-ng-click="deleteSpark($index)">
+                                            <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                        </a>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th colspan="3"> Итого</th>
+                                    <th colspan="2"><span  ng-bind="(getTotalSpark()).toFixed(2)"></span> грн</th>
+
+                                </tr>
+                            </table>
+                        </div>-->
+                        <div class="col-lg-12">
+                            <accordion-group ng-init="isOpenPay = true" is-open="isOpenPay" >
+                                <accordion-heading>
+                                    <span >Оплата</span>
+                                    <!--<span style="display: block; text-align: center" class=" glyphicon glyphicon-chevron-down" > </span>&lt;!&ndash;ng-class="{'glyphicon-chevron-down': isopenCategory, 'glyphicon-chevron-right': !isopen}"&ndash;&gt;-->
+                                </accordion-heading>
+                                <div class="form-group mb">
+                                    <div class="col-lg-10 col-md-offset-1">
+                                        <span class="col-lg-3">текущий платеж</span>
+                                        <div class="input-group col-lg-5 mb">
+                                            <input class="form-control" type="text" data-ng-model="pay.val" placeholder="введите сумму">
+                                        <span class="input-group-btn">
+                                            <button type="button" data-ng-click="addPay()" class="btn btn-success">
+                                                <!--<span class="glyphicon glyphicon-save"></span>-->
+                                                внести платеж
+                                            </button>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                    <table class="table">
+                                        <caption class="iconColor mb">Платежная ведомость</caption>
+
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Дата</th>
+                                            <th>Сумма</th>
+                                            <th class="text-center">Удалить</th>
+                                        </tr>
+                                        <tr ng-repeat="pay in jobTicket.pay">
+                                            <td ng-bind="$index+1"></td>
+                                            <td><span ng-bind="moment(pay.date).format('ll')"></span></td>
+                                            <td><input ng-disabled="true" ng-model="pay.val"></td>
+                                            <td  data-ng-click="deletePay($index)" class="text-center">
+                                                <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th colspan="2"> Итого</th>
+                                            <th colspan="2"><span  ng-bind="(getTotalPay()).toFixed(2)"></span> грн</th>
+
+                                        </tr>
+                                    </table>
+
+                            </accordion-group>
+                        </div>
+                        </accordion>
+                        <!--<div class="col-lg-12">
+                            <div class="form-group mb">
+                                <div class="col-lg-10 col-md-offset-1">
+                                    <p class="iconColor text-center mb">Оплаты</p>
+                                    <span class="col-lg-3">текущий платеж</span>
+                                    <div class="input-group col-lg-5 mb">
+                                        <input class="form-control" type="text" data-ng-model="pay" placeholder="введите сумму">
+                                        <span class="input-group-btn">
+                                            <button type="button" data-ng-click="addPay()" class="btn btn-success">
+
+                                                внести платеж
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="col-lg-10 col-md-offset-1">
+                                <table class="table">
+                                    <caption class="iconColor mb">Платежная ведомость</caption>
+
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Дата</th>
+                                        <th>Сумма</th>
+                                        <th class="text-center">Удалить</th>
+                                    </tr>
+                                    <tr ng-repeat="pay in jobTicket.pay">
+                                        <td ng-bind="$index+1"></td>
+                                        <td><span ng-bind="moment(pay.date).format('ll')"></span></td>
+                                        <td><input ng-disabled="true" ng-model="pay.val"></td>
+                                        <td  data-ng-click="deletePay($index)" class="text-center"><span class="glyphicon glyphicon-trash" style="color: #c8171a"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th colspan="2"> Итого</th>
+                                        <th colspan="2"><span  ng-bind="(getTotalPay()).toFixed(2)"></span> грн</th>
+
+                                    </tr>
+                                </table>
+                            </div>-->
+                            <div class="clearfix"></div>
+
+                            <div>
+                                <p  class="text-center iconColor">Заметки</p>
+                                <div class="col-md-8 col-md-offset-2">
+                                    <textarea ng-model="jobTicket.text" class="mb" style="padding:10px; " id="notes" name="notes" placeholder="введите комментарии к наряду-заказу" rows="4"></textarea>
+
+                                </div>
+                            </div>
+
+
+
+                            <!--<ul>
+                                <li ng-repeat="pay in jobTicket.pay">
+                                    <span ng-bind="pay.date"></span>
+                                    <div class="btn-group">
+                                        <input ng-model="pay.val">
+                                        <button type="button" class="btn btn-danger"
+                                                data-ng-click="deletePay($index)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>-->
+
+                            <!--<p> Итого <span ng-bind="getTotalPay()"></span></p>-->
+                        <!--</div>-->
+                        <div class="col-lg-12 text-center">
+                            <button class="btn btn-primary col-lg-4 col-lg-offset-4 mb" style="font-size: 18px;" data-ng-click="saveJobTicket()"><span>сохранить</span></button>
+
+                            <button class="btn btn-success col-lg-4 col-lg-offset-4 mb" ng-disabled="!jobTicket._id"
+                                    style="font-size: 18px;" data-ng-click="closeJobTicket()"><span>закрыть наряд-заказ</span></button>
+
+                            <button class="btn btn-success col-lg-4 col-lg-offset-4 mb" ng-disabled="!jobTicket._id || !customer.email"
+                                    style="font-size: 18px;" data-ng-click="sendEmail()"><span>отправить e-mail</span></button>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+
+
+
+
+            <!--<div class="col-lg-12" id="formContainer">
+
+            </div>-->
+
+
+
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+<script type="text/ng-template" id="myModalContent.html">
+    <!--<div class="modal-header">
+        &lt;!&ndash;<a  ng-click="cancel()"><span class="pull-right glyphicon glyphicon-remove"></span></a>&ndash;&gt;
+        <h3 class="modal-title"style="color: #666">Уважаемый пользователь!</h3>
+    </div>-->
+    <div class="modal-body">
+        <div>
+            <div ng-hide="loadedShippers" class="text-center">
+                <img src="img/icon/loading2.gif">
+            </div>
+
+            <div ng-show="loadedShippers">
+                <a class="glyphicon glyphicon-remove pull-right" ng-click="cancel()" style="color: #c11919"></a>
+                <div data-ng-repeat="shipper in shippers" class="">
+                    <b ><span ng-bind="shipper.shipper"></span>  валюта  <span ng-bind="shipper.currency"></span></b>
+
+                    <table class="table pars">
+                        <tr>
+                            <th>код</th>
+                            <th>описание</th>
+                            <th>наличие</th>
+                            <th>цена поставщика</th>
+                            <th>цена отпускная</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="spark in shipper.sparks">
+                            <td ng-bind="spark.code"></td>
+                            <td ng-bind="spark.stuff[0]"></td>
+                            <td ng-bind="spark.stuff[1]"></td>
+                            <td ng-bind="spark.stuff[2]"></td>
+                            <td ng-bind="(spark.stuff[2]*shipper.ratio).toFixed(2)"></td>
+                            <td><a ng-click="toOrder(spark.code,spark.stuff[0],(spark.stuff[2]*shipper.ratio).toFixed(2))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div>
+            <div ng-hide="loadedA_Z" class="text-center">
+                <img src="img/icon/loading2.gif">
+            </div>
+            <b style="font-size: 1.2em">На складе 1</b>
+            <div data-ng-repeat="(id,table) in resultsA_Z" ng-switch on="id">
+                <div  ng-switch-when="1">
+                    <b>На складе 1</b>
+                    <table class="table pars">
+                        <tr>
+                        <th>магазин</th>
+                        <th>код запчасти</th>
+                        <th>производитель</th>
+                        <th>наличие</th>
+                        <th>ед. изм.</th>
+                        <th>розничная цена</th>
+                        <th>отпускная цена</th>
+                        <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td><td>{{rows[5]}}</td>
+                            <td>{{getNewPriceA_Z(rows[5])}}</td>
+                            <td><a ng-click="toOrder(rows[1],rows[2],getNewPriceA_Z(rows[5]))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="2">
+                    <b>Под заказ</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>производитель</th>
+                            <th>код запчасти</th>
+                            <th>название</th>
+                            <th class="cena">розничная цена</th>
+                            <th class="cena">отпускная цена</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td>
+                            <td>{{getNewPriceA_Z(rows[3])}}</td>
+                            <td><a ng-click="toOrder(rows[1],rows[2],getNewPriceA_Z(rows[3]))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="3">
+                    <b>Доставка под заказ со склада 1</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>дата</th>
+                            <th>фирма</th>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>к-во</th>
+                            <th>дост. дней</th>
+                            <th class="cena">цена под заказ</th>
+                            <th class="cena">отпускная цена</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td><td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td>
+                            <td>{{getNewPriceA_Z(rows[6])}}</td>
+                            <td><a ng-click="toOrder(rows[2],rows[3],getNewPriceA_Z(rows[6]))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div ng-hide="loadedS_cars" class="text-center">
+                <img src="img/icon/loading2.gif">
+            </div>
+
+            <b style="font-size: 1.2em">На складе 2</b>
+            <div data-ng-repeat="(id,table) in HtmlS_cars" ng-switch on="id">
+                <div  ng-switch-when="5">
+                    <b>Неточное совпадение.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>детализация</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td>
+                            <td>
+                                <a data-ng-click="getAdditionTable(rows[4].href)">{{rows[4].text}}</a></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="9">
+                    <b>Запрошенный артикул.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>розничная цена</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4])}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_cars(rows[4]))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="91">
+                    <b>Аналоги (заменители) для данного артикула.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>розничная цена</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table" ng-if="rows[0]">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4])}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_cars(rows[4]))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+
+                <div  ng-switch-when="92">
+                    <b>Склад 2 дополнение 1.Аналоги (заменители) для данного артикула.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>розничная цена</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table" ng-if="rows[0]">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4])}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_carsZ(rows[4]))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="93">
+                    <b>Склад 2 дополнение 1.Запрошенный артикула.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>розничная цена</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table" ng-if="rows[0]">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4])}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_cars(rows[4]))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer text-center">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+    <!--<div class="modal-footer">
+
+        <button class="btn btn-success" style="height: 34px;" ng-click="toOrder()">Корзина</button>
+    </div>-->
+</script>
+
+
+<style>
+    .full .modal-dialog{
+        width:auto;
+        margin-left:20px;
+        margin-right:20px;
+    }
+
+    .header {
+        color:#36A0FF;
+        font-size:27px;
+        padding:10px;
+    }
+    .bigicon {
+        font-size:35px;
+        color:#36A0FF;
+    }
+    .iconColor {
+        color:#36A0FF;
+    }
+
+    #formContainer {
+        border-top: 2px solid #aaa;
+        box-shadow:  0 2px 10px rgba(0,0,0,0.8);
+        /*width:288px;
+        height:321px;
+        background-color: #effff4;*/
+        /*margin:0 auto;
+        position:relative;
+        z-index:1;*/
+
+        -moz-perspective: 800px;
+        -webkit-perspective: 800px;
+        perspective: 800px;
+    }
+
+    #formContainer form {
+        width:100%;
+        height:100%;
+
+
+    }
+
+
+</style>
+

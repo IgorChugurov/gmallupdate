@@ -1,0 +1,68 @@
+<div class="content" ng-class="{'content-mobile':global.get('mobile').val}" ng-if="$state.current.name=='frame'">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a ui-sref="frame.baseSEO" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">settings_ethernet</i><br>
+                        </span>базовые титлы
+                    </h3>
+                </div>
+
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.maskStuff" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">text_format</i><br>
+                        </span>маска для title страницы товара</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.sitemap" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">pin_drop</i><br>
+                        </span>файл sitemap</h3>
+                </div>
+
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.seoPages" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">chrome_reader_mode</i><br>
+                        </span>продвигаемые страницы</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.keywords" class="content-box-link">
+            <div class="panel content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">vpn_key</i><br>
+                        </span>ключевые слова</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<div ui-view></div>

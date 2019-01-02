@@ -1,0 +1,55 @@
+<div class="nav-box-stuff">
+    <div class="tab-nav-stuff">
+        <a class="btn btn-fab btn-fab-mini btn-info"
+           ui-sref="frame.Customer"
+           title="вернуться">
+            <i class="material-icons">reply</i>
+        </a>
+    </div>
+</div>
+<div class="supplier" >
+    <div class="news-stuff-container">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                <div class="header-table">
+                    <div class="td-list-header col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                        название
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                        редактирование
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="stuff-admin ">
+
+                    <div class="" ng-class="{'mobil':global.get('mobile')}">
+                        <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                            <div class="td-list col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                <div class="">
+                                    <input type="text" id="name1" class="form-control name"
+                                           ng-model="$ctrl.item.name"
+                                           required
+                                           ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                                </div>
+                            </div>
+
+                            <div class="td-list create col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <a ng-hide="$ctrl.item._id" class="btn btn-fab btn-fab-mini  edit pull-right" ng-click="$ctrl.createItem()">
+                                    <i class="material-icons link-success md-42">add</i>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="col-lg-12">
+
+                    </div>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

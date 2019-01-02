@@ -1,0 +1,267 @@
+
+<!--http://www.tutorialspoint.com/bootstrap/bootstrap_forms.htm-->
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <article class="col-lg-6 col-md-6 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <span>Фильтры</span>
+                            <a href=""class="btn btn-success pull-right" type="button"  ng-click="focusInput[0]=true;editFilter(null,true)"
+                               style=" margin-right: 10px">создать фильтр</a>
+
+                        </div>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <input type="text" placeholder="поиск" ng-model="searchNameFilter" class="search-query" style=" margin-left: 20px"/>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="panel-body">
+                        <form ng-submit="saveFilter()" class="form-horizontal" role="form">
+                            <div data-ng-repeat="lang in config.langArr"  class="form-group" >
+                                <label ng-bind="lang" for="{{$index}}{{filter_.id}}" class="col-md-3 control-label"></label>
+                                <div class="col-md-9">
+                                    <input type="text" placeholder="" id="{{$index}}{{filter_.id}}" class="form-control"
+                                           ng-model="filter.name[lang]"
+                                           ng-disabled="editDisabledF"
+                                           required
+                                           focus-me="focusInput[$index]"/>
+                                </div>
+                            </div>
+                            <div class="form-group" >
+                                <label for="ind{{filter_.id}}" class="col-md-3 control-label">индекс</label>
+                                <div  class="col-md-9">
+                                    <input type="text" placeholder=""  class="form-control"
+                                           ng-model="filter.index" required
+                                           ng-disabled="editDisabledF"
+                                           id="ind{{filter_.id}}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                               <!-- <label class="control-label ">тип</label>-->
+                                <label class="col-md-3 text-right">тип фильтра</label>
+                                <div class="col-md-9">
+                                    <label > едн.
+                                        <input type="radio" ng-model="filter.type" value=1 ng-disabled="editDisabledF">
+                                    </label>
+                                    <label > мнж.
+                                        <input type="radio" ng-model="filter.type" value=2 ng-disabled="editDisabledF">
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12 text-right">
+                                    <!--<button class="btn btn-primary" type="submit" ng-disabled="editDisabledF">сохранить</button>-->
+                                    <button class="btn btn-block btn-primary  col-lg-12 col-md-12 col-sm-12" style="font-size: 18px;" ng-disabled="editDisabledT" type="submit"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить</button>
+                                </div>
+                            </div>
+                        </form>
+                        <legend>Список</legend>
+                        <ul  class="nav nav-pills nav-stacked">
+                            <li class="phone-listing"
+                                class="pull-left col-lg-12 col-md-10 col-xs-10 back"
+                                ng-repeat="filter in filters|filter:{name:searchNameFilter}|orderBy:'index'">
+                            <span class="col-lg-6 col-md-6 col-xs-6">
+                            <a ng-click="editFilter(filter)" href=''>
+                                <span ng-bind="filter.name[config.DL]"></span>
+                            </a>
+                            </span>
+                                <div class="col-lg-6 text-right">
+                                    <a ng-click="focusInput[0]=true;editFilter(filter,true)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                    <a  ng-click="deleteFilter(filter)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </li>
+                        </ul>
+                        <div ng-show="filterss.length<=0" class="alert alert-success"><h3>Нет фильтров</h3></div>
+                    </div>
+                </div>
+            </article>
+            <article class="col-lg-6 col-md-6 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <span>Теги для</span>  <span ng-bind="activeFilterName"></span>
+                            <a href=""class="btn btn-success pull-right" type="button"  ng-click="focusInputTag[0]=true;editTag()"  ng-disabled="!activeFilterName"
+                               style=" margin-right: 10px">создать тег</a>
+
+                        </div>
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <input type="text" placeholder="поиск" ng-model="searchTag" class="search-query" style=" margin-left: 20px"/>
+                            </div>
+                        </form>
+                        <!--<h4>Теги для -  <span ng-bind="activeFilterName"></span></h4>-->
+                    </div>
+                    <div class="panel-body">
+                        <form ng-submit="saveTag()" class="form-horizontal" role="form">
+                            <div data-ng-repeat="lang in config.langArr"  class="form-group" >
+                                <label ng-bind="lang" for="{{$index}}{{tag_.id}}" class="col-md-3 control-label"></label>
+                                <div class="col-md-9">
+                                    <input type="text" placeholder="" id="{{$index}}{{tag_.id}}" class="form-control"
+                                           ng-model="tag.name[lang]"
+                                           ng-disabled="editDisabledT"
+                                           required
+                                           focus-me="focusInputTag[$index]"/>
+                                </div>
+                            </div>
+                            <div class="form-group" >
+                                <label for="ind{{tag_.id}}" class="col-md-3 control-label">индекс</label>
+                                <div  class="col-md-9">
+                                    <input type="text" placeholder=""  class="form-control"
+                                           ng-disabled="editDisabledT"
+                                           ng-model="tag.index"required
+                                           id="ind{{tag_.id}}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12 text-right">
+                                    <!--<button class="btn btn-primary" type="submit" ng-disabled="editDisabledT">сохранить</button>-->
+                                    <button class="btn btn-block btn-primary  col-lg-12 col-md-12 col-sm-12" style="font-size: 18px;" ng-disabled="editDisabledT" type="submit"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить</button>
+                                </div>
+                            </div>
+                        </form>
+                        <legend>Список</legend>
+                        <ul  class="nav nav-pills nav-stacked">
+                            <li class="phone-listing"
+                                class="pull-left col-lg-12 col-md-10 col-xs-10 back"
+                                ng-repeat="tag in tags|filter:{name:searchTag}|orderBy:'index'">
+                            <span class="col-lg-6 col-md-6 col-xs-6">
+                            <a ng-click="focusInputTag[0]=true;editTag(tag)" href=''>
+                                <span ng-bind="tag.name[config.DL]"></span>
+                            </a>
+                            </span>
+                                <div class="col-lg-6 text-right">
+                                    <a ng-click="focusInputTag[0]=true;editTag(tag)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                    <a ng-click="deleteTag(tag)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </li>
+                        </ul>
+                        <div ng-show="tags.length<=0" class="alert alert-success"><h3>Пусто</h3></div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+
+
+
+        <!--<div class="row">
+            <article class="col-lg-8 col-md-8">
+                &lt;!&ndash;<p class="back">tags для <span ng-bind="activeFilterName"></span></p>
+                <p>
+                    <button class="btn btn-info" ng-click="focusInputTag[0]=true;editTag()">новый</button>
+
+                </p>
+                <div class="btn-group-md back" style="vertical-align:top;">
+                    <form ng-submit="saveTag()">
+                        <div data-ng-repeat="lang in config.langArr" >
+                            <span ng-bind="lang"></span>&nbsp
+                            <input type="text" placeholder=""
+                                   ng-model="tag.name[lang]"
+                                   ng-disabled="editDisabledT"
+                                   required
+                                   focus-me="focusInputTag[$index]"/></br>
+                        </div>
+                        </br>
+                        <span>индекс</span><input type="text" placeholder=""
+                                                  ng-disabled="editDisabledT"
+                                                  ng-model="tag.index" required
+                            /></br>
+                        <button class="btn btn-info" type="submit" ng-disabled="editDisabledT">сохранитт</button>
+                    </form>
+                </div>&ndash;&gt;
+&lt;!&ndash;
+                <ul class="list">
+                    <li class="pull-left col-lg-12 col-md-10 col-xs-10 back" ng-repeat="tag in tags|filter:{name:searchArticle}|orderBy:'index'">&lt;!&ndash;&ndash;&gt;
+                        <div class="form-group">
+                            <label class="control-label col-lg-9 col-md-9 col-xs-9"><a  ng-click="focusInputTag[0]=true;editTag(tag._id)">
+                                <span ng-bind="tag.name[config.DL]"  ng-class="{ activeArticle: isActive(article._id)}"></span></a>
+                            </label>
+                            <div class="col-lg-3 btn-group">
+                                <button class="btn btn-info" ng-click="focusInputTag[0]=true;editTag(tag)">
+                                    <img src="img/icons/edit.png" title="редактировать">
+                                </button>
+                                <button class="btn btn-danger"  ng-click="deleteTag(tag)">
+                                    <img src="img/icons/delete.png" title="удалить">
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <div class="clearfix"></div>
+
+                </ul>&ndash;&gt;
+
+
+            </article>-->
+
+            <!--<article class="col-lg-4 col-md-4" >
+
+                <p class="back">Фильтр<span ng-bind="activeIssueName"></span></p>
+                &lt;!&ndash;<div class="pull-left col-lg-12 col-md-12 col-xs-12 row back">
+                    <label class="btn-group-md">
+                        <input type="text" style="width: 130px;" placeholder="поиск" ng-model="searchNameFilter" />
+                        <button class="btn btn-info" ng-click="editFilter()">создать фильтр</button>
+                    </label>
+                </div>&ndash;&gt;
+                <p>
+                <button class="btn btn-info" ng-click="focusInput[0]=true;editFilter(null,true)">создать фильтр</button>
+
+                </p>
+                <div class="btn-group-md back" style="vertical-align:top;">
+                    <form ng-submit="saveFilter()">
+                        <div data-ng-repeat="lang in config.langArr" >
+                            <span ng-bind="lang"></span>&nbsp
+                            <input type="text" placeholder=""
+                                   ng-model="filter.name[lang]"
+                                   ng-disabled="editDisabledF"
+                                   required
+                                   focus-me="focusInput[$index]"/></br>
+                        </div>
+                        </br>
+                        <span>индекс </span>
+                        <input type="text" placeholder=""
+                               ng-model="filter.index" required
+                               ng-disabled="editDisabledF"/></br>
+
+                        <h4>Тип</h4>
+                        <label><input type="radio" ng-model="filter.type" value=1 ng-disabled="editDisabledF">Единичный</label><br/>
+                        <label><input type="radio" ng-model="filter.type" value=2 ng-disabled="editDisabledF">множест.</label><br/>
+
+                    <button class="btn btn-info" type="submit" ng-disabled="editDisabledF">сохранить</button>
+                    </form>
+                </div>
+
+
+                <ul class="list">
+                    <li class="pull-left col-lg-12 col-md-10 col-xs-10 back" ng-repeat="filter in filters|filter:{name:searchNameFilter}|orderBy:'index'">
+                        <div class="form-group">
+                            <label class="control-label col-lg-6 col-md-6 col-xs-6">
+                                <a ng-click="editFilter(filter)">
+                                    <span ng-bind="filter.name[config.DL]"></span>
+                                </a>
+                            </label>
+                            <div class="col-lg-6 btn-group">
+
+                                <button class="btn btn-info" ng-click="focusInput[0]=true;editFilter(filter,true)">
+                                    <img src="img/icons/edit.png" title="редактировать">
+                                </button>
+                                <button class="btn btn-danger" ng-click="deleteFilter(filter)">
+                                    <img src="img/icons/delete.png" title="удалить">
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <div class="clearfix"></div>
+
+                </ul>
+            </article>-->
+
+        </div>
+    </div>
+</div>

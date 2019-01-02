@@ -1,0 +1,45 @@
+
+.section-select-category-modal .modal-body .box-control {
+    padding:0;
+    background-color: #fff
+}
+.section-select-category-modal li {
+    list-style: none;
+}
+.section-select-category-modal .modal-body .section-box{
+    border-bottom: 1px solid #666;
+    padding-left: 0;
+    padding-right: 0;
+    color: #4caf50;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 18px;
+    padding: 10px;
+    cursor: not-allowed;
+    font-size: 14px;
+}
+.section-select-category-modal .modal-body .category-box {
+    border: 1px solid #999;
+    padding: 10px 15px ;
+    color: #999;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.section-select-category-modal .modal-body .category-box:hover{
+    background-color: #ccc;
+}
+.section-select-category-modal .modal-body .box-border-top {
+    margin-top: 42px;
+    border-top: 1px solid #666;
+    padding-right: 0;
+}
+.section-select-category-modal .category-tree {
+    padding-left: 0;
+    margin-left: 100px;
+    border-left: 1px solid #999;
+}
+.section-select-category-modal .bind-category-modal .section-category{
+    cursor: default;
+}

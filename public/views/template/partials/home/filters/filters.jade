@@ -1,0 +1,51 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        div(class="home-filterTags")
+            div(class="container",order-from-filter=JSON.stringify(dj[key].filters))
+                if(dj[key].name)
+                    h4(set-animate=dj[key].animate,data-animation=dj[key].animate,class="text-center")=dj[key].name
+                img(class="img-responsive bg-img",src=dj[key].img,ng-src="{{$ctrl.stuff.img}}")
+                div(class="col-lg-6 col-md-6 col-sm-6 col-xs-12")
+                div(class="col-lg-6 col-md-6 col-sm-6 col-xs-12 size-box")
+                    each f in dj[key].filters
+                        div(set-animate=dj[key].animate,data-animation=dj[key].animate,class="home-section")
+                            a(href='/'+sections[0].url+'/category?queryTag='+f.url)
+                                //img(class="img-responsive",src=photoHost + '/' + f.img,alt=f.alt,ng-src="{{$ctrl.filters['"+f._id+"'].img}}")
+                                div(class="box-overlay")
+                                div(class="half-shadow")
+                                    div(class="title-block")
+                                        h1=f.name
+                            each t,index in f.tags
+                                a(class="tag-name",ng-click="$ctrl.setActiveClass('"+f._id+"','"+t._id+"')",ng-class="{'active':$ctrl.filters['"+f._id+"'].tagsO['"+t._id+"'].activeClass}")
+                                    img(class="img-responsive img-tag",src=photoHost + '/' + t.img,alt=t.name)
+                                    div(class="item-box")
+                                        span(class="name-item")=t.name
+                    div(class="qty")
+                        span(class="pull-left qty-box")
+                            | Quantity &nbsp;
+                        a(class="pull-left name-qty",ng-click="$ctrl.decreaseQty()")
+                            span(class="qty-minus") -
+                        input(class="form-control pull-left",type="text",min='1', max='20',ng-model="$ctrl.stuff.quantity")
+                        a(class="pull-left name-qty",ng-click="$ctrl.increaseQty()")
+                            span(class="qty-plus") +
+                        div(class="clearfix")
+                    div(class="price-box")
+                        h3(class="price-item")
+                            span(class="price")
+                                | Price &nbsp;
+                            span(class="price-name",ng-bind="$ctrl.stuff.price")
+
+                    div(class="clearfix")
+                    div(class="button-box")
+                        h2
+                            span()
+                                | Your choice are &nbsp;
+                            span(class="choice",ng-repeat="f in $ctrl.filters")
+                                span(class="name-filter",ng-bind="f.name")
+                                span(class="item-filter",ng-repeat="t in f.tags|filter:{activeClass:true}", ng-bind="t.name")
+                        a(class="btn btn-project btn-banner" ng-click2="$ctrl.order()",href="{{$ctrl.stuff.amazonAddToCartLink}}",target="_blank")
+                            | Buy on Amazon
+                div(class="clearfix")
+
+
+div(class="clearfix")

@@ -1,0 +1,31 @@
+<div class="static-page-edit" ng-class="{'static-page-edit-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame.stats">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff name-block">
+            <h4 class="name-box text-center"> страница
+                <span class="category-name">{{$ctrl.item.name}}</span>
+            </h4>
+        </div>
+        <div class="tab-nav-stuff col-lg-4 col-md-4 col-sm-4 col-xs-12 pull-right">
+            <ui-select ng-model="$ctrl.newBlock" skip-focusser="true" search-enabled="false" ng-change="$ctrl.addBlock($ctrl.newBlock)">
+                <ui-select-match placeholder="добавить блок">{{$select.selected.value}}</ui-select-match>
+                <ui-select-choices repeat="opt.key as (key, opt) in $ctrl.listOfBlocks">{{ opt.value }}</ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-if="$ctrl.item && $ctrl.item._id">
+        <blocks-edit
+                item="$ctrl.item"
+                refresh-blocks="$ctrl.refreshBlocks()"
+                type="Stat">
+        </blocks-edit>
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+

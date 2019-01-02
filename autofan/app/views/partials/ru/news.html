@@ -1,0 +1,68 @@
+<script type="text/ng-template" id="paginationControl.html">
+    <div class="text-center" ng-show="paginator.pageCount() > 1">
+        <ul class="pagination">
+            <li ng-click="paginator.firstPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-fast-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+                </a>
+            </li>
+            <li ng-click="paginator.perviousPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-step-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+                </a>
+            </li>
+            <li ng-click="paginator.setPage(i)" ng-repeat="i in [] | forLoop:0:paginator.pageCount()" ng-class="paginator.page==i && 'active'">
+                <a>{{i+1}}</a>
+            </li>
+            <li ng-click="paginator.nextPage()" ng-class="paginator.isLastPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-step-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+                </a>
+            </li>
+            <li ng-click="paginator.lastPage()" ng-class="paginator.isLastPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-fast-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</script>
+
+
+        <div class="container" ng-hide="$state.includes('language.news.detail')">
+            <!--<div class="button_fixed" id="toTop">
+                <a ng-click="scrollTo('panel')"class="btn btn-inverse"><span class="glyphicon glyphicon-arrow-up icon-white"></span></a>
+            </div>-->
+
+            <div class="row" >
+
+                <div class="col-lg-8 col-lg-offset-2 ">
+                    <h1  class="page-header">Новости Autofan<small>&nbsp  в Харькове</small></h1>
+
+                    <div class="slogan_brand">
+                        <p ng-bind-html="trustHtml(textList)"></p>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 portfolio-item" ng-repeat-start="item in newsList|filter:filterLists()| paginate:rowsPerPage">
+                        <a ui-sref="language.news.detail({id:item._id})"><img class="img-responsive" ng-src="{{item.img}}"></a>
+                    </div>
+                    <div class="col-md-8 col-sm-8 col-xs-12 portfolio-item">
+                        <h3>
+                            <a ui-sref="language.news.detail({id:item._id})"><span ng-bind="item.name[lang]"></span></a>
+                        </h3>
+                        <h4 ng-bind="displayDate(item.date)"> <!--<span ng-bind="item.artikul"></span>--></h4>
+                        <p ng-bind="item.desc[lang]"></p>
+                        <h4 class="pull-left col-lg-6"><span ng-bind="item.author.name"></span></h4>
+                        <a class="btn btn-primary pull-right col-lg-3" ui-sref="language.news.detail({id:item._id})">Подробнее <span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                    <div class="clearfix" ng-repeat-end></div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="paginator">
+            <paginator></paginator>
+        </div>
+
+<div ui-view></div>

@@ -1,0 +1,40 @@
+<div class="tag-to-model select-modal">
+    <div class="modal-header">
+        <h3 class="modal-title text-center"  ng-bind="$ctrl.lang.selectObject">выберите объект</h3>
+        <a class="cancel" ng-click="$ctrl.cancel()"></a>
+    </div>
+    <div class="modal-body padding-body">
+        <div>
+            <ul>
+                <li ng-repeat="filter in $ctrl.filters" ng-if="filter.addInfos.length">
+                    <!--<div class="col-lg-3 col-md-3 col-sm-5 col-xs-12">
+                            <h4 class="name-box"  ng-bind="filter.name" ></h4>
+                        </div>-->
+                    <div  class="col-lg-9 col-md-9 col-sm-7 col-xs-12">
+                        <form>
+                            <ul>
+                                <li class=" form-group  tag-box"  ng-repeat="item in filter.addInfos">
+                                    <form>
+                                        <div ng-click="$ctrl.ok(item)">
+                                            <span  ng-bind="item.name" ></span>
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="clearfix"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-raised" type="button"  ng-click="$ctrl.ok(null)">
+            <span ng-bind="$ctrl.lang.cancelAll" ></span>
+        </button>
+    </div>
+</div>
+
+
+
+

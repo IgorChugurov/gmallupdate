@@ -1,0 +1,49 @@
+ <div class="collection-edit">
+     <div class="nav-box-stuff">
+         <div class="tab-nav-stuff">
+             <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame.brands">
+                 <i class="material-icons">reply</i>
+             </a>
+         </div>
+
+         <h4 class="text-center label-menu">
+             <span>редактирование коллекции</span>
+             <span class="category-name">{{itemTag.name}}</span>
+         </h4>
+         <div class="clearfix"></div>
+     </div>
+     <div class=" col-lg-5 col-md-5 col-sm-5 col-xs-12">
+         <div class="cart-detail tag-img">
+             <h3 class="text-center">фото коллекции</h3>
+             <load-image
+                     no-load="noLoad"
+                     no-change="noChange"
+                     upload-url="/api/collections/BrandTags/fileUpload"
+                     item-id="{{itemTag._id}}"
+                     item-url="{{itemTag.url}}"
+                     item-resourse="ItemsTag"
+                     file-src="itemTag.img">
+             </load-image>
+         </div>
+     </div>
+     <div class=" col-lg-8 col-md-8 col-sm-8 col-xs-12">
+         <div class="cart-detail">
+             <div class="form-group label-floating">
+                 <label for="name" class="control-label">нименование коллекции</label>
+                 <input type="text" id="name" class="form-control"
+                        ng-model="itemTag.name" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                        ng-change="$ctrl.saveField('name')"/>
+             </div>
+             <h4 class="text-center name-box">описание</h4>
+             <div class="form-group editor">
+                 <div text-angular ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                      ng-change="$ctrl.saveField('desc',200)"
+                      ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
+                      ng-model="itemTag.desc"
+                      ta-html-editor-class="border-around"><!--ng-model="$ctrl.item.desc"-->
+                 </div>
+             </div>
+
+         </div>
+    </div>
+</div>

@@ -1,0 +1,214 @@
+<div class="template-list" ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="block-tab">
+        <div class="btn-group btn-group-justified btn-group-raised" style="height: 60px">
+            <a class="btn" ng-class="{'active':$ctrl.type=='good'}"ng-click="$ctrl.type='good'"><span class="link-success">карточка 1</span></a>
+            <a class="btn" ng-class="{'active':$ctrl.type=='service'}"ng-click="$ctrl.type='service'"><span class="link-success">карточка 2<br> услуга</span></a>
+            <a class="btn" ng-class="{'active':$ctrl.type=='info'}"ng-click="$ctrl.type='info'"><span class="link-success">карточка 3<br> инфо</span></a>
+            <a class="btn" ng-class="{'active':$ctrl.type=='media'}"ng-click="$ctrl.type='media'"><span class="link-success">карточка 4<br> медиа</span></a>
+        </div>
+    </div>
+    <div  class="setting-stuff" ng-init="$ctrl.type='good'">
+        <div class="cart-detail text-center">
+            <h4 class="name-box ">разделы  с этим типом карточки </h4>
+            <span class="section-cart" ng-repeat="section in $ctrl.sections">
+                <span ng-bind="section"></span>
+            </span>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <h4 class="name-box text-center">
+                    <!--<div class="col-lg-2 col-md-2 col-sm-2 col-xs-4">
+                        <a class="btn btn-fab btn-fab-mini  btn-primary" title="загрузить из шаблона" ng-click="$ctrl.downloadPartOfTemplate('stuffListCart.'+$ctrl.type)">
+                            <i class="material-icons">vertical_align_bottom</i>
+                        </a>
+                    </div>-->
+                    <div class="header-panel">
+                        <a ng-click="item.showDetai18=!item.showDetai18" ng-show="!item.showDetai18">
+                            <span>настройки страницы</span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_down
+                            </i>
+                        </a>
+                        <a ng-click="item.showDetai18=!item.showDetai18" ng-show="item.showDetai18">
+                            <span>настройки страницы</span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_up
+                            </i>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </h4>
+                <div class="clearfix"></div>
+                <div  uib-collapse="!item.showDetai18" class="collapse-item">
+                    <div class="part-box">
+                        <div class="form-group text-center">
+                            <div style="display: inline-block">
+                                <h4 class="text-center label-menu">структура страницы (разделение на блоки шириной в %)</h4>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.ratio',$ctrl.item.stuffDetailType[$ctrl.type].ratio)"ng-model="$ctrl.item.stuffDetailType[$ctrl.type].ratio" name="optionsRatio"  value="0" >
+                                        50/50
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.ratio',$ctrl.item.stuffDetailType[$ctrl.type].ratio)"ng-model="$ctrl.item.stuffDetailType[$ctrl.type].ratio" name="optionsRatio" value="1">
+                                        40/60
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.ratio',$ctrl.item.stuffDetailType[$ctrl.type].ratio)"ng-model="$ctrl.item.stuffDetailType[$ctrl.type].ratio" name="optionsRatio"  value="2">
+                                        30/70
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.ratio',$ctrl.item.stuffDetailType[$ctrl.type].ratio)"ng-model="$ctrl.item.stuffDetailType[$ctrl.type].ratio" name="optionsRatio" value="3">
+                                        60/40
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.ratio',$ctrl.item.stuffDetailType[$ctrl.type].ratio)"ng-model="$ctrl.item.stuffDetailType[$ctrl.type].ratio" name="optionsRatio" value="4">
+                                        70/30
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.ratio',$ctrl.item.stuffDetailType[$ctrl.type].ratio)"ng-model="$ctrl.item.stuffDetailType[$ctrl.type].ratio" name="optionsRatio" value="5">
+                                        100/0
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+
+
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <h4 class="name-box text-center row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 text-left">
+                        <a  class="btn btn-fab btn-fab-mini btn-primary"   ng-click="$ctrl.downloadPartOfTemplate('stuffListType.'+$ctrl.type)" title="загрузить из шаблона">
+                            <i class="material-icons">vertical_align_bottom</i>
+                        </a>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-6 header-panel">
+                        <a ng-click="item.showDetai181=!item.showDetai181" ng-show="!item.showDetai181">
+                            <span>компоненты страницы</span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_down
+                            </i>
+                        </a>
+                        <a ng-click="item.showDetai181=!item.showDetai181" ng-show="item.showDetai181">
+                            <span>компоненты страницы</span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_up
+                            </i>
+                        </a>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 text-right">
+                        <a class="btn btn-fab btn-fab-mini btn-info"  ng-click="$ctrl.setColor($ctrl.item.stuffDetailType[$ctrl.type],'stuffDetailType.'+$ctrl.type)">
+                            <i class="material-icons"  title="настроить стили списка">opacity</i>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </h4>
+                <div class="clearfix"></div>
+                <div  uib-collapse="!item.showDetai181" class="collapse-item">
+                    <div class="menu-box" ng-if="!$ctrl.global.get('mobile').val">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 head-box">название</div>
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 head-box ava">наличие</div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 head-box">позиция</div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 head-box">шаблон</div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 head-box">стиль</div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 head-box">анимация</div>
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 head-box">настройки</div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="part-box">
+                        <div class="dropzone">
+                            <ul dnd-list="$ctrl.item.stuffDetailType[$ctrl.type].parts"
+                                dnd-drop="$ctrl.dropCallbackStuffDetail(item)"
+                                dnd-allowed-types="['stuffDetail']">
+                                <li ng-repeat="block in $ctrl.item.stuffDetailType[$ctrl.type].parts"
+                                    dnd-draggable="block"
+                                    dnd-type="'stuffDetail'"
+                                    dnd-effect-allowed="move"
+                                    dnd-moved="$ctrl.item.stuffDetailType[$ctrl.type].parts.splice($index,1)"
+                                    dnd-selected="models.selected = item"
+                                    ng-class="{selected: models.selected === item,bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                                    <div class="block-box name col-lg-2 col-md-2 col-sm-2 col-xs-10">
+                                        <div class="form-group">
+                                            <i class="material-icons link-success">swap_vert</i>
+                                            <span ng-repeat="(key,item) in $ctrl.listOfBlocksForStuffDetail" ng-if="block.name==key">
+                                                <span>
+                                                    {{item}}
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="block-box col-lg-1 col-md-1 col-sm-1 col-xs-2  ava text-center">
+                                        <div class="form-group">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.parts',$ctrl.item.stuffDetailType[$ctrl.type].parts)"
+                                                           ng-model="block.is" type="checkbox"/>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="block-box col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                                        <ui-select ng-model="block.position" skip-focusser="true" search-enabled="false"
+                                                   ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.parts',$ctrl.item.stuffDetailType[$ctrl.type].parts)">
+                                            <ui-select-match placeholder="позиция">{{$select.selected}}</ui-select-match>
+                                            <ui-select-choices repeat="opt in ['top','left','right','bottom']">{{ opt }}</ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="block-box col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                                        <ui-select ng-model="block.templ" skip-focusser="true" search-enabled="false"
+                                                   ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.parts',$ctrl.item.stuffDetailType[$ctrl.type].parts)">
+                                            <ui-select-match placeholder="шаблон">{{$select.selected}}</ui-select-match>
+                                            <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="block-box col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                                        <ui-select ng-model="block.style" skip-focusser="true" search-enabled="false"
+                                                   ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.parts',$ctrl.item.stuffDetailType[$ctrl.type].parts)">
+                                            <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                                            <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="block-box col-lg-2 col-md-2 col-sm-2 col-xs-6">
+                                        <ui-select ng-model="block.animate" skip-focusser="true" search-enabled="false"
+                                                   ng-change="$ctrl.saveFieldTemplate('stuffDetailType.'+$ctrl.type+'.parts',$ctrl.item.stuffDetailType[$ctrl.type].parts)">
+                                            <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                                            <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="block-box col-lg-1 col-md-1 col-sm-6 col-xs-6 action-box">
+                                        <a class="btn btn-fab btn-fab-mini btn-info" ng-click="$ctrl.setColor(block,'stuffDetailType.'+$ctrl.type+'.parts')">
+                                            <i class="material-icons" title="установить стиль блока">opacity</i>
+                                        </a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

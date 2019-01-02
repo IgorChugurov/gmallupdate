@@ -1,0 +1,42 @@
+<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1  box-border-top"></div>
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10  form-group  category-box">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+            <div class="label-floating">
+                <label class="control-label">категория</label>
+                <input focus-element1="category.focus"
+                       ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                       ng-change="$ctrl.saveCategoryName(category,section)"
+                       dnd-nodrag class="form-control"
+                       ng-model="category.name">
+            </div>
+            <div class="togglebutton form-group" style="margin-top: 0">
+                <label for="categoryact{{category._id}}">
+                    <span ng-class="{'active':!category.notActive}">опубликована</span>
+                    <input type="checkbox"
+                           id="categoryact{{category._id}}"
+                           ng-model="category.notActive"
+                           ng-change="$ctrl.saveCategoryActive(category)">
+                    <span ng-class="{'active':category.notActive}">не опубликована</span>
+                </label>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 padding0 text-right">
+            <a class="btn btn-fab btn-fab-mini btn-info swap">
+                <i class="material-icons">swap_vertical_circle</i>
+            </a>
+            <a class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.sections.category({id:category._id})">
+                <i class="material-icons">text_format</i>
+            </a>
+
+            <a class="btn btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteCategory(section,$index)">
+                <i class="material-icons">delete</i>
+            </a>
+        </div>
+        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 text-center">
+
+        </div>
+    </div>
+    <div class="clearfix">
+</div>
+<div class="col-lg-1"></div>
+<div class="clearfix"></div>

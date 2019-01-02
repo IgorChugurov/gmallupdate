@@ -1,0 +1,124 @@
+<div class="notification"  ng-class="{'notification-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet" onclick="window.history.back()">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="action tab-nav-stuff">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" ng-model="notificationCtrl.checkAll" ng-change="notificationCtrl.setCheckAll()">
+                </label>
+
+            </div>
+
+         </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-warning" ng-click="notificationCtrl.deleteItem()"
+               ng-disabled="!notificationCtrl.deleteEnable()">
+                <i class="material-icons">delete</i>
+            </a>
+        </div>
+        <!--<div class="tab-nav-stuff note-type">
+            <a class="note-type-link" ng-click="notificationCtrl.changeType(type)"
+               ng-repeat="(type,val) in notificationCtrl.notifications.val"
+               ng-class="{'active':type==notificationCtrl.type}">
+                <span ng-bind="type"></span>&nbsp;
+                <span class="badge badge-danger" ng-bind="val"></span>
+            </a>
+        </div>-->
+        <div class="tab-nav-stuff note-type">
+            <a class="note-type-link" ng-click="notificationCtrl.allNote()" ng-if="notificationCtrl.typeNote">all</a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Список уведомлений</h4>
+        </div>
+        <div class="tab-nav-stuff pull-right calendar">
+            <p class="form-group input-group">
+                        <span class="form-control" >
+                            <span class="date-article"  ng-class="{'active-date':$ctrl.openStart}"
+                                  ng-bind="$ctrl.datePicker.date.startDate|date"
+                                  ng-click="$ctrl.openStart=true">
+                        </span>
+                        <input type="hidden"
+                               uib-datepicker-popup="{{locale.DATETIME_FORMATS.shortDate}}"
+                               ng-model="$ctrl.datePicker.date.startDate"
+                               show-button-bar="false"
+                               is-open="$ctrl.openStart"
+                               ng-required="true"
+                               ng-change="$ctrl.item.openEnd=true"/>
+                        <span  class="date-article">&nbsp; - &nbsp;</span>
+                        <span  class="date-article"  ng-class="{'active-date':$ctrl.openEnd}"ng-bind="$ctrl.datePicker.date.endDate|date" ng-click="$ctrl.openEnd=true"></span>
+                            <!--datepicker-options="$ctrl.item.dateOptions"-->
+                        <input type="hidden"
+                               uib-datepicker-popup="{{locale.DATETIME_FORMATS.shortDate}}"
+                               ng-model="$ctrl.datePicker.date.endDate"
+                               is-open="$ctrl.openEnd"
+                               show-button-bar="false"
+                               ng-required="true" />
+                        </span>
+
+                <span class="input-group-btn">
+                            <a class="btn btn-fab btn-fab-mini btn-success" type="button"
+                               ng-click="$ctrl.reloadOrders()" title="обновить список">
+                                <i class="material-icons">cached</i>
+                            </a>
+                        </span>
+            </p>
+        </div>
+
+        <div class="tab-nav-stuff pull-right paginator-box">
+            <paginator-main
+                    paginate='notificationCtrl.paginate'
+                    getlist="notificationCtrl.getList()">
+            </paginator-main>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-notification" ng-class="{'notification-mobile':$ctrl.global.get('mobile').val}">
+        <div class=" "  ng-repeat="note in notificationCtrl.items">
+            <div class="thumbnail" >
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 notification-block">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 label-action">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="note.check">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 note-type">
+                        <h4 class="">
+                            <strong ng-bind="notificationCtrl.notificationsTypeLang[note.type][notificationCtrl.lang]"></strong>
+                        </h4>
+                        <p class="date-box">
+                            <label>дата просмотра </label>
+                            <span  ng-bind="moment(note.dateNote).format('LLL')"></span>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-9 note-desc">
+                    <span go-to-order='note.order' ng-bind-html="notificationCtrl.trustHtml(note.content)"></span>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 comment-note">
+                    <div class="form-group label-floating">
+                        <label class="control-label" for="comment">добавить заметку</label>
+                        <input id="comment" class="form-control" style="width:100%" ng-model="note.note"
+                                  ng-blur="notificationCtrl.saveNote(note)">
+                    </div>
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-3 notification-btn">
+                    <a class="btn btn-fab btn-fab-mini pull-right btn-warning">
+                        <i class="material-icons"ng-click="notificationCtrl.deleteItem(note._id)">delete</i>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+            </div> 
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+

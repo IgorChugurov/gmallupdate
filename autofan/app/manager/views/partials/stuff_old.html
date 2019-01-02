@@ -1,0 +1,254 @@
+<!--
+<div class="input-append">
+    <input type="text" ng-model="search" class="search-query" style="width: 80px">
+    <button type="submit" class="btn">Search</button>
+</div>
+-->
+<style>
+     .activeCategory { color: #ff0000;}
+     .phone-listing.ng-enter,
+     .phone-listing.ng-leave,
+     .phone-listing.ng-move {
+         -webkit-transition: 0.5s linear all;
+         -moz-transition: 0.5s linear all;
+         -o-transition: 0.5s linear all;
+         transition: 0.5s linear all;
+     }
+
+     .phone-listing.ng-enter,
+     .phone-listing.ng-move {
+         opacity: 0;
+         height: 0;
+         overflow: hidden;
+     }
+
+     .phone-listing.ng-move.ng-move-active,
+     .phone-listing.ng-enter.ng-enter-active {
+         opacity: 1;
+         height: 100%;
+         /*height: 120px;*/
+     }
+
+     .phone-listing.ng-leave {
+         opacity: 1;
+         overflow: hidden;
+     }
+
+     .phone-listing.ng-leave.ng-leave-active {
+         opacity: 0;
+         height: 0;
+         padding-top: 0;
+         padding-bottom: 0;
+     }
+
+</style>
+<div class="container" ng-hide="$state.includes('mainFrame.stuff.edit')||$state.includes('mainFrame.stuff.editStuffGallery')">
+    <div class="main">
+        <h3 style="margin-bottom: 40px;">Объекты</h3>
+        <div class="row">
+
+            <article class="col-lg-5 col-md-5" >
+
+                <p class="back">Выбор раздела  -<span ng-bind="section.label"></span></p>
+                <!--<select
+                        ng-model="section"
+                        ng-change="changeSection()">
+                    <option ng-repeat="opt in sections|orderBy:'index'" ng-value="opt">{{opt.label}}</option>
+                </select>-->
+                <select
+                        ng-model="section"
+                        ng-change="changeSection(section)"
+                ng-options="opt as opt.label for opt in sections|orderBy:'index' ">
+
+                </select>
+                </br>
+                <div class="col-sm-12 col-md-12">
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-folder-close">
+                    </span>Content</a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a href="http://fb.com/moinakbarali">Articles</a>
+                                        <ul class="list-group">
+                                            <li class="list-group-item"><span class="glyphicon glyphicon-pencil text-primary"></span><a href="http://fb.com/moinakbarali">Articles</a></li>
+
+                                            <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a href="http://fb.com/moinakbarali">News</a></li>
+
+                                            <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a href="http://fb.com/moinakbarali">Newsletters</a></li>
+
+                                            <li class="list-group-item"> <span class="glyphicon glyphicon-comment text-success"></span><a href="http://fb.com/moinakbarali">Comments</a><span class="badge">42</span></li>
+
+                                        </ul>
+                                    </li>
+
+                                    <li class="list-group-item"><span class="glyphicon glyphicon-flash text-success"></span><a href="http://fb.com/moinakbarali">News</a></li>
+
+                                    <li class="list-group-item"><span class="glyphicon glyphicon-file text-info"></span><a href="http://fb.com/moinakbarali">Newsletters</a></li>
+
+                                    <li class="list-group-item"> <span class="glyphicon glyphicon-comment text-success"></span><a href="http://fb.com/moinakbarali">Comments</a><span class="badge">42</span></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"><span class="glyphicon glyphicon-file">
+                    </span>Reports</a>
+                                </h4>
+                            </div>
+                            <div id="collapseFour" class="panel-collapse collapse">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        Cras justo odio
+                                    </a>
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item">
+                                            Cras justo odio
+                                        </a>
+                                        <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                                        <a href="#" class="list-group-item">Morbi leo risus</a>
+                                        <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                                        <a href="#" class="list-group-item">Vestibulum at eros</a>
+                                    </div>
+                                    <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                                    <a href="#" class="list-group-item">Morbi leo risus</a>
+                                    <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                                    <a href="#" class="list-group-item">Vestibulum at eros</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="glyphicon glyphicon-heart">
+                    </span>Reports</a>
+                                </h4>
+                            </div>
+                            <div id="collapseFive" class="panel-collapse collapse">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        <h4 class="list-group-item-heading">List group item heading</h4>
+                                        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                                    </a>
+                                </div>
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item active">
+                                        <h4 class="list-group-item-heading">List group item heading</h4>
+                                        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                                    </a>
+                                </div>
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item">
+                                        <h4 class="list-group-item-heading">List group item heading</h4>
+                                        <p class="list-group-item-text">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-9 col-md-9">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Dashboard</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p>Admin Dashboard Accordion List Group Menu</p>
+                            <div class="alert alert-success"><h3>Yes! It's compatible with BS 3.0.3 & 3.1</h3></div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <h4>категории</h4>
+                <ul class="list">
+                    <li >
+                         <a href=""ng-click="choiceCategory()" ng-class="{activeCategory:activeCategory==''}">Все</a>
+                    </li>
+                    <li ng-repeat="sec in categoryList|orderBy:'index'"><!--=(categories|filter :{'section':section.id})-->
+                        <a  href=""ng-click="choiceCategory(sec)" ng-class="{activeCategory:activeCategory==sec._id}">{{sec.name[config.DL]}}</a>
+                    </li>
+                </ul>
+
+                <h4>бренды</h4>
+                <ul class="list">
+                    <li>
+                        <a href="" ng-click="choiceBrand()" ng-class="{activeCategory:activeBrand==''}">Все</a>
+                    </li>
+                    <li ng-repeat="br in brandList|orderBy:'index'">
+                        <a href="" ng-click="choiceBrand(br)" ng-class="{activeCategory:activeBrand==br._id}">{{br.name[config.DL]}}</a>
+                    </li>
+                </ul>
+
+                <h4>фильтры</h4>
+                <a href="" data-ng-click="clearFilter()"class="btn btn-sm btn-default" ng-show="filtersList.length>0">
+                    <span class="glyphicon glyphicon-remove-circle"></span> сбросить
+                </a>
+                <ul class="list">
+                   <li data-ng-click="clearFilter()">Очистить фильтры</li>
+                    <li ng-repeat="filter in filtersList">
+                        {{filter.name[config.DL]}}
+                        <ul class="list">
+                            <li > <label>
+                                <input type="radio"
+                                       ng-model="filter.value"
+                                       value="">
+                                Все</label>
+                            </li>
+                            <li data-ng-repeat="tag in filter.tags"><label>
+                                <input type="radio"
+                                       ng-model="filter.value"
+                                       ng-value="tag._id">
+                                {{tag.name[config.DL]}}</label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </article>
+            <article class="col-lg-5 col-md-5 well" >
+                <h4>Объекты</h4>
+                <form class="form-search">
+                    <input type="text" placeholder="пошук" ng-model="searchStuff" class="search-query"/></br>
+                    <p>
+                        <button class="btn btn-info" type="button"  ng-click="editStuff()">новый</button>
+                    </p>
+
+                <ul  class="nav nav-pills nav-stacked">
+                    <li class="phone-listing"
+                            class="pull-left col-lg-12 col-md-10 col-xs-10 back"
+                            ng-repeat="stuff in filteredList=(stuffList|filter:filterLists()|orderBy:'index'|filter:searchStuff)">
+                                <a ng-click="editStuff(stuff)" class="control-label col-lg-6 col-md-6 col-xs-6" href="">
+                                    <span ng-bind="stuff.name[config.DL]"></span>
+                                </a>
+
+                            <div class="col-lg-6 btn-group">
+                                <a ng-click="editStuffGallery(stuff)" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-camera"></span></a>
+                                <a ng-click="editStuff(stuff)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                <a ng-click="deleteStuff(stuff)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                            </div>
+                        <div class="clearfix"></div>
+
+                    </li>
+
+
+                </ul>
+                </form>
+
+                <a data-ng-click="setPage()" class="btn btn-sm btn-success" ng-show="stuffList.length<totalItems">
+                    <span class="glyphicon glyphicon-resize-vertical"></span> еще</a>
+
+
+
+            </article>
+        </div>
+    </div>
+</div>
+<div ui-view></div>

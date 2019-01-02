@@ -1,0 +1,17 @@
+.tag-name {
+    opacity: 1;
+    transition: 0.5s opacity ease-out;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    background-color: #f5f5f5;
+    border: 5px solid #eee;
+    padding: 33px 0;
+    display: inline-block;
+}
+.tag-name span {
+    margin: 0 auto;
+}
+.home-section:hover .tag-name{
+    opacity: 1;
+}

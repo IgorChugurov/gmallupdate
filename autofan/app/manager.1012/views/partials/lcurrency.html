@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <form ng-submit="updateCurrency()">
+            <div class="container">
+                <h3>Курс валют</h3>
+            </div><!--container-->
+            <article class="col-lg-6 col-md-6 col-sm-12">
+                <h3>основная валюта <span>ГРИВНА</span></h3>
+                <p>Введите курс рубля</p>
+                <div class="col-lg-6 col-md-6 col-sm-6 row">
+                    <input  type="text" class="form-control" id="inputText3" placeholder="введите курс рубля" ng-model="currency.arr['RUB'][0]" pattern="[0-9-\.]{1,5}" required>
+                </div>
+                <br />
+                <p>Введите курс доллара</p>
+                <div class="col-lg-6 col-md-6 col-sm-6 row">
+                    <input  type="text" class="form-control" id="inputText3" placeholder="введите курс доллара"ng-model="currency.arr['USD'][0]" pattern="[0-9-\.]{1,5}" required>
+                </div>
+            </article>
+            <div class="pull-left back">
+                <button  type="submit" class="btn btn-large btn-info save mt40" ng-disabled="disabledButton">сохранить</button>
+            </div>
+            </form>
+            <div class="span4 alert  fade in main_danger1"  ng-show="showMessage">
+                <br>
+                <p style="font-size: 18px;">Курсы обновлены!</p>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+</div>

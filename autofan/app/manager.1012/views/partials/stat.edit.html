@@ -1,0 +1,84 @@
+<div class="container">
+<div class="main">
+    <div class="row">
+        <div class="col-lg-12 back">
+            <a href="" class="btn btn-default"ng-click="$state.transitionTo('mainFrame.stat')">
+                <span class="glyphicon glyphicon-arrow-left" style="font-size: 12px;"></span> в список</a>
+        </div>
+        <form name="myForm" class="form form-horizontal" ng-submit="updateStat()">
+            <article class="col-lg-8 col-md-8 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>Описание</span>
+                    </div>
+                    <div class="panel-body">
+                        <h4>Наименование</h4>
+                        <div class="form-group">
+                            <label ng-bind="lang" for="name" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <input type="text" placeholder="" id="name" class="form-control"
+                                       ng-model="stuff.name"
+                                       required
+                                       focus-me="focusInput"/>
+                            </div>
+                        </div>
+                        <h4>Описание 1</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                            <label ng-bind="lang" for="{{$index}}desc0" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="описание" ng-model="stuff.desc0[lang]"id="{{$index}}desc0"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+                        <h4>Описание 2</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                            <label ng-bind="lang" for="{{$index}}desc1" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="описание" ng-model="stuff.desc1[lang]"id="{{$index}}desc1"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+                        <h4>Описание 3</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                            <label ng-bind="lang" for="{{$index}}desc2" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="описание" ng-model="stuff.desc2[lang]"id="{{$index}}desc2"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+                        <h4>Описание 4</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                            <label ng-bind="lang" for="{{$index}}desc3" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="описание" ng-model="stuff.desc3[lang]"id="{{$index}}desc3"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+                        <h4>Описание 5</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                            <label ng-bind="lang" for="{{$index}}desc4" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="описание" ng-model="stuff.desc4[lang]"id="{{$index}}desc4"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+                        <h4>Описание 6</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                            <label ng-bind="lang" for="{{$index}}desc5" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="описание" ng-model="stuff.desc5[lang]"id="{{$index}}desc5"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </article>
+
+                            <!--<a href="" type="submit" class="btn btn-lg btn-primary"><span class="glyphicon glyphicon-floppy-disk"></span> coхранить</a>-->
+                            <button class="btn btn-block btn-primary  col-lg-12 col-md-12 col-sm-12 save" type="submit"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить</button>
+
+        </form>
+    </div>
+</div>
+</div>

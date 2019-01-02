@@ -1,0 +1,15 @@
+{
+  "name": "lesshat",
+  "version": "2.0.10",
+  "main": "./build/lesshat.less",
+  "homepage": "https://github.com/csshat/lesshat",
+  "_release": "2.0.10",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.10",
+    "commit": "956926f0f456f32f7e23f23e875fe255bfd26a79"
+  },
+  "_source": "git://github.com/csshat/lesshat.git",
+  "_target": "2.0.10",
+  "_originalSource": "lesshat"
+}

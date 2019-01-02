@@ -1,0 +1,288 @@
+<div class="balance">
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <a class="btn btn-raised btn-success"
+               ng-click="$ctrl.createItem()"
+               title="сформировать баланс">
+                <span>сформировать<br> баланс</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-raised btn-warning"
+               ng-click="$ctrl.closePeriod()"
+               title="закрыть период">
+                <span>закрыть<br> период</span>
+            </a>
+        </div>
+
+        <div class="tab-nav-stuff pull-right box-select">
+            <div class="form-group label-floating">
+                <label class="control-label">название подразделения</label>
+                <ui-select ng-model="$ctrl.virtualAccount"
+                           skip-focusser="true"
+                           search-enabled="true"
+                           ng-change="$ctrl.changeVirtualAccount()"
+                           title="выберите подразделение">
+                    <ui-select-match  allow-clear="true"placeholder="подразделение">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="tab-nav-stuff pull-right date-box">
+            <div class="form-group label-floating">
+                <p class="input-group">
+                    <input type="text" id="date" class="form-control"
+                           uib-datepicker-popup="dd-MMMM-yyyy"
+                           ng-model="$ctrl.date"
+                           is-open="$ctrl.datePickerOpened"
+                           datepicker-options="$ctrl.dateOptions"
+                           ng-required="true"
+                           close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened">
+                            <i class="material-icons ">
+                                insert_invitation
+                            </i>
+                        </button>
+                    </span>
+                    <span class="clearfix"></span>
+                </p>
+            </div>
+        </div>
+        <!--<div class="text-center tab-nav-stuff">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>-->
+    </div>
+    <div class="clearfix"></div>
+    <div>
+        <div class="news-stuff-container">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            название
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                            валюта
+                        </div>
+                        <div class="td-lists-header text-center col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <span class="list-header">
+                                сальдо на начало
+                            </span><br>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header left">дебет</div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header">кредит</div>
+                        </div>
+                        <div class="td-lists-header text-center col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <span class="list-header">
+                                оборот
+                            </span><br>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header  left">дебет</div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header ">кредит</div>
+                        </div>
+                        <div class="td-lists-header text-center col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <span class="list-header">
+                                сальдо конец
+                            </span><br>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header  left">дебет</div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 lists-header ">кредит</div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin ware"  ng-repeat-start="item in $ctrl.items">
+                        <div ng-show="item.va.length===1">
+                            <div ng-repeat="c in  item.va[0].currencyArr">
+                                <div class="td-list  col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                    <strong ng-bind="item.name" ng-show="!$index"></strong>
+                                </div>
+                                <div class="td-list  col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                    <span>{{c}}</span>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.va[0].s.d[c]"></span>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.va[0].s.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <a ng-click="$ctrl.getDetail(item.va[0].o.d[c])"><span ng-bind="item.va[0].o.d[c].s"></span></a>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <a ng-click="$ctrl.getDetail(item.va[0].o.c[c])"><span ng-bind="item.va[0].o.c[c].s"></span></a>
+                                    </div>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.va[0].e.d[c]"></span>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.va[0].e.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+
+                        </div>
+                        <div ng-show="item.va.length!==1">
+                            <div ng-repeat="c in  item.currencyArr">
+                                <div class="td-list  col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                    <span ng-show="!$index">
+                                        <strong ng-bind="item.name"></strong>
+                                    <span> по всем подразделениям</span>
+                                    </span>
+
+                                </div>
+                                <div class="td-list  col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                    <span>{{c}}</span>
+                                </div>
+                                <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list  col-lg-6 col-md-6 col-sm-6 col-xs-6 ">
+                                        <span ng-bind="item.s.d[c]"></span>
+                                    </div>
+                                    <div class="td-list  col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.s.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.o.d[c]"></span>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.o.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.e.d[c]"></span>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="item.e.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="stuff-admin"  ng-repeat-end ng-show="item.va.length>1">
+                        <!-- субсчета-->
+                        <div ng-repeat="va in item.va" style="font-size: 0.8em">
+                            <div ng-repeat="c in  va.currencyArr">
+                                <div class="td-list  col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                    <span ng-show="!$index">
+                                         <strong ng-bind="item.name" ></strong>
+                                         <strong ng-bind="va.name" ></strong>
+                                    </span>
+
+                                </div>
+                                <div class="td-list  col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                    <span>{{c}}</span>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="va.s.d[c]"></span>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="va.s.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <a ng-click="$ctrl.getDetail(va.o.d[c])"><span ng-bind="va.o.d[c].s"></span></a>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <a ng-click="$ctrl.getDetail(va.o.c[c])"><span ng-bind="va.o.c[c].s"></span></a>
+                                    </div>
+                                </div>
+                                <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="va.e.d[c]"></span>
+                                    </div>
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-bind="va.e.c[c]"></span>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+
+
+                            <!--<div class="td-list  col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <span ng-bind="va.name"></span>
+                            </div>
+                            <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="va.s.d"></span>
+                                </div>
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="va.s.c"></span>
+                                </div>
+                            </div>
+                            <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <a ng-click="$ctrl.getDetail(va.o.d)"><span ng-bind="va.o.d.s"></span></a>
+                                </div>
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <a ng-click="$ctrl.getDetail(va.o.c)"><span ng-bind="va.o.c.s"></span></a>
+                                </div>
+                            </div>
+                            <div class="td-list-box  col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="va.e.d"></span>
+                                </div>
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="va.e.c"></span>
+                                </div>
+                            </div>-->
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin ware" ng-show="$ctrl.itogo">
+                        <strong ng-repeat="c in $ctrl.currencyArr">
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <span> Итого </span><span ng-bind="c"></span>
+                            </div>
+                            <div class="td-list  col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                                <span>{{c}}</span>
+                            </div>
+                        <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <span ng-bind="$ctrl.itogo.s.d[c]"></span>
+                            </div>
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <span ng-bind="$ctrl.itogo.s.c[c]"></span>
+                            </div>
+                        </div>
+                        <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <span ng-bind="$ctrl.itogo.o.d[c]"></span>
+                            </div>
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <span ng-bind="$ctrl.itogo.o.c[c]"></span>
+                            </div>
+                        </div>
+                        <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <span ng-bind="$ctrl.itogo.e.d[c]"></span>
+                            </div>
+                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <span ng-bind="$ctrl.itogo.e.c[c]"></span>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </strong>
+                    </div>
+
+
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,125 @@
+<div  class="info-stuff" ng-hide="$ctrl.$state.current.name!='frame.info'"  ng-class="{'info-stuff-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать новый раздел">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff search">
+            <form ng-submit1="$ctrl.searchItem(searchStr)">
+                <input title="поиск товара в каталоге" type="text"
+                       ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                       ng-change="$ctrl.searchItem(searchStr)"
+                       placeholder="поиск раздела"  class="search-fluid"  ng-model="searchStr"/>
+                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning">
+                    <i class="material-icons" title="очистить строку поиска">clear</i>
+                </a>
+            </form>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">список информационных страниц</span>
+            </h4>
+        </div>
+        <div class="tab-nav-stuff paginator-box pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div >
+        <h3 class="text-center name-page"></h3>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div ng-show="!$ctrl.items.length" ng-cloak class="text-center">
+                <p class="no_story">
+                    Вы пока не создали ни одного иформационного раздела.
+                </p>
+            </div>
+            <div class="clearfix"></div>
+            <div class="cart-detail">
+                <ul dnd-list="$ctrl.items"
+                    dnd-drop="$ctrl.dropCallback(item)"
+                    dnd-allowed-types="['sp']">
+                    <li ng-repeat="item in $ctrl.items"
+                        dnd-draggable="item"
+                        dnd-effect-allowed="move"
+                        dnd-moved="$ctrl.items.splice($index,1)"
+                        dnd-type="'sp'"
+                        ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                        <div>
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-10 form-group">
+                                <a class="" ui-sref="frame.info.item({id:item._id})">
+                                    <span ng-bind="item.name"></span>
+                                </a>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group pull-left text-left">
+                                    <div class="togglebutton">
+                                        <label for="actived{{$index}}-ds">
+                                            <span class="ll" ng-class="{'active':!item.actived}">не опубликовано</span>
+                                            <input type="checkbox"
+                                                   id="actived{{$index}}-ds"
+                                                   ng-model="item.actived"
+                                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                                   ng-change="$ctrl.saveField(item,'actived')">
+                                            <span class="lr" ng-class="{'active':item.actived}">опубликовано</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12 padding0 text-right">
+                                <span class="pull-left" ng-show="item.img">
+                                    <a class="btn btn-fab btn-fab-mini">
+                                        <img class="img-responsive" ng-src="{{item.img}}" style="width: auto; display: inline-block; width: 32px; height: 32px; padding-top: 5px">
+                                    </a>
+                                    <a class="btn btn-fab btn-fab-mini btn-warning" title="удалить иконку" ng-click="$ctrl.deletePhoto(item)">
+                                        <i class="material-icons">clear</i>
+                                    </a>
+                                </span>
+                                <span class="pull-right">
+                                     <a class="btn btn-fab btn-fab-mini btn-warning pull-right" title="удалить раздел" ng-click="$ctrl.deleteItem(item)">
+                                        <i class="material-icons">delete</i>
+                                    </a>
+                                     <a class="btn btn-fab btn-fab-mini btn-pink pull-right" title="загрузить иконку для раздела" ng-click="$ctrl.loadPhoto(item)">
+                                        <i class="material-icons">photo_camera</i>
+                                    </a>
+                                    <a class="btn btn-fab btn-fab-mini btn-success pull-right" title="редактировать раздел" ui-sref="frame.info.item({id:item._id})">
+                                        <i class="material-icons">create</i>
+                                    </a>
+                                    <a class="btn  btn-fab btn-fab-mini btn-info swap  pull-right" title="передвинуть" ng-if="!$ctrl.mobile" style="cursor: move">
+                                        <i class="material-icons">swap_vertical_circle</i>
+                                    </a>
+                                        <!--<a class="btn btn-fab btn-fab-mini" ng-click="$ctrl.showPhoto($ctrl.item.info,'img')" >
+                                            <i class="material-icons link-pink md-42" title="показать фон для страницы">remove_red_eye</i>
+                                        </a>-->
+
+                                    <div class="clearfix"></div>
+                                </span>
+                                <div class="clearfix"></div>
+
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </li>
+                    <div class="clearfix"></div>
+                </ul>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div ui-view></div>
+
+
+
+

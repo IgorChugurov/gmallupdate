@@ -1,0 +1,351 @@
+<style>
+    .red{
+        color:red;
+    }
+    .blue{
+        color:blue;
+    }
+    .green{
+        color:green;
+    }
+    .cart-detail {
+        font-size: 16px;
+        background-color: #fff;
+        box-shadow: 2px 2px 6px 0 #666;
+        margin-top: 50px;
+        margin-bottom: 10px;
+        padding: 15px;
+        transition: all .1s ease-out;
+    }
+</style>
+
+
+
+
+
+<div class="cart-detail">
+    <uib-tabset active="active">
+        <uib-tab index="0" heading="Static title">Static content</uib-tab>
+        <uib-tab index="$index + 1" ng-repeat="tab in tabs" heading="{{tab.title}}" disable="tab.disabled">
+            {{tab.content}}
+        </uib-tab>
+        <uib-tab index="3" select="alertMe()">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Alert!
+            </uib-tab-heading>
+            I've got an HTML heading, and a select callback. Pretty cool!
+        </uib-tab>
+    </uib-tabset>
+</div>
+
+
+<script type="text/ng-template" id="myModalContent.html">
+    <!--<div class="modal-header">
+        &lt;!&ndash;<a  ng-click="cancel()"><span class="pull-right glyphicon glyphicon-remove"></span></a>&ndash;&gt;
+        <h3 class="modal-title"style="color: #666">Уважаемый пользователь!</h3>
+    </div>-->
+    <div class="modal-body">
+        <div>
+            <div ng-hide="loadedShippers" class="text-center">
+                <img src="img/icon/loading2.gif">
+            </div>
+
+            <div ng-show="loadedShippers">
+                <a class="glyphicon glyphicon-remove pull-right" ng-click="cancel()" style="color: #c11919"></a>
+                <div data-ng-repeat="shipper in shippers" class="">
+                    <b ><span ng-bind="shipper.shipper"></span>  валюта  <span ng-bind="shipper.currency"></span></b>
+
+                    <table class="table pars">
+                        <tr>
+                            <th>код</th>
+                            <th>описание</th>
+                            <th>наличие</th>
+                            <th>цена входная</th>
+                            <th>цена отпускная</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="spark in shipper.sparks">
+                            <td ng-bind="spark.code"></td>
+                            <td ng-bind="spark.stuff[0]"></td>
+                            <td ng-bind="spark.stuff[1]"></td>
+                            <td ng-bind="(spark.stuff[2]*shipper.ratioEnter).toFixed(2)"></td>
+                            <td ng-bind="(spark.stuff[2]*shipper.ratioEnter*shipper.ratio).toFixed(2)"></td>
+                            <td><a ng-click="toOrder(spark.code,spark.stuff[0],(spark.stuff[2]*shipper.ratioEnter*shipper.ratio).toFixed(2))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div>
+            <div ng-hide="loadedA_Z" class="text-center">
+                <img src="img/icon/loading2.gif">
+            </div>
+            <b style="font-size: 1.2em">На складе 1</b>
+            <div data-ng-repeat="(id,table) in resultsA_Z" ng-switch on="id">
+                <div  ng-switch-when="1">
+                    <b>На складе 1</b>
+                    <table class="table pars">
+                        <tr>
+                        <th>магазин</th>
+                        <th>код запчасти</th>
+                        <th>производитель</th>
+                        <th>наличие</th>
+                        <th>ед. изм.</th>
+                        <th>цена входная</th>
+                        <th>отпускная цена</th>
+                        <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td><td>{{rows[5]}}</td>
+                            <td>{{getNewPriceA_Z(rows[5])}}</td>
+                            <td><a ng-click="toOrder(rows[1],rows[2],getNewPriceA_Z(rows[5]))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="2">
+                    <b>Под заказ</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>производитель</th>
+                            <th>код запчасти</th>
+                            <th>название</th>
+                            <th class="cena">цена входная</th>
+                            <th class="cena">отпускная цена</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td>
+                            <td>{{getNewPriceA_Z(rows[3],1)}}</td>
+                            <td><a ng-click="toOrder(rows[1],rows[2],getNewPriceA_Z(rows[3],1))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="3">
+                    <b>Доставка под заказ со склада 1</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>дата</th>
+                            <th>фирма</th>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>к-во</th>
+                            <th>дост. дней</th>
+                            <th class="cena">цена под заказ</th>
+                            <th class="cena">отпускная цена</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td><td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td>
+                            <td>{{getNewPriceA_Z(rows[6],1)}}</td>
+                            <td><a ng-click="toOrder(rows[2],rows[3],getNewPriceA_Z(rows[6],1))">в наряд</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div ng-hide="loadedS_cars" class="text-center">
+                <img src="img/icon/loading2.gif">
+            </div>
+
+            <b style="font-size: 1.2em">На складе 2</b>
+            <div data-ng-repeat="(id,table) in HtmlS_cars" ng-switch on="id">
+                <div  ng-switch-when="5">
+                    <b>Неточное совпадение.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>детализация</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td>
+                            <td>
+                                <a data-ng-click="getAdditionTable(rows[4].href)">{{rows[4].text}}</a></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="9">
+                    <b>Запрошенный артикул.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>цена входная</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4])}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_cars(rows[4]))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="91">
+                    <b>Аналоги (заменители) для данного артикула.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>цена входная</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table" ng-if="rows[0]">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4])}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_cars(rows[4]))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+
+                <div  ng-switch-when="92">
+                    <b>Склад 2 дополнение 1.Аналоги (заменители) для данного артикула.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>цена входная</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table" ng-if="rows[0]">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4],1)}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_carsZ(rows[4],1))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+                <div  ng-switch-when="93">
+                    <b>Склад 2 дополнение 1.Запрошенный артикула.</b>
+                    <table class="table pars">
+                        <tr>
+                            <th>код запчасти</th>
+                            <th>описание</th>
+                            <th>инфо</th>
+                            <th>производитель</th>
+                            <th>цена входная</th>
+                            <th>отпускная цена</th>
+                            <th>наличие</th>
+                            <th>ожидание</th>
+                            <th>к-во</th>
+                            <th>в наряд</th>
+                        </tr>
+                        <tr data-ng-repeat="rows in table">
+                        <tr data-ng-repeat="rows in table" ng-if="rows[0]">
+                            <td>{{rows[0]}}</td><td>{{rows[1]}}</td><td>{{rows[2]}}</td>
+                            <td>{{rows[3]}}</td><td>{{rows[4]}}</td>
+                            <td>{{getNewPriceS_cars(rows[4],1)}}</td>
+                            <td>{{rows[5]}}</td>
+                            <td>{{rows[6]}}</td><td>{{rows[7]}}</td>
+                            <td><a ng-click="toOrder(rows[0],rows[1],getNewPriceS_cars(rows[4],1))">в наряд</a></td>
+                        </tr>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer text-center">
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+    <!--<div class="modal-footer">
+
+        <button class="btn btn-success" style="height: 34px;" ng-click="toOrder()">Корзина</button>
+    </div>-->
+</script>
+
+
+
+<style>
+    .full .modal-dialog{
+        width:auto;
+        margin-left:20px;
+        margin-right:20px;
+    }
+
+    .header {
+        color:#36A0FF;
+        font-size:27px;
+        padding:10px;
+    }
+    .bigicon {
+        font-size:35px;
+        color:#36A0FF;
+    }
+    .iconColor {
+        color:#36A0FF;
+    }
+
+    #formContainer {
+        border-top: 2px solid #aaa;
+        box-shadow:  0 2px 10px rgba(0,0,0,0.8);
+        /*width:288px;
+        height:321px;
+        background-color: #effff4;*/
+        /*margin:0 auto;
+        position:relative;
+        z-index:1;*/
+
+        -moz-perspective: 800px;
+        -webkit-perspective: 800px;
+        perspective: 800px;
+    }
+
+    #formContainer form {
+        width:100%;
+        height:100%;
+
+
+    }
+
+
+</style>
+

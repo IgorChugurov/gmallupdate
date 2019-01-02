@@ -1,0 +1,166 @@
+
+<div class="">
+    <div class="container">
+        <h3>Редактирование заказов</h3>
+
+            <div class="row">
+
+                <article class="col-lg-12 col-md-12" >
+                    <table class="status">
+                        <tr>
+                            <td>
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="" ng-model="filterStatus"><span>все</span>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="1"ng-model="filterStatus"><span>принятые</span>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios3" value="2"ng-model="filterStatus"><span>оплаченные</span>
+                                </label>
+                            </td>
+                            <td>
+                                <label>
+                                    <input type="radio" name="optionsRadios" id="optionsRadios4" value="3"ng-model="filterStatus"><span>отправленные</span>
+                                </label>
+                            </td>
+                            <div class="input-group pull-right">
+                                <input  class="form-control" type="text" ng-model="filterNumber" placeholder="поиск по №">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" ng-click="" type="button">найти</button>
+                                </span>
+                            </div>
+                        </tr>
+                    </table>
+
+                    <table class="table table-bordered table_ofice">
+
+                        <thead>
+                        <tr>
+                            <th class="col-lg-1">№</th>
+                            <th class="col-lg-1" >Дата посту-пления</th>
+                            <th class="col-lg-1" >Дата оплаты</th>
+                            <th class="col-lg-1" >Дата отправки</th>
+                            <th class="col-lg-1" >Дата доставки</th>
+                            <th class="col-lg-1" >К-во единиц</th>
+                            <th class="col-lg-1" >Сумма</th>
+                            <th class="col-lg-2" >Изменить статус</th>
+                            <th class="col-lg-1 text-center">Удалить</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody ng-repeat="order in orders"> <!--|filter:{num:filterNumber,status:filterStatus}-->
+                            <tr id="{{order._id}}">
+                                <td class="col-lg-1" ng-bind="order.num" > </td>
+                                <td class="col-lg-1"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date)"></a> </td>
+                                <td class="col-lg-1"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date1)"></a> </td>
+                                <td class="col-lg-1"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date2)"></a> </td>
+                                <td class="col-lg-1"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date3)"></a> </td>
+
+                                <td class="col-lg-1" ng-bind="order.quantity"></td>
+                                <td class="col-lg-1">{{order.kurs*order.sum}} &nbsp{{order.currency}}</td>
+                                <td class="col-lg-2" ng-switch="order.status">
+
+                                    <select ng-switch-when="3" ng-model="order.status" ng-change="updateOrder(order)">
+                                        <option value=3>отправлен</option>
+                                        <option value=4>принят</option>
+                                    </select>
+                                    <span ng-switch-when="1">принят</span>
+                                    <span ng-switch-when="2">оплачен</span>
+                                    <span ng-switch-when="4">доставлен</span>
+
+                                </td>
+                                <td class="col-lg-1 text-center">
+                                    <!--<button class="btn btn_ok"></button>-->
+                                    <a  ng-click="deleteOrder(order)"><span class="glyphicon glyphicon-remove cursor_pointer"></span></a>
+                                </td>
+
+                            </tr>
+                            <tr  ng-switch="order.showdetail">
+                                <td ng-switch-when="true" colspan="9" style=" padding:5px;">
+                                    <table class="col-lg-12 col-md-12 col-sm-12 col-xs-12 custom">
+                                        <thead>
+                                            <tr>
+                                                <th class="col-lg-1">
+                                                    #
+                                                </th>
+                                                <th class="col-lg-2">
+                                                    Товар
+                                                </th>
+                                                <th class="col-lg-1">
+                                                    Артикул
+                                                </th>
+                                                <th class="col-lg-3">
+                                                   Модель
+                                                </th>
+
+                                                <th class="col-lg-1" >
+                                                    Цена
+                                                </th>
+
+                                                <th class="col-lg-1" >
+                                                    К-во
+                                                </th>
+
+                                                <th class="col-lg-1">
+                                                    Стоимость
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody ng-repeat="good in order.cart">
+                                            <tr >
+                                                <td class="col-lg-1">
+                                                    {{$index+1}}
+                                                </td>
+                                                <td class="col-lg-2">
+                                                    <a class="black" ng-click="goToStuff(good)">{{good.name}}</a>
+                                                </td>
+                                                <td class="col-lg-1">
+                                                    {{good.artikul}}
+                                                </td>
+
+                                                <td class="col-lg-3">
+                                                    <span ng-repeat-start="tag in good.tags">{{tag}}</span></span><span ng-repeat-end><br></span>
+                                                </td>
+                                                <td class="col-lg-1">
+                                                    {{(order.kurs*good.price).toFixed(2)}}&nbsp{{order.currency}}
+                                                </td>
+                                                <td class="col-lg-1">
+                                                    {{good.quantity}}
+                                                </td>
+                                                <td class="col-lg-1">
+                                                    {{(order.kurs*good.price*good.quantity).toFixed(2)}}&nbsp{{order.currency}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody class="cart-item-total total">
+                                            <tr>
+                                                <td></td>
+                                                <td>Итого</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{{order.quantity}}</td>
+                                                <td>{{ order.kurs*order.sum }}&nbsp{{order.currency}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </article>
+            </div>
+
+        </div>
+
+    </div>

@@ -1,0 +1,50 @@
+<div class="collection-edit">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame.brands">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">коллекция</span>
+                <span class="category-name">{{$ctrl.item.name}}</span>
+            </h4>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class=" col-lg-5 col-md-5 col-sm-5 col-xs-12">
+        <div class="cart-detail tag-img">
+            <h4 class="text-center name-box">фото коллекции</h4>
+            <load-image
+                    no-load="noLoad"
+                    no-change="noChange"
+                    upload-url="/api/collections/Photo/fileUpload?collectionName=BrandTags"
+                    item-id="{{$ctrl.item._id}}"
+                    item-resourse="$ctrl.Items"
+                    file-src="$ctrl.item.img">
+            </load-image>
+        </div>
+    </div>
+    <div class=" col-lg-7 col-md-7 col-sm-7 col-xs-12">
+        <div class="cart-detail">
+            <div class="form-group label-static">
+                <label for="name" class="control-label">наименование коллекции</label>
+                <input type="text" id="name" class="form-control name"
+                       ng-model="$ctrl.item.name" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                       ng-change="$ctrl.saveField('desc',200)"/>
+            </div>
+            <h4 class="text-center name-box">описание</h4>
+            <div class="form-group editor">
+                <div text-angular ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                     ng-change="$ctrl.saveField('desc',200)"
+                     ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
+                     ng-model="$ctrl.item.desc"
+                     ta-paste="$ctrl.global.get('functions').val.taPaste($html)"
+                     ta-html-editor-class="border-around"><!--ng-model="$ctrl.item.desc"-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

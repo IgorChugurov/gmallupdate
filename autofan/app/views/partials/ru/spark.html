@@ -1,0 +1,225 @@
+<script type="text/ng-template" id="paginationControl.html">
+    <div class="text-center" ng-show="paginator.pageCount() > 1">
+        <ul class="pagination">
+            <li ng-click="paginator.firstPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-fast-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+                </a>
+            </li>
+            <li ng-click="paginator.perviousPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-step-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+                </a>
+            </li>
+            <li ng-click="paginator.setPage(i)" ng-repeat="i in [] | forLoop:0:paginator.pageCount()" ng-class="paginator.page==i && 'active'">
+                <a>{{i+1}}</a>
+            </li>
+            <li ng-click="paginator.nextPage()" ng-class="paginator.isLastPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-step-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+                </a>
+            </li>
+            <li ng-click="paginator.lastPage()" ng-class="paginator.isLastPage() && 'disabled'">
+                <a>
+                    <i class="glyphicon glyphicon-fast-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</script>
+
+
+        <div class="container" ng-hide="$state.includes('language.spark.detail')">
+            <!--<div class="button_fixed" id="toTop">
+                <a ng-click="scrollTo('panel')"class="btn btn-inverse"><span class="glyphicon glyphicon-arrow-up icon-white"></span></a>
+            </div>-->
+
+            <div class="row" >
+                <article class="col-lg-3 col-md-3 col-sm-3">
+                    <div class="navbar-default navbar-static-side" role="navigation">
+                        <div class="sidebar-collapse" >
+                            <ul class="nav" id="side-menu" style="margin-bottom: 20px;">
+                                <li class="sidebar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" style="width: 160px;" placeholder="введите название">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">найти</button>
+                                        </span>
+                                    </div>
+                                    <!-- /input-group -->
+                                </li>
+                                <li>
+                                    <div class="pull-left filters">
+                                        <p>Категории</p>
+                                    </div>
+                                    <div class="pull-right"><a class="btn" ng-click="displayCategoty=!displayCategoty" style="height: 30px;">
+                                        <span style="font-size: 14px; margin-right: 0" class="glyphicon glyphicon-remove" ng-class="{'glyphicon-minus':displayCategoty,'glyphicon-plus':!displayCategoty}"></span></a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <div ng-hide="displayCategoty">
+                                        <label class="checkbox" style="font-weight: 400;">
+                                                <input  ng-model="selectedCategory"
+                                                        name="categoryRadio"
+                                                        value=""
+                                                        type="radio"
+                                                        class="filters" />
+                                                        все
+                                        </label>
+                                        <label class="checkbox" ng-repeat="sec in categories|orderBy:'index'" style="font-weight: 400;">
+                                                <input
+                                                        name="categoryRadio"
+                                                        type="radio"
+                                                        ng-model="$parent.selectedCategory"
+                                                        value="{{sec._id}}"
+                                                        class="filters" />
+                                                {{sec.name[lang]}}
+                                        </label>
+                                    </div>
+                                </li>
+
+
+                                <li>
+
+                                    <div class="pull-left filters"><p>Фильтры</p></div>
+                                    <div class="pull-right"><a class="btn" ng-click="displayFilters=!displayFilters" style="height: 30px;">
+                                        <span style="font-size: 14px; margin-right: 0" class="glyphicon" ng-class="{'glyphicon-off':displayFilters,'glyphicon-plus':!displayFilters}"></span></a></div>
+                                    <div class="clearfix"></div>
+                                    <div ng-show="displayFilters">
+                                        <div ng-repeat="filterItem in filters" ng-show="displayFilter[$index]">
+                                            <div class="border-horiz"></div>
+                                            <div class="pull-left filters1">
+                                                <p ng-bind="filterItem.name[lang]"></p>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                            <div class="filters2">
+                                                <label class="checkbox" style="font-weight: 400;">
+                                                    <input
+                                                            type="radio"
+                                                            value=""
+                                                            name="filter{{$index}}"
+                                                            ng-model="filters[$index].value"
+                                                            class="filters"/>
+                                                    все
+                                                </label>
+
+                                                <label class="checkbox" ng-repeat="item in filterItem.tags" ng-show="showItemFilter(item._id,$parent.$index)" style="font-weight: 400;">
+                                                    <input
+                                                            type="radio"
+                                                            value="{{item._id}}"
+                                                            name="filter{{$parent.$index}}"
+                                                            ng-model="$parent.filters[$parent.$index].value"
+                                                            class="filters"/>
+                                                    {{item.name[lang]}}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </li>
+
+
+                            </ul>
+
+                            <!-- /#side-menu -->
+                        </div>
+                        <!--<button class="btn btn-danger pull-right col-lg-12" style="background-color: rgba(205, 7, 13, 0.95)">Посмотреть корзину</button>-->
+                        <!--<a href="#"> <img class="col-lg-4 col-md-4 col-sm-4 col-xs-2" src="icon/1.png"></a>
+                        <div class="clearfix"></div>-->
+                        <!-- /.sidebar-collapse -->
+                    </div>
+                    <!--<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" ng-show="!show_all_filters">
+                        <div class="thumbnail thumbnail-1">
+                            <div class="pull-left left-filters"><p>Категории</p></div>
+                            <div class="pull-right right-filters"><a class="btn" ng-click="displayCategoty=!displayCategoty" style="height: 30px;">
+                                <span style="font-size: 14px; margin-right: 0" class="glyphicon glyphicon-remove" ng-class="{'glyphicon-minus':displayCategoty,'glyphicon-plus':!displayCategoty}"></span></a></div>
+                            <div class="clear"></div>
+                            <div ng-hide="displayCategoty">
+                                <label class="checkbox" style="font-weight: 400;">
+                                    <input  ng-model="selectedCategory"
+                                            name="categoryRadio"
+                                            value=""
+                                            type="radio"
+                                            class="filters" />
+
+                                    Все
+                                </label>
+                                <label class="checkbox" ng-repeat="sec in categories|orderBy:'index'" style="font-weight: 400;">
+                                    <input
+                                            name="categoryRadio"
+                                            type="radio"
+                                            ng-model="$parent.selectedCategory"
+                                            value="{{sec._id}}"
+                                            class="filters" />
+                                {{sec.name[lang]}}
+                                </label>
+                            </div>
+                            <hr style="border-top-color: #7f7f7f">
+                            <div class="pull-left left-filters"><p>Фильтры</p></div>
+                            <div class="pull-right right-filters"><a class="btn" ng-click="displayFilters=!displayFilters" style="height: 30px;">
+                                    <span style="font-size: 14px; margin-right: 0" class="glyphicon" ng-class="{'glyphicon-off':displayFilters,'glyphicon-plus':!displayFilters}"></span></a></div>
+                            <div class="clear"></div>
+                            <div ng-show="displayFilters">
+                                <div ng-repeat="filterItem in filters" ng-show="displayFilter[$index]">
+                                    <div class="border-horiz"></div>
+                                    <div class="pull-left left-filters"><p ng-bind="filterItem.name[lang]"></p></div>
+                                    <div class="clear"></div>
+                                    <div>
+                                        <label class="checkbox" style="font-weight: 400;">
+                                            <input
+                                                    type="radio"
+                                                    value=""
+                                                    name="filter{{$index}}"
+                                                    ng-model="filters[$index].value"
+                                                    class="filters"/>
+                                            Все
+                                        </label>
+
+                                        <label class="checkbox" ng-repeat="item in filterItem.tags" ng-show="showItemFilter(item._id,$parent.$index)" style="font-weight: 400;">
+                                            <input
+                                                    type="radio"
+                                                    value="{{item._id}}"
+                                                    name="filter{{$parent.$index}}"
+                                                    ng-model="$parent.filters[$parent.$index].value"
+                                                    class="filters"/>
+                                            {{item.name[lang]}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr style="border-top-color: #7f7f7f">
+
+                        </div>
+                    </div>-->
+                </article>
+                <article class="col-lg-offset-3 col-lg-9  col-md-offset-4 col-md-8 col-sm-7 col-sm-offset-2">
+                    <h1  class="page-header">Запчасти б/у <span ng-bind="headerList"></span><small>&nbsp  в Харькове</small></h1>
+                    <div class="slogan_brand">
+                        <p ng-bind-html="trustHtml(textList)"></p>
+                    </div>
+                    <div class="col-md-offset-0 col-md-4 col-sm-offset-0 col-sm-12 col-xs-offset-1 col-xs-10 portfolio-item" ng-repeat-start="item in stuffList|filter:filterLists()| paginate:rowsPerPage">
+                        <a ui-sref="language.spark.detail({id:item._id})"><img class="img-responsive" ng-src="{{item.img}}"></a>
+                    </div>
+                    <div class="col-md-offset-0 col-md-8 col-sm-offset-0 col-sm-12 col-xs-offset-1  col-xs-10 portfolio-item">
+                        <h3>
+                            <a ui-sref="language.spark.detail({id:item._id})"><span ng-bind="item.name[lang]"></span></a>
+                        </h3>
+                        <h4>Артикул <span ng-bind="item.artikul"></span></h4>
+                        <p ng-bind="item.desc[lang]"></p>
+                        <h4 class="pull-left col-lg-7"><span  ng-bind="item.price*config.currency[currency][0]"></span>
+                            &nbsp<span  ng-bind="config.currency[currency][1]"></span></h4>
+                        <button class="btn btn-primary pull-right col-lg-5" data-ng-click="addToCart(item)">Отправить в корзину</button>
+                    </div>
+                    <div class="clearfix" ng-repeat-end></div>
+                </article>
+
+
+
+            </div>
+        </div>
+
+        <div class="paginator">
+            <paginator></paginator>
+        </div>
+
+<div ui-view></div>

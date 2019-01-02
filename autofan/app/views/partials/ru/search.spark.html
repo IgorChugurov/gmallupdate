@@ -1,0 +1,70 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <form ng-submit="searchSpark(searchStr)">
+                <div class="input-group" style="margin-top: 20px; width: 250px;">
+
+                    <input type="text" class="form-control" placeholder="введите код запчасти" ng-model="searchStr">
+      				    <span class="input-group-btn">
+        					<button class="btn btn-primary" type="submit">найти</button>
+      				    </span>
+                </div>
+
+            </form>
+
+            <div>
+                <div ng-hide="loadedShippers" class="text-center">
+                    <img src="img/icon/loading2.gif">
+                </div>
+
+                <div ng-show="loadedShippers">
+                    <div data-ng-repeat="shipper in shippers" class="">
+                        <h3 ><span ng-bind="shipper.shipper"></span>  валюта  <span ng-bind="shipper.currency"></span></h3>
+                        <table class="table pars">
+                            <tr>
+                                <th>код</th>
+                                <th>описание</th>
+                                <th>наличие</th>
+                                <th>цена поставщика</th>
+                                <th>цена отпускная</th>
+                            </tr>
+                            <tr data-ng-repeat="spark in shipper.sparks">
+                                <td ng-bind="spark.code"></td>
+                                <td ng-bind="spark.stuff[0]"></td>
+                                <td ng-bind="spark.stuff[1]"></td>
+                                <td ng-bind="(spark.stuff[2]*shipper.ratioEnter).toFixed(2)"></td>
+                                <td ng-bind="(spark.stuff[2]*shipper.ratioEnter*shipper.ratio).toFixed(2)"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <div>
+                <div ng-hide="loadedA_Z" class="text-center">
+                    <img src="img/icon/loading2.gif">
+                </div>
+
+                <div ng-bind-html="trustHtml(resultsA_Z)">
+
+                </div>
+            </div>
+            <div>
+                <div ng-hide="loadedS_cars" class="text-center">
+                    <img src="img/icon/loading2.gif">
+                </div>
+
+               <!-- <div ng-bind-html="trustHtml(resultsS_cars)">
+                </div>-->
+                <div  gallery1-for-zoom="HtmlS_cars" on-selected="searchS_cars2(url)">
+                </div>
+             </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!--<a class="btn"  id="searchScars" style='visibility: hidden;' ng-click="searchS_cars2('aaaaaaa')">-->
+

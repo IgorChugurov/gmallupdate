@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
+            <h1 class="page-header"><span ng-bind="spark.name[lang]"></span>&nbsp
+                <span ng-bind="itemToCart.categoryName"></span>
+                <small>&nbsp&nbsp&nbsp  на Autofan в Харькове</small></h1>
+        </div>
+
+        <div class="col-lg-8 col-lg-offset-2">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <img class="img-responsive"  ng-src="{{spark.img}}">
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <h4>Артикул <span ng-bind="itemToCart.artikul"></span></h4>
+
+            <h3 data-ng-repeat="item in itemToCart.tags" ng-bind="item"></h3>
+            <p style="text-align:justify; margin-bottom: 40px;" ><span ng-bind="spark.desc[lang]"></span></p>
+            <!--<h3>Работы по ремонту двигателей:</h3>
+            <ul class="list">
+                <li>замена цепей и ремней газораспределения</li>
+                <li>замена сальников и прокладок</li>
+                <li>регулировка фаз газораспределения</li>
+                <li>что-то еще</li>
+                <li>что-то еще</li>
+                <li>что-то еще</li>
+                <li>что-то еще</li>
+                <li>что-то еще</li>
+            </ul>-->
+            <h4 class="pull-left"><span  ng-bind="itemToCart.price*config.currency[currency][0]"></span>
+                &nbsp<span  ng-bind="config.currency[currency][1]"></span></h4>
+            <button class="btn btn-primary pull-right" data-ng-click="addToCart()">в корзину</button>
+        </div>
+            </div>
+    </div>
+    </div>

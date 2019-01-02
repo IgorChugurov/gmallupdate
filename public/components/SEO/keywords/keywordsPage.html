@@ -1,0 +1,225 @@
+<div  class="box-list seopage" ng-class="{'box-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.addNewKeyword()"
+               title="добавить слово">
+                <i class="material-icons link-white">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff action form-group"  ng-if="!$ctrl.mobile" >
+            <div class="checkbox">
+                <label>
+                    <input  ng-model="$ctrl.mark" type="checkbox" ng-change="$ctrl.markAllStuffs($ctrl.mark)">
+                </label>
+            </div>
+        </div>
+        <div class="tab-nav-stuff action-select"  ng-if="!$ctrl.mobile" >
+            <ui-select ng-model="$ctrl.action"
+                       skip-focusser="true"
+                       search-enabled="false"
+                       title="выберите действие"
+                       ng-change="$ctrl.changeAction()">
+                <ui-select-match  placeholder="действие">{{$select.selected.value}}</ui-select-match>
+                <ui-select-choices repeat="opt.key as (key, opt) in $ctrl.listOfActions">{{ opt.value }}</ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="tab-nav-stuff search">
+            <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                <input type="text"  class="search-fluid"
+                       ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                       ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                       ng-model="$ctrl.searchStr"/>
+                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning" title="очистить строку поиска">
+                    <i class="material-icons">clear</i>
+                </a>
+            </form>
+        </div>
+        <div class="tab-nav-stuff ">
+            <h4 class="name-box">
+                <a ui-sref='frame.seoPages'>
+                    продвигаемые<br> страницы
+                </a>
+            </h4>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">ключевые слова</h4>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="">
+        <div class="info-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 select-page">
+                    <ui-select  ng-model="$ctrl.seopage" skip-focusser="true" search-enabled="false"
+                                title="выберите продвигаемую страницу"
+                                append-to-body="true"
+                                ng-change="$ctrl.changeSeopage()">
+                        <ui-select-match placeholder="SEO page">
+                            {{$select.selected.name}}
+                            <a class="clear" ng-click="$ctrl.clearSeopage($event)">
+                                <i class="material-icons link-warning">clear</i>
+                            </a>
+                        </ui-select-match>
+                        <ui-select-choices repeat="seopage in $ctrl.seopages">{{ seopage.name }}</ui-select-choices>
+                    </ui-select>
+                    <div class="form-group">
+                        <div class="togglebutton">
+                            <label for="actived{{$index}}-ds">
+                                <span class="ll" ng-class="{'active':!$ctrl.unbind}">связан</span>
+                                <input type="checkbox"
+                                       id="actived{{$index}}-ds"
+                                       ng-model="$ctrl.unbind"
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.setUnbindingKeyWords($ctrl.unbind)">
+                                <span class="lr" ng-class="{'active':$ctrl.unbind}"> несвязан</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!--<div  class="checkbox">
+                        <label>
+                            <input  ng-model="$ctrl.unbind" type="checkbox" ng-change="$ctrl.setUnbindingKeyWords($ctrl.unbind)">
+                            не связан
+                        </label>
+                    </div>-->
+                </div>
+                <!--<div class="col-lg-1">
+                    <a class="btn btn-primary" ng-click="$ctrl.addNewKeyword()">добавить</a>
+                </div>-->
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" ng-init="$ctrl.frequency=undefined">
+                    <div class="btn-group btn-group-justified btn-group-raised">
+                        <a class="btn  btn-raised btn-xs"
+                           ng-click="$ctrl.frequency=undefined"
+                           ng-class="{'active':!$ctrl.frequency}">
+                            <i class="material-icons">network_check</i></a>
+                        <a  ng-repeat='(key,f) in $ctrl.frequencies'
+                            class="btn  btn-raised btn-xs"
+                            ng-class="{'active':$ctrl.frequency==key}"
+                            ng-click="$ctrl.frequency=key">
+                            <span ng-bind="f"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" ng-init="$ctrl.competitive=undefined">
+                    <div class="btn-group btn-group-justified btn-group-raised">
+                        <a class="btn  btn-raised btn-xs"
+                           ng-click="$ctrl.competitive=undefined"
+                           ng-class="{'active':!$ctrl.competitive}">
+                            <i class="material-icons">timeline</i></a>
+                        <a  ng-repeat='(key,f) in $ctrl.competitives'
+                            class="btn  btn-raised btn-xs"
+                            ng-class="{'active':$ctrl.competitive==key}"
+                            ng-click="$ctrl.competitive=key">
+                            <span ng-bind="f"></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+
+                <div class="action-block" ng-if="!$ctrl.mobile">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    </div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <strong>слово</strong>
+                    </div>
+                    <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <i class="material-icons link-success">network_check</i>
+                        <strong>частотность</strong>
+                    </div>
+                    <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <i class="material-icons link-success">timeline</i>
+                        <strong>конкурентность</strong>
+                    </div>
+                    <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <ul class="keywords-list"
+                    dnd-list="$ctrl.items"
+                    dnd-drop="$ctrl.dropCallbackKW(item)">
+                    <li class='row1'
+                        ng-repeat="item in $ctrl.items|orderBy:'index'|filter:$ctrl.filterList"
+                        dnd-draggable="item"
+                        dnd-effect-allowed="move"
+                        dnd-moved="$ctrl.items.splice($index,1)"
+                        ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                            <div  class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding0" ng-if="!$ctrl.mobile" >
+                                <a class="btn  btn-fab btn-fab-mini btn-info swap pull-left">
+                                    <i class="material-icons" title="передвинуть">swap_vertical_circle</i>
+                                </a>
+                                <span class=" checkbox label-action pull-left">
+                                    <label>
+                                        <input  type="checkbox" ng-model="item.select" ng-change="$ctrl.changeSelectItem(item.select)">
+                                    </label>
+                                </span>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 key">
+                                <input ng-model="item.word"
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.saveField(item,'word')"
+                                       class="form-control">
+                            </div>
+
+                            <div class='col-lg-2 col-md-2 col-sm-2 col-xs-12'>
+                                <ui-select ng-model="item.f"
+                                           append-to-body="true"
+                                           ng-change="$ctrl.saveField(item,'f')"
+                                           title="частотность" search-enabled="false" skip-focusser="true">
+                                    <ui-select-match placeholder="частотность">
+                                        {{$select.selected.value}}
+                                        <button class="clear" ng-click="$ctrl.clear($event,item,'f')">
+                                            <i class="material-icons link-warning">clear</i>
+                                        </button>
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="frequency.key as (key, frequency) in $ctrl.frequencies">
+                                        <span ng-bind="frequency.value"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-8">
+                                <ui-select ng-model="item.c"
+                                           append-to-body="true"
+                                           ng-change="$ctrl.saveField(item,'c')"
+                                           title="конкурентность" search-enabled="false" skip-focusser="true">
+                                    <ui-select-match placeholder="конкурентность">
+                                        {{$select.selected.value}}
+                                        <button class="clear" ng-click="$ctrl.clear($event,item,'c')">
+                                            <i class="material-icons link-warning">clear</i>
+                                        </button>
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="competitive.key as (key, competitive) in $ctrl.competitives">
+                                        <span ng-bind="competitive.value"></span>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 padding0">
+                                <a class="btn btn-fab btn-fab-mini btn-warning pull-right" title="привязка к странице" ng-click="$ctrl.deleteItem(item)">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                                <a class="btn btn-fab btn-fab-mini btn-violet pull-right" ng-click="$ctrl.bindItem(item)">
+                                    <i class="material-icons">link</i>
+                                </a>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<!--<input class="form-control input-sm" type="text" placeholder=".input-sm">-->
+
+

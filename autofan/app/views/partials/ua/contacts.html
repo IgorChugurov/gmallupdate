@@ -1,0 +1,181 @@
+<section class="container thumbnail" style="margin-top: 80px; padding:  15px;">
+
+        <div class="row">
+            <article class="col-lg-5">
+
+                <h2 style="text-align: left">Зв'язатись з нами:</h2>
+                <form id="contact-form" ng-submit="feedback.send()">
+                    <div class="col-lg-6 row">
+                        <input type="text" class="form-control" pattern="[A-Za-zА-Яа-я0-9а-яА-Я.\s]{3,50}"  placeholder="Введiть iм'я" ng-model="feedback.name"><br>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-6 row">
+                        <input type="email" class="form-control" placeholder="Ваш e-mail"ng-model="feedback.email"required><br>
+                    </div>
+                    <textarea class="form-control" rows="5"
+                        ng-model="feedback.text"
+                        required
+                        ng-minlength="{10}"
+                        ng-maxlength="{200}"
+                        ng-trim="{true}">
+                    </textarea>
+                    <p class="help-block"ng-show="errorText">Введiть текст повiдомлення! </p>
+                    <p class="help-block"ng-show="!errorText">&nbsp</p>
+                    <div class="buttons-wrapper">
+                        <button ng-disabled="errorText||SuccessFeedBack||feedbackError||feedbackDisabled" class="btn btn-default btn-lg mb"
+                                data-type="submit" style="margin-bottom: 30px;">Вiдправити
+                        </button>
+                    </div>
+                    <div class=" fade in main_success1"  ng-show="SuccessFeedBack">
+                        <alert  type="success">Ваше повiдомлення вiдправлено!</alert>
+                    </div>
+                </form>
+
+            </article>
+            <article class="col-lg-5 col-lg-offset-2" >
+
+
+                    <h2 style="text-align: left">Нашi координати:</h2>
+                    <div class="gray" style="font-size: 20px">
+                        <span>Україна, Харків, 61038</span><br>
+                        <span>Салтівске шосе, 67-А</span><br>
+                        <span>відділ продажу: +38 (057) 717 73 16</span><br>
+                        <span>e-mail: marketing_artika@arti.com.ua</span><br>
+                        <span>відділ закупівель: artika_bayer@mail.ru</span><br>
+                    </div>
+
+
+
+
+            </article>
+            <div class="clearfix"></div>
+            <div class="map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d2565.1593003728135!2d36.30617747966978!3d49.989622775662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sru!2sua!4v1396352298804"
+                        width="1140" height="350" frameborder="0" style="border:0"></iframe>
+            </div>
+
+        </div>
+
+</section>
+
+<!--
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRngKslUGJTlibkQ3FkfTxj3Xss1UlZDA&sensor=false"></script>
+<script>
+    //Google Map Skin - Get more at http://snazzymaps.com/
+    var myOptions = {
+        zoom: 15,
+        center: new google.maps.LatLng(53.385873, -1.471471),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        disableDefaultUI: true,
+        styles: [{
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 17
+            }]
+        }, {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 20
+            }]
+        }, {
+            "featureType": "road.highway",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 17
+            }]
+        }, {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 29
+            }, {
+                "weight": 0.2
+            }]
+        }, {
+            "featureType": "road.arterial",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 18
+            }]
+        }, {
+            "featureType": "road.local",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 16
+            }]
+        }, {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 21
+            }]
+        }, {
+            "elementType": "labels.text.stroke",
+            "stylers": [{
+                "visibility": "on"
+            }, {
+                "color": "#000000"
+            }, {
+                "lightness": 16
+            }]
+        }, {
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "saturation": 36
+            }, {
+                "color": "#000000"
+            }, {
+                "lightness": 40
+            }]
+        }, {
+            "elementType": "labels.icon",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        }, {
+            "featureType": "transit",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 19
+            }]
+        }, {
+            "featureType": "administrative",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 20
+            }]
+        }, {
+            "featureType": "administrative",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#000000"
+            }, {
+                "lightness": 17
+            }, {
+                "weight": 1.2
+            }]
+        }]
+    };
+
+    var map = new google.maps.Map(document.getElementById('map'), myOptions);
+</script>-->

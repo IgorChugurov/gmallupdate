@@ -1,0 +1,28 @@
+<div class="template-list"  ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paps">
+        <div class="cart-detail">
+            <h4 class="text-center name-box">настройка страницы акции</h4>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                <ui-select ng-model="$ctrl.item.campaign.templ" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveFieldTemplate('campaign.templ',$ctrl.item.campaign.templ)">
+                    <ui-select-match placeholder="шаблон">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                <ui-select ng-model="$ctrl.item.campaign.style" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveFieldTemplate('campaign.style',$ctrl.item.campaign.style)">
+                    <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-right style-box">
+                <a class="btn btn-fab btn-fab-mini btn-info" ng-click="$ctrl.setColor($ctrl.item.campaign,'campaign')" style="margin-top: 0">
+                    <i class="material-icons" title="настроить стили">opacity</i>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

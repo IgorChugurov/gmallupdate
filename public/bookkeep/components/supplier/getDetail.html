@@ -1,0 +1,55 @@
+<div class="select-modal editSA">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">Документы</h3>
+        <a class="cancel" ng-click="$ctrl.cancel()"></a>
+    </div>
+    <div class="modal-body">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <div class="header-table">
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        документ
+                    </div>
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        название
+                    </div>
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        дата
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="stuff-admin"  ng-repeat="d in $ctrl.items">
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <a ng-click="$ctrl.goToDoc(d)">
+                                <span ng-bind="d.ed"></span>
+                            </a>
+
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <a ng-click="$ctrl.goToDoc(d)"><span ng-bind="d.name"></span></a>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <span ng-bind="d.date"></span>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="clearfix"></div>
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn btn-lg btn-success btn-raised btn-block" type="button" ng-click="$ctrl.ok()">ok</a>
+    </div>
+    <div class="clearfix"></div>
+</div>

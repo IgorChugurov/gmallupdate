@@ -1,0 +1,405 @@
+/*dnd*/
+/*gallery*/
+ul[dnd-list],
+ul[dnd-list] > li,
+.homePage ul[dnd-list],
+.homePage ul[dnd-list] > li,
+.stuffDetail ul[dnd-list],
+.stuffDetail ul[dnd-list] > li,
+.part-box ul[dnd-list],
+.part-box ul[dnd-list] > li {
+    position: relative;
+}
+
+/***************************** Dropzone Styling *****************************/
+
+/**
+ * The dnd-list should always have a min-height,
+ * otherwise you can't drop to it once it's empty
+ */
+ul[dnd-list],
+.homePage ul[dnd-list],
+.stuffDetail ul[dnd-list],
+.part-box .dropzone ul[dnd-list] {
+    min-height: 59px;
+    padding-left: 0;
+    /*margin: 0px;
+    padding-left: 0px;*/
+}
+
+/**
+ * The dnd-lists's child elements currently MUST have
+ * position: relative. Otherwise we can not determine
+ * whether the mouse pointer is in the upper or lower
+ * half of the element we are dragging over. In other
+ * browsers we can use event.offsetY for this.
+ */
+.dropzone li,
+.homePage li,
+.stuffDetail li,
+.part-box .dropzone li {
+    display: block;
+}
+
+/**
+ * Reduce opacity of elements during the drag operation. This allows the user
+ * to see where he is dropping his element, even if the element is huge. The
+ * .dndDragging class is automatically set during the drag operation.
+ */
+.dndDragging,
+.homePage .dndDragging,
+.stuffDetail .dndDragging,
+.part-box .dropzone .dndDragging {
+    opacity: 0.7;
+}
+
+/**
+ * The dndDraggingSource class will be applied to the source element of a drag
+ * operation. It makes sense to hide it to give the user the feeling that he's
+ * actually moving it. Note that the source element has also .dndDragging class.
+ */
+.dropzone .dndDraggingSource,
+.homePage .dndDraggingSourc,
+.stuffDetail .dndDraggingSource,
+.part-box .dropzone .dndDraggingSource {
+    display: none;
+}
+
+/**
+ * An element with .dndPlaceholder class will be added as child of the dnd-list
+ * while the user is dragging over it.
+ */
+.dndPlaceholder,
+.homePage .dndPlaceholder,
+.stuffDetail .dndPlaceholder,
+.part-box .dropzone .dndPlaceholder {
+    background-color: #d6d6d6 !important;
+    min-height: 59px;
+    display: block;
+    position: relative;
+}
+/*.template-item .active {
+    color: rgb(255, 113, 72);
+}*/
+.template-item .template-list {
+    margin-top: 140px;
+    margin-bottom: 40px;
+}
+.template-item .template-list.template-list-mobile{
+    margin-top: 160px;
+}
+/*@media (max-width: 1200px) {
+    .template-item .tab-nav-stuff p {
+        font-size: 12px;
+    }
+}
+@media (max-width: 400px) {
+    .template-item .template-list {
+        margin-top: 120px;
+    }
+}*/
+/*new*/
+/*header*/
+.header-panel {
+    padding: 15px 5px;
+    height: 60px;
+    border: 1px solid #ccc;
+}
+.template-list.template-list-mobile .header-panel {
+    height: auto;
+    padding: 5px;
+}
+.template-list.template-list-mobile .name-box{
+    font-size: 12px;
+}
+.template-item .block-tab {
+    position: fixed;
+    top: 110px;
+    z-index: 999;
+}
+.template-list.template-list-mobile .block-tab {
+    top:130px;
+}
+.template-list.template-list-mobile .btn-group.btn-group-justified.btn-group-raised .btn{
+    font-size: 12px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.setting-stuff,
+.setting-footer,
+.setting-header {
+    margin-top: 210px;
+}
+.cart-item .name-box a,
+.custom-list-item .name-box a,
+.setting-list .name-box a,
+.setting-stuff .name-box a,
+.setting-footer .name-box a,
+.setting-header .name-box a{
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: #666;
+}
+.custom-list-item .ui-select-container .ui-select-match .btn-default,
+.setting-list .ui-select-container .ui-select-match .btn-default,
+.setting-stuff .ui-select-container .ui-select-match .btn-default,
+.setting-footer .ui-select-container .ui-select-match .btn-default,
+.setting-header .ui-select-container .ui-select-match .btn-default {
+    font-size: 14px;
+}
+.custom-list-item .text-muted,
+.setting-list .text-muted,
+.setting-stuff .text-muted,
+.setting-footer .text-muted,
+.setting-header .text-muted {
+    font-size: 14px;
+}
+.custom-list-item  .action-box,
+.setting-stuff  .action-box,
+.setting-footer  .action-box,
+.setting-header  .action-box {
+    padding: 10px 5px;
+}
+.setting-stuff  .action-box .btn-fab-mini {
+    float: left;
+}
+.part-box {
+    padding-bottom: 40px;
+    font-size: 14px;
+}
+.head-box  {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 5px;
+}
+.block-box {
+    padding: 0 5px;
+}
+.block-box .name,
+.block-box.name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+}
+.block-box .name {
+    max-width: 50%;
+}
+.block-box .name span,
+.block-box .name i,
+.block-box.name span,
+.block-box.name i {
+    vertical-align: bottom;
+}
+.block-box .btn-fab.btn-fab-mini {
+    width: 40px;
+    height: 40px;
+    float: right;
+}
+.block-box .form-group {
+    padding-bottom: 0;
+    margin-top: 10px;
+}
+.components .ava {
+    width: 40px;
+}
+.section-cart {
+    display: inline-block;
+    padding: 10px;
+    border: 1px dashed #000;
+    text-transform: uppercase;
+    margin: 5px 10px;
+}
+.template-list.template-list-mobile .section-cart {
+    font-size: 14px;
+}
+.label-menu {
+    font-size: 14px;
+    font-weight: bold;
+}
+.radio {
+    display: inline-block;
+}
+.template-list.template-list-mobile .form-group .checkbox label,
+.template-list.template-list-mobile .form-group .radio label {
+    font-size: 14px;
+}
+/*new*/
+
+.name-menu {
+    font-size: 20px;
+    color: #767c89;
+    font-weight: bold;
+}
+.part-box.thumbnail {
+    border-color: #bababa;
+}
+
+.bgcolor_one{
+    background-color: #eee;
+    border: 1px dotted #999;
+}
+.bgcolor_one:hover,
+.bgcolor_two:hover{
+    background-color: #dddddd;
+}
+
+.bgcolor_two{
+    background-color: #fff;
+    border: 1px dotted #999;
+}
+ul li {
+    list-style: none;
+}
+.template-item  {
+    margin-top: 80px;
+    padding-bottom: 40px;
+    color: #666;
+}
+.template-item hr {
+    margin-bottom: 10px;
+    margin-top: 10px;
+ }
+.template-item .name-box {
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    /*margin-bottom: 0;
+    margin-top: 0;*/
+}
+.template-item .collapse-item {
+    margin-bottom: 10px;
+}
+/*new*/
+.template-item .content-box {
+    min-height: 170px;
+    padding: 30px 40px;
+}
+.template-item .item-mobile .content-box {
+    padding: 20px;
+    min-height: 150px;
+}
+.template-item .item-mobile .content-box h3 {
+    font-size: 16px;
+}
+.template-item .content-box .material-icons {
+    font-size: 40px;
+    margin: 0;
+}
+.base-icon .name-box span,
+.base-icon .name-box a{
+    display: inline-block;
+    margin-right: 20px;
+}
+.base-icon  .icon-box {
+    padding: 10px ;
+    border: 1px solid #d2d2d2;
+    position: relative;
+    margin-bottom: 20px;
+}
+.base-icon  .icon-box-img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 10px;
+    background-color: #cecece;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+.base-icon .icon{
+    margin: 0 5px;
+    float: left;
+    font-size: 14px;
+}
+.base-icon .icon .material-icons {
+    margin-right: 0;
+}
+.base-icon  .icon-box img{
+    width: 40px;
+}
+.base-icon  .icon-box a{
+    float: left;
+    color: #fff;
+}
+.template-list .block-info {
+    border: 1px dotted #666;
+    text-align: center;
+    padding: 5px;
+}
+.template-list .input-group .form-group {
+    margin-top: 0;
+}
+/*new*/
+/*.template-list .block-chat {
+    padding: 0;
+}*/
+.template-list ul {
+    padding-left: 0;
+}
+.template-list .radio {
+    display: inline-block;
+}
+.add-block {
+    margin-top: 10px;
+}
+.add-block .btn-default {
+    background-color: rgba(170, 211, 166, 0.27);
+}
+.add-block .btn-default ::-webkit-input-placeholder {color:#72ad66;}
+.add-block .btn-default ::-moz-placeholder          {color:#72ad66;}/* Firefox 19+ */
+.add-block .btn-default :-moz-placeholder           {color:#72ad66;}/* Firefox 18- */
+.add-block .btn-default :-ms-input-placeholder      {color:#72ad66;}
+    /*setIcon*/
+.set-icon .modal-body{
+    background-color: #dfdfdf;
+}
+.set-icon  img {
+    width: 36px;
+    display: inline-block;
+}
+.set-icon .icon-box {
+    margin: 5px;
+    text-align: center;
+}
+.template-list .select-block {
+    display:inline-block;
+    border: 1px dotted #ccc;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    vertical-align: text-top;
+    padding: 5px 10px;
+    margin-right: 5px
+}
+.template-list .clear-icon {
+    font-size: 14px;
+    margin-right: 0;
+    margin-left: 5px;
+}
+
+.template-list .help-text {
+    font-size: 14px;
+}
+.box-style {
+    display: inline-block;
+}
+.box-style .ui-select-container {
+    width: 200px;
+}
+.box-color .btn.btn-fab.btn-fab-mini,
+.box-color .input-group-btn .btn.btn-fab.btn-fab-mini {
+    margin: 0;
+}
+/*custom-list-item*/
+.custom-list,
+.custom-list-item {
+    margin-top: 140px;
+}
+.custom-list .form-group {
+    padding-bottom: 0;
+}
+.custom-list .action-box {
+    padding: 0;
+}

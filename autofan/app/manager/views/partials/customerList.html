@@ -1,0 +1,128 @@
+<div ng-hide="$state.includes('mainFrame.customerList.custom')" keypress-events>
+    <div class="main">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                <mongo-paginator-all type="order" page="paginate.page" row="paginate.row" rows-per-page="50" total-items="paginate.totalItems"></mongo-paginator-all>
+            </div>
+                <div class="col-lg-10 col-lg-offset-1">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p class="panel-title">ТЕКУЩИЕ наряд-заказы<span class="pull-right" style="margin-top: 5px; font-size: 26px;">AUTOFAN</span></p>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="col-md-4 ">
+                                            <input type="text" placeholder="поиск" ng-model="searchJobTicket" class="search-query"/>
+                                        </div>
+                                        <div class="col-md-4  col-md-offset-1">
+                                            <a href=""class="btn btn-success btn-lg btn-block" type="button"  ng-click="editJobTicket()">создать новый</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <table class="table">
+                                <tr>
+                                    <th>открыт</th>
+                                    <th>vin</th>
+                                    <th>модель</th>
+                                    <th>общая сумма</th>
+                                    <th>остаток суммы</th>
+                                    <th class="text-center">удалить</th>
+                                    <th class="text-center">пересчитать</th>
+                                </tr>
+                                <tr ng-repeat="jobTicket in jobTicketsList=( jobTickets|filter:searchJobTicket)">
+                                    <td>
+                                        <a ng-click="editJobTicket(jobTicket)">
+
+                                            <span  ng-bind="moment(jobTicket.date).format('ll')"></span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a ng-click="editJobTicket(jobTicket)" >
+                                            <span ng-bind="jobTicket.customer.vin"></span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span  ng-bind="jobTicket.customer.model"></span>
+                                    </td>
+                                    <td>
+                                        <span  ng-bind="jobTicket.resSum.toFixed(2)"></span><span> €</span>
+                                    </td>
+                                    <td>
+                                        <span  ng-bind="jobTicket.resPay.toFixed(2)"></span><span> €</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <a ng-click="deleteJobTicket(jobTicket)">
+                                            <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="text-success" ng-click="recalculateJobTicket(jobTicket)" title="стоимость запчастей и суммы платежей деляться на курс из верхнего меню">
+                                            персчитать (верхний курс)
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!--<div class="col-lg-12 text-center">
+                                <button class="btn btn-primary col-lg-4 col-lg-offset-4 mb" style="font-size: 18px;" data-ng-click="printJobTicket()"><span>печать</span></button>
+                            </div>-->
+
+                                <!--<ul  class="nav nav-pills nav-stacked">
+                                    <li
+                                        class="pull-left col-lg-12"
+                                        ng-repeat="jobTicket in jobTicketsList=( jobTickets|orderBy:'date'|filter:searchJobTicket)">
+
+                                        <a ng-click="editJobTicket(jobTicket)" class="control-label col-lg-2">
+
+                                            <span  ng-bind="moment(jobTicket.date).format('ll')"></span>
+                                        </a>
+                                        <a ng-click="editJobTicket(jobTicket)" class="control-label col-lg-3" >
+                                            <span ng-bind="jobTicket.customer.vin"></span>
+                                        </a>
+
+                                        <span class="col-lg-3" ng-bind="jobTicket.customer.model"></span>
+                                        <span class="col-lg-2" ng-bind="jobTicket.resSum"></span>
+                                        <div class="col-lg-2 btn-group">
+                                            <a ng-click="editJobTicket(jobTicket)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                            <a ng-click="deleteJobTicket(jobTicket)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                        </div>
+                                        <div class="clearfix"></div>
+
+                                    </li>
+
+
+                                </ul>-->
+
+
+
+
+                            <div ng-show="filteredList.length<=0" class="alert alert-success"><h3>Нет объектов</h3></div>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+</div>
+<div ui-view></div>
+
+<script type="text/ng-template" id="myModalContentD.html">
+        <div class="modal-header">
+            
+            <h3 style="color:red"> Удалить?</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form" >
+            <div class="form-group" >
+                <label>подтверждение</label>
+                <input type="password" class="form-control" ng-model="pswd"  required/>        
+            </div></form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok(pswd)">Удалить</button>
+            <button class="btn btn-warning" ng-click="cancel()">Отмена</button>
+        </div>
+    </script>

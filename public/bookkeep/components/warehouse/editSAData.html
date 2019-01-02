@@ -1,0 +1,166 @@
+<div class="select-modal editSA">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">Редактирование данных</h3>
+        <a class="cancel" ng-click="$ctrl.cancel()"></a>
+    </div>
+    <div class="modal-body">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <!--<pre>{{$ctrl.item|json}}</pre>-->
+            <div class="cart-detail">
+                <div class="header-table">
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                       <!-- склад-->
+                    </div>
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        поставщик
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        учетная цена
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        цена продажи
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        количество
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        новая цена продажи
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        новое количество
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        валюта
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="stuff-admin"  ng-repeat="d in $ctrl.item.data">
+                    <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <div class="form-group">
+                            <!--<span ng-bind="d.account.name"></span>-->
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        <div class="form-group">
+                            <span ng-bind="$ctrl.getcontrAgentTypeName(d.supplierType)"></span>
+                            <span ng-bind="d.supplier.name"></span>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="form-group">
+                            <span ng-bind="d.price"></span>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="form-group">
+                            <span ng-bind="d.priceForSale"></span>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="form-group">
+                            <span ng-bind="d.qty"></span>
+                        </div>
+                    </div>
+                    <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <input type="number" class="form-control name" ng-model="d.newPriceForSale"/>
+                    </div>
+                    <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <input type="number" class="form-control name" ng-model="d.newQty"/>
+                    </div>
+                    <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="form-group">
+                            <span ng-bind="$ctrl.currency"></span>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div ng-repeat="man in d.manufacture">
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <div class="form-group">
+                                <!--<span ng-bind="d.account.name"></span>-->
+                            </div>
+                        </div>
+                        <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <div class="form-group">
+                                в производстве
+                            </div>
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <div class="form-group">
+                                <span ng-bind="d.price"></span>
+                            </div>
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <div class="form-group">
+
+                            </div>
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <div class="form-group">
+                                <span ng-bind="man.qty"></span>
+                            </div>
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="man.newQty"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <div class="form-group">
+                                <span ng-bind="$ctrl.currency"></span>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">
+                <div class="form-group label-floating">
+                    <label for="supl" class="control-label">контрагент</label>
+                    <ui-select ng-model="$ctrl.typeOfContrAgent"
+                               id="supl"
+                               skip-focusser="true"
+                               search-enabled="true"
+                               ng-change="$ctrl.changeContrAgetnType($ctrl.typeOfContrAgent)"
+                               title="выберите тип контрагента">
+                        <ui-select-match  placeholder="контрагент">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="opt.type as opt in $ctrl.typeOfContrAgents">{{ opt.name }}</ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 text-left">
+                <div class="form-group label-floating select-box">
+                    <label for="supl" class="control-label">поставщик</label>
+                    <ui-select ng-model="$ctrl.supplier"
+                               id="supl"
+                               skip-focusser="true"
+                               search-enabled="true"
+                               title="выберите поставщика">
+                        <ui-select-match  placeholder="поставщик">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="opt in $ctrl.contrAgents">{{ opt.name }}</ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <div class="form-group label-floating ">
+                    <label class="control-label">количество</label>
+                    <input class="form-control" ng-model="$ctrl.qty" type="number">
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 ">
+                <a class="btn btn-raised btn-success" ng-click="$ctrl.addRow()">добавить позицию</a>
+            </div>
+            <div class="clearfix"></div>
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="modal-footer">
+        <a class="btn btn-lg btn-success btn-raised btn-block" type="button" ng-click="$ctrl.ok()">сохранить</a>
+    </div>
+    <div class="clearfix"></div>
+</div>

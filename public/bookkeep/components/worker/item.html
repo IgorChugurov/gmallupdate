@@ -1,0 +1,89 @@
+<div class="nav-box-stuff">
+    <div class="tab-nav-stuff">
+        <a class="btn btn-fab btn-fab-mini btn-info"
+           ui-sref="frame.Worker"
+           title="вернуться">
+            <i class="material-icons">reply</i>
+        </a>
+    </div>
+    <div class="tab-nav-stuff">
+        <h4 class="name-box">Карточка сотрудника</h4>
+    </div>
+</div>
+<div class="supplier" >
+    <div class="news-stuff-container">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                <div class="header-table">
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        название
+                    </div>
+                    <div class="td-list-header text-center col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        статус
+                    </div>
+                    <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        процент от продажи
+                    </div>
+                    <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        процент от работы
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                        редактирование
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="stuff-admin ">
+
+                    <div class="" ng-class="{'mobil':global.get('mobile')}">
+                        <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                            <div class="td-list  col-lg-3 col-md-3 col-sm-3 col-xs-3 name-box">
+                                <div class="">
+                                    <input type="text" id="name1" class="form-control name"
+                                           ng-model="$ctrl.item.name"
+                                           required
+                                           ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                           ng-change="$ctrl.saveField('name')"/>
+                                </div>
+                                <div class="all-sku" ng-repeat="m in $ctrl.items">
+                                    <p>
+                                        <span ng-bind="m.name"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="togglebutton" style="padding-bottom: 0; margin-bottom: 0">
+                                    <label for="actived{{$index}}">
+                                        <span ng-class="{'active':!$ctrl.item.actived}">не активный</span>
+                                        <input type="checkbox"
+                                               id="actived{{$index}}"
+                                               ng-model="$ctrl.item.actived"
+                                               ng-change="$ctrl.saveField('actived')">
+                                        <span class="toggle"></span>
+                                        <span ng-class="{'active':$ctrl.item.actived}">активный</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                                <input class="form-control" type="number" ng-model="$ctrl.item.rateSale" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.saveField('rateSale')"/>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                                <input class="form-control" type="number" ng-model="$ctrl.item.rateWork" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.saveField('rateWork')"/>
+                            </div>
+
+                            <div class="td-list create col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <a ng-hide="$ctrl.item._id" class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.createItem()">
+                                    <i class="material-icons">add</i>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

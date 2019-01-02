@@ -1,0 +1,67 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 status" ng-switch="news.style">
+
+            <div ng-switch-when='1'>
+                <div class="col-lg-12 col-md-12  text-center" ng-show="news.gallery[0].thumb">
+                    <img  class="img-responsive news"  ng-src="{{news.gallery[0].img}}">
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-lg-12 col-md-12">
+                    <p><span ng-bind-html="trustHtml(news.desc0[lang])"></span></p>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-lg-6 col-md-6  text-center" ng-show="news.gallery[0].thumb">
+                    <img  class="img-responsive news"  ng-src="{{news.gallery[1].thumb}}">
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <p><span ng-bind-html="trustHtml(news.desc1[lang])"></span></p>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-lg-6 col-md-6">
+                    <p><span ng-bind-html="trustHtml(news.desc2[lang])"></span></p>
+                </div>
+                <div class="col-lg-6 col-md-6  text-center" ng-show="news.gallery[0].thumb">
+                    <img  class="img-responsive news"  ng-src="{{news.gallery[2].thumb}}">
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-lg-12 col-md-12">
+                    <p><span ng-bind-html="trustHtml(news.desc3[lang])"></span></p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+
+
+            <div ng-switch-default>
+            <h1 class="page-header"><span ng-bind="news.name[lang]"></span></h1>
+            <!--<button class="btn btn-primary pull-right">в список</button>-->
+            <div class="col-lg-12 col-md-12">
+                <p><span ng-bind-html="trustHtml(news.desc0[lang])"></span></p>
+            </div>
+            <div class="col-lg-12 col-md-12  text-center" ng-show="news.gallery[0].thumb">
+                <img  class="img-responsive news"  ng-src="{{news.gallery[0].thumb}}">
+            </div>
+            <div class="col-lg-12 col-md-12">
+                <p><span ng-bind-html="trustHtml(news.desc1[lang])"></span></p>
+            </div>
+            <div class="col-lg-12 col-md-12  text-center" ng-show="news.gallery[1].thumb">
+                <img  class="img-responsive news"  ng-src="{{news.gallery[1].thumb}}">
+            </div>
+            <div class="col-lg-12 col-md-12">
+                <p><span ng-bind-html="trustHtml(news.desc2[lang])"></span></p>
+            </div>
+            <div class="col-lg-12 col-md-12 text-center" ng-show="news.gallery[2].thumb">
+                <img   class="img-responsive news"  ng-src="{{news.gallery[2].thumb}}">
+            </div>
+            <div class="col-lg-12 col-md-12">
+                <p><span ng-bind-html="trustHtml(news.desc3[lang])"></span></p>
+            </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>

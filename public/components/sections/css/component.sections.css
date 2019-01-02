@@ -1,0 +1,217 @@
+/*catalog*/
+.catalog {
+    padding-top: 130px
+}
+.select-modal .catalog {
+    padding-top: 0px
+}
+.catalog.catalog-mobile {
+    padding-top: 100px;
+}
+.catalog ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+.catalog .section-box {
+    box-shadow: 0px 5px 8px 0px #999;
+    margin-bottom: 10px;
+    cursor: move;
+    background-color: #fff;
+    border: 1px solid #999;
+}
+.catalog .category-box {
+    box-shadow: 0px 5px 8px 0px #999;
+    cursor: move;
+    background-color: #fff;
+    border: 1px solid #4caf50;
+    padding-left: 0;
+    padding-right: 0;
+}
+.catalog .color-box-orange,
+.catalog .color-box-blue {
+    background-color: #fff;
+}
+.catalog .add-box {
+    margin-bottom: 20px;
+    padding-left: 0;
+}
+.catalog .box-section-left {
+    padding-right: 0;
+}
+.catalog .box-section-right,
+.catalog .box-border-left{
+    border-left: 1px solid #999;
+}
+.catalog .box-border-top {
+    border-top: 1px solid #999;
+    margin-top: 57px;
+    padding-right: 0;
+}
+.catalog .add-section {
+    border: 1px solid #999;
+    margin-top: 15px;
+}
+.catalog .add-category {
+    border: 1px solid #4caf50;
+    margin-top: 15px;
+}
+.catalog .down-up {
+    cursor: pointer;
+}
+.catalog .box-control {
+    padding: 5px 0;
+    font-size: 16px;
+}
+.catalog .box-control a {
+    text-decoration: none;
+    cursor: pointer;
+}
+.catalog .control {
+    display: inline-block;
+}
+.catalog .control-box {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.catalog .control-box a {
+    cursor: pointer;
+}
+.catalog .swap {
+    cursor: move;
+}
+/*elements*/
+.catalog .form-group {
+    margin-top: 0;
+    padding-bottom: 0;
+    margin-top: 16px;
+}
+
+.catalog .category-box .form-control,
+.catalog .section-box .form-control {
+    color: #999;
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 16px;
+}
+.catalog .box-section-right .form-group label.control-label,
+.catalog .box-section-left .form-group label.control-label {
+    margin-top: 5px;
+}
+.catalog .form-group.label-static label.control-label,
+.catalog .form-group.label-floating.is-focused label.control-label,
+.catalog .form-group.label-floating:not(.is-empty) label.control-label {
+    font-size: 14px;
+}
+.catalog .add-section .form-group  label.control-label {
+    margin-top: 22px;
+    color: #999;
+}
+.catalog .add-section .form-group.label-static label.control-label,
+.catalog .add-section .form-group.label-floating.is-focused label.control-label,
+.catalog .add-section .form-group.label-floating:not(.is-empty) label.control-label,
+.catalog .add-category .form-group.label-static label.control-label,
+.catalog .add-category .form-group.label-floating.is-focused label.control-label,
+.catalog .add-category .form-group.label-floating:not(.is-empty) label.control-label
+{
+    left: 0;
+}
+.catalog .add-section input,
+.catalog .add-category input {
+    color: #999;
+}
+.catalog .add-category .form-group  label.control-label {
+    margin-top: 22px;
+    color: #999;
+}
+.catalog .add-category .form-group.is-focused label,
+.catalog .add-category .form-group.is-focused label.control-label {
+    font-size: 14px;
+    color: #999;
+}
+.catalog input.enter {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+}
+.box-section-left.box-section-right {
+    margin-top: 50px;
+    padding-left: 0;
+}
+.category-edit {
+    padding-bottom: 40px;
+    padding-top: 20px;
+}
+.category-edit  .content-box {
+    margin-top: 100px;
+}
+.category-item {
+    margin-top: 160px;
+}
+/***************** Required styles ******************/
+/**
+ * For the correct positioning of the placeholder element, the dnd-list and
+ * it's children must have position: relative
+ */
+.nestedDemo ul[dnd-list],
+.nestedDemo ul[dnd-list] > li {
+    position: relative;
+}
+
+/****************** Dropzone Styling ***************/
+/**
+ * The dnd-list should always have a min-height,
+ * otherwise you can't drop to it once it's empty
+ */
+.nestedDemo .dropzone ul[dnd-list] {
+    min-height: 42px;
+    /*margin: 0px;
+    padding-left: 0px;*/
+}
+
+/**
+ * The dnd-lists's child elements currently MUST have
+ * position: relative. Otherwise we can not determine
+ * whether the mouse pointer is in the upper or lower
+ * half of the element we are dragging over. In other
+ * browsers we can use event.offsetY for this.
+ */
+.nestedDemo .dropzone li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: block;
+    padding: 0px;
+}
+/**
+ * Reduce opacity of elements during the drag operation. This allows the user
+ * to see where he is dropping his element, even if the element is huge. The
+ * .dndDragging class is automatically set during the drag operation.
+ */
+.nestedDemo .dropzone .dndDragging {
+    opacity: 0.7;
+}
+/**
+ * The dndDraggingSource class will be applied to the source element of a drag
+ * operation. It makes sense to hide it to give the user the feeling that he's
+ * actually moving it. Note that the source element has also .dndDragging class.
+ */
+.dndDraggingSource {
+    /*display: none;*/
+    opacity: 0.3;
+}
+/**
+ * An element with .dndPlaceholder class will be added as child of the dnd-list
+ * while the user is dragging over it.
+ */
+.catalog .dndPlaceholder {
+    background-color: rgba(167, 191, 220, 0.18);
+    min-height: 80px;
+    width: 90%;
+    margin-top: 20px;
+    box-shadow: inset 0 3px 8px 0 #d1d1d1;
+    display: block;
+    position: relative;
+}
+
+
+

@@ -1,0 +1,13 @@
+/*rk*/
+.img-box {
+    overflow: hidden;
+}
+.img-goods {
+    width: 100%;
+}
+.price-block a {
+    cursor: default;
+}
+.price-block a:hover {
+    color: $color
+}

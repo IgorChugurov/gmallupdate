@@ -1,0 +1,47 @@
+<div class="content" ng-if="$state.current.name=='frame'">
+    <a  ui-sref="frame.warehouse" class="content-box-link">
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 " >
+            <div class="box">
+                <div class="content-box">
+                    <div class="heading text-center">
+                        <p>
+                            <i class="material-icons link-info">casino</i>
+                        </p>
+                        <h3>
+                            склад
+                        </h3>
+                    </div>
+                    <!--<div class="panel-body">
+                        <span class="plot">
+                            складские остатки, инвентаризационные ведомости, карточки товаров
+                        </span>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </a>
+    <a  ui-sref="frame.synopsis" class="content-box-link">
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 " >
+            <div class="box">
+                <div class="content-box">
+                    <div class="heading text-center">
+                        <p>
+                            <i class="material-icons link-info">casino</i>
+                        </p>
+                        <h3>
+                            сводка
+                        </h3>
+                    </div>
+                    <!--<div class="panel-body">
+                        <span class="plot">
+                            складские остатки, инвентаризационные ведомости, карточки товаров
+                        </span>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+<div class="clearfix"></div>
+
+<div ui-view></div>

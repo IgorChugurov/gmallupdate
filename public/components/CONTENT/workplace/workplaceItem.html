@@ -1,0 +1,25 @@
+<div class="master-item" ng-class="{'master-item-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame.workplace">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff add-block pull-right">
+            <ui-select ng-model="$ctrl.newBlock" skip-focusser="true" search-enabled="false" ng-change="$ctrl.addBlock($ctrl.newBlock)">
+                <ui-select-match placeholder="добавить блок в список">{{$select.selected.value}}</ui-select-match>
+                <ui-select-choices repeat="opt.key as (key, opt) in $ctrl.listOfBlocksForWorkplacePage|filter:$ctrl.filterBlocks">{{ opt.value }}</ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail" ng-repeat="block in $ctrl.item.blocks">
+                <div  class="1" directive="{{block.type}}"></div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

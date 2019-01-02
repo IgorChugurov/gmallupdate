@@ -1,0 +1,108 @@
+
+<div class="nav-box-stuff">
+    <div class="tab-nav-stuff">
+        <a class="btn btn-fab btn-fab-mini btn-violet" onclick="window.history.back()">
+            <i class="material-icons">reply</i>
+        </a>
+    </div>
+    <div class="tab-nav-stuff">
+        <h4 class="name-box">Список диалогов</h4>
+    </div>
+    <div class="tab-nav-stuff pull-right paginator-box">
+        <paginator-main
+                paginate='dialogsCtrl.paginate'
+                getlist="dialogsCtrl.getList()"
+                scroll="true">
+        </paginator-main>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div  class="dialogsStuff col-lg-12 col-md-12  col-sm-12  col-xs-12" ng-hide="$state.current.name!='frame.dialogs'"  ng-class="{'dialog-mobile':$ctrl.global.get('mobile').val}">
+    <div class="thumbnail" ng-show="global.get('seller').val && global.get('admin').val && !dialogsCtrl.activeDialog">
+        <div>
+            <choice-user on-selected="dialogsCtrl.startDialog(null,user)"></choice-user>
+        </div>
+
+        <!--<div ng-if="!dialogsCtrl.items.length && !global.get('seller').val && !dialogsCtrl.activeDialog"
+                 class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+            <a ng-click="dialogsCtrl.startDialog()" class="btn btn-default">начать</a>
+        </div>-->
+        <div class="dialog-add" ng-if="!dialogsCtrl.items.length && !global.get('seller').val && !dialogsCtrl.activeDialog">
+            <span class="col-lg-2 col-md-2 col-sm-4 col-xs-12 row">
+                <a class="btn btn-fab btn-fab-mini btn-success pull-left"  ng-click="dialogsCtrl.startDialog()">
+                    <i class="material-icons">
+                        question_answer
+                    </i>
+                </a>
+            </span>
+            <span class="col-lg-10 col-md-10 col-sm-8 col-xs-12 info-chat">
+                Здесь можно начать диалог с покупателями.
+            </span>
+            <div class="clearfix"></div>
+        </div>
+       <!-- <div class="action-btn text-center" ng-if1="!dialogsCtrl.items.length && !global.get('seller').val && !dialogsCtrl.activeDialog">
+            <a ng-click="dialogsCtrl.startDialog()" class="btn btn-fab btn-fab-mini btn-success">начать</a>
+        </div>-->
+    </div>
+    <div class="clearfix"></div>
+    <div ng-repeat="dialog in dialogsCtrl.items">
+        <div class="">
+            <div class="thumbnail" >
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 data-box">
+                    <label>дата начала </label><br>
+                    <span class="order-date" ng-bind="moment(dialog.date).format('LLL')"></span>
+
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 dialog-box">
+                    <span>
+                        <span ng-if="dialog.chatMessages=dialogsCtrl.getUnReadChatMessages(dialog)">
+                            <label>чат</label>
+                            <span class="badge badge-danger" ng-bind="dialog.chatMessages"></span>
+                        </span><br>
+                        <span class="link-success on-line" ng-if="dialog.online">
+                            в сети
+                        </span>
+                    </span>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8 name-box">
+                    <div class="pull-left">
+                        <span>
+                            <label>продавец</label>  <span>
+                            <strong ng-bind="dialog.sellerName"></strong></span>
+                        </span><br>
+                        <span>
+                            <label  ng-if=":: dialogsCtrl.getGuest(dialog)">гость</label>
+                            <label ng-if=":: !dialogsCtrl.getGuest(dialog)">пользователь  </label>
+                            <span><strong ng-bind="dialog.userName"></strong></span>
+                        </span>
+                    </div>
+                 </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 button-box">
+
+                    <a class="btn btn-fab btn-fab-mini pull-right btn-warning">
+                        <i class="material-icons" ng-click="dialogsCtrl.deleteDialog(dialog._id,$event)">delete</i>
+                    </a>
+                    <a class="btn btn-fab btn-fab-mini pull-right btn-success">
+                        <i class="material-icons" title="продолжить диалог" ng-click="$state.go('frame.dialogs.dialog',{id:dialog._id})">question_answer</i>
+                    </a>
+                    <!--<div class="btn-clear">
+                        <a class="btn btn-default"
+                           ng-click="dialogsCtrl.deleteDialog(dialog._id,$event)">
+                            <span class="link-warning">удалить диалог</span>
+                        </a>
+                    </div>-->
+                    <!--<a ng-click="dialogsCtrl.deleteDialog(dialog._id)" class="btn btn-error">удалить</a>-->
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="clearfix"></div>
+
+</div>
+<div ui-view=""></div>
+
+

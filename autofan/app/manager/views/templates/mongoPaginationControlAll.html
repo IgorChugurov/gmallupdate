@@ -1,0 +1,49 @@
+<div style="font-weight: bold;">
+
+    <div class="col-lg-6">
+        <span style="margin-right: 10px">показывать по</span>
+        <select class="btn mb" ng-model="row" ng-change="paginator.rowsPerPage=row">
+            <option  value="10">10</option>
+            <option  value="20">20</option>
+            <option  value="50">50</option>
+            <option  value="100">100</option>
+            <option  value="500">500</option>
+            <option  value="1000">1000</option>
+        </select>
+        <span>записей.</span>
+    </div>
+</div>
+
+
+<div class="clearfix"></div>
+
+<div class="text-center" ng-show="paginator.pageCount() > 1">
+    <!--<div class="text-center" >-->
+
+    <ul class="pagination">
+        <li ng-click="paginator.firstPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+            <a>
+                <i class="glyphicon glyphicon-fast-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+            </a>
+        </li>
+        <li ng-click="paginator.perviousPage()" ng-class="paginator.isFirstPage() && 'disabled'">
+            <a>
+                <i class="glyphicon glyphicon-step-backward" ng-class="paginator.isFirstPage() && 'icon-white'"></i>
+            </a>
+        </li>
+        <li ng-click="paginator.setPage(i)" ng-repeat="i in [] | forLoop:0:paginator.pageCount()" ng-class="paginator.page==i && 'active'">
+            <a>{{i+1}}</a>
+        </li>
+        <li ng-click="paginator.nextPage()" ng-class="paginator.isLastPage() && 'disabled'">
+            <a>
+                <i class="glyphicon glyphicon-step-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+            </a>
+        </li>
+        <li ng-click="paginator.lastPage()" ng-class="paginator.isLastPage() && 'disabled'">
+            <a>
+                <i class="glyphicon glyphicon-fast-forward" ng-class="paginator.isLastPage() && 'icon-white'"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+

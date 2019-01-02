@@ -1,0 +1,45 @@
+/*zefir*/
+.form-control:focus {
+    box-shadow: none;
+    outline: none;
+}
+.qty {
+    margin-right: 20px;
+}
+input {
+    width: 40px;
+    padding-right: 0;
+    padding-left: 0;
+    text-align: center;
+    border-bottom: 0;
+    font-size: 20px;
+    background-color: transparent;
+}
+.qty-plus,
+.qty-minus{
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ccc;
+    text-align: center;
+    padding-top: 8px;
+    font-weight: 600;
+    background-color: #fbfbfb;
+}
+.qty-plus:hover,
+.qty-minus:hover {
+    background-color: #e2e2e2;
+    border: 1px solid #cacaca;
+}
+.ui-select-bootstrap .btn-default-focus{
+    outline: none;
+    background-color: transparent;
+    box-shadow: none;
+}
+.ui-select-bootstrap .ui-select-choices-row.active>a {
+    background-color: #ccc;
+}
+.unit {
+    display: inline-block;
+    margin-top: 4px;
+}

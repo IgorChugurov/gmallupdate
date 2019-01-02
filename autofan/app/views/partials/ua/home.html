@@ -1,0 +1,155 @@
+<!--
+<div class="business-header col-lg-12 col-md-12  col-sm-12 col-xs-12 rel">
+    <div class="container">
+        <div class="row">
+            <h1 class="tagline" >100% КОРИСНІ ПРОДУКТИ
+                <a  class="pdf" title="скачать PDF-каталог" style="cursor: pointer">
+                    <span ng-click="downloadPdf()" class="glyphicon glyphicon-download"></span>
+                </a>
+            </h1>
+            <form class="navbar-form navbar-right" role="search" data-ng-submit="goToSearch(searchStr)" >
+                <div class="input-group search col-lg-2 col-md-3 col-sm-4 col-xs-7">
+                    <input type="text" class="form-control input-lg" placeholder="Пошук"
+                           ng-minlength="{{3}}"
+                           ng-maxlength="{{50}}"
+                           ng-model="searchStr"
+                           required
+                           pattern="[A-Za-zА-Яа-я0-9а-яА-Я.\s-+()]{3,50}">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+
+                </div>
+            </form>
+
+            <img class="col-lg-12 headband"  src="img/bg/5l.png">
+        </div>
+    </div>
+</div>
+-->
+<img src="img/bg/logo.png" class="logo_artika">
+<a href="http://arti.com.ua/component/content/article/145.html"> <img src="img/bg/ukraine.gif" class="logo_ukr"></a>
+<div class="business-header">
+    <img src="../../../img/bg/fon3b.jpg" class="img-responsive" >
+
+    <!--<div class="container">-->
+
+        <!--<h1 class="tagline2" >-->
+            <!--ШВИДКОЗАМОРОЖЕНІ ПРОДУКТИ<br>
+            <span>овочі та фрукти від ТМ "Артика" - 100% корисні вітаміни</span><br>-->
+        <!--ШВИДКОЗАМОРОЖЕНІ<br>
+        <span>ягоди, овочi, сумiшi</span><br>-->
+        <!--<a href="#" class="pdf" title="скачать PDF-каталог">
+          <span class="glyphicon glyphicon-download"></span>
+        </a>-->
+        <!--</h1>-->
+        <!--<form class="navbar-form search" role="search" data-ng-submit="goToSearch(searchStr)">
+
+            <div class="input-group col-lg-offset-2 col-lg-8 ">
+                <input type="text" class="form-control input-lg" placeholder="Пошук"
+                       ng-minlength="{{3}}"
+                       ng-maxlength="{{50}}"
+                       ng-model="searchStr"
+                       required
+                       pattern="[A-Za-zА-Яа-я0-9а-яА-Я.\s-+()]{3,50}"
+                        >
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+
+            </div>
+
+        </form><br>
+        <div class="clearfix"></div>-->
+        <!--<div class="tagline3 text-center" >
+            <a href="#">СКАЧАТИ КАТАЛОГ</a>
+        </div>-->
+
+
+    <!--</div>-->
+</div>
+<!--<div class="col-lg-12 text-center section_f">
+    <h1 class="fruit">
+        швидкозаморожені ягоди, овочі, суміші<br>
+    </h1>
+</div>-->
+
+<div class="bg-content">
+    <div class="container">
+        <h1 class="fruit text-center" style="color: #1471b4;">
+            швидкозаморожені ягоди, овочі, суміші<br>
+
+        </h1>
+        <div class="row home">
+            <div class="col-lg-4 col-sm-4 text-center">
+                <a ui-sref="language.list({'type':0})"><img class="icon" src="img/bg/icon7.jpg" ></a>
+                <div class="clearfix"></div>
+                <a ui-sref="language.list({'type':0})"><h2 align="center"><span ng-bind="categories[0].name[lang]"></span></h2></a>
+                <h5 align="center">
+                    <span ng-repeat="item in categories[0].stuff" data-ng-hide="item.id==0">
+                        <a ui-sref="language.list({'id':item.id,'type':0})"><span ng-bind="item.name[lang]| uppercase"></span>&nbsp;&nbsp;</a>
+                    </span>
+                </h5>
+                <p>Продукція ТМ «Артика» на сьогодні - це: 11 овочевих сумішей, гриби опеньки, 6 овочевих та 5 ягідних позицій, розфасованих для зручної реалізації у мережах роздрібної торгівлі в пакунки ємкістю від 250 до 1000 г, а також продукція на вагу та продукція, виготовлена під власними торгівельними марками роздрібних мереж.</p>
+            </div>
+            <div class="col-lg-4 col-sm-4 text-center">
+                <a ui-sref="language.list({'type':2})"><img class="icon" src="img/bg/icon5.jpg"></a>
+                <div class="clearfix"></div>
+                <a ui-sref="language.list({'type':2})"><h2 align="center"><span ng-bind="categories[2].name[lang]"></span></h2></a>
+                <h5 align="center"><a ui-sref="language.list({'type':2})"><span>кращі кулінарні рецепти</span></a></h5>
+                <p >Кулінарія – це мистецтво приготування їжі. У нашій кулінарній книзі кожній страві- власна сторінка. Тут можна знайти рецепти для приготування страв із швидкозаморожених та свіжих ягід та овочей, рецепти смачних перших страв, гарнірів та десертів.</p>
+            </div>
+            <div class="col-lg-4 col-sm-4 text-center">
+                <a ui-sref="language.list({'type':1})"><img class="icon" src="img/bg/icon21.jpg" ></a>
+                <div class="clearfix"></div>
+                <a ui-sref="language.list({'type':1})"><h2 align="center"><span ng-bind="categories[1].name[lang]"></span></h2></a>
+                <h5 align="center">
+                    <span ng-repeat="item in categories[1].stuff" data-ng-hide="item.id==0">
+                        <a ui-sref="language.list({'id':item.id,'type':1})"><span ng-bind="item.name[lang]| uppercase"></span>&nbsp;&nbsp;&nbsp;</a>
+                    </span>
+                </h5>
+                <p>ТМ «Артика» - це відбірні овочі та ягоди, що заморожені та розфасовані в Україні, а головне – вирощені на українських полях. Власні сільськогосподарські угіддя ТОВ «АРТІ»  відведені під вирощування капусти броколі, цвітної капусти, капусти романеско, малини та інших культур.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section  >
+    <div class="container">
+        <div class="row">
+            <article class="col-lg-8 col-sm-8">
+                <h2 class="part">Відбулося останнім часом</h2>
+
+                <div class="col-lg-12 col-sm-12 news" data-ng-repeat="item in lastNews">
+
+                    <div>
+                        <h3><span ng-bind="item.name[lang]"></span></h3>
+                    </div>
+                    <p class="date" ng-bind="item.date"></p>
+                    <img class="pull-left img-responsive img-news thumbnail col-lg-4 col-md-5 col-sm-6 col-xs-6" ng-src="{{item.img}}">
+                    <p  ng-bind-html="trustHtml(item.desc[lang],200)"></p>
+
+                    <p><a class="btn btn-primary btn-large" ui-sref="language.goodDetail({'id':item.id,'type':item.type})">Детальніше &raquo;</a></p>
+                    <div class="clearfix"></div>
+                </div>
+            </article>
+
+            <article>
+                <div class="col-lg-4 col-sm-4 text-center">
+                    <h2 class="part">Хіт продажу</h2>
+                    <a ui-sref="language.goodDetail({'id':hitSale.id,'type':hitSale.type})"><img ng-src="{{hitSale.img}}" class="img-responsive news img-news thumbnail pull-left col-lg-12 col-md-12 col-sm-12 col-xs-5 "></a>
+
+                    <a ui-sref="language.goodDetail({'id':hitSale.id,'type':hitSale.type})">
+                        <h3  ng-bind-html="trustHtml(hitSale.name[lang])"></h3></a>
+                    <p  ng-bind-html="trustHtml(hitSale.desc[lang],100)"></p>
+                    <p class="text-center"><a class="btn btn-primary btn-large" ui-sref="language.goodDetail({'id':hitSale.id,'type':hitSale.type})">Детальніше &raquo;</a></p>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</section>

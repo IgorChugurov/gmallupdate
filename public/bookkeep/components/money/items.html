@@ -1,0 +1,156 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.Money'">
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <span class="default-btn"></span>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Деньги - список счетов</h4>
+        </div>
+        <div class="text-center tab-nav-stuff pull-right">
+            <a class="btn btn-raised btn-success action-btn" ng-click="$ctrl.makeBalances()">выровнять<br> остатки</a>
+        </div>
+        <div class="tab-nav-stuff pull-right">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref="frame.Money" ng-class="{'active':$ctrl.$state.current.name=='frame.Money'}">Список<br> счетов</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref="frame.Money.turnover" ng-class="{'active':$ctrl.$state.current.name=='frame.Money.turnover'}">Оборотная<br> ведомость</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref="frame.Money.stockadjustments" ng-class="{'active':$ctrl.$state.current.name=='frame.Money.stockadjustments'}">Инвента-<br>ризации</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+    <div  class="money">
+        <div class="news-stuff">
+            <div ng-show="!$ctrl.items.length" ng-cloak class="col-xs-12 col-md-12 col-sm-12 col-lg-12 text-center">
+                <p class="no_story">
+                    по вашему запросу нет записей
+                </p>
+            </div>
+            <div class="news-stuff-container">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                        <div class="header-table">
+                            <div class="td-list-header col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                наименование
+                            </div>
+                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                дебет
+                            </div>
+                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                кредит
+                            </div>
+                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                подробности
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="stuff-admin"  ng-repeat="item in $ctrl.items">
+                            <div class="" ng-class="{'mobil':global.get('mobile')}">
+                                <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+
+                                        <input type="text" id="name1" class="form-control name"
+                                               ng-model="item.name"
+                                               required
+                                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                               ng-change="$ctrl.saveField(item,'name')"/>
+
+                                        <span>
+                                            <a  ng-click="item.showDetail=!item.showDetail" ng-show="!item.showDetail" ng-if="item.data.length">
+                                                <i class="material-icons link-success more">
+                                                    keyboard_arrow_down
+                                                </i>
+                                            </a>
+                                            <a  ng-click="item.showDetail=!item.showDetail" ng-show="item.showDetail" ng-if="item.data.length">
+                                                <i class="material-icons link-success more">
+                                                    keyboard_arrow_up
+                                                </i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                    <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <div class="debet-credit">
+                                            <span ng-bind="item.debet"></span>
+                                        </div>
+                                    </div>
+                                    <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                                        <div class="debet-credit"ng-hide="item.type=='Cash'">
+                                            <span ng-bind="item.credit"></span>
+                                        </div>
+                                    </div>
+                                    <div class="td-list create col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                                        <a  class="btn btn-fab btn-fab-mini btn-primary pull-right" title="обмен" ng-click="$ctrl.goToExchange(item.type)">
+                                            <i class="material-icons">swap_horiz</i>
+                                        </a>
+
+                                        <a class="btn btn-fab btn-fab-mini btn-yellow pull-right" title="оборотнвя ведомость" ui-sref="frame.Money.turnover({id:item._id})">
+                                            <i class="material-icons ">view_module</i>
+                                        </a>
+
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div uib-collapse="!item.showDetail" class="collapse-item" ng-if="item.data.length">
+                                    <div class="header-table-item">
+                                        <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                            название
+                                        </div>
+                                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                            валюта
+                                        </div>
+                                        <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                            дебет
+                                        </div>
+                                        <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                                            кредит
+                                        </div>
+                                        <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2" ng-click="$ctrl.clearData(item)">
+                                            подробности
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div ng-repeat="accountData in item.data">
+                                        <div ng-repeat="d in accountData">
+                                            <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <span ng-show="$index==0" ng-bind="d.virtualAccount"></span>
+                                            </div>
+                                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <span ng-bind="d.currency"></span>
+                                            </div>
+                                            <div class="td-list text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <span ng-bind="d.debet"></span>
+                                            </div>
+                                            <div class="td-list text-center col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                                                <span ng-bind="d.credit"></span>
+                                            </div>
+                                            <div class="td-list  create text-center col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                                                <a class="btn btn-fab btn-fab-mini btn-info pull-right" title="подробности" ng-click="$ctrl.getDetail(item.type,d.virtualAccount_id)" ng-show="$index==0">
+                                                    <i class="material-icons ">visibility</i>
+                                                </a>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ui-view=""></div>

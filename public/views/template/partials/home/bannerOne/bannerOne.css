@@ -1,0 +1,6 @@
+.by-scroll img {
+    transform: translatex(650px);
+}
+.mobile-wrapper .by-scroll img {
+    transform: translatex(600px);
+}

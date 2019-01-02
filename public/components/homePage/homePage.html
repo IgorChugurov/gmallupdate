@@ -1,0 +1,63 @@
+<!--<pre>{{$ctrl.$state.current|json}}</pre>-->
+<div class="home-page" ng-hide="$ctrl.$state.current.name!='frame.homePage'" ng-class="{'home-page-mobile':$ctrl.global.get('mobile').val}">
+    <div class=" block-tab">
+        <div class="btn-group btn-group-justified btn-group-raised" style="height: 60px">
+            <a class="btn" ng-class="{'active':$ctrl.activeSide=='header'}"ng-click="$ctrl.activeSide='top'">
+                <span class="link-success">верхний блок</span>
+            </a>
+            <a class="btn" ng-class="{'active':$ctrl.activeSide=='left'}"ng-click="$ctrl.activeSide='left'">
+                <span class="link-success">левый блок</span>
+            </a>
+            <a class="btn" ng-class="{'active':$ctrl.activeSide=='right'}"ng-click="$ctrl.activeSide='right'">
+                <span class="link-success">правый блок</span></a>
+        </div>
+    </div>
+
+    <div class="" ng-if="$ctrl.item">
+        <div class="nav-box-stuff">
+            <div class="tab-nav-stuff">
+                <a class="btn btn-fab btn-fab-mini btn-violet" onclick="window.history.back()">
+                    <i class="material-icons">reply</i>
+                </a>
+            </div>
+            <div class="tab-nav-stuff">
+                <a class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.uploadHP()" title="выгрузить шаблон" style="margin-bottom: 0; margin-top: 0">
+                    <i class="material-icons">vertical_align_top</i>
+                </a>
+            </div>
+            <div class="tab-nav-stuff">
+                <a class="btn btn-fab btn-fab-mini btn-primary" ng-click="$ctrl.downloadHP()" title="загрузить шаблон" style="margin-bottom: 0; margin-top: 0">
+                    <i class="material-icons">vertical_align_bottom</i>
+                </a>
+            </div>
+
+            <div class="tab-nav-stuff">
+                <h4 class="name-box text-center">главная страница</h4>
+            </div>
+            <div class="tab-nav-stuff pull-right">
+                <a class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.deleteIndexPageHtml()" title="сбросить кеш страницы" style="margin-bottom: 0; margin-top: 0">
+                    <i class="material-icons">settings_backup_restore</i>
+                </a>
+            </div>
+            <div class="tab-nav-stuff pull-right">
+                <ui-select ng-model="$ctrl.blockForAdd" skip-focusser="true" search-enabled="true"
+                           ng-change="$ctrl.addBlock($ctrl.blockForAdd)">
+                    <ui-select-match placeholder="добавить блок">{{$select.selected.value}}</ui-select-match>
+                    <ui-select-choices repeat="opt.key as (key, opt) in $ctrl.listOfBlocks|filter:$select.search">{{ opt.value }}</ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <blocks-edit
+                         active-side="$ctrl.activeSide"
+                         item="$ctrl.item"
+                         type="HomePage"
+                         refresh-blocks="$ctrl.refreshBlocks()">
+            </blocks-edit>
+        </div>
+    </div>
+</div>
+<div ui-view=""></div>

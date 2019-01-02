@@ -1,0 +1,71 @@
+<div class="template-list list-detail" ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="cart-detail">
+            <div>
+                <h4 class="name-box text-center pull-left">настройка страницы новости</h4>
+                <a class="btn btn-fab btn-fab-mini btn-info pull-right" ng-click="$ctrl.setColor($ctrl.item.news,'news')">
+                    <i class="material-icons" title="установить стиль">opacity</i>
+                </a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 text-center">
+                <h4 class="label-menu">фото как фон</h4>
+                <div class="togglebutton">
+                    <label for="news111">
+                        <span ng-class="{'active':!$ctrl.item.news.setImgAsBackground}">не использовать</span>
+                        <input type="checkbox"
+                               id="news111"
+                               ng-model="$ctrl.item.news.setImgAsBackground"
+                               ng-change="$ctrl.saveFieldTemplate('news',$ctrl.item.news)">
+                        <span ng-class="{'active':$ctrl.item.news.setImgAsBackground}">использовать</span>
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 text-center name-page form-group row">
+                <a class="btn btn-fab btn-fab-mini btn-pink" ng-click="$ctrl.loadPhoto($ctrl.item.news,'news','img')">
+                    <i class="material-icons" title="загрузить фон для страницы">photo</i>
+                </a>
+                <a class="btn btn-fab btn-fab-mini btn-violet" ng-click="$ctrl.showPhoto($ctrl.item.news,'img')" >
+                    <i class="material-icons" title="показать фон для страницы">remove_red_eye</i>
+                </a>
+                <a class="btn btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteFon($ctrl.item.news,'news','img')">
+                    <i class="material-icons" title="удалить фон">delete</i>
+                </a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="cart-detail">
+            <h4 class="name-box text-center pull-left">настройка страницы дополнительного списка</h4>
+            <a class="btn btn-fab btn-fab-mini btn-info pull-right" ng-click="$ctrl.setColor($ctrl.item.additional,'additional')">
+                <i class="material-icons" title="установить стиль">opacity</i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="cart-detail">
+            <h4 class="name-box text-center pull-left">настройка страницы сотрудника</h4>
+            <a class="btn btn-fab btn-fab-mini btn-info pull-right" ng-click="$ctrl.setColor($ctrl.item.master,'master')">
+                <i class="material-icons" title="установить стиль">opacity</i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="cart-detail">
+            <h4 class="name-box text-center pull-left">настройка страницы рабочего места</h4>
+            <a class="btn btn-fab btn-fab-mini btn-info pull-right" ng-click="$ctrl.setColor($ctrl.item.workplace,'workplace')">
+                <i class="material-icons" title="установить стиль">opacity</i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="cart-detail">
+            <h4 class="name-box text-center pull-left">настройка статической страницы</h4>
+            <a class="btn btn-fab btn-fab-mini btn-info pull-right" ng-click="$ctrl.setColor($ctrl.item.stat,'stat')">
+                <i class="material-icons" title="установить стиль">opacity</i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

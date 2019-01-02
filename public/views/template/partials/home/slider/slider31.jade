@@ -1,0 +1,29 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        div(class="slide-block container",set-animate=dj[key].animate,data-animation=dj[key].animate,data-animation-repeat=dj[key].animateRepeat)
+            if(dj[key].name)
+                h3(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)=dj[key].name
+            if(dj[key].desc)
+                div(class="desc-slider")
+                    | !{dj[key].desc}
+            if(dj[key].arrowDownDiv)
+                arrow-down
+            div(class="owl-block",id=dj[key].id,home-page-stuff-owl="owlslider"+dj[key]._id,zoom-img='true',items=dj[key].qwslide,autoplay=dj[key].autoPlaySlider,duration=dj[key].duration)
+                div(class="nav-left")
+                    i(class="icon-prev-img")
+                div(class="owl-carousel owl-theme",id="owlslider" +dj[key]._id)
+                    if(dj[key].imgs && dj[key].imgs.length)
+                        - for (var i = 0; i < dj[key].imgs.length; i++)
+                            if(dj[key].imgs[i].actived)
+                                div
+                                    div(class="img-wrap col-lg-3 col-md-3 col-sm-4 col-xs-12")
+                                        img(class="img-responsive",src=photoHost + '/' + dj[key].imgs[i].img,alt=dj[key].imgs[i].alt)
+                                    div(class="desc-wrap col-lg-9 col-md-9 col-sm-8 col-xs-12")
+                                        h1=dj[key].imgs[i].name
+                                        div
+                                            | !{dj[key].imgs[i].desc}
+                                    div(class="clearfix")
+                div(class="clearfix")
+                div(class="nav-right")
+                    i(class="icon-next-img")
+        div(class="clearfix")

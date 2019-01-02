@@ -1,0 +1,79 @@
+<div class="content" ng-if="$state.current.name=='frame'">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.stores" class="content-box-link">
+            <div class="content-box">
+                <div >
+                    <h3>
+                        <span>
+                            <i class="material-icons link-success">power_settings_new</i><br>
+                        </span>сайты</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.blocksConfig" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons link-success">filter_b_and_w</i><br>
+                        </span>конфигурация блоков</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.temaplateConfig" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons link-success">border_outer</i><br>
+                        </span>структура шаблона</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.config" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons link-success">pets</i><br>
+                        </span>основной config</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.configData" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons link-success">settings_ethernet</i><br>
+                        </span>данные для config</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.lang" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons link-success">record_voice_over</i><br>
+                        </span>языки</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+
+<div ui-view></div>
+<div class="clearfix"></div>

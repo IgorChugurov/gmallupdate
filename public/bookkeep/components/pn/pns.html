@@ -1,0 +1,191 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.pns'">
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <span class="default-btn"></span>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Список приходных накладных {{$ctrl.getVirtualAccountName()}}</h4>
+        </div>
+        <div class="tab-nav-stuff date-box pull-right">
+            <div class="form-group label-floating">
+                <label for="date" class="control-label">дата</label>
+                <p class="input-group">
+                    <input type="text" id="date" class="form-control"
+                           placeholder="выберите дату"
+                           uib-datepicker-popup="dd-MMMM-yyyy"
+                           ng-model="$ctrl.date"
+                           ng-change="$ctrl.changeDate()"
+                           is-open="$ctrl.datePickerOpened"
+                           datepicker-options="$ctrl.dateOptions"
+                           ng-required="true"
+                           close-text="Close" />
+                    <span class="input-group-btn">
+                         <button type="button" class="btn btn-fab btn-fab-mini btn-violet" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened">
+                             <i class="material-icons ">insert_invitation</i>
+                         </button>
+                    </span>
+                </p>
+            </div>
+        </div>
+        <div class="text-center tab-nav-stuff pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+    </div>
+
+    <div class="nav-box-stuff-vertical">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать приходную накладную">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <div class="dropdown-box">
+                <a class="btn btn-fab btn-fab-mini btn-warning btn-dropdown"
+                   title="поиск по списку" ng-click="$ctrl.menuSlide1=!$ctrl.menuSlide1">
+                    <i class="material-icons">search</i>
+                </a>
+                <div class="menu-slide search" ng-show="$ctrl.menuSlide1">
+                    <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                        <div class="input-group">
+                            <input type="text"  class="form-control" placeholder="поиск по списку"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                                   ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                                   ng-model="$ctrl.searchStr"/>
+                            <span class="input-group-btn">
+                                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning">
+                                    <i class="material-icons" title="очистить строку поиска">clear</i>
+                                </a>
+                            </span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="tab-nav-stuff">
+            <div class="dropdown-box">
+                <a class="btn btn-fab btn-fab-mini btn-yellow btn-dropdown"
+                   title="выбрать подразделение" ng-click="$ctrl.menuSlide2=!$ctrl.menuSlide2">
+                    <i class="material-icons">receipt</i>
+                </a>
+                <div class="menu-slide" ng-show="$ctrl.menuSlide2">
+                    <ui-select ng-model="$ctrl.virtualAccount"
+                               skip-focusser="true"
+                               search-enabled="true"
+                               ng-change="$ctrl.changeVirtualAccount()"
+                               title="выберите подразделение">
+                        <ui-select-match  placeholder="подразделение">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-primary"
+               ng-click="$ctrl.reHoldAllDocs()"
+               title="обновить список">
+                <i class="material-icons">settings_backup_restore</i>
+            </a>
+        </div>
+        <!--<div class="tab-nav-stuff pull-right box-select">
+            <div class="form-group label-floating">
+                <label  class="control-label">название подразделения</label>
+                <ui-select ng-model="$ctrl.virtualAccount"
+                           skip-focusser="true"
+                           search-enabled="true"
+                           ng-change="$ctrl.changeVirtualAccount()"
+                           title="выберите субсчет">
+                    <ui-select-match  placeholder="субсчет">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+        </div>-->
+    </div>
+    <div class="clearfix"></div>
+    <div class="pns">
+        <div ng-show="!$ctrl.items.length" ng-cloak class="col-xs-12 col-md-12 col-sm-12 col-lg-12 text-center">
+            <p class="no_story">
+                по вашему запросу нет записей
+            </p>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                <div class="header-table">
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        название
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        дата
+                    </div>
+
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        сумма
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        валюта
+                    </div>
+                    <div class="td-list-header col-lg-1 col-md-12 col-sm-1 col-xs-1">
+                        статус
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        контрагент
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        редактировать
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="stuff-admin"  ng-repeat="item in $ctrl.items">
+                    <div class="" ng-class="{'mobil':global.get('mobile')}">
+                        <div class="title-block-stuff" ng-class="{'mobil':global.get('mobile')}">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 td-list">
+                                <span class="name-item">
+                                    <span ng-bind="item.name"></span>
+                                </span>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 td-list">
+                                <span class="date">{{$ctrl.moment(item.date).format('LLL')}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 td-list">
+                                <span ng-bind="item.sum"></span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 td-list">
+                                <span ng-bind="item.currency"></span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 td-list">
+                                <span  ng-show="!item.actived" >не проведена</span>
+                                <span  ng-show="item.actived">проведена</span>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 td-list">
+                                <small ng-bind="item.nameOfTypeOfConrtAgent"></small>
+                                <span ng-bind="item.contrAgent.name"></span>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 create td-list">
+                                <a class="btn btn-fab btn-fab-mini btn-warning edit pull-right" ng-click="$ctrl.deleteItem(item)" ng-disabled="item.actived" title="удалить невозможно - накладная проведена">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                                <a class="btn btn-fab btn-fab-mini  btn-success edit pull-right" ui-sref="frame.pns.pn({id:item._id})">
+                                    <i class="material-icons">edit</i>
+                                </a>
+
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+<div ui-view=""></div>

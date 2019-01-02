@@ -1,0 +1,57 @@
+<style>
+    .modal-dialog {
+        width: 90%;
+    }
+    a {
+        color: blue;
+    }
+    .green{
+        color:green
+    }
+</style>
+<div class="create-news select-modal">
+    <div class="modal-header">
+        <h4 class="modal-title text-center">Список работ</h4>
+        <div class="text-center">за период c {{$ctrl.startDate}} по {{$ctrl.endDate}}</div>
+
+    </div>
+    <div class="modal-body">
+        <div class="header-table">
+            <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                название
+            </div>
+            <div class="td-list-header col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                сумма
+            </div>
+            <div class="td-list-header col-lg-3 col-md-2 col-sm-2 col-xs-12">
+                vin
+            </div>
+            <div class="td-list-header col-lg-3 col-md-2 col-sm-2 col-xs-12">
+                дата наряда
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="stuff-admin" ng-repeat="j in $ctrl.jobs">
+            <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <span ng-bind="j.name"></span>
+            </div>
+            <div class="td-list col-lg-2 col-md-4 col-sm-4 col-xs-12">
+                <span ng-bind="(j.sum).toFixed(2)"></span>
+            </div>
+            <div class="td-list col-lg-3 col-md-2 col-sm-2 col-xs-12">
+                <span ng-bind="j.vin"></span>
+            </div>
+            <div class="td-list col-lg-3 col-md-2 col-sm-2 col-xs-12">
+                <span ng-bind="j.date"></span>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+    <div class="modal-footer">
+
+
+    </div>
+</div>

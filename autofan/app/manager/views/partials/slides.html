@@ -1,0 +1,135 @@
+<div  ng-hide="$state.includes('mainFrame.slides.edit')">
+    <div class="main">
+        <article class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="form-group">
+                        <label >Слайды</label>
+                        <a class="btn btn-success pull-right btn-transform" type="button"
+                            ng-click="focusInput=true;editItem(null)">
+                            создать слайд
+                        </a>
+                    </div>
+                </div>
+                <div class="panel-body" ng-init="searchItem=''">
+                    <form class="form-horizontal col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                        <div class="form-group">
+                            <input type="text" placeholder="поиск" ng-model="searchItem" class="search-query search" />
+                        </div>
+                    </form>
+                    <mongo-paginator-all type="order" page="paginate.page" row="paginate.row" rows-per-page="50" total-items="paginate.totalItems"></mongo-paginator-all>
+                    <ul  class="nav nav-pills nav-stacked col-lg-11 col-lg-offset-1 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1">
+                        <li class="phone-listing"
+                            class="pull-left col-lg-12 col-md-10 col-sm-10 col-xs-10 back active"
+                            ng-repeat="item in items|filter:{name:searchItem}|orderBy:'index'">
+
+                            <a class="col-lg-8 col-md-8 col-sm-8 col-xs-8" ng-click="focusInput=true;editItem(item)">
+                                <span ng-bind="item.name"></span>
+                            </a>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <div class=" btn-group">
+                                    <a ng-click="focusInput=true;editItem(item)" class="btn btn-info">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>
+                                    <a ng-click="deleteItem(item)" class="btn btn-danger">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </li>
+                    </ul>
+                    <div ng-show="brands.length<=0" class="alert alert-success">
+                        <h3>НЕТ ОБЪЕКТОВ</h3>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+            <ng-form name="myForm" class="form form-horizontal" role="form">
+                <div class="panel panel-default">
+                    <div class="panel-heading header">
+                        <label>Описание</label>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="panel-body">
+                            <div class=" col-lg-7 col-md-7 col-sm-7 col-xs-12">
+                                <div class="form-group">
+                                    <label for="name" class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">наименование</label>
+                                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                        <input type="text" placeholder="наименование" id="name" class="form-control mb"
+                                            ng-model="item.name"
+                                            ng-disabled="disEdit"
+                                            required
+                                            focus-me="focusInput"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="desc" class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">описание</label> <!--ng-bind="lang"-->
+                                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                        <textarea class="desc " placeholder="краткое описание" ng-model="item.desc"id="desc"rows="1" ng-disabled="disEdit">
+                                        </textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">link</label> <!--ng-bind="lang"-->
+                                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                        <input type="text" placeholder="наименование" id="name" class="form-control mb"
+                                            ng-model="item.link"
+                                            ng-disabled="disEdit"/>
+                                    </div>
+                                </div>
+                                
+
+
+                            </div>
+                            <div class=" col-lg-5 col-md-5 col-sm-5 col-xs-12">                                
+                                <div class="form-group">
+                                    <label  class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">индекс</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" placeholder="индекс" class="form-control mb-20" ng-model="item.index" required ng-disabled="disEdit"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">блок</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" placeholder="класс 1" class="form-control mb-20" ng-model="item.class1" required ng-disabled="disEdit"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">заголовок</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" placeholder="класс 2" class="form-control mb-20" ng-model="item.class2" required ng-disabled="disEdit"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-lg-3 col-md-3 col-sm-3 col-xs-3  control-label">текст</label>
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                                        <input type="text" placeholder="класс 3" class="form-control mb-20" ng-model="item.class3" required ng-disabled="disEdit"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <load-image
+                                            no-load="noLoad"
+                                            no-change="noChange"
+                                            upload-url="/api/collections/Slide/fileUploadFullImg"
+                                            item-id="{{item._id}}"
+                                            item-resourse="Items"
+                                            file-src="item.img">
+                                    </load-image>
+                                </div>
+                            </div>
+                            <button class="btn btn-block btn-primary btn-lg save" type="submit" ng-click="updateItem(item)" ng-disabled="disEdit">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить
+                            </button>
+                            
+
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </ng-form>
+        </article>
+    </div>
+</div>

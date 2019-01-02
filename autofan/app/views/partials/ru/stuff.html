@@ -1,0 +1,36 @@
+<div class="container" ng-hide="$state.includes('language.stuff.detail')">
+    <div class="row">
+        <div class="col-lg-offset-0 col-lg-12 col-md-offset-0 col-md-12  col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10">
+            <h1><span ng-bind="headerList"></span><small>&nbsp&nbsp&nbsp  в Харькове</small></h1>
+            <p class="page-header" style="margin-top: 0" ng-bind-html="trustHtml(textList)"></p>
+        </div>
+
+    </div><!-- /.row -->
+
+
+       <!-- <a ui-sref="language.stuff.detail({id:item._id})">
+            <span> sdfsdfsdfsdfsdfsd</span></a>-->
+
+    <div class="row"  > <!--style=" box-shadow:#666 2px 0px 4px"-->
+        <div class="col-lg-offset-0 col-lg-4 col-md-offset-0 col-md-4 col-sm-offset-1 col-sm-10 col-xs-offset-1 col-xs-10 portfolio-item" ng-repeat-start="item in stuffList">
+            <a ui-sref="language.stuff.detail({id:item._id})" ><img class="img-responsive" ng-src="{{item.img}}"></a>
+            <h3 style="font-size: 22px; ">
+
+                <a ui-sref="language.stuff.detail({id:item._id})">
+                    <span ng-bind="item.name[lang]"> </span></a>
+            </h3>
+
+            <p style="text-align:justify" ><span ng-bind="item.desc[lang].substring(0,110)"></span><span>...</span></p>
+
+        </div>
+        <div ng-repeat-end data-ng-show="if3element($index+1)" class="clearfix">
+
+        </div>
+
+
+
+
+    </div><!-- /.row -->
+</div><!-- /.container -->
+
+<div ui-view></div>

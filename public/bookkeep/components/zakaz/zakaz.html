@@ -1,0 +1,410 @@
+<div class="nav-box-stuff" >
+    <div class="tab-nav-stuff">
+        <a class="btn btn-fab btn-fab-mini btn-info"
+           ng-click="$ctrl.back()"
+           title="вернуться">
+            <i class="material-icons">reply</i>
+        </a>
+    </div>
+    <div class="tab-nav-stuff">
+        <h4 class="name-box">Наряд-заказ</h4>
+    </div>
+    <div class="tab-nav-stuff pull-right" ng-if="$ctrl.item.linkForcreatedByAPI">
+        <a class="btn btn-raised btn-success" href="{{$ctrl.item.linkForcreatedByAPI}}" target="_blank">
+            <span>ПЕРЕЙТИ <br>НА ИСТОЧНИК</span>
+        </a>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="pn">
+    <div class="news-stuff-container">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="name1" class="control-label">название</label>
+                            <input type="text" id="name1" class="form-control name"
+                                   ng-model="$ctrl.item.name"
+                                   ng-change="$ctrl.saveField('name')"
+                                   ng-disabled="$ctrl.item.actived"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="date" class="control-label">дата</label>
+                            <p class="input-group">
+                                <input type="text" id="date" class="form-control"
+                                       uib-datepicker-popup="dd-MMMM-yyyy"
+                                       ng-model="$ctrl.item.date"
+                                       ng-change="$ctrl.saveField('date')"
+                                       ng-disabled="$ctrl.item.actived"
+                                       is-open="$ctrl.datePickerOpened"
+                                       datepicker-options="$ctrl.dateOptions"
+                                       ng-required="true"
+                                       close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-fab btn-fab-mini btn-violet" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened">
+                                        <i class="material-icons ">
+                                            insert_invitation
+                                        </i>
+                                    </button>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 text-left">
+                        <label class="control-label" style="margin-top: 0">сумма</label>
+                        <h5 ng-repeat="c in $ctrl.currencyArr">
+                            <strong>
+                                <span ng-bind="$ctrl.totalSums[c]"></span>&nbsp;
+                                <span ng-bind="c"></span>
+                            </strong>
+                        </h5>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 text-left">
+                        <div class="form-group label-floating">
+                            <label for="currency" class="control-label">валюта</label>
+                            <ui-select ng-model="$ctrl.item.currency"
+                                       id="currency"
+                                       skip-focusser="true"
+                                       search-enabled="false"
+                                       ng-disabled="$ctrl.item._id"
+                                       ng-change="$ctrl.saveField('currency')"
+                                       title="выберите валюту учета">
+                                <ui-select-match  placeholder="валюта накладной">{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="opt in $ctrl.currencyArr">{{ opt }}</ui-select-choices>
+                            </ui-select>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 ">
+                        <div class="form-group label-floating">
+                            <label for="currency" class="control-label">название подразделения</label>
+                            <ui-select ng-model="$ctrl.item.virtualAccount"
+                                       ng-disabled="$ctrl.item._id"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-change="$ctrl.saveField('virtualAccount')"
+                                       title="выберите субсчет">
+                                <ui-select-match  placeholder="субсчет">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-left">
+                        <div class="form-group label-floating">
+                            <label for="supl" class="control-label">вид контрагент</label>
+                            <ui-select ng-model="$ctrl.item.typeOfContrAgent"
+                                       id="supl"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('typeOfContrAgent')"
+                                       title="выберите тип контрагента">
+                                <ui-select-match  placeholder="контрагент">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt.type as opt in $ctrl.typeOfContrAgents">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-left">
+                        <div class="form-group label-floating">
+                            <label for="sup2" class="control-label">контрагент</label>
+                            <ui-select ng-model="$ctrl.item.contrAgent"
+                                       id="sup2"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('contrAgent')"
+                                       title="выберите {{self.conrtAgent.name}}">
+                                <ui-select-match  placeholder="{{self.conrtAgent.name}}">{{$select.selected.name}} {{$select.selected.phone}} {{$select.selected.field1}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.contrAgents| filter: $select.search">{{ opt.name }} {{opt.phone}} {{opt.field1}}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-left">
+                        <div class="form-group label-floating">
+                            <label for="sup3" class="control-label">сотрудник</label>
+                            <ui-select ng-model="$ctrl.item.worker"
+                                       id="sup3"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('worker')"
+                                       title="выберите сотрудника">
+                                <ui-select-match  placeholder="сотрудник">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.workers">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left">
+                        <div class="">
+                            <label class="control-label">комментарии</label>
+                            <textarea class="form-control" rows="2"
+                                      ng-model="$ctrl.item.desc"
+                                      ng-disabled="$ctrl.item.actived"
+                                      ng-change="$ctrl.saveField('desc')">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left" ng-show="$ctrl.item._id">
+                        <div class="form-group label-floating" style="padding-bottom: 0; margin-bottom: 0">
+                            <label class="control-label">статус</label>
+                            <div>
+                                <h4 ng-show="!$ctrl.item.actived">
+                                    <span class="pull-left" style="padding-top: 15px"><strong>не проведен</strong></span>
+                                    <a class="btn btn-success btn-raised pull-right" ng-click="$ctrl.activeZakaz()">провести</a>
+                                </h4>
+                                <h4 ng-show="$ctrl.item.actived">
+                                    <span class="pull-left" style="padding-top: 15px"><strong>проведен</strong></span>
+                                    <a class="btn  btn-warning btn-raised pull-right" ng-click="$ctrl.activeZakaz()">отменить проводку</a>
+                                    </span>
+                                </h4>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-right"  ng-hide="$ctrl.item._id">
+                        <h4>
+                            <a class="btn btn-raised btn-success" ng-click="$ctrl.createItem()">
+                                <span>СОЗДАТЬ</span>
+                            </a>
+                        </h4>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 40px" ng-if="$ctrl.item.materials.length">
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            позиция
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            количество
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            цена
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            сумма
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            валюта
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            документ
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            редактировать
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin"   ng-repeat="m in $ctrl.item.materials">
+                        <div class="td-list name-goods col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            {{m.item.name}}  {{m.item.sku}}  {{m.item.sku2}}  {{m.item.producer.name}}
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                           <span ng-bind="m.qty"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span ng-bind="m.priceForSale"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.sum"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.currency"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span >
+                                <span ng-bind="m.linkData.name"></span>
+                            </span>
+                        </div>
+                        <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <a class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.Rn.item({id:m.linkData.id})">
+                                <i class="material-icons">create</i>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 action-box">
+
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+                        <strong>итого</strong>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+                        <strong ng-repeat-start="c in $ctrl.currencyArr">
+                            <span ng-bind="$ctrl.sumsM[c]"></span>&nbsp;
+                            <span ng-bind="c"></span>
+                        </strong>
+                        <br ng-repeat-end>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                </div>
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 40px" ng-if="$ctrl.item.works.length">
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            наименование
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            кол. нормочасов
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            сотрудник
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            сумма
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            валюта
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            документ
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            редактировать
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin"   ng-repeat="m in $ctrl.item.works">
+                        <div class="td-list name-goods col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            {{m.item.name}}
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.qty"></span>
+                        </div>
+
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span ng-bind="m.worker.name"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.price"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.currency"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span >
+                                <span ng-bind="m.linkData.name"></span>
+                            </span>
+                        </div>
+                        <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <a class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.Act.item({id:m.linkData.id})">
+                                <i class="material-icons">create</i>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 action-box">
+
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+                        <strong>итого</strong>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+
+                        <strong ng-repeat-start="c in $ctrl.currencyArr">
+                            <span ng-bind="$ctrl.sumsW[c]"></span>&nbsp;
+                            <span ng-bind="c"></span>
+
+                        </strong>
+                        <br ng-repeat-end>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                </div>
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 40px" ng-if="$ctrl.item.materialsIncome.length">
+                    <h4>Работы выполненные поставщиками</h4>
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            позиция
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            количество
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            цена
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            сумма
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            валюта
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            документ
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            редактировать
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin"   ng-repeat="m in $ctrl.item.materialsIncome">
+                        <div class="td-list name-goods col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            {{m.item.name}}  {{m.item.sku}}  {{m.item.sku2}}  {{m.item.producer.name}}
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.qty"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span ng-bind="m.price"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.sum"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.currency"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span >
+                                <span ng-bind="m.linkData.name"></span>
+                            </span>
+                        </div>
+                        <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <a class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.pns.pn({id:m.linkData.id})">
+                                <i class="material-icons">create</i>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 action-box">
+
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+                        <strong>итого</strong>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+                        <strong ng-repeat-start="c in $ctrl.currencyArr">
+                            <span ng-bind="$ctrl.sumsMIncome[c]"></span>&nbsp;
+                            <span ng-bind="c"></span>
+                        </strong>
+                        <br ng-repeat-end>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

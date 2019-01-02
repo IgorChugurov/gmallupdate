@@ -1,0 +1,28 @@
+extends layout
+
+block body
+  div(ng-controller="mainFrameAbstructCtrl", ng-init="setInitData(#{JSON.stringify(slides)})")"
+    div( ui-view )
+
+  //script(src="crawler.scripts164.min.js")
+
+  script(src="bower_components/jquery/jquery.js")
+  script(src="http://code.jquery.com/jquery-migrate-1.0.0.js")
+  script(src='bower_components/angular/angular.js')
+  script(src="bower_components/angular-animate/angular-animate.js")
+  script(src="bower_components/angular-ui-bootstrap/ui-bootstrap-tpls-0.10.0.js")
+  script(src='bower_components/angular-route/angular-route.js')
+  script(src='bower_components/angular-ui-router/release/angular-ui-router.js')
+  script(src='bower_components/angular-resource/angular-resource.js')
+  script(src='bower_components/angular-cookies/angular-cookies.js')
+  script(src='bower_components/angular-touch/angular-touch.js')
+  script(src='bower_components/moment/moment.js')
+  script(src="scripts/dev/superfish.js")
+  script(src="scripts/dev/elastislide/js/modernizr.custom.17475.js")
+  script(src="scripts/dev/elastislide/js/jquery.elastislide.js")
+  script(src="scripts/dev/jquery.elevatezoom.js")
+  script(src='scripts/app.js')
+  script(src='scripts/services.js')
+  script(src='scripts/controllers.js')
+  script(src='scripts/filters.js')
+  script(src='scripts/directives.js')

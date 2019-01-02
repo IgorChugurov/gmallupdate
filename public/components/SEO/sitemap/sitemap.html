@@ -1,0 +1,27 @@
+<div  class="box-list" ng-class="{'box-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame" class="undo">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.createItem()" title="обновить">
+                <i class="material-icons">cached</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">содержание файла sitemap</h4>
+        </div>
+    </div>
+
+    <div class="news-page col-lg-12">
+        <div ng-if="!$ctrl.content">
+            <p class="no_story"> Файла sitemap пока не создан</з>
+        </div>
+        <div class="cart-detail" >
+            <h4 class="text-center">ссылка на файл <span class="name-box" ng-bind="$ctrl.getFileName()"></span></h4>
+            <pre ng-bind="$ctrl.content"> </pre>
+        </div>
+    </div>
+</div>

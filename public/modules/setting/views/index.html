@@ -1,0 +1,67 @@
+<div class="content" ng-class="{'content-mobile':global.get('mobile').val}" ng-if="$state.current.name=='frame'">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.store" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span><i class="material-icons">settings_applications</i></span><br>
+                            настройки магазина</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.template" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span><i class="material-icons">invert_colors</i></span><br>
+                            настройки макета
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.customLists" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span><i class="material-icons">format_line_spacing</i></span><br>
+                            настройки списков
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.catalog" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span><i class="material-icons">exit_to_app</i></span><br>
+                        внешние каталоги
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" >
+        <a ui-sref="frame.redirect" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span><i class="material-icons">repeat</i></span><br>
+                        редиректы
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+
+<div ui-view></div>

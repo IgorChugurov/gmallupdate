@@ -1,0 +1,307 @@
+<div class="template-item" ng-if="$ctrl.item">
+    <div  class="nav-box-stuff" ng-if="$ctrl.block"  ng-class="{'mini-nav':$ctrl.global.get('mobile').val}">
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ng-click="$ctrl.block=''" ng-class="{'mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="базовые компоненты" ng-click="$ctrl.block='homePage'" ng-class="{'active':$ctrl.block=='homePage','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success" title="базовые компоненты" ng-class="{'mini':$ctrl.global.get('mobile').val}">dashboard</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="иконки" ng-click="$ctrl.block='base'" ng-class="{'active':$ctrl.block=='base','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">camera</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="меню" ng-click="$ctrl.block='header'" ng-class="{'active':$ctrl.block=='header','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">menu</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="подвал (footer)" ng-click="$ctrl.block='footer'" ng-class="{'active':$ctrl.block=='footer','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">subtitles</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="список товаров" ng-click="$ctrl.block='stuffs'" ng-class="{'active':$ctrl.block=='stuffs','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">assignment</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="страница товара" ng-click="$ctrl.block='stuffdetail'" ng-class="{'active':$ctrl.block=='stuffdetail','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">view_day</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="все списки" ng-click="$ctrl.block='news'" ng-class="{'active':$ctrl.block=='news','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">receipt</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="страницы списков" ng-click="$ctrl.block='newsDetail'" ng-class="{'active':$ctrl.block=='newsDetail','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">local_library</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="страница корзины"  ng-click="$ctrl.block='cart'"ng-class="{'active':$ctrl.block=='cart','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">shopping_basket</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="дополнительные компоненты" ng-click="$ctrl.block='addcomponents'" ng-class="{'active':$ctrl.block=='addcomponents','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">toll</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="социальные сети" ng-click="$ctrl.block='social'" ng-class="{'active':$ctrl.block=='social','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">share</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="сенкью пейдж" ng-click="$ctrl.block='paps'" ng-class="{'active':$ctrl.block=='paps','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">favorite</i>
+            </a>
+        </div>
+
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini" title="акции" ng-click="$ctrl.block='campaign'" ng-class="{'active':$ctrl.block=='campaign','mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons link-success"  ng-class="{'mini':$ctrl.global.get('mobile').val}">alarm</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center pull-right">
+            <a class="btn btn-fab btn-fab-mini btn-success" title="сброс кеша" ng-click="$ctrl.clearCashe()" ng-class="{'mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons"  ng-class="{'mini':$ctrl.global.get('mobile').val}">settings_backup_restore</i>
+            </a>
+        </div>
+
+        <div class="tab-nav-stuff text-center pull-right">
+            <a  class="btn btn-fab btn-fab-mini btn-info" title="создать стили для макета" ng-click="$ctrl.makeMainCSS()" ng-class="{'mini-tab':$ctrl.global.get('mobile').val}">
+                <i class="material-icons"  ng-class="{'mini':$ctrl.global.get('mobile').val}">opacity</i>
+            </a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div ng-if="!$ctrl.block" ng-class="{'item-mobile':$ctrl.global.get('mobile').val}">
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='homePage'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">dashboard</i>
+                            </span><br>
+                                базовые компоненты
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='base'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">camera</i>
+                            </span><br>
+                            иконки
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='header'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">menu</i>
+                            </span><br>
+                            меню (header)
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='footer'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">subtitles</i>
+                            </span><br>
+                            подвал (footer)
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4  col-xs-6 heading" >
+            <a ng-click="$ctrl.block='stuffs'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">assignment</i>
+                            </span><br>
+                            список товаров
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4  col-xs-6 heading" >
+            <a ng-click="$ctrl.block='stuffdetail'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">view_day</i>
+                            </span><br>
+                            страница товара (услуги)
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4  col-xs-6 heading" >
+            <a ng-click="$ctrl.block='news'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                        <span class="text-center">
+                            <i class="material-icons">receipt</i>
+                        </span><br>
+                            списки
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4  col-xs-6 heading" >
+            <a ng-click="$ctrl.block='newsDetail'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">local_library</i>
+                            </span><br>
+                            страницы
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='cart'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                        <span class="text-center">
+                            <i class="material-icons">shopping_basket</i>
+                        </span><br>
+                            страница корзины
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='addcomponents'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                        <span class="text-center">
+                            <i class="material-icons">toll</i>
+                        </span><br>
+                            дополнительные компоненты
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='social'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">share</i>
+                            </span><br>
+                            социальные сети
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading" >
+            <a ng-click="$ctrl.block='paps'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">favorite</i>
+                            </span><br>
+                            сенкью пейдж
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 heading">
+            <a ng-click="$ctrl.block='campaign'"  class="content-box-link">
+                <div class="content-box">
+                    <div class="">
+                        <h3>
+                            <span class="text-center">
+                                <i class="material-icons">alarm</i>
+                            </span><br>
+                            акционные предложения
+                        </h3>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="setting-component">
+        <template-menu-setting   ng-if="$ctrl.block=='header'"></template-menu-setting>
+        <template-footer-setting ng-if="$ctrl.block=='footer'"></template-footer-setting>
+        <template-base-setting ng-show="$ctrl.block=='base'"></template-base-setting>
+        <template-index-setting  ng-if="$ctrl.block=='homePage'"></template-index-setting>
+        <template-cart-setting   ng-if="$ctrl.block=='cart'"></template-cart-setting>
+        <template-stuffs-setting   ng-if="$ctrl.block=='stuffs'"></template-stuffs-setting>
+        <template-stuff-detail-setting   ng-if="$ctrl.block=='stuffdetail'"></template-stuff-detail-setting>
+        <template-news-setting   ng-if="$ctrl.block=='news'"></template-news-setting>
+        <template-news-detail-setting   ng-if="$ctrl.block=='newsDetail'"></template-news-detail-setting>
+        <template-stats-setting   ng-if="$ctrl.block=='stats'"></template-stats-setting>
+        <template-master-setting   ng-if="$ctrl.block=='master'"></template-master-setting>
+        <template-workplace-setting   ng-if="$ctrl.block=='workplace'"></template-workplace-setting>
+        <template-additional-setting   ng-if="$ctrl.block=='additional'"></template-additional-setting>
+        <template-addcomponents-setting   ng-if="$ctrl.block=='addcomponents'"></template-addcomponents-setting>
+        <template-social-setting   ng-if="$ctrl.block=='social'"></template-social-setting>
+        <template-paps-setting   ng-if="$ctrl.block=='paps'"></template-paps-setting>
+        <template-campaign-setting   ng-if="$ctrl.block=='campaign'"></template-campaign-setting>
+
+    </div>
+</div>

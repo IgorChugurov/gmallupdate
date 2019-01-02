@@ -1,0 +1,66 @@
+<div class="col-lg-8 col-lg-offset-2" ng-hide="$state.includes('mainFrame.collection.edit')">
+    <div class="main">
+        <div class="row">
+            <div class="col-sm-12 col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <span>Бренды</span>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <input type="text" placeholder="поиск" ng-model="searchBrand" class="search-query"/>
+                        </div>
+                        <ul  class="nav nav-pills nav-stacked">
+                            <li class="phone-listing"
+                                class="pull-left col-lg-12 col-md-10 col-xs-10 actve"
+                                ng-repeat="brand in brands|filter:{name:searchBrand}|orderBy:'index'">
+                                <a ng-click="selectBrand(brand)"  href=""><span ng-bind="brand.name[config.DL]"></span></a>
+                            </li>
+                        </ul>
+                        <div ng-show="brands.length<=0" class="alert alert-success"><h3>Нет объектов</h3></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <span class="col-lg-8">Коллекции для <span ng-bind="activeBrand.name[config.DL]"></span></span>
+                            <div class=" col-lg-4">
+                                <a href=""class="btn btn-success btn-block" type="button"  ng-click="editCollection(null)"
+                                style=" margin-right: 10px">создать коллекцию</a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <input type="text" placeholder="поиск" ng-model="searchCollection" class="search-query"/>
+                        </div>
+                        <ul  class="nav nav-pills nav-stacked">
+                            <li class="phone-listing"
+                                class="pull-left col-lg-12 col-md-10 col-xs-10 actve"
+                                ng-repeat="collection in collections|filter:{name:searchCollection}|orderBy:'index'">
+                            <span class="col-lg-6 col-md-6 col-xs-6">
+                            <a ng-click="editCollection(collection)"  href="">
+                                <span ng-bind="collection.name[config.DL]"></span>
+                            </a>
+                            </span>
+                                <div class="col-lg-6 text-right">
+                                    <a ng-click="editCollection(collection)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                    <a ng-click="deleteCollection(collection)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                </div>
+
+                            </li>
+                        </ul>
+                        <div ng-show="collections.length<=0" class="alert alert-success"><h3>Нет коллекций</h3></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ui-view></div>
+

@@ -1,0 +1,21 @@
+/*nautilus rk*/
+.home-section-header {
+    position: relative;
+}
+.mytoggle{
+    width: 100%
+}
+img{
+    display: inline-block;
+    margin: 0 auto;
+}
+.desc-slide {
+    opacity: 0.8;
+    transition: 0.5s opasity ease-out;
+}
+.home-section:hover .desc-slide {
+    opacity: 1;
+}
+.home-section:hover img {
+    transform: rotate(180deg);
+}

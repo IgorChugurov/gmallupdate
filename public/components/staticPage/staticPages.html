@@ -1,0 +1,92 @@
+<div class="static-pages" ng-class="{'static-pages-mobile':$ctrl.global.get('mobile').val}">
+    <div ng-hide="$ctrl.$state.current.name!='frame.stats'" class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать новую страницу">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box text-center">список статических страниц</h4>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div ng-hide="$ctrl.$state.current.name!='frame.stats'">
+        <div class="col-lg-12  col-md-12 col-sm-12  col-xs-12">
+            <div ng-show="!$ctrl.items.length" ng-cloak class="text-center">
+                <p class="no_story">
+                    Вы пока не создали ни одной статической страницы.
+                </p>
+            </div>
+            <div class="clearfix"></div>
+            <div class="cart-detail">
+                <ul dnd-effect-allowed="move" dnd-list="$ctrl.items" class="gallery-item-ul" style="padding-left: 0">
+                    <li ng-repeat="item in $ctrl.items" class="gallery-item"
+                        dnd-draggable="item"
+                        dnd-effect-allowed="move"
+                        dnd-dragend="$ctrl.movedItem()"
+                        dnd-moved="$ctrl.items.splice($index, 1)"
+                        ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                        <span class="helper"></span>
+
+                        <div class="form-group col-lg-5  col-md-5 col-sm-5  col-xs-12">
+                            <div class="form-group label-floating">
+                                <label class="control-label">название страницы</label>
+                                <input class="form-control" ng-model="item.name" lost-focus="$ctrl.saveField(item,'name')">
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-4 col-sm-5  col-xs-12">
+                            <div class="form-group text-center">
+                                <div class="togglebutton">
+                                    <label for="actived{{$index}}-ds">
+                                        <span class="ll" ng-class="{'active':!item.actived}">не опубликовано</span>
+                                        <input type="checkbox"
+                                               id="actived{{$index}}-ds"
+                                               ng-model="item.actived"
+                                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                               ng-change="$ctrl.saveField(item,'actived')">
+                                        <span class="lr" ng-class="{'active':item.actived}">опубликовано</span>
+                                    </label>
+                                </div>
+                                <div class="togglebutton">
+                                    <label for="'preload'{{$index}}-ds">
+                                        <span ng-class="{'active':!item.preload}">обычная</span>
+                                        <input type="checkbox"
+                                               id="'preload'{{$index}}-ds"
+                                               ng-model="item.preload"
+                                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                               ng-change="$ctrl.saveField(item,'preload')">
+                                        <span ng-class="{'active':item.preload}">как прелоад экран</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2  col-md-3 col-sm-2  col-xs-12 padding0 text-right">
+                            <a class="btn  btn-fab btn-fab-mini btn-info swap" ng-if="!$ctrl.mobile" style="cursor: move">
+                                <i class="material-icons" title="передвинуть">swap_vertical_circle</i>
+                            </a>
+                            <a class="btn  btn-fab btn-fab-mini btn-success" ui-sref="frame.stats.stat({id:item._id})">
+                                <i class="material-icons">edit</i>
+                            </a>
+                            <a class="btn  btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteItem(item,$index)">
+                                <i class="material-icons">delete</i>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </li>
+                    <div class="clearfix" ng-if="$index%2!=0" ng-repeat-end></div>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div ui-view=""></div>
+</div>

@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="main">
+        <h3>USERS</h3>
+        <div class="row">
+            <article class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                <table class="table col-lg-12  table-bordered " style="font-size: 14px; width: 100%; overflow: auto">
+                    <thead>
+                    <tr>
+                        <th class="col-lg-1">№</th>
+                        <th class="col-lg-1" >name</th>
+                        <th class="col-lg-2" >email</th>
+                        <th class="col-lg-1" >role</th>
+                        <th class="col-lg-1" >tel</th>
+                        <th class="col-lg-1" >Страна</th>
+                        <th class="col-lg-1" >Город</th>
+                        <th class="col-lg-2" >Адрес</th>
+                        <th class="col-lg-1" >Удалить</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <tr ng-repeat="user in users">
+                       <td class="col-lg-1">{{$index+1}}</td>
+                        <td class="col-lg-1">{{user.name}}</td>
+                        <td class="col-lg-2">{{user.email}}</td>
+                        <td class="col-lg-1">
+                            <select class="btn" ng-model="user.role" ng-change="updateUser(user)">
+                                <option value='user'>юзер</option>
+                                <option value='admin'>админ</option>
+                            </select>
+                        </td>
+                        <td class="col-lg-1">{{user.profile.phone}}</td>
+                        <td class="col-lg-1">{{user.profile.country}}</td>
+                        <td class="col-lg-1">{{user.profile.city}}</td>
+                        <td class="col-lg-2">{{user.profile.address}}</td>
+                        <td class="col-lg-1 text-center">
+                            <a  style="padding-top: 8px; color: #c8171a" ng-click="deleteUser(user)"><span class=" glyphicon glyphicon-remove"></span> </a>
+                        </td>
+
+                    </tr>
+                    </tbody>
+                </table>
+            </article>
+        </div>
+    </div>
+<br />
+<br />
+</div>

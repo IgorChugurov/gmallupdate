@@ -1,0 +1,79 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center loadImage">
+    <div class="row">
+        <div class="mb-20">
+            <div class="form-group ">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="$ctrl.fileDimension" value="Origin">
+                        <p>исходный</p>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group ">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="$ctrl.fileDimension" value="Sticker">
+                        <p>стикер</p>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group ">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="$ctrl.fileDimension" value="Small">
+                        <p>400px</p>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group ">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="$ctrl.fileDimension" value="">
+                        <p>600px</p>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group ">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="$ctrl.fileDimension" value="Big">
+                        <p>1200px</p>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group ">
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-model="$ctrl.fileDimension" value="FullImg">
+                        <p>1920px</p>
+                    </label>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="form-group text-center box-photo mb-20" ng-if="fileSrc">
+        <img class="img-responsive " ng-src="{{fileSrc}}" alt="выберите файл"/>
+    </div>
+    <div class="add-photo">
+        <div class="add-photo-item">
+            <a type="button" class="btn btn-fab btn-success" title="добавить фото"  ng-disabled="noChange || !itemId" ng-click="clickFile();">
+                <i class="material-icons">add_a_photo</i>
+            </a>
+            <a class="btn  btn-fab btn-violet" ng-if="!noLoad && !noChange" title="загрузить" ng-click="uploadImg()">
+                <i class="material-icons">get_app</i>
+            </a>
+            <a type="button" class="btn btn-fab btn-warning" ng-click="deleteImg()" title="удалить фото" ng-if="fileSrc && !gallery" >
+                <i class="material-icons">delete</i>
+            </a>
+        </div>
+        <div class="col-lg-12" ng-if="!noLoad && noChange">
+            <img src="img/spinner.gif">
+        </div>
+        <div class="clearfix"></div>
+        <input type="file" file-read-src="fileSrc" my-file="myFile" name="image" id="imagefile{{now}}" style='visibility: hidden;'/>
+    </div>
+</div>
+<div class="clearfix"></div>

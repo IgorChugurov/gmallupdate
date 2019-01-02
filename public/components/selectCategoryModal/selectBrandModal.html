@@ -1,0 +1,22 @@
+<div class="select-modal select-brand">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">выберите бренд</h3>
+        <a class="cancel" type="button" ng-click="cancel()"></a>
+    </div>
+    <div class="modal-body">
+        <div class="form-group" >
+            <div class="radio">
+                <label>
+                    <input type="radio" ng-model="itemBrand" value="null"  ng-change="ok(null)">без бренда
+                </label>
+            </div>
+            <div class="radio" ng-repeat="brand in brands">
+                <label>
+                    <input type="radio" ng-model="brandItem" value="{{brand._id}}" ng-change="ok(brand._id)">{{brand.name}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+    </div>
+</div>

@@ -1,0 +1,13 @@
+- var pullClass=''
+if(dj[key].position!='center' && (dj[key].positionMenu=='top' ||dj[key].positionMenu=='bottom'))
+    - pullClass=' pull-'+dj[key].position
+div(class=dj[key].wrapclass+pullClass)
+    div(class=mobileWrapper)
+        div
+            a(class="img-likes",ui-sref="likes")
+                span(id="mainLikes",class="icon-likes-img")
+                span(id="inverseLikes",class="icon-likes-inverse")
+                span(class="inLikes")
+                    b(class="total",ng-bind="likes.totalCount")
+
+

@@ -1,0 +1,100 @@
+<div class="template-list cart-item" ng-show="$ctrl.block=='cart'"  ng-init="displayHelp=false" ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="cart-detail">
+            <h4 class="name-box text-center">
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 header-panel">
+                    <a ng-click="item.showDetai199=!item.showDetai199" ng-show="!item.showDetai199">
+                        <span>настройки страницы корзины</span>
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_down
+                        </i>
+                    </a>
+                    <a ng-click="item.showDetai199=!item.showDetai199" ng-show="item.showDetai199">
+                        <span>настройки страницы корзины</span>
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_up
+                        </i>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <a class="btn btn-fab btn-fab-mini  btn-info" title="загрузить из шаблона" ng-click="$ctrl.setColor($ctrl.item.cart,'cart')">
+                        <i class="material-icons">opacity</i>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+            </h4>
+            <div class="clearfix"></div>
+            <div  uib-collapse="!item.showDetai199" class="collapse-item">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center">
+                    <div class="togglebutton form-group text-center">
+                        <p>тип корзины</p>
+                        <label for="block-chat22s">
+                            <span class="ll" ng-class="{'active':!$ctrl.store.cartSetting.slide}">стандартная корзина</span>
+                            <input type="checkbox"
+                                   id="block-chat22s"
+
+                                   ng-change="$ctrl.saveFieldStore('cartSetting')"
+
+                                   ng-model="$ctrl.store.cartSetting.slide">
+                            <span  class="lr" ng-class="{'active':$ctrl.store.cartSetting.slide}">корзина в боковой панели</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 form-group">
+                    <ui-select ng-model="$ctrl.item.cart.templ" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('cart.templ',$ctrl.item.cart.templ)">
+                        <ui-select-match placeholder="шаблон">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 form-group">
+                    <ui-select ng-model="$ctrl.item.cart.style" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('cart.style',$ctrl.item.cart.style)">
+                        <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="cart-detail">
+            <h4 class="name-box text-center">
+                <div class="header-panel">
+                    <a ng-click="item.showDetai198=!item.showDetai198" ng-show="!item.showDetai198">
+                        <span>текст-помощник</span>
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_down
+                        </i>
+                    </a>
+                    <a ng-click="item.showDetai198=!item.showDetai198" ng-show="item.showDetai198">
+                        <span>текст-помощник</span>
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_up
+                        </i>
+                    </a>
+                </div>
+            </h4>
+            <div class="clearfix"></div>
+            <div  uib-collapse="!item.showDetai198" class="collapse-item">
+                <p class="info-text">если вы хотите, чтобы в корзине отображался дополнительный текст с пояснениями об оформлении заказа, внесите его в этот блок </p>
+                <div class="form-group label-floating">
+                    <label class="control-label">заголовок</label>
+                    <input class="form-control" ng-model="$ctrl.item.cart.name" ng-blur="$ctrl.saveFieldTemplate('cart.name',$ctrl.item.cart.name)">
+                </div>
+
+                <div class="editor form-group">
+                    <div text-angular ng-blur="$ctrl.saveFieldTemplate('cart.desc',$ctrl.item.cart.desc)"
+                         ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
+                         ng-model="$ctrl.item.cart.desc"
+                         ta-paste="$ctrl.global.get('functions').val.taPaste($html)"
+                         ta-html-editor-class="border-around">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

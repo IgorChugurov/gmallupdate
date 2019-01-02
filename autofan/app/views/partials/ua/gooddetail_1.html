@@ -1,0 +1,25 @@
+<div class="bg" ng-class="bgImg[1][good.category]">
+<div class="container">
+    <div class="jumbotron1 hero-spacer">
+        <h1><span ng-bind-template="{{good.name[lang]}}"></span></h1>
+    </div>
+
+
+    <div class="row">
+        <div class="thumbnail">
+            <article class=" col-lg-5 col-md-5 col-sm-5 col-xs-12 img-news-detail">
+                <img class="img-responsive thumbnail col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-src="{{good.img}}" alt="">
+            </article>
+            <article class="col-lg-7 col-md-7 col-sm-7 col-xs-12 desc content-news">
+                <a class="pull-right" ui-sref="language.list({'type':1,'id':0})">Повернутись назад</a>
+                <div class="clearfix"></div>
+                <p class="desc_news_detail" ng-bind-html="trustHtml(good.desc[lang])">
+
+                </p>
+                <p class="date"> <span ng-bind="good.date"></span></p>
+            </article>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+</div?

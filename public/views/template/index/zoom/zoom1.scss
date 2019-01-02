@@ -1,0 +1,80 @@
+/*zoom1*/
+.zoom-slide {
+    position: relative;
+    background-color:$color
+}
+.zoom-slide img {
+    width: 100%;
+    position: relative;
+}
+.zoom-slide .icon-cancel-img {
+    width: 20px;
+    height: 20px;
+    background-size: 20px;
+}
+.zoom-cancel {
+    z-index: 1000;
+}
+.zoom-slide .slide-img {
+    margin: 0 auto;
+}
+.zoom-slide .carousel-control.right,
+.zoom-slide .carousel-control.left {
+    background-image: none;
+}
+.zoom-slide  .carousel-control.right span,
+.zoom-slide .carousel-control.left span{
+    display: none;
+}
+.carousel-indicators li{
+    background-color: #fff;
+    border: 3px solid #fff;
+    width: 15%;
+    height: 5px;
+    border-radius: 0;
+    border-width: 3px;
+    opacity: 0.6;
+    display: inline-block;
+    margin: 1px 5px;
+}
+.carousel-indicators .active {
+    width: 15%;
+    height: 5px;
+    border-width: 3px;
+    background-color: transparent;
+    opacity: 1;
+    margin: 1px 5px;
+}
+@media (max-width: 400px) {
+    .zoom-slide .carousel-indicators {
+        width: 100%;
+        margin-left: -50%;
+    }
+    .zoom-slide .carousel-indicators li {
+        height: 1px;
+        opacity: 0.6;
+        background-color: #fff;
+        border: 1px solid #fff;
+        border-width: 1px;
+        width: 8%;
+    }
+    .zoom-slide .carousel-indicators .active {
+        height: 1px;
+        background-color: transparent;
+        opacity: 1;
+        border: 1px solid #fff;
+        border-width: 1px;
+        width: 8%;
+    }
+    .zoom-slide .icon-cancelzoom-img {
+        width: 15px;
+        height: 15px;
+        top: 10px;
+        right: 10px;
+    }
+    .gallery .carousel-control.left,
+    .gallery .carousel-control.right {
+        width: 25px !important;
+        background-size: 25px !important;
+    }
+}

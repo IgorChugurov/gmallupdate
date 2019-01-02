@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <div class="col-lg-12 back">
+                <button class="btn btn-default pull-left" ng-click="backToList()">вернуться в список</button>
+            </div>
+            <br />
+
+            <div class="container">
+                <h3>Галерея</h3>
+
+
+                <div class=" thumbnail pull-left" ng-repeat='photo in gallery'>
+                    <img ng-src="{{photo.thumb}}" />
+                    <div style="padding: 10px;">
+
+                        <button class="btn btn-danger pull-right" ng-click="deletePhoto($index)">удалить</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+
+
+
+                <div class="thumbnail pull-left loading" ng-hide="gallery.length>6">
+                    <img ng-src="{{myFileSrc}}" alt="выберете фото" />
+                    <div  style="padding: 10px;">
+
+
+                        <input class="btn btn-success pull-left" type = "button" value = "выбрать" ng-disabled="noChange"
+                               onclick ="javascript:document.getElementById('imagefile').click();">
+
+                        <button class="btn btn-info pull-right" ng-click="uploadFile()" ng-disabled="noLoad">загрузить</button>
+                    </div>
+                    <div class="clearfix"></div>
+
+                </div>
+
+
+                <input type="file" file-read="myFile" name="image" id="imagefile" style='visibility: hidden;'/>
+            </div>
+        </div>
+    </div>
+</div>

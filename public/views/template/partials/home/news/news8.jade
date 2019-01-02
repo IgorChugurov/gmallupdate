@@ -1,0 +1,38 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        div(class="home-news col-lg-6 col-md-6 col-sm-6 col-xs-12",set-animate=dj[key].animate,data-animation=dj[key].animate,data-animation-delay=dj[key].animateDelay)
+            div(class="container")
+                if(dj[key].name)
+                    a( href="/news")
+                        h3(class="text-center",set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)=dj[key].name
+                div(home-page-stuff-owl="owlslider"+dj[key].id,duration=dj[key].duration,items=dj[key].qwslide,autoplay=dj[key].autoPlaySlider,loop="true")
+                    div(class="owl-carousel owl-theme",id="owlslider" + dj[key].id)
+                        - for (var i = 0; i < dj[key].news.length; i++)
+                            - var datalink="/news/"+dj[key].news[i].url
+                            a(href=datalink)
+                                div(class="img-box")
+                                    div(class="box-overlay")
+                                    if (dj[key].news[i].img)
+                                        img(class="img-responsive img-news",src=photoHost + '/' + dj[key].news[i].img,alt=dj[key].news[i].alt)
+                                        div(class="news-home-desk")
+                                            div(class="news-desc")
+                                                h1=dj[key].news[i].name
+                                                div
+                                                    | !{dj[key].news[i].desc}
+                                    else if(dj[key].news[i].imgs && dj[key].news[i].imgs.length)
+                                        img(class="img-responsive",src=photoHost + '/' + dj[key].news[i].imgs[0])
+                                        div(class="half-shadow")
+                                            div(class="title-block")
+                                                h1=dj[key].news[i].name
+                                                div
+                                                    | !{dj[key].news[i].desc}
+                                    else if(dj[key].news[i].video)
+                                        div
+                                            | !{dj[key].news[i].video}
+                    div(class="nav-box")
+                        a(class="navleft-carousel nav-left",set-animate,data-animation="animated17")
+                            span(class="icon-prev-img")
+                        a(class="navright-carousel nav-right",set-animate,data-animation="animated18")
+                            span(class="icon-next-img")
+
+                div(class="clearfix")

@@ -1,0 +1,80 @@
+<div class="content" ng-class="{'content-mobile':global.get('mobile').val}" ng-if="$state.current.name=='frame'">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a ui-sref="frame.campaigns" class="content-box-link">
+            <div class="content-box">
+                <div>
+                    <h3>
+                        <span>
+                            <i class="material-icons">dashboard</i><br>
+                        </span>акции</h3>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.coupons" class="content-box-link">
+            <div class="content-box">
+                <div>
+                    <h3>
+                        <span>
+                            <i class="material-icons">input</i><br>
+                        </span>купоны</h3>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.news" class="content-box-link">
+            <div class="content-box">
+                <div>
+                    <h3>
+                        <span>
+                            <i class="material-icons">fiber_new</i><br>
+                        </span>новости</h3>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.users" class="content-box-link">
+            <div class="content-box">
+                <div>
+                    <h3>
+                        <span>
+                            <i class="material-icons">contact_mail</i><br>
+                        </span>подписчики</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.subscribersList" class="content-box-link">
+            <div class="content-box">
+                <div>
+                    <h3>
+                        <span>
+                            <i class="material-icons">group</i><br>
+                        </span>списки рассылок</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.witget" class="content-box-link">
+            <div class="content-box">
+                <div>
+                    <h3>
+                        <span>
+                            <i class="material-icons">widgets</i><br>
+                        </span>widget</h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
+
+<div ui-view></div>

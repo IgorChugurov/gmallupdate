@@ -1,0 +1,96 @@
+<carousel interval="myInterval" >
+    <slide ng-repeat="slide in slides" active="slide.active">
+        <img ng-src="{{slide.img}}" style="margin:auto;">
+        <div class="carousel-caption">
+            <h1><span ng-bind="slide.name"></span> <a href="http://autofan.kharkov.ua">http://autofan.kharkov.ua</a></h1>
+
+        </div>
+    </slide>
+</carousel>
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <h3><i class="glyphicon glyphicon-wrench"></i>&nbsp;<a href="#"> Услуги</a></h3>
+                <p>Автосервис «Autofan» предлагает комплексное обслуживание автомобилей BMW.
+                    Полный ремонт и обслуживание, чистка и ремонт топливной системы и систем климата, программирование, кодирование BMW-Mini, BMW-мотоциклов; чип-тюнинг мотора (Италия); изменение классов мощности из 320 в 328, из 520 в 528, из 523 в 525;  русификация монитора; дооснащение навигацией;  мультимедиа новых серий (CIC/CCC/NBT).
+
+                    <!--Современная
+                    <a >диагностика  BMW </a> с помощью электронного професионального оборудования, <a href="http://#">ремонт BMW </a> с использованием рекомендованного оборудования и фирменных запчастей,  <a href="http://#"> регламентное техническое обслуживание </a>, а также <a href="http://#">современный тюнинг</a>-->
+                </p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <h3><i class="glyphicon glyphicon-cog"></i><a href="#"> Запчасти б/у</a></h3>
+                <p>
+                    <!--На складе нашего автосервиса всегда имеется в наличии широкий выбор аксессуаров, более 5000 видов оригинальных и неоригинальных запчастей BMW, которые Вы можете заказать, воспользовавшись услугой поиска  запчастей
+                    <a ></a>. Также предлагается широкий ассортимент <a href="#">запчастей бывших в употреблении</a>-->
+                    Автосервис «Autofan» предлагает Вам продажу новых, оригинальных и б/у запчастей из Германии в наличии и под заказ. Выбирайте легко с <a ng-click="goSearch()"> онлайн-сервисом по поиску  запчастей</a>. Фирменные аксессуары к Вашему автомобилю. Оптимальная цена. Быстрая доставка по городу и Украине.
+                </p>
+                <form ng-submit="searchSpark(codeSpark)">
+                    <div class="input-group" style="margin-top: 15px; width: 250px;">
+                        <input type="text" class="form-control" placeholder="введите код запчасти" ng-model="codeSpark" style="font-size: 12px">
+      						<span class="input-group-btn">
+        						<button class="btn btn-primary" type="submit">найти</button>
+      						</span>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <h3><i class="glyphicon glyphicon-phone"></i><a href="#"> Контакты</a></h3>
+
+                <p style="font-size: 16px">
+                    Украина, г. Харьков,<br>
+                    пер. Александровский,9<br>
+                    Связаться с менеджером  <strong class="red"></br>+3 (8050) 444 49 77</br>+3 (8057) 757 69 56</br>+3 (8066) 268 90 40</strong>.
+                </p>
+
+            </div>
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+</div><!-- /.section -->
+
+<div class="section-colored text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>Autofan: профессиональный сервис для Вашего BMW </h2>
+                <p>В течении четырнадцати лет наш автосервис занимается комплексным ремонтом автомобилей BMW, тесно сотрудничая с официальными дилерами. Мы предлагаем произвести любые ремонтные работы, комплексную диагностику и регламентное техобслуживание Вашего BMW.
+                </p>
+                <hr>
+
+            </div>
+        </div><!-- /.row -->
+    </div><!-- /.container -->
+</div><!-- /.section-colored -->
+
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <a ui-sref="language.news"><h1 class="page-header">Все события<small></small></h1></a>
+            </div>
+        </div>
+        <div class="row" ng-repeat-start="item in lastNews">
+            <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                <a ui-sref="language.news.detail({id:item._id})"><img class="img-responsive" ng-src="{{item.img}}"></a>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-6">
+                <h3>
+                    <a ui-sref="language.news.detail({id:item._id})"><span ng-bind="item.name[lang]"></span></a>
+                </h3>
+                <h4 ng-bind="displayDate(item.date)"></h4>
+                <p ng-bind="item.desc[lang]"></p>
+                <h4 class="pull-left col-lg-6"><span ng-bind="item.author.name"></span></h4>
+                <a class="btn btn-primary pull-right"  ui-sref="language.news.detail({id:item._id})">Подробнее <span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <hr ng-repeat-end>
+
+
+
+
+    </div><!-- /.section -->
+

@@ -1,0 +1,118 @@
+.loadImage .radio {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+
+.loadImageModal {
+    padding: 30px;
+}
+.loadImageModal .radio {
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-right: 10px;
+}
+.loadImage .form-group {
+    float: left;
+    margin-top: 5px;
+}
+.loadImage .box-photo {
+    float: none;
+    display: block;
+}
+.loadImage .img-responsive {
+    width: auto;
+}
+.box__input {
+    position: absolute;
+    /*top: 35%;*/
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+.label-box-input {
+    display: inline-block;
+}
+.add-photo-bg {
+    position: absolute;
+    /*top:40%;*/
+    bottom: 80px;
+    left: 0;
+    width: 100%;
+}
+.add-photo-bg .add {
+    display: inline-block;
+   /* opacity: 0.5;*/
+}
+.add-photo-item {
+    /*position: absolute;*/
+    width: 100%;
+    text-align: center;
+    bottom: 0;
+}
+input[type=file].box__file {
+    display: inline-block;
+}
+
+.box__file {
+    height: 60px;
+    opacity: 0;
+    cursor: pointer;
+}
+.img-upload {
+    width: 100%;
+    text-align: center;
+}
+.img-upload img {
+    display: inline-block;
+    width: 150px;
+}
+.img-upload-box {
+    min-height: 350px;
+    position: relative;
+}
+.img-list {
+   padding: 20px;
+}
+.list-unstyled li {
+    float: left;
+    margin: 10px;
+    word-wrap: break-word;
+    max-width: 200px;
+}
+.list-unstyled img {
+    max-width: 200px;
+}
+.img-upload-box.has-advanced-upload {
+    background-color: #ededed;
+    outline: 1px solid #ccc;
+    outline-offset: -10px;
+    padding-bottom: 100px;
+}
+.img-upload-box.has-advanced-upload .box__dragndrop {
+    display: inline;
+}
+.img-upload-box.is-dragover {
+    background-color: grey;
+}
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}

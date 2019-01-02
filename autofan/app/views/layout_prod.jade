@@ -1,0 +1,13 @@
+!!!
+html(ng-app="myApp")
+  head
+    meta(charset='utf8')
+    base(href='/')
+    title(ng-bind="titles.pageTitle")
+    meta(name="keywords",content="{{titles.pageKeyWords}}")
+    meta(name="description",content="{{titles.pageDescription}}")
+    meta(name="author",content="Your name")
+    meta(name="fragment",content="!")
+    link(rel="stylesheet", href="main.min.css")
+  body
+    block body

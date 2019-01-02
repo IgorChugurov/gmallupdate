@@ -1,0 +1,34 @@
+/*zefir*/
+.box-overlay {
+    background-attachment: scroll;
+    background-repeat: repeat;
+    background-image: none;
+    background-position: 0 0;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: opacity 0.5s ease-out 0s;
+    width: 100%;
+    z-index: 1020;
+}
+.home-banner:hover .box-overlay {
+    opacity: 0.4;
+}
+.home-banner:hover .title-block  {
+    display: block;
+}
+@media (max-width: 1200px) and (min-width: 1025px){
+    .home-banner  .banner-content {
+        height: 60%;
+    }
+    .home-banner .title-block {
+        display: block;
+    }
+    h1,
+    .banner-desc {
+        font-size: 32px;
+        padding: 20px;
+    }
+}

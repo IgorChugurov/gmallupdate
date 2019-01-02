@@ -1,0 +1,130 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.seoPages'"   class="box-list seopage"
+     ng-class="{'box-list-mobile':$ctrl.mobile}">
+    <div ng-show="!$ctrl.items.length" ng-cloak class="text-center">
+        <p class="no_story">
+            Вы пока не создали продвигаемых страниц
+        </p>
+    </div>
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff text-center">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать новую страницу">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff search">
+            <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                <input type="text"  class="search-fluid"
+                       ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                       ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                       ng-model="$ctrl.searchStr"/>
+                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning" title="очистить строку поиска">
+                    <i class="material-icons">clear</i>
+                </a>
+            </form>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">продвигаемые<br> страницы</h4>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">
+                <a ui-sref="frame.keywords">
+                    ключевые слова
+                </a>
+            </h4>
+        </div>
+        <div class="tab-nav-stuff paginator-box pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+        <!--<div class="tab-nav-stuff pull-right">
+            <form ng-submit="$ctrl.searchItems(searchStr)">
+                <div class="search form-group label-floating">
+                    <label class="control-label">поиск страницы</label>
+                    <input type="text"  class="form-control" ng-model="searchStr"/>
+                </div>
+                <input type="submit" class="enter" tabindex="-1" />
+            </form>
+        </div>-->
+        <div class="clearfix"></div>
+
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 seopage-list-container">
+        <div class="cart-detail">
+            <div>
+                <ul ng-if="!$ctrl.mobile">
+                    <li class="label-menu">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">название</div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">URL</div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-8"></div>
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-4"></div>
+                        <div class="clearfix"></div>
+                    </li>
+
+                </ul>
+                <ul dnd-list="$ctrl.items"
+                    dnd-drop="$ctrl.dropCallback(item)"
+                    dnd-allowed-types="['sp']">
+                    <li ng-repeat="item in $ctrl.items"
+                        dnd-draggable="item"
+                        dnd-effect-allowed="move"
+                        dnd-moved="$ctrl.items.splice($index,1)"
+                        dnd-type="'sp'"
+                        ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <span ng-bind="item.name"></span>
+                                <!--<a ui-sref="frame.seoPages.page({id:item._id})">
+
+                                </a>-->
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group">
+                                <span ng-bind="item.link"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-8 col-xs-12">
+                            <div class="form-group">
+                                <div class="togglebutton">
+                                    <label for="service{{$index}}">
+                                        <span ng-class="{'active':!item.actived}">не активная</span>
+                                        <input type="checkbox"
+                                               id="service{{$index}}"
+                                               ng-model="item.actived"
+                                               ng-change="$ctrl.saveField(item,'actived')">
+                                        <span ng-class="{'active':item.actived}">активная</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 padding0 text-right">
+                            <a class="btn btn-fab btn-fab-mini btn-warning pull-right" ng-click="$ctrl.deleteItem(item)">
+                                <i class="material-icons">delete</i>
+                            </a>
+                            <a class="btn btn-fab btn-fab-mini btn-success edit pull-right" ui-sref="frame.seoPages.page({id:item._id})">
+                                <i class="material-icons">edit</i>
+                            </a>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div ui-view></div>
+
+

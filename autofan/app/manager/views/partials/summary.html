@@ -1,0 +1,305 @@
+<div class="col-lg-12 >
+    <div class="main">
+        <h3 style="color: #2d63ff"></h3>
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p class="panel-title">Результаты за период<span class="pull-right" style="margin-top: 5px; font-size: 26px;">AUTOFAN</span></p>
+                </div>
+                <div class="panel-body col-lg-8 col-lg-offset-2">
+                    <div class="col-lg-6 col-md-6">
+                        <h4 class="col-lg-2" style="margin-top: 16px;">с</h4>
+                        <p class="input-group datepicker col-lg-10">
+                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dtfrom" is-open="openedfrom" min-date="minDate" max-date="today()" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openfrom($event)" style="height: 34px;"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <h4 class="col-lg-2" style="margin-top: 16px;">по</h4>
+                        <p class="input-group datepicker col-lg-10">
+                            <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dtto" is-open="openedto" min-date="dtfrom" max-date="today()" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="opento($event)" style="height: 34px;"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <a class="btn btn-success btn-block" type="button" style="margin-top: 10px;"  ng-click="getList()">создать список</a>
+                    </div>
+                </div>
+                <div class="col-lg-10 col-lg-offset-1 col-md-10">
+                        <p>Валовый доход = оплачено - закупка (можем применить любую формулу)</p>
+                        <table class="table table-bordered table_admin">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>дата</th>
+                                <th>закрыт</th>
+                                <th>vin</th>
+                                <th>работы</th>
+                                <th>закупка</th>
+                                <th>продажа</th>
+                                <th>разница</th>
+                                <th>оплачено</th>
+                                <th>вал. доход</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            AURA Yoga Studio
+                            <tr ng-repeat-start="item in summary.orders" ng-init="item.showDetail=false">
+                                <td ng-bind="$index+1"></td>
+                                <td>
+                                    <a ng-click="item.showDetail=!item.showDetail">
+                                        <span ng-bind="moment(item.date).format('ll')"></span>
+                                    </a>
+
+                                </td>
+                                <td>
+                                    <a ng-click="item.showDetail=!item.showDetail">
+                                        <span ng-bind="moment(item.dateClose).format('ll')"></span>
+                                    </a>
+
+                                </td>
+                                <td ng-bind="item.vin"></td>
+                                <td ng-bind="(item.jobsSum).toFixed(2)"></td>
+                                <td ng-bind="(item.priceShip).toFixed(2)"></td>
+                                <td ng-bind="(item.price).toFixed(2)"></td>
+                                <td ng-bind="(item.diff).toFixed(2)"></td>
+                                <td ng-bind="(item.pay).toFixed(2)"></td>
+                                <td ng-bind="(item.income).toFixed(2)"></td>
+                            </tr>
+                            <tr ng-repeat-end ng-if="item.showDetail">
+                                <td colspan="9">
+                                    <strong>запчасти</strong>
+                                    <table class="table">
+                                        <tr>
+                                            <th>код</th>
+                                            <th>название</th>
+                                            <th>кол-во</th>
+                                            <th>закупка</th>
+                                            <th>продажа</th>
+                                            <th>разница</th>
+                                            <th>накладная</th>
+                                            <th>поставщик</th>
+                                        </tr>
+                                        <tr ng-repeat="el in item.sparks">
+                                            <td><span ng-bind="el.code"></span></td>
+                                            <td><span ng-bind="el.name"></span></td>
+                                            <td><span ng-bind="el.q"></span></td>
+                                            <td><span ng-bind="(el.incomePrice).toFixed(2)"></span></td>
+                                            <td><span ng-bind="(el.price).toFixed(2)"></span></td>
+                                            <td><span ng-bind="((el.price-el.incomePrice)*el.q).toFixed(2)"></span></td>
+                                            <td><span ng-bind="el.invoice"></span></td>
+                                            <td><span ng-bind="getNameShipper(el.supplier)"></span></td>
+
+                                        </tr>
+                                    </table>
+                                    <strong>работа</strong>
+                                    <!--<pre>{{item.jobs|json}}</pre>-->
+                                    <table class="table">
+                                        <tr>
+                                            <th>название</th>
+                                            <th>сумма</th>
+                                            <th>исполнитель</th>
+                                        </tr>
+                                        <tr ng-repeat="el in item.jobs">
+                                            <td><span ng-bind="el.name"></span></td>
+                                            <td><span ng-bind="el.sum"></span></td>
+                                            <td><span ng-bind="getNameWorker2(el)"></span></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tbody class="cart-item-total">
+                            <tr style="border-top: 2px solid #ccc">
+                                <th colspan="3">Итого</th>
+
+                                <th class="text-center" ng-bind="(summary.ordersSum.jobs).toFixed(2)"></th>
+                                <th class="text-center" ng-bind="(summary.ordersSum.priceShip).toFixed(2)"></th>
+                                <th class="text-center" ng-bind="(summary.ordersSum.price).toFixed(2)"></th>
+                                <th class="text-center" ng-bind="(summary.ordersSum.diff).toFixed(2)"></th>
+                                <th class="text-center" ng-bind="(summary.ordersSum.pay).toFixed(2)"></th>
+                                <th class="text-center" ng-bind="(summary.ordersSum.income).toFixed(2)"></th>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <div class="clearfix"></div>
+                <div class="col-lg-10 col-lg-offset-1 col-md-10">
+                    <table class="table  table-bordered table_admin">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>поставщик</th>
+                            <th class="text-center">закупка</th>
+                            <th class="text-center">продажа</th>
+                            <th class="text-center">разница</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat-start="item in summary.shippers">
+                            <td ng-bind="$index+1"></td>
+                            <td ><a ng-click="item.showDetail=!item.showDetail"><span ng-bind="getNameShipper(item._id)"></span></a></td>
+                            <td ng-bind="(item.incomePrice).toFixed(2)" class="text-center"></td>
+                            <td ng-bind="(item.sum).toFixed(2)" class="text-center"></td>
+                            <td ng-bind="(item.sum-item.incomePrice).toFixed(2)" class="text-center"></td>
+                        </tr>
+                        <tr ng-repeat-end ng-show="item.showDetail">
+                            <td colspan="5">
+                                <table class="table">
+                                    <tr>
+                                        <th>код</th>
+                                        <th>название</th>
+                                        <th>накладная</th>
+                                        <th>кол-во</th>
+                                        <th>закупка</th>
+                                        <th>продажа</th>
+                                        <th>разница</th>
+                                        <th>vin</th>
+                                        <th>дата</th>
+                                    </tr>
+                                    <tr ng-repeat="el in item.sparks">
+                                        <td><span ng-bind="el.code"></span></td>
+                                        <td><span ng-bind="el.name"></span></td>
+                                        <td><span ng-bind="el.invoice"></span></td>
+                                        <td><span ng-bind="el.q"></span></td>
+                                        <td><span ng-bind="(el.incomePrice).toFixed(2)"></span></td>
+                                        <td><span ng-bind="(el.price).toFixed(2)"></span></td>
+                                        <td><span ng-bind="(el.price-el.incomePrice).toFixed(2)"></span></td>
+                                        <td><span ng-bind="el.vin"></span></td>
+                                        <td><span ng-bind="el.date"></span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tbody class="cart-item-total">
+                        <tr style="border-top: 2px solid #ccc">
+                            <th colspan="2">Итого</th>
+                            <th class="text-center" ng-bind="(summary.shippersIncomePrice).toFixed(2)"></th>
+                            <th class="text-center" ng-bind="(summary.shippersSum).toFixed(2)"></th>
+                            <th class="text-center" ng-bind="(summary.shippersSum-summary.shippersIncomePrice).toFixed(2)"></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+
+                    <div class="col-lg-10 col-lg-offset-1 col-md-10">
+                        <table class="table  table-bordered table_admin">
+                            <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>исполнитель</th>
+                                <th class="text-center">сумма выплненных работ</th>
+                                <th class="text-center">заработная плата</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="(worker,sum) in summary.workers">
+                                <td ng-bind="$index+1"></td>
+                                <td ng-bind="getNameWorker(worker)"></td>
+                                <td ng-bind="sum" class="text-center"></td>
+                                <td ng-bind="(sum*getRatioWorker(worker)).toFixed(2)" class="text-center"></td>
+                            </tr>
+                            </tbody>
+                            <tbody class="cart-item-total">
+                            <tr style="border-top: 2px solid #ccc">
+                                <th colspan="2">Итого</th>
+
+                                <th class="text-center" ng-bind="(summary.workersSum).toFixed(2)"></th>
+                                <th class="text-center" ng-bind="(getSummarySalary()).toFixed(2)"></th>
+
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+                <h2>авансы за период</h2>
+                <div class="col-lg-10 col-lg-offset-1 col-md-10">
+                    <table class="table  table-bordered table_admin">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>vin</th>
+                            <th class="text-center">модель</th>
+                            <th class="text-center">имя</th>
+                            <th class="text-center">аванс евро</th>
+                            <th class="text-center">аванс грн.</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in summary.avansInDate">
+                            <td ng-bind="$index+1"></td>
+                            <td ng-bind="item.customer.vin"></td>
+                            <td ng-bind="item.customer.model" class="text-center"></td>
+                            <td ng-bind="item.customer.name" class="text-center"></td>
+                            <td ng-bind="(item.paySum).toFixed(2)" class="text-center"></td>
+                            <td ng-bind="(item.payGrnSum).toFixed(2)" class="text-center"></td>
+                        </tr>
+                        </tbody>
+                        <tbody class="cart-item-total">
+                        <tr style="border-top: 2px solid #ccc">
+                            <th colspan="2">Итого</th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-center" ng-bind="(summary.avansSumInDate).toFixed(2)"></th>
+                            <th class="text-center" ng-bind="(summary.avansSumGrnInDate).toFixed(2)"></th>
+
+
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                <h2>все авансы</h2>
+                <div class="col-lg-10 col-lg-offset-1 col-md-10">
+                    <table class="table  table-bordered table_admin">
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>vin</th>
+                            <th class="text-center">модель</th>
+                            <th class="text-center">имя</th>
+                            <th class="text-center">аванс евро</th>
+                            <th class="text-center">аванс грн.</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in summary.avans">
+                            <td ng-bind="$index+1"></td>
+                            <td ng-bind="item.customer.vin"></td>
+                            <td ng-bind="item.customer.model" class="text-center"></td>
+                            <td ng-bind="item.customer.name" class="text-center"></td>
+                            <td ng-bind="(item.paySum).toFixed(2)" class="text-center"></td>
+                            <td ng-bind="(item.payGrnSum).toFixed(2)" class="text-center"></td>
+                        </tr>
+                        </tbody>
+                        <tbody class="cart-item-total">
+                        <tr style="border-top: 2px solid #ccc">
+                            <th colspan="2">Итого</th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-center" ng-bind="(summary.avansSum).toFixed(2)"></th>
+                            <th class="text-center" ng-bind="(summary.avansSumGrn).toFixed(2)"></th>
+
+
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                </div>
+            </div></div>
+    </div>
+    <br />
+    <br />
+</div>

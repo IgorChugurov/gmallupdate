@@ -1,0 +1,69 @@
+/*balance*/
+img{
+    width: 100%;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.box-overlay {
+    background-attachment: scroll;
+    background-repeat: repeat;
+    background-image: none;
+    background-position: 0 0;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: opacity 0.5s ease-out 0s;
+    width: 100%;
+    z-index: 1020;
+}
+.helf-shadow {
+    z-index: 1029;
+}
+.title-block {
+    position: absolute;
+    bottom: 20%;
+    width: 100%;
+}
+.home-section {
+    overflow: hidden;
+    transition: all 0.5s ease-out 0s;
+}
+.home-section:hover .box-overlay {
+    opacity: 0.8;
+}
+.home-section img {
+    transition: all 0.5s ease-out 0s;
+    min-width: 650px;
+}
+.home-section:hover img {
+    transition: transform 0.5s ease-out 0s;
+    transform: translateX(-100px);
+}
+.home-section:hover .home-section-header {
+    opacity: 1;
+    transform: translateX(-70px);
+    transition: all 0.5s ease-out 0s;
+}
+.tablet-wrapper img {
+    min-width: 350px;
+}
+.mobile-wrapper img {
+    min-width: 300px;
+}
+.tablet-wrapper h1 {
+    font-size: 30px;
+}
+.mobile-wrapper .slide-fade {
+    margin: 0;
+}
+.mobile-wrapper .img-wrap {
+    padding: 0;
+}
+.tablet-wrapper .home-section-header,
+.mobile-wrapper .home-section-header {
+    opacity: 1;
+}
+

@@ -1,0 +1,65 @@
+<article class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:100px">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <label>Основные конфигупационные прараметры</label> <button ng-click='listEditCtrl.returnToList()'>в список</button>
+    </div>
+    <div class="panel-body">
+      <form ng-submit="listEditCtrl.updateItem(item)">
+        <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="form-group">
+            <label for="name" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 control-label">название</label>
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+              <input type="text" placeholder="название" id="name" class="form-control mb"
+                     ng-model="item.name"
+                     required
+                     focus-me="focusInput"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <tag-manager tags="item.currency" header="Языковые метки"></tag-manager>
+          </div>
+
+          <div class="form-group">
+            <tag-manager-for-object tags="item.tagsValue" header="Типы для тегов"></tag-manager-for-object>
+          </div>
+
+          <div class="form-group">
+            <tag-manager tags="item.roles" header="Роли для пользователей"></tag-manager>
+          </div>
+          <div class="form-group">
+            <tag-manager tags="item.unitOfMeasure" header="Единицы измерений"></tag-manager>
+          </div>
+          <div class="form-group">
+            <tag-manager-for-object tags="item.actions" header="Коды действие - коды писем"></tag-manager-for-object>
+          </div>
+          <div class="form-group">
+            <tag-manager tags="item.notification" header="Виды уведомлений"></tag-manager>
+          </div>
+
+        </div>
+
+        <hr>
+        <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <button type="submit">сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</article>
+<style>
+  .tags {
+    margin: 10px 0;
+  }
+  .tags .tag {
+    border-radius: 6px;
+    background-color: #EFEFEF;
+    border: 1px solid #DDD;
+    padding: 5px;
+    margin-right: 10px;
+  }
+
+  input {
+    margin-bottom: 0px !important;
+  }
+</style>

@@ -1,0 +1,28 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        - var style="background-image:url("+dj[key].img+");background-repeat:no-repeat;"
+        div(class="home-section"+ dj[key].additionalClass,set-animate=dj[key].animate,data-animation=dj[key].animate,data-animation-delay=dj[key].animateDelay,style=style)
+            div(class="container")
+                - var clickLink=''
+                - var link=null;
+                if(dj[key].button && dj[key].button.link)
+                    if(dj[key].button.link == 'subscription' || dj[key].button.link == 'subscriptionAdd' || dj[key].button.link == 'feedback' || dj[key].button.link == 'dateTime' || dj[key].button.link == 'allBonus' || dj[key].button.link == 'call')
+                        - clickLink="global.get('functions').val.action('"+dj[key].button.link+"')"
+                    else
+                        - link = dj[key].button.link;
+
+                div(class="col-lg-4 col-md-4 col-sm-6 col-xs-12 text-box")
+                        if(dj[key].name)
+                            div(class="name-block")
+                                h2(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)=dj[key].name
+                        if(dj[key].button && dj[key].button.is)
+                                div(class="button-block")
+                                    a(set-animate=dj[key].button.animate,data-animation=dj[key].button.animate,class="btn btn-project btn-banner",ng-click=clickLink,href=link)=dj[key].button.text
+                div(class="col-lg-8 col-md-8 col-sm-6 col-xs-12 text-block")
+                        if(dj[key].desc)
+                            div(class="desc-block")
+                                | !{dj[key].desc}
+
+                div( class="clearfix")
+
+    

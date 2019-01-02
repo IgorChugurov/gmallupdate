@@ -1,0 +1,121 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.workplace'" class="master-list" ng-class="{'master-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="добавить в список рабочее место">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff  search">
+            <form ng-submit1="$ctrl.searchItem(searchStr)">
+                <input title="поиск товара в каталоге" type="text"
+                       ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                       ng-change="$ctrl.searchItem(searchStr)"
+                       placeholder="поиск товара"
+                       class="search-fluid"  ng-model="searchStr"/>
+                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning">
+                    <i class="material-icons" title="очистить строку поиска">clear</i>
+                </a>
+            </form>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">список рабочих мест</span>
+            </h4>
+        </div>
+        <div class="tab-nav-stuff paginator-box pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div ng-show="!$ctrl.items.length" ng-cloak class="text-center">
+            <p class="no_story">
+                Вы пока не создали ни одного рабочего места.
+            </p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="cart-detail" ng-if="$ctrl.items.length">
+            <div class="dropzone">
+                <ul dnd-list="$ctrl.items" dnd-drop="$ctrl.dropCallback(item)">
+                    <li dnd-draggable="item"
+                        dnd-effect-allowed="move"
+                        dnd-moved="$ctrl.items.splice($index,1)"
+                        ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}"
+                        ng-repeat="item in $ctrl.items">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class=" form-group label-floating box-input">
+                                <label for="name1" class="control-label">название</label>
+                                <input type="text" id="name1" class="form-control name"
+                                       ng-model="item.name"
+                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 300, 'blur': 0 } }"
+                                       required
+                                       lost-focus="$ctrl.saveField(item,'name')" style="margin-bottom: 0"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
+                            <div class="form-group">
+                                <div class="togglebutton">
+                                    <label for="actived{{$index}}-ds">
+                                        <span ng-class="{'active':!item.actived}">не опубликовано</span>
+                                        <input type="checkbox"
+                                               id="actived{{$index}}-ds"
+                                               ng-model="item.actived"
+                                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                               ng-change="$ctrl.saveField(item,'actived')">
+                                        <span ng-class="{'active':item.actived}">опубликовано</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-3 col-sm-6 col-xs-12 text-center">
+                            <div class="form-group">
+                                <div class="togglebutton">
+                                    <label for="forCustomEntry{{$index}}-ds">
+                                        <span ng-class="{'active':!item.forCustomEntry}">не использовать</span>
+                                        <input type="checkbox"
+                                               id="forCustomEntry{{$index}}-ds"
+                                               ng-model="item.forCustomEntry"
+                                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                               ng-change="$ctrl.saveField(item,'forCustomEntry')">
+                                        <span ng-class="{'active':item.forCustomEntry}">использовать при записи</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12  padding0">
+                            <a class="btn btn-fab btn-fab-mini btn-warning pull-right" ng-click="$ctrl.deleteItem(item)">
+                                <i class="material-icons">delete</i>
+                            </a>
+                            <a class="btn btn-fab btn-fab-mini btn-violet pull-right" ng-click="$ctrl.cloneItem(item)">
+                                <i class="material-icons" title="клонировать компонент">add_to_photos</i>
+                            </a>
+                            <a class="btn btn-fab btn-fab-mini btn-success pull-right" ui-sref="frame.workplace.item({id:item.url})">
+                                <i class="material-icons">edit</i>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+   <!-- <a href="#" class="back-to-top">
+        <i class="fa fa-angle-double-up fa-3x" ></i>
+    </a>-->
+
+</div>
+<div ui-view></div>
+
+

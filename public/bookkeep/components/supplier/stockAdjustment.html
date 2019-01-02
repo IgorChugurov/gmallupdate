@@ -1,0 +1,159 @@
+<div>
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-info"
+               ng-click="$ctrl.back()"
+               title="вернуться">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <!--<div class="tab-nav-stuff diff">
+            <p>разница</p>
+            <span class="diff-item-tab">
+                <span>дебет</span><br>
+                <span ng-bind="($ctrl.item.diff.debet).toFixed(2)"></span>
+                <span ng-bind="$ctrl.currency" style="font-size: 10px"></span>
+            </span>
+            <span class="diff-item-tab">
+                <span>кредит</span><br>
+                <span ng-bind="($ctrl.item.diff.credit).toFixed(2)"></span>
+                <span ng-bind="$ctrl.currency" style="font-size: 10px"></span>
+            </span>
+        </div>-->
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Инвентаризация {{$ctrl.typeName}}</h4>
+        </div>
+        <div class="tab-nav-stuff pull-right">
+            <a class="btn btn-raised btn-success"
+               ng-cloak
+               ng-click="$ctrl.activeSA()" ng-show="!$ctrl.item.actived && $ctrl.item.items.length"
+               title="провести инвентаризацию">
+                <span>провести<br> документ</span>
+            </a>
+            <a class="btn btn-raised btn-warning"
+               ng-click="$ctrl.activeSA()" ng-show="$ctrl.item.actived"
+               ng-cloak
+               title="отменить проводку">
+                <span>отменить<br> проводку</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff pull-right" ng-show="$ctrl.item._id && !$ctrl.item.actived" ng-cloak>
+            <a ng-click="$ctrl.makeBalances()" class="btn btn-raised btn-success">
+                <span title="сформировать остатки">сформировать<br> остатки</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff pull-right">
+            <a class="btn btn-raised btn-primary"
+               ng-click="$ctrl.getDiff()" ng-show="!$ctrl.item.actived"
+               title="расчитать разницу">
+                <span>рассчитать<br> разницу</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff date-box pull-right">
+            <div class="form-group label-floating">
+                <label for="date" class="control-label">дата</label>
+                <p class="input-group">
+                    <input type="text" id="date" class="form-control"
+                           uib-datepicker-popup="dd-MMMM-yyyy"
+                           ng-model="$ctrl.item.date"
+                           ng-change="$ctrl.saveField('date')"
+                           ng-disabled="$ctrl.item.actived"
+                           is-open="$ctrl.datePickerOpened"
+                           datepicker-options="$ctrl.dateOptions"
+                           ng-required="true"
+                           close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-fab btn-fab-mini btn-violet" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened">
+                            <i class="material-icons ">insert_invitation</i>
+                        </button>
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="stockAdjusment">
+        <div class="news-stuff-container">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="cart-detail">
+                    <h4 class="name-box">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"><span>Разница</span></div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" ng-repeat="(cur,val) in $ctrl.item.diff">
+                            <span>
+                                <span>дебет</span> &nbsp;
+                                <span ng-class="{green:val.debet>0,red:val.debet<0}">
+                                    <span ng-bind="val.debet"></span>
+                                    <span ng-bind="cur"></span> &nbsp; &nbsp; &nbsp;
+                                </span>
+                                <span>кредит</span> &nbsp;
+                                <span ng-class="{green:val.credit<0,red:val.credit>0}">
+                                    <span ng-bind="val.credit"></span>
+                                    <span ng-bind="cur"></span>
+                                </span>
+                            </span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </h4>
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>{{self.agentName}}</small>
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>валюта</small>
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>дебет</small>
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>кредит</small>
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>новый дебет</small>
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>новый кредит</small>
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>редактировать</small>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin"  ng-repeat="item in $ctrl.item.items">
+                        <div ng-repeat="(cur,d) in item.data">
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div ng-show="$index==0">
+                                    <span ng-bind="item.item.name"></span>
+                                </div>
+                            </div>
+                            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <span ng-bind="cur"></span>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <span ng-bind="d.debet"></span>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <span ng-bind="d.credit"></span>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <span ng-bind="d.newDebet"></span>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <span ng-bind="d.newCredit"></span>
+                            </div>
+                            <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <div class="form-group" ng-show="$index==0 && !$ctrl.item.actived">
+                                    <a class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.editData($parent.$index)">
+                                        <i class="material-icons">edit</i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

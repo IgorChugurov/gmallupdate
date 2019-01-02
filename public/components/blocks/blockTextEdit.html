@@ -1,0 +1,83 @@
+<div class="name-block">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-box" ng-class="{'padding0':$ctrl.global.get('mobile').val}">
+        <div class="editor form-group">
+            <textarea rows="6" ui-tinymce="$ctrl.tinymceOptions" ng-model-options="{'updateOn': 'default blur',
+                 'debounce': {'default': 700,'blur': 0}}"
+                      ng-change="block.descL[$ctrl.global.get('store').val.lang]=block.desc;$ctrl.saveField('blocks.'+block.i+'.desc',block.desc)"
+                      ng-model="block.desc">
+            </textarea>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" ng-class="{'padding0':$ctrl.global.get('mobile').val}">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" ng-class="{'padding0':$ctrl.global.get('mobile').val}">
+            <div class="input-group" ng-if="block.type=='date'" >
+                <input type="date" class="form-control" uib-datepicker-popup="dd-MMMM-yyyy"
+                       datepicker-options="{formatYear: 'yy',startingDay: 1}"
+                       ng-model="$ctrl.item.date" is-open="$ctrl.item.openDatePicker"
+                       ng-change="$ctrl.saveField('date',$ctrl.item.date)"
+                       close-text="Close" />
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-fab btn-fab-mini" ng-click="$ctrl.item.openDatePicker=!$ctrl.item.openDatePicker">
+                        <i class="material-icons">date_range</i>
+                    </button>
+                </span>
+            </div>
+            <div class="form-group label-floating">
+                <label class="control-label">заголовок блока 1</label>
+                <input class="form-control" ng-model="block.name"
+                       ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                       ng-change="block.nameL[$ctrl.global.get('store').val.lang]=block.name;$ctrl.saveField('blocks.'+block.i+'.name',block.name)">
+            </div>
+            <div class="form-group">
+                <label class="control-label">анимация заголовка 1</label>
+                <ui-select ng-model="block.nameAnimate" append-to-body="true" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveField('blocks.'+block.i+'.nameAnimate',block.nameAnimate)">
+                    <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <a class="btn btn-raised btn-info btn-block"  ng-click="isCollapsed2[$index+100] = !isCollapsed2[$index+100]">ссылка для блока</a>
+            <create-link title='false' uib-collapse="!isCollapsed2[$index+100]"  link="block.link" change="$ctrl.saveField('blocks.'+block.i+'.link',block.link)" edit-seo-page="true"></create-link>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" ng-class="{'padding0':$ctrl.global.get('mobile').val}">
+            <div class="togglebutton">
+                <label for="button4w{{$index}}">
+                    <span ng-class="{'active':!block.button.is}">кнопки нет</span>
+                    <input type="checkbox"
+                           id="button4w{{$index}}"
+                           ng-model="block.button.is"
+                           ng-change="$ctrl.saveField('blocks.'+block.i+'.button',block.button)">
+                    <span ng-class="{'active':block.button.is}">кнопка есть</span>
+                </label>
+            </div>
+            <div class="form-group label-floating">
+                <label class="control-label">текст на кнопке</label>
+                <input ng-model="block.button.textL[$ctrl.global.get('store').val.lang]" class="form-control"
+                       ng-model-options="{'updateOn': 'default blur',
+                                 'debounce': {'default': 700,'blur': 0}}"
+                       ng-change="$ctrl.saveField('blocks.'+block.i+'.button',block.button)">
+            </div>
+            <div class="form-group ">
+                <label class="control-label">анимация кнопки</label>
+                <ui-select ng-model="block.button.animate" append-to-body="true" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveField('blocks.'+block.i+'.button',block.button)">
+                    <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="link-box form-group">
+                <a class="btn btn-raised btn-info btn-block" ng-click="isCollapsedB[$index+101] = !isCollapsedB[$index+101]">ссылка для кнопки</a>
+                <create-link  uib-collapse="!isCollapsedB[$index+101]" link="block.button.link" change="$ctrl.saveField('blocks.'+block.i+'.button',block.button)"></create-link>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="form-group label-floating">
+            <label class="control-label">добавить ссылку</label>
+            <input class="form-control"
+                   ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                   ng-model="block.videoLink" ng-change="$ctrl.saveField('blocks.'+block.i+'.videoLink',block.videoLink)">
+        </div>
+        <p class="label-menu">внешняя ссылка на карту, видео и другие сервисы</p>
+    </div>
+    <div class="clearfix"></div>
+</div>

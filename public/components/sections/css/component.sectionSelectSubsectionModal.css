@@ -1,0 +1,83 @@
+.select-to-catalog li {
+    list-style: none;
+}
+.select-to-catalog .modal-body .section-box{
+    border: 1px solid #999;
+    color: #999;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 16px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+.select-to-catalog .modal-body .section-box:hover{
+    background-color: #f5f5f5;
+}
+.select-to-catalog .modal-body .box-border-top {
+    margin-top: 42px;
+    border-top: 1px solid #999;
+    padding-right: 0;
+}
+.select-to-catalog .category-tree {
+    padding-left: 0;
+    margin-top: 42px;
+    /*margin-left: 100px;*/
+    border-left: 1px solid #999;
+}
+.select-to-catalog .bind-category-modal .section-category{
+    cursor: default;
+}
+/*
+.select-to-filter .label-action {
+    width: 60px;
+    min-height: 60px;
+    background-color: #ccc;
+    padding: 13px 18px;
+    float: right;
+}
+.select-to-filter .action-box-item {
+    background-color: #ccc;
+    padding: 6px 6px 10px 6px;
+}
+.select-to-filter .checkbox .checkbox-material .check {
+    margin-right: 0;
+}
+.select-to-filter .catalog {
+    padding-top: 0;
+}
+.select-to-filter .name-tag {
+    padding: 10px;
+}
+.select-to-filter .modal-body .color-box-orange,
+.select-to-filter .modal-body .section-category{
+    color: #999;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    cursor: default;
+}
+.select-to-filter .modal-body .category-box {
+    border: 1px solid #4caf50;
+    padding: 0 0 0 10px;
+    padding-left: 0;
+    padding-right: 0;
+    color: #999;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: default;
+}
+.box-section-left.box-section-right {
+    margin-top: 50px;
+    padding-left: 0;
+}
+.select-to-filter .modal-body .box-border-top {
+    margin-top: 50px;
+}
+.select-to-filter .modal-body .checkbox {
+    margin-top: 0;
+    margin-bottom: 0px;
+}
+.select-to-filter .bind-category-modal .section-category{
+    cursor: pointer;
+}
+*/

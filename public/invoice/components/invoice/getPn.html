@@ -1,0 +1,99 @@
+<style>
+    .modal-dialog {
+        width: 90%;
+    }
+    a {
+        color: #4e945c;
+    }
+    .green{
+        color:green
+    }
+</style>
+<div class="create-news select-modal">
+    <div class="modal-header">
+        <h4 class="modal-title text-center">Накладные с <strong>{{$ctrl.item.name}}({{$ctrl.item.trueSku}})</strong> цена - {{($ctrl.item.incomePrice).toFixed(2)}}</h4>
+        <div class="text-center">за период c {{$ctrl.startDate}} по {{$ctrl.endDate}}</div>
+
+    </div>
+    <div class="modal-body">
+        <h3>Проверка наличия запчастей</h3>
+        <div class="header-table">
+            <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                название
+            </div>
+            <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                дата
+            </div>
+            <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                цена в гривне
+            </div>
+            <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                перейти
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="stuff-admin" ng-repeat-start="pn in $ctrl.pns" ng-init="pn.showDetail=false">
+            <div class=" td-list col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <!--<input type="text"  class="form-control" ng-model="spark.name" />-->
+                <span ng-bind="pn.name"></span>
+            </div>
+            <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                <span ng-bind="pn.date"></span>
+            </div>
+            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <span ng-bind="pn.price"></span>
+            </div>
+            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-6">
+                <a ng-click="pn.showDetail=!pn.showDetail">подробнее</a>
+            </div>
+            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-16">
+                <a href="http://www.autofan.kharkov.ua/bookkeep/pns/{{pn._id}}" target="_blank">перейти</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="stuff-admin" ng-repeat-end ng-show="pn.showDetail">
+            <div class="" ng-repeat="m in pn.materials">
+                <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <span ng-bind="m.item.name"></span>
+                </div>
+                <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <span ng-bind="m.item.producer.name"></span>
+                </div>
+                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                    <span ng-bind="m.price"></span>
+                    <span ng-bind="pn.currency"></span>
+                </div>
+                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                    <span ng-bind="m.qty"></span>
+                    <span ng-bind="m.item.unitOfMeasure"></span>
+                </div>
+                <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                    <a href="http://www.autofan.kharkov.ua/bookkeep/pns/{{pn._id}}" target="_blank">посмотреть</a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-block btn-raised" type="submit"   ng-if="$ctrl.checkOk()">
+            закрыть
+        </button>
+
+    </div>
+
+    <!--<form ng-submit="$ctrl.ok()">
+
+        <div class="clearfix"></div>
+        <div class="modal-footer">
+            <button class="btn btn-block btn-raised" type="submit"   ng-if="$ctrl.checkOk()">
+                закрыть
+            </button>
+
+        </div>
+    </form>-->
+    <div class="clearfix"></div>
+</div>

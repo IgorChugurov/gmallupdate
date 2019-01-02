@@ -1,0 +1,86 @@
+
+<div class="nav-box-stuff" >
+    <div class="tab-nav-stuff">
+        <a class="btn btn-fab btn-fab-mini btn-info"
+           ui-sref="frame.sampleEntries"
+           title="вернуться">
+            <i class="material-icons">reply</i>
+        </a>
+    </div>
+</div>
+<div class="samplieEntriesItem">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="cart-detail">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <ui-select ng-model="$ctrl.debet"
+                           skip-focusser="true"
+                           search-enabled="true"
+                           title="выберите счет">
+                    <ui-select-match  placeholder="дебет">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt in $ctrl.accaunts">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <ui-select ng-model="$ctrl.credit"
+                           skip-focusser="true"
+                           search-enabled="true"
+                           title="выберите счет">
+                    <ui-select-match  placeholder="кредит">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt in $ctrl.accaunts">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                <ui-select ng-model="$ctrl.sum"
+                           skip-focusser="true"
+                           search-enabled="true"
+                           title="выберите сумму">
+                    <ui-select-match  placeholder="сумма">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt._id as opt in $ctrl.sums">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 action-box">
+                <a class="btn btn-raised btn-success btn-block" ng-click="$ctrl.addEntry()">добавить проводку</a>
+            </div>
+            <div class="clearfix"></div>
+            <div class="header-table">
+                <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    дебет
+                </div>
+                <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    кредит
+                </div>
+                <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    сумма
+                </div>
+                <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    редактировать
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div  class="stuff-admin" ng-repeat="item in $ctrl.item.entries">
+                <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <span ng-bind="item.debet.name"></span>
+                </div>
+                <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <span ng-bind="item.credit.name"></span>
+                </div>
+                <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <span ng-bind="$ctrl.getSumName(item.sum)"></span>
+                </div>
+                <div class="td-list create col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <a class="btn btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteEntry($index)">
+                        <i class="material-icons">
+                            delete
+                        </i>
+                    </a>
+
+                </div>
+                <div class="clearfix"></div>
+
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

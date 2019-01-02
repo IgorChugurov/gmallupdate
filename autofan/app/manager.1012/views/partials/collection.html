@@ -1,0 +1,199 @@
+<div class="container" ng-hide="$state.includes('mainFrame.collection.edit')">
+    <div class="main">
+        <div class="row">
+            <div class="col-sm-12 col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <span>Бренды</span>
+                           <!-- <label  >Бренды</label>
+                            <a href=""class="btn btn-success pull-right" type="button"  ng-click="editBrand(null)"
+                               style=" margin-right: 10px">новый</a>-->
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <input type="text" placeholder="поиск" ng-model="searchBrand" class="search-query" style=" margin-left: 20px"/>
+                            </div>
+                        </form>
+                        <ul  class="nav nav-pills nav-stacked">
+                            <li class="phone-listing"
+                                class="pull-left col-lg-12 col-md-10 col-xs-10 actve"
+                                ng-repeat="brand in brands|filter:{name:searchBrand}|orderBy:'index'">
+                                <a ng-click="selectBrand(brand)"  href=""><span ng-bind="brand.name[config.DL]"></span></a>
+                            </li>
+                        </ul>
+                        <div ng-show="brands.length<=0" class="alert alert-success"><h3>Нет объектов</h3></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                             <span>коллекции для</span> <span ng-bind="activeBrand.name[config.DL]"></span>
+                             <a href=""class="btn btn-success pull-right" type="button"  ng-click="editCollection(null)"
+                                style=" margin-right: 10px">создать коллекцию</a>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <input type="text" placeholder="поиск" ng-model="searchCollection" class="search-query" style=" margin-left: 20px"/>
+                            </div>
+                        </form>
+                        <ul  class="nav nav-pills nav-stacked">
+                            <li class="phone-listing"
+                                class="pull-left col-lg-12 col-md-10 col-xs-10 actve"
+                                ng-repeat="collection in collections|filter:{name:searchCollection}|orderBy:'index'">
+                            <span class="col-lg-6 col-md-6 col-xs-6">
+                            <a ng-click="editCollection(collection)"  href="">
+                                <span ng-bind="collection.name[config.DL]"></span>
+                            </a>
+                            </span>
+                                <div class="col-lg-6 text-right">
+                                    <a ng-click="editCollection(collection)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                    <a ng-click="deleteCollection(collection)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                </div>
+
+                            </li>
+                        </ul>
+                        <div ng-show="collections.length<=0" class="alert alert-success"><h3>Нет коллекций</h3></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ui-view></div>
+
+ <!--           <div class="container">
+    <div class="main">
+        <h3 style="margin-bottom: 40px;">бренды</h3>
+        <div class="row">
+             <article class="col-lg-5 col-md-5" >
+                <p class="back">розділ  <span ng-bind="activeGroupName"></span></p>
+                <div class="pull-left col-lg-12 col-md-12 col-xs-12 row back">
+                    <label class="btn-group-md">
+                        <input type="text" placeholder="пошук" ng-model="searchBrand" />
+                        <button class="btn btn-info" ng-click="focusInput[0]=true;editBrand(null)">створити</button>
+                    </label>
+                </div>
+
+                <ul class="list">
+
+                    <li class="pull-left col-lg-12 col-md-10 col-xs-10 back" ng-repeat="brand in brands|filter:{name:searchBrand}">
+                        <div class="form-group">
+                            <label class="control-label col-lg-6 col-md-6 col-xs-6">
+                                <a ng-click="focusInput[0]=true;editBrand(brand)">
+                                    <span ng-bind="brand.name[config.DL]"></span>
+                                </a>
+                            </label>
+                            <div class="col-lg-6 btn-group">
+
+                                <button class="btn btn-info" ng-click="focusInput[0]=true;editBrand(brand)">
+                                    <img src="img/icons/edit.png" title="редактировать">
+                                </button>
+                                <button class="btn btn-danger" ng-click="deleteBrand(brand)">
+                                    <img src="img/icons/delete.png" title="удалить">
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <div class="clearfix"></div>
+
+                </ul>
+            </article>
+            <article class="col-lg-7 col-md-7">
+                <article class="col-lg-6 col-md-6 col-sm-12">
+                    <div class="pull-left" style="margin-right: 30px;">
+                       &lt;!&ndash; <h3>Начинка</h3>&ndash;&gt;
+                        <div class="thumbnail back pull-left">
+                            <img ng-src="{{myFileSrc}}"alt="выберете фото" />
+                            <div>
+                                <input type="file" file-read="myFile" name="image" id="imagefile" style='visibility: hidden;'/>
+                                <input type = "button" class="btn btn-success" value="выбор фото" ng-disabled="noChange" onclick ="javascript:document.getElementById('imagefile').click();">
+                                <button  class="btn btn-info pull-right" ng-click="uploadImg()" ng-disabled="noLoad">загрузити</button>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12" ng-show="categoryList.length>0">
+                     <h4>категории</h4>
+                    <ul >
+                        <li data-ng-repeat="item in categoryList">{{item}}</li>
+                    </ul>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-6 col-md-6 col-sm-12" >
+                        <h4>Месторасположение</h4>
+                        страна<select  style="width:120px" data-placeholder="выберите страну"  ng-model="country" ng-disabled="editDisabled">
+                        &lt;!&ndash;ng-options="country._id as country.name[config.DL] for country in countries|orderBy:'index' ">&ndash;&gt;
+                        &lt;!&ndash;ng-change="changeBrand(selectBrand)"&ndash;&gt;
+                        &lt;!&ndash;<option value=""></option>&ndash;&gt;
+                        <option ng-repeat="country in countries|orderBy:'index' " value="{{country._id}}">{{country.name[config.DL]}}</option>
+                    </select>
+                       &lt;!&ndash; {{$country}}
+                        страна<select ui-select2 style="width:120px" data-placeholder="выберите страну"  ng-model="$country" ng-disabled="editDisabled" ng-change="changeCountry($country)">
+                            &lt;!&ndash;ng-options="country._id as country.name[config.DL] for country in countries|orderBy:'index' ">&ndash;&gt;
+                            &lt;!&ndash;ng-change="changeBrand(selectBrand)"&ndash;&gt;
+                            &lt;!&ndash;<option value=""></option>&ndash;&gt;
+                            <option ng-repeat="country in countries|orderBy:'index' " value="{{country._id}}">{{country.name[config.DL]}}</option>
+                        </select>&ndash;&gt;
+
+                        регион<select  style="width:120px"data-placeholder="выберите регион"ng-model="region"ng-disabled="editDisabled">
+                        <option ng-repeat="region in regions|orderBy:'index' " value="{{region._id}}">{{region.name[config.DL]}}</option>
+                    </select>
+                        город <select  style="width:120px"data-placeholder="выберите город" ng-model="city"ng-disabled="editDisabled">
+                        <option ng-repeat="city in cities|orderBy:'index' " value="{{city._id}}">{{city.name[config.DL]}}</option>
+                    </select>
+                    </div>
+
+                </article>
+
+                <form name="myForm" class="form form-horizontal" ng-submit="updateBrand()">
+
+                    <article class="col-lg-6 col-md-6 col-sm-12">
+
+                        <h3>Опис бренда</h3>
+                        <p>Найменування</p>
+                        <div class="col-lg-6 col-md-6 col-sm-6 row" data-ng-repeat="lang in config.langArr">
+                            <span ng-bind="lang"></span>&nbsp
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="inputText3"
+                                    placeholder="введіть найменування"
+                                    ng-model="brand.name[lang]"
+                                    ng-disabled="editDisabled"
+                                    required
+                                    focus-me="focusInput[$index]"/>
+                        </div>
+                        <br />
+                        <p>Короткий опис</p>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 back row" data-ng-repeat="lang in config.langArr">
+                            <span ng-bind="lang"></span>&nbsp
+                            <textarea placeholder="короткий опис" ng-model="brand.desc[lang]" ng-disabled="editDisabled">
+                            </textarea>
+                        </div>
+                        <div class="back col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                            <p>Індекс</p>
+                            <input type="text" class="pfoto"  placeholder="введіть індекс"  ng-model="brand.index" required ng-disabled="editDisabled"/>
+                        </div>
+                        </br>
+                        <div class="pull-right back ">
+                            <button class="btn btn-large btn-info save mt40" type="submit" ng-disabled="editDisabled">зберегти</button>
+                        </div>
+
+                </article>
+                </form>
+
+
+
+            </article>
+        </div>
+
+    </div>
+    <br />
+    <br />-->

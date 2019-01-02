@@ -1,0 +1,197 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.Contragent'">
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <span class="default-btn"></span>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Список подотчет</h4>
+        </div>
+        <div class="text-center tab-nav-stuff  pull-right">
+            <a class="btn btn-raised btn-success action-btn" ng-click="$ctrl.makeBalances()">выровнять<br> остатки</a>
+        </div>
+        <div class="tab-nav-stuff pull-right">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref="frame.Contragent" ng-class="{'active':$ctrl.$state.current.name=='frame.Contragent'}">Список<br> подотчет</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref="frame.Contragent.turnover" ng-class="{'active':$ctrl.$state.current.name=='frame.Contragent.turnover'}">Оборотная<br> ведомость</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" ui-sref="frame.Contragent.stockadjustments" ng-class="{'active':$ctrl.$state.current.name=='frame.Contragent.stockadjustments'}">Инвента-<br>ризации</a>
+                </li>
+            </ul>
+        </div>
+        <div class="text-center tab-nav-stuff pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+    </div>
+    <div class="nav-box-stuff-vertical">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать поставщика">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <div class="dropdown-box">
+                <a class="btn btn-fab btn-fab-mini btn-warning btn-dropdown"
+                   title="поиск по списку" ng-click="$ctrl.menuSlide1=!$ctrl.menuSlide1">
+                    <i class="material-icons">search</i>
+                </a>
+                <div class="menu-slide search" ng-show="$ctrl.menuSlide1">
+                    <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                        <div class="input-group">
+                            <input type="text"  class="form-control" placeholder="поиск по списку"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                                   ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                                   ng-model="$ctrl.searchStr"/>
+                            <span class="input-group-btn">
+                                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning">
+                                    <i class="material-icons" title="очистить строку поиска">clear</i>
+                                </a>
+                            </span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div  class="suppliers">
+        <div class="news-stuff">
+            <div ng-show="!$ctrl.items.length" ng-cloak class="col-xs-12 col-md-12 col-sm-12 col-lg-12 text-center">
+                <p class="no_story">
+                    по вашему запросу нет записей
+                </p>
+            </div>
+            <div class="news-stuff-container">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                        <div class="header-table">
+                            <div class="td-list-header col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                имя
+                            </div>
+                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                дебет
+                            </div>
+                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                кредит
+                            </div>
+                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                редактирование
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="stuff-admin"  ng-repeat="item in $ctrl.items">
+                            <div class="" ng-class="{'mobil':global.get('mobile')}">
+                                <div class="title-block-stuff" ng-class="{'mobil':global.get('mobile')}">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <span ng-if="item.data.length">
+                                            <a  class="name-item"  ng-click="item.showDetail=!item.showDetail" ng-show="!item.showDetail">
+                                                <span class="pull-left" ng-bind="item.name"></span>
+                                                <i class="material-icons link-success more pull-right">
+                                                    keyboard_arrow_down
+                                                </i>
+                                                <span class="clearfix"></span>
+                                            </a>
+                                            <a  class="name-item" ng-click="item.showDetail=!item.showDetail" ng-show="item.showDetail">
+                                                <span class="pull-left" ng-bind="item.name"></span>
+                                                <i class="material-icons link-success more pull-right">
+                                                    keyboard_arrow_up
+                                                </i>
+                                            </a>
+                                        </span>
+                                        <span class="name-item"  ng-if="!item.data.length">
+                                            <span ng-bind="item.name"></span>
+                                        </span>
+                                    </div>
+                                    <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                                        <div class="debet-credit">
+                                            <span ng-bind="item.debet"></span>
+                                        </div>
+                                    </div>
+                                    <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                                        <div class="debet-credit">
+                                            <span ng-bind="item.credit"></span>
+                                        </div>
+                                    </div>
+                                    <div class="td-list  create col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                        <a class="btn btn-fab btn-fab-mini btn-warning  edit pull-right" ng-click="$ctrl.deleteItem(item)">
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                        <a class="btn btn-fab btn-fab-mini btn-success  edit pull-right" ui-sref="frame.Contragent.item({id:item._id})">
+                                            <i class="material-icons">edit</i>
+                                        </a>
+                                        <a class="btn btn-fab btn-fab-mini btn-yellow pull-right" title="оборотнвя ведомость" ui-sref="frame.Contragent.turnover({id:item._id})">
+                                            <i class="material-icons ">view_module</i>
+                                        </a>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div uib-collapse="!item.showDetail" class="collapse-item">
+                                    <div class="header-table-item">
+                                        <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                            имя
+                                        </div>
+                                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                            валюта
+                                        </div>
+                                        <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                            дебет
+                                        </div>
+                                        <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2" >
+                                            кредит
+                                        </div>
+                                        <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2" ng-click="$ctrl.clearData(item)">
+                                            подробности
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div ng-repeat="accountData in item.data">
+                                        <div ng-repeat="d in accountData">
+                                            <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                                <span ng-show="$index==0" ng-bind="d.virtualAccount"></span>
+                                            </div>
+                                            <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <span ng-bind="d.currency"></span>
+                                            </div>
+                                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <span ng-bind="d.debet"></span>
+                                            </div>
+                                            <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <span ng-bind="d.credit"></span>
+                                            </div>
+                                            <div class="td-list create text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                <a class="btn btn-fab btn-fab-mini btn-info pull-right" title="подробности" ng-click="$ctrl.getDetail(item._id,d.virtualAccount_id)" ng-show="$index==0">
+                                                    <i class="material-icons ">visibility</i>
+                                                </a>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+
+                                        <div class="clearfix"></div>
+                                    </div>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ui-view=""></div>

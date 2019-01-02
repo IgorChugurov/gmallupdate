@@ -1,0 +1,269 @@
+.online-list {
+    margin-top: 140px;
+    margin-bottom: 60px;
+    font-size: 14px;
+}
+.select-servise {
+    display: table;
+    width: 100%;
+}
+.online-box {
+    padding-bottom: 60px;
+}
+.entry {
+    height: 60px;
+    font-size: 12px;
+    overflow: hidden;
+    padding: 3px;
+}
+.timepartDisabled {
+    background-color: #f3f3f3;
+    border-bottom:1px solid #d6d6d6;
+    height: 50px;
+    cursor: no-drop;
+}
+
+.timing .ui-select-match-text,
+.timing .ui-select-placeholder {
+    margin-right: 25px;
+}
+.online-list  .name-page{
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: #767c89;
+}
+.online-list .online-table {
+    display: table;
+}
+.online-list .online-table-header {
+    display: table-row;
+    border-top: 1px solid #d6d6d6;
+    background-color: #e7e7e7;
+
+}
+.online-table {
+    border-left: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+}
+.fix-to-top {
+    background-color: #e2e2e2;
+    z-index: 1000;
+}
+.online-list .master {
+    border:1px solid #737373;
+    height: 100px;
+    overflow: hidden;
+    font-size: 14px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    transition: all 0.5s ease-out 0s ;
+}
+.online-list .time {
+    border:1px solid #737373;
+    height: 100px;
+    word-wrap: break-word;
+    font-size: 14px;
+    padding: 5px 10px;
+    letter-spacing: 5px;
+    overflow: hidden;
+}
+.online-list .time div {
+    margin-top: -5px;
+}
+
+
+.online-list .servise-add  .ui-select-match .btn-default .text-muted,
+.online-list .servise-add  .ui-select-match .btn-default.ui-select-toggle{
+    color: #72ad66;
+}
+.online-list .time-entry {
+    height:60px;
+    padding-right: 0;
+    padding-left: 0;
+}
+.online-list  .time-entry-box {
+    height:60px;
+    border-top: 1px solid #d6d6d6;
+    border-right: 1px solid #d6d6d6;
+    cursor: default;
+    font-size: 12px;
+}
+.online-list .master-box {
+    width:170px;
+    float: left;
+    margin-bottom: 20px;
+}
+.online-list .master-name {
+    width: 170px;
+    width: 170px;
+    display: table-cell;
+    height:100px;
+    font-weight: 400;
+    background-color: #e2e2e2;
+    opacity: 1;
+    transition: all 0.5s ease-out 0s ;
+}
+.online-list .servise-entry {
+    width: 170px;
+    width: 170px;
+    display: table-cell;
+    cursor: pointer;
+    transition: all 0.5s ease-out 0s ;
+}
+.online-list .servise-box {
+    height:60px;
+    width:100%;
+    overflow: visible;
+    font-size: 13px;
+    border-right: 1px solid #d6d6d6;
+}
+.online-list .servise-entry-box {
+    padding-left: 0;
+    padding-right: 0;
+}
+.online-list .phone {
+    font-size: 14px;
+    font-weight: 600;
+}
+.online-list .busyEntry{
+    background-color: rgb(151, 202, 139);
+    border-top: 1px solid transparent;
+
+}
+
+.online-list .disabled {
+    background-color: rgba(240,240,240,1);
+}
+
+.online-list .reservation{
+    background-color: rgba(255, 207, 82, 0.8);
+    border-top: none;
+}
+
+.online-list .tempEntry {
+    background-color: rgba(112,164,212,0.8);
+}
+.online-list .borderTop{
+    border-top:  1px solid #d6d6d6;
+}
+.well {
+    padding: 0;
+    background-color: transparent;
+}
+.online-list  .active .week {
+    background-color: rgba(151, 202, 139, 0.55);
+}
+.online-list  .setColor {
+    background-color: rgba(121, 104, 181, 0.51)
+}
+.date-picker-new table {
+    border: 1px solid transparent;
+}
+.date-picker-new .dropdown-menu {
+    padding: 10px;
+}
+.date-picker-new .btn.btn-sm {
+    border: 1px solid transparent;
+    margin: 1px 1px;
+    padding: 8px 20px;
+    font-size: 16px;
+}
+.date-picker-new .btn.btn-sm:hover {
+    border: 1px solid #4caf50;
+    background-color: transparent;
+}
+.date-picker-new .btn-info.active {
+    background-color: transparent;
+    border: 1px solid #4caf50;
+}
+.date-picker-new  .text-info {
+    color: #4caf50;
+}
+.date-picker-new .btn .text-muted {
+    font-size: 12px;
+    color: #999;
+}
+.date-picker-new  .btn:not(.btn-raised).btn-danger {
+    color: #ff7148;
+}
+.date-picker-new  table .btn:not(.btn-raised).btn-info {
+    color: #6886b2;
+}
+.select-date .dropdown-menu {
+    top:60px !important;
+}
+.select-date .dropdown-menu .btn-group {
+    margin-top: 0;
+}
+.online-list .box-day {
+    text-align: center;
+}
+.online-list .time-entry-box {
+    text-align: center;
+}
+.online-list .week {
+    display: inline-block;
+    float: left;
+    width: 12%;
+    padding: 15px;
+    border: 1px dotted #333;
+    margin-bottom: 10px;
+    margin-right: 5px;
+}
+.online-list .online-table-day {
+    padding-left: 0;
+    padding-right: 0;
+}
+.collapse-row.master-name {
+    min-width: 450px;
+    max-width: 450px;
+    display: table-cell;
+    height:100px;
+    font-weight: 400;
+    background-color: #e2e2e2;
+    opacity: 1;
+
+}
+.collapse-row .servise-entry {
+    min-width: 450px;
+    max-width: 450px;
+    display: table-cell;
+    cursor: pointer;
+}
+.collapse-row .master {
+    transform: none;
+}
+.master.master-date {
+    transform: none;
+}
+.topscroll {
+    position: absolute;
+    width: 300px;
+    height: 20px;
+    overflow-x: scroll
+}
+.select-date {
+    width: 300px;
+    float: left;
+    margin-right: 30px;
+}
+.select-master {
+    width: 400px;
+    float: left;
+    margin-right: 30px;
+}
+.select-service {
+    width: 400px;
+    float: left;
+    margin-right: 30px;
+}
+.all-master {
+    float: left;
+}
+.group {
+    display: inline-block;
+    padding: 20px 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}

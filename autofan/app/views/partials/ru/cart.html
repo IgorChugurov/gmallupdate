@@ -1,0 +1,210 @@
+<style>
+        /*.cart-item-center{
+          text-align: center !important;
+          cursor: pointer;
+        }
+
+        .cart-item-total {
+          font-weight: bold;
+          background-color: #DDD;
+        }*/
+    th a {cursor:pointer}
+</style>
+
+
+<div id="content">
+    <div class="container">
+        <h3><strong>По вопросам доставки с Вами свяжется менеджер.</strong></h3>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <table class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table table-bordered" style="overflow: auto;">
+                        <thead>
+                            <tr>
+                                <th class="col-lg-1"
+                                    #
+                                </th>
+                                <th class="col-lg-2">
+                                    Товар
+                                </th>
+                                <th class="col-lg-1" title="сортировать по алфавиту">
+                                    Артикул
+                                </th>
+                                <th class="col-lg-3" title="сортировать по размеру" >
+                                        Модель
+                                </th>
+
+                                <th class="col-lg-1" title="сортировать по возрастанию">
+                                    Цена&nbsp{{currency}}
+                                </th>
+
+                                <th class="col-lg-1" title="сортировать по количеству">
+
+                                        Количество
+
+                                </th>
+
+                                <th class="col-lg-1">
+                                    Стоимость
+                                </th>
+
+                                <th class="col-lg-1 cart-item-center text-center">
+                                    Удалить
+                                </th>
+                            </tr>
+
+                        </thead>
+                        <tbody ng-repeat="good in cart.list()|orderBy:sortProperty">
+                            <tr >
+                                <td class="col-lg-1">
+                                    {{$index+1}}
+                                </td>
+                                <td class="col-lg-2">
+                                    <a class="black"ng-click="goToStuff($index)">{{good.name}}</a>
+                                </td>
+                                <td class="col-lg-1">
+                                    {{good.artikul}}
+                                </td>
+
+                                <td class="col-lg-3">
+                                    <span ng-repeat-start="tag in good.tags">{{tag}}</span><span ng-repeat-end><br></span>
+                                    <!--<a class="black"ng-click="goToStuff($index)">{{good.sizeName}}</a>-->
+                                </td>
+                                <td class="col-lg-1">
+
+                                    <!--{{divider*good.price*curren[curren.current][0]| currency:curren[curren.current][2]}}-->
+                                    {{(kurs*good.price).toFixed(2)}}&nbsp{{order.currency}}
+
+                                </td>
+                                <td class="col-lg-1">
+                                    <!--<div class=" pull-left right-filters" style="margin-left: 20px;">
+                                        &lt;!&ndash;<input type="text" class="input-small spinner-input" ng-model="good.quantity">
+                                        <div class="clearfix"></div>
+                                        <div class="spinner-buttons btn-group btn-group-vertical">
+
+                                            <button class="btn spinner-up" type="button" ng-click="quantityDown(good)">
+                                                <i class="icon-minus"></i>
+                                            </button>
+                                            <button class="btn spinner-down" type="button" ng-click="quantityUp(good)">
+                                                <i class="icon-plus"></i>
+                                            </button>
+                                        </div>&ndash;&gt;
+                                        <div class=" pull-left right-filters">
+
+                                            &lt;!&ndash;<select class="btn btn-color mb" ng-model="good.quantity" ng-change="cart.save()">
+                                                <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                            </select>&ndash;&gt;
+                                        </div>
+
+                                    </div>-->
+                                    <!--<input value="1" style="width: 30px;">-->
+                                    {{good.quantity}}
+                                </td>
+                                <td class="col-lg-1">
+                                    {{(kurs*good.price*good.quantity).toFixed(2)}}&nbsp{{order.currency}}
+                                </td>
+                                <td  class="col-lg-1 cart-item-center text-center" >
+                                    <a ng-click="cart.removeItem($index)">
+                                        <span class="glyphicon glyphicon-remove cursor_pointer"></span>
+                                    </a>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody class="cart-item-total">
+                        <tr>
+                            <td></td>
+                            <td>Итого</td>
+                            <td></td><td></td><td></td>
+                            <td>{{cart.quantity=cart.cartCount()}}</td>
+                            <td>{{(kurs*(cart.sum=cart.getTotalSum())).toFixed(2)}}&nbsp{{currency}}</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn  btn-danger  pull-right log" style="margin-right: 10px;"   ng-click="cart.clearCart()">Очистить корзину</button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                <span class="glyphicon glyphicon-home pull-left"></span><span style="font-weight: bold; font-size: 18px;">Адрес доставки</span>
+                <div class="clearfix"></div>
+                <p class=" pull-left">
+
+                    <div class="col-lg-4">
+                        <input pattern="[A-Za-zА-Яа-я.,\s-]{5,100}" ng-disabled="!user._id" type="text" class="form-control" style="background-color:#ccc; border-color:#333; color:#333" ng-model="user.profile.fio">
+                    </div>
+                    <label class="control-label col-lg-4">ФИО</label>
+                    <div class="clearfix"></div>
+
+                    <div class="col-lg-4">
+                        <input pattern="[0-9.\s-+()]{7,40}" ng-disabled="!user._id" type="text" class="form-control" style="background-color:#ccc; border-color:#333; color:#333" ng-model="user.profile.phone">
+                    </div>
+                    <label class="control-label col-lg-4">Телефон</label>
+                    <div class="clearfix"></div>
+
+                    <div class="col-lg-4">
+                        <input pattern="[0-9-]{2,10}" ng-disabled="!user._id" type="text" class="form-control" style="background-color:#ccc; border-color:#333; color:#333" ng-model="user.profile.zip">
+                    </div>
+                    <label class="control-label col-lg-4">Индекс</label>
+                    <div class="clearfix"></div>
+
+                    <div class="col-lg-4">
+                        <input pattern="[A-Za-zА-Яа-я.,\s-]{5,100}" ng-disabled="!user._id"type="text" class="form-control" style="background-color:#ccc; border-color:#333; color:#333" ng-model="user.profile.region">
+                    </div>
+                    <label class="control-label col-lg-4">Регион</label>
+                    <div class="clearfix"></div>
+
+                    <div class="col-lg-4">
+                        <input pattern="[A-Za-zА-Яа-я.,\s-]{5,100}"ng-disabled="!user._id"type="text" class="form-control" style="background-color:#ccc; border-color:#333; color:#333" ng-model="user.profile.city">
+                    </div>
+                    <label class="control-label col-lg-4">Город</label>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-4">
+                        <input pattern="[0-9A-Za-zА-Яа-я.,/\s-]{5,100}"ng-disabled="!user._id"type="text" class="form-control" style="background-color:#ccc; border-color:#333; color:#333" ng-model="user.profile.address">
+                    </div>
+                    <label class="control-label col-lg-4">Улица</label>
+                    <div class="clearfix"></div>
+                </p>
+            </div>
+            <textarea rows="7" style="background-color: #ccc; color: #666"  class="pull-right col-lg-3" ng-model="comment" placeholder="Ваши комментарии к заказу" ></textarea>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="container">
+        <div class=" row">
+            <ul class="col-lg-12 col-md-12 col-sm-12 col-xs-12 cart_ul">
+                <li ng-hide="user._id">
+                    <button type="submit" class=" btn btn-primary pull-left" ng-click="$state.transitionTo('language.login',{lang:$stateParams.lang})">Авторизация</button>
+                </li>
+                <li class="col-lg-7" ng-show="showLoginMessage">
+                    <p >Проверьте имя пользователя или пароль!</p>
+                </li>
+                <!--<li class="col-lg-7" ng-show="errorCount">
+                    <p>Ваш заказ не отправлен!<br> Количество единиц заказа менее 5 штук.</p>
+                </li>-->
+                <li class="col-lg-7"  ng-show="errorSigned">
+                    <p>Ваш заказ не отправлен! <br>Вам необходимо авторизоваться.</p>
+                </li>
+                <li class="col-lg-7"  ng-show="successOrder">
+                    <p>Ваш заказ принят. <br> С Вами свяжется менеджер.</p>
+                </li>
+                <li class="col-lg-7"  ng-show="errorOrder">
+                    <p>Извините, Ваш заказ не отправлен. <br> Повторите попытку через 5 сек.</p>
+                </li>
+                <li class="pull-right">
+                    <button class="btn btn-primary  pull-right"  ng-click="sendOrder()" ng-disabled="!user._id || cart.quantity<1">Отправить заказ</button>
+                </li>
+
+            </ul>
+        </div><!--row-->
+    </div><!--container-->
+</div><!--content-->
+

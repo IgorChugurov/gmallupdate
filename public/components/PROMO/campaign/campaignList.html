@@ -1,0 +1,135 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.campaigns'"   class="box-list" ng-class="{'box-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать новую акцию">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff search">
+            <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                <input type="text"  class="search-fluid"
+                       ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                       ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                       ng-model="$ctrl.searchStr"/>
+                <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini btn-warning" title="очистить строку поиска">
+                    <i class="material-icons">clear</i>
+                </a>
+            </form>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">список акций</h4>
+        </div>
+        <div class="tab-nav-stuff paginator-box pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+    <div ng-hide="$ctrl.$state.current.name!='frame.campaigns'">
+        <div ng-show="!$ctrl.items.length" ng-cloak class="text-center">
+            <p class="no_story">
+                Вы пока не создали ни одной акции.
+            </p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <ul>
+                    <li ng-repeat="item in $ctrl.items" ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group label-floating">
+                                <label for="name1" class="control-label">название</label>
+                                <input type="text" placeholder="" id="name1" class="form-control name"
+                                       ng-model="item.name"
+                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 300, 'blur': 0 } }"
+                                       required
+                                       lost-focus="$ctrl.saveField(item,'name')"/>
+                            </div>
+                        </div>
+                        <div ng-init="item.dateOptions={showWeeks:false}" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="form-group data-picker">
+                                <label class="control-label">период действия акции</label>
+                                <p class="form-control">
+
+                                    <span class="date-article" style="float: left" ng-class="{'active-date':item.openStart}"ng-bind="item.dateStart|date" ng-click="item.openStart=true"></span>
+                                    <input class="form-control" type="hidden"
+                                           uib-datepicker-popup="{{locale.DATETIME_FORMATS.shortDate}}"
+                                           datepicker-options="item.dateOptions"
+                                           ng-model="item.dateStart"
+                                           show-button-bar="false"
+                                           is-open="item.openStart"
+                                           ng-required="true"
+                                           ng-change="item.openEnd=true;$ctrl.saveField(item,'dateStart')"/>
+                                    <span class="date-article" >&nbsp; - &nbsp;</span>
+                                    <span class="date-article"   ng-class="{'active-date':item.openEnd}"ng-bind="item.dateEnd|date" ng-click="item.openEnd=true"></span>
+                                    <input  class="form-control" type="hidden"
+                                            uib-datepicker-popup="{{$ctrl.date.format}}"
+                                            datepicker-options="item.dateOptions"
+                                            ng-model="item.dateEnd"
+                                            is-open="item.openEnd"
+                                            show-button-bar="false"
+                                            ng-change="$ctrl.saveField(item,'dateEnd')"
+                                            ng-required="true" />
+                                </p>
+                            </div>
+
+                        </div>
+                        <div class=" col-lg-1 col-md-1 col-sm-3 col-xs-2">
+                            <div class="form-group label-floating index" >
+                                <label  for="index" class="control-label">индекс</label>
+                                <input ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.saveField(item,'index')" name="index" type="text" class="form-control" id="index"
+                                       ng-model="item.index" pattern="[0-9-\.]{1,7}">
+                            </div>
+                        </div>
+                        <div class=" col-lg-3 col-md-3 col-sm-5 col-xs-10">
+                            <div class="form-group text-center">
+                                <div class="togglebutton">
+                                    <label for="service{{$index}}">
+                                        <span ng-class="{'active':!item.actived}">не активная</span>
+                                        <input type="checkbox"
+                                               id="service{{$index}}"
+                                               ng-model="item.actived"
+                                               ng-change="$ctrl.saveField(item,'actived')">
+                                        <span ng-class="{'active':item.actived}">активная</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-lg-2 col-md-2 col-sm-4 col-xs-12 padding0">
+                            <a class="btn btn-fab btn-fab-mini btn-warning edit pull-right" ng-click="$ctrl.deleteItem(item)">
+                                <i class="material-icons">delete</i>
+                            </a>
+                            <a class="btn btn-fab btn-fab-mini btn-success edit pull-right" ui-sref="frame.campaigns.campaign({id:item.url})">
+                                <i class="material-icons">edit</i>
+
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                        <!--<div class="title-block-stuff" ng-class="{'mobil':$ctrl.mobile}">-->
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="clearfix"></div>
+        <a href="#" class="back-to-top">
+            <i class="fa fa-angle-double-up fa-3x" ></i>
+        </a>
+    </div>
+</div>
+<div ui-view></div>
+
+

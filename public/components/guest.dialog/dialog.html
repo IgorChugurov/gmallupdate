@@ -1,0 +1,32 @@
+<uib-tabset justified="true" class="panel-dialog">
+    <uib-tab ng-if="questDialogCtrl.communication.feedback">
+        <uib-tab-heading>
+            <button type="button" class="btn btn-lg btn-chat-mini dialog">
+                <span class="call-click icon-envelope-img"></span>
+            </button>
+        </uib-tab-heading>
+        <div class="chat-content">
+            <feedback-message></feedback-message>
+        </div>
+    </uib-tab>
+    <uib-tab ng-if="questDialogCtrl.communication.call">
+        <uib-tab-heading>
+            <button type="button" class="btn btn-lg btn-chat-mini phone">
+                <span class="call-click icon-call-img"></span>
+            </button>
+        </uib-tab-heading>
+        <div ng-if="questDialogCtrl.sellerIn">
+            <call-from-store></call-from-store>
+        </div>
+        <div class="chat-content" ng-if="!questDialogCtrl.sellerIn">
+            <p class="chat-header">
+                {{$ctrl.global.get('langForm').val.adminnot}}
+            </p>
+        </div>
+    </uib-tab>
+
+</uib-tabset>
+
+
+
+

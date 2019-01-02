@@ -1,0 +1,526 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+	background-color: #CCC;
+	font-size: 18px;
+	color: #333;
+	font-family:"Times New Roman", Times, serif;
+}
+
+.main {
+	margin-top: 40px;
+	padding-top: 40px;
+}
+.main h3 {
+    margin-bottom: 30px;
+}
+.activ {
+    color: #fff;
+    text-transform: uppercase;
+
+}
+.filter {
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+a {
+	color: #666;}
+a:hover, a:active, a:focus {
+	text-decoration: none;
+	color: #333;
+}
+.navbar-nav a:hover, 
+.navbar-nav a:active, 
+.navbar-nav a:focus {
+	background-color: #E4E4E4;
+	box-shadow:inset 0 0 2px rgba(177,177,177,1)}
+nav {
+	background-color:#fafafa;
+}
+.navbar-fixed-top {
+	box-shadow: 0 0 2px rgba(150,150,150,0.6);
+	border-bottom: #d4d4d4;
+}
+.navbar-toggle {
+	border-color: #ccc;
+}
+span.icon-bar {
+	background-color:#CCC;
+}
+.nav .caret {
+	border-top-color:#666;
+	border-bottom-color: #666;
+	color: #666;}
+.container {
+	max-width: 970px;
+}
+article.col-lg-7 {
+	border-left: 2px solid #ADADAD;
+}
+.back {
+	margin-bottom: 20px;
+	margin-right: 20px;}
+p {
+	margin-bottom: 5px; 
+	margin-top: 10px; 
+	font-weight:700
+}
+label.radio {
+	margin-bottom: 0;}
+input[type="text"] {
+	height: 34px;
+	-webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+	border-radius: 4px;
+	vertical-align: middle;
+	margin-right: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+}
+	
+input[type="text"]:focus {
+	border-color: rgba(255,255,255,1);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset, 0 0 3px rgba(0,0,0,0.6);
+	}
+input[type="radio"] {
+	margin-top: 7px;}
+button.btn {
+	padding-bottom: 7px;
+	padding-top: 5px}
+button.pull-right {
+	margin-bottom: 3px;
+	margin-left: 20px;
+}
+.control-label {
+	padding-left: 0;}
+input.search-query {
+    height: 44px;
+    width: 100%;
+}
+/*btn-default*/
+.btn-default {
+	border-color: #999;
+	font-size: 16px;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+    background-color: #f5f5f5;
+    background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+    background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+    background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+    background-repeat: repeat-x;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+    border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    *background-color: #e6e6e6;
+    /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+    border: 1px solid #bbbbbb;
+    *border: 0;
+    border-bottom-color: #a2a2a2;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    *margin-left: .3em;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+.btn-default:hover {
+  color: #181818;
+  text-decoration: none;
+  background-color: #e6e6e6;
+  *background-color: #d9d9d9;
+  /* Buttons in IE7 don't get borders, so darken on hover */
+
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+.btn-default:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+/*btn-info,btn-danger,btn-success */
+.btn-danger {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #da4f49;
+  background-image: -moz-linear-gradient(top, #ee5f5b, #bd362f);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ee5f5b), to(#bd362f));
+  background-image: -webkit-linear-gradient(top, #ee5f5b, #bd362f);
+  background-image: -o-linear-gradient(top, #ee5f5b, #bd362f);
+  background-image: linear-gradient(to bottom, #ee5f5b, #bd362f);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffee5f5b', endColorstr='#ffbd362f', GradientType=0);
+  border-color: #bd362f #bd362f #802420;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #bd362f;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger.active,
+.btn-danger.disabled,
+.btn-danger[disabled] {
+  color: #ffffff;
+  background-color: #bd362f;
+  *background-color: #a9302a;
+  
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+
+}
+.btn-danger:active,
+.btn-danger.active {
+  background-color: #942a25 \9;
+}
+.btn-success {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #5bb75b;
+  background-image: -moz-linear-gradient(top, #62c462, #51a351);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
+  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
+  background-image: -o-linear-gradient(top, #62c462, #51a351);
+  background-image: linear-gradient(to bottom, #62c462, #51a351);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff62c462', endColorstr='#ff51a351', GradientType=0);
+  border-color: #51a351 #51a351 #387038;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #51a351;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-success:hover,
+.btn-success:active,
+.btn-success.active,
+.btn-success.disabled,
+.btn-success[disabled] {
+  color: #ffffff;
+  background-color: #51a351;
+  *background-color: #499249;
+  
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+.btn-success:active,
+.btn-success.active {
+  background-color: #408140 \9;
+}
+.btn-info {
+  color: #ffffff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #49afcd;
+  background-image: -moz-linear-gradient(top, #5bc0de, #2f96b4);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5bc0de), to(#2f96b4));
+  background-image: -webkit-linear-gradient(top, #5bc0de, #2f96b4);
+  background-image: -o-linear-gradient(top, #5bc0de, #2f96b4);
+  background-image: linear-gradient(to bottom, #5bc0de, #2f96b4);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff5bc0de', endColorstr='#ff2f96b4', GradientType=0);
+  border-color: #2f96b4 #2f96b4 #1f6377;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #2f96b4;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-info:hover,
+.btn-info:active,
+.btn-info.active,
+.btn-info.disabled,
+.btn-info[disabled] {
+  color: #ffffff;
+  background-color: #2f96b4;
+  *background-color: #2a85a0;
+  
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+  -moz-transition: background-position 0.1s linear;
+  -o-transition: background-position 0.1s linear;
+  transition: background-position 0.1s linear;
+}
+.btn-info:active,
+.btn-info.active {
+  background-color: #24748c;
+}
+/*list*/
+.list {
+	padding-left: 0;
+	/*margin-left: 15px;*/
+}
+.list li {
+	list-style: none;
+	padding-left: 0;
+}
+.list a {
+	margin-right: 20px;
+}
+.list .btn-danger img{
+	width: 16px;
+	height:16px;
+}	
+.list .btn-info img{
+	width: 20px;
+}
+.list .btn-success img{
+	width: 16px;
+	height:16px;
+}
+
+select {
+	 /*margin-top: 2px;*/
+	 height: 34px; 
+	 border: none; 
+	 margin-right: 10px; 
+	 box-shadow: inset 0 0 2px rgb(187, 187, 187);
+	 padding-top: 2px; 
+	 padding-bottom: 2px; 
+	 padding-right: 3px;
+	 padding-left: 5px;
+
+}
+.select {
+     width: 160px;
+
+ }
+select.btn {
+    font-size: 16px;
+}
+.form-inline select.form-control.brands-city {
+    width: 100%;
+    border-color: #999;
+    margin-bottom: 10px;
+}
+option {
+	padding-left: 5px;
+	padding-right: 5px;}
+textarea:focus {
+	border-color: rgba(255,255,255,1);
+	box-shadow: 0 0 1px rgba(0,0,0,0.075) inset, 0 0 1px rgba(0,0,0,0.6);
+}
+textarea.description {
+    height: 200px;
+}
+.thumbnail {
+	 width: 220px; 
+	 height: 400px;
+	 margin-right: 10px;
+}
+.loading {
+    height: 100%;
+}
+input.btn {
+    height: 34px;
+}
+h3 {
+	color: #fff;
+}
+.mr50 {
+	margin-right: 50px;}
+.mt40 {
+    margin-top: 40px;}
+
+textarea {
+	 border: 1px solid #ccc; 
+	 border-radius: 4px; 
+	 width: 100%; 
+	 height: 200px;
+     padding: 5px;
+}
+.save {
+    width: 100px;
+}
+
+input.pfoto {
+	margin-right: 20px;
+	margin-bottom: 5px;
+}
+.table_ofice {
+    margin: 0;
+    background-color:#666;
+    color:#000;
+    overflow:auto;
+    margin-bottom: 20px;
+
+}
+.table_ofice thead {
+    background-color:#666;
+    color:#FFF;
+}
+.table_ofice thead th {
+    border-top: none;}
+
+.status {
+    width:70%;
+    margin-bottom: 20px;
+
+}
+.table-striped tbody tr:nth-child(2n+1) td	{
+    /*background-color: #CCC;*/
+    background-color: #EBEBEB;
+    -webkit-box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    -moz-box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    -o-box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+    box-shadow: inset 0 0 4px rgba(0,0,0,0.5);}
+.table-striped tbody.cart-item-total tr td {
+    background-color:#999;
+}
+.animate.ng-enter,
+.animate.ng-leave
+{
+    -webkit-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -moz-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -ms-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    -o-transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    transition: 500ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space:nowrap;
+}
+
+.animate.ng-leave.animate.ng-leave-active,
+.animate.ng-enter {
+    opacity: 0;
+    width: 0px;
+    height: 0px;
+}
+
+.animate.ng-enter.ng-enter-active,
+.animate.ng-leave {
+    opacity: 1;
+    width: 150px;
+    height: 30px;
+}
+
+.phone-listing.ng-enter,
+.phone-listing.ng-leave,
+.phone-listing.ng-move {
+    -webkit-transition: 0.5s linear all;
+    -moz-transition: 0.5s linear all;
+    -o-transition: 0.5s linear all;
+    transition: 0.5s linear all;
+}
+
+.phone-listing.ng-enter,
+.phone-listing.ng-move {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.phone-listing.ng-move.ng-move-active,
+.phone-listing.ng-enter.ng-enter-active {
+    opacity: 1;
+    /*height: 100%;*/
+    height: 50px;
+}
+
+.phone-listing.ng-leave {
+    opacity: 1;
+    overflow: hidden;
+}
+
+.phone-listing.ng-leave.ng-leave-active {
+    opacity: 0;
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+hr {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #ccc -moz-use-text-color;
+    border-style: solid none;
+    border-top-width: 1px;
+    margin: 18px 0;
+    height: 5px;
+
+
+}
+.nav, .pagination, .carousel, .panel-title a, a { cursor: pointer; }
+button.save {
+    width: 100%;
+    font-size:18px;
+    text-transform: uppercase;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+select.bot {
+    margin-bottom: 10px;
+    width: 170px;
+}
+div.form-group {padding-left: 10px;
+}
+legend {
+    border-color: -moz-use-text-color -moz-use-text-color #ccc;;
+}
+.select2-container  .select2-choice{
+    height: 32px;
+    padding: 2px 0 0 8px;
+}
+.form-control {
+    font-size: 18px;
+}
+.mb {
+    margin-bottom: 20px;
+}
+.panel-default > .panel-heading p, .panel-default > .panel-heading label,.panel-default > .panel-heading span {
+    color: #36a0ff;
+    /*color: #2d63ff;*/
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.panel-default > .panel-heading span.glyphicon {
+    color: #999;
+}
+.table_admin {
+    background-color: #eee;
+}
+.table_admin a {
+    color: #09942e;
+    color: #4e945c;
+    /*color: #36a0ff;*/
+}
+thead {
+    border-bottom: 2px solid #666;
+}
+.table-bordered > thead > tr > th {}
+
+
+
+.back .glyphicon-arrow-left {
+    font-size: 16px;
+    margin-right: 20px;
+}
+.activeCategory { color: #ff0000;}
+.glyphicon-folder-close, .glyphicon-folder-open{
+    margin-right: 10px;
+}

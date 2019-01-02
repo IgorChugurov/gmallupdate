@@ -1,0 +1,330 @@
+<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css" />
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <spinner enable="sendFile"></spinner>
+
+
+            <div class="col-lg-12">
+                <div class="well well-sm " id="formContainer">
+
+                    <form class="form-horizontal"  name="formLCustomer" ng-submit="saveCustomer(formLCustomer)" id="formLCustomer" novalidate>
+                        <fieldset>
+                            <legend class="text-center header">Наряд-заказ от <span ng-bind="moment(jobTicket.date).format('ll')"></span>
+                                закрыт <span ng-bind="moment(jobTicket.dateClose).format('ll')"></span>
+                                <span class="pull-right">AUTOFAN</span>
+                                <a  class="pull-right" ng-click="createByAPI()">в бухгалтерию</a>
+                            </legend>
+                            <div class="row">
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <!--<label>vin</label>-->
+                                        <span class="col-md-2 col-md-offset-1" style="margin-top: 2px;">vin</span>
+                                        <div class="col-md-8">
+                                            <!--<input ng-model="customer.vin" id="vin" name="vin" type="text" placeholder="vin" class="form-control">-->
+                                            <span ng-bind="customer.vin"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-md-2 col-md-offset-1">имя</span>
+                                        <div class="col-md-8">
+                                            <!--<input ng-model="customer.name" id="name" name="name" type="text" placeholder="name" class="form-control">-->
+                                            <span ng-bind="customer.name"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <span class="col-md-2 col-md-offset-1">e-mail</i></span>
+                                        <div class="col-md-8">
+                                            <!--<input ng-model="customer.email" id="email" name="email" type="text" placeholder="Email Address" class="form-control">-->
+                                            <span ng-bind="customer.email"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <span class="col-md-2">model</span>
+                                        <div class="col-md-9">
+                                            <!--<input ng-model="customer.model" id="model" name="model" type="text" placeholder="model" class="form-control">-->
+                                            <span ng-bind="customer.model"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-md-2">телефон</span>
+                                        <div class="col-md-9">
+                                            <!--<input ng-model="customer.phone" id="phone" name="phone" type="text" placeholder="phone" class="form-control">-->
+                                            <span ng-bind="customer.phone"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <span class="col-md-2">пробег</span>
+                                        <div class="col-md-9">
+                                            <!--<input ng-model="jobTicket.mile" id="mile" name="mile" type="text" placeholder="пробег" class="form-control">-->
+                                            <span ng-bind="jobTicket.mile"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+                    <p class="text-center" style="color: #09bd3c">
+                        <span>курс </span><span ng-bind="jobTicket.rate"></span>
+                    </p>
+                    <hr>
+                        <div class="col-lg-3 text-center">
+                            <b style="{{style}}">Долг  <span ng-bind="(jobTicket.balance).toFixed(2)"></span> €</b>
+                        </div>
+
+                        <div class="col-lg-3 text-center">
+                            <b>Всего по наряду  <span ng-bind="(getTotalSpark()+getTotalJobs()/jobTicket.rate).toFixed(2)"></span> €</b>
+                        </div>
+                        <div class="col-lg-3 text-center">
+                            <b>Всего оплачено  <span ng-bind="(getTotalPay()).toFixed(2)"></span> €</b>
+                        </div>
+                        <div class="col-lg-3 text-center">
+                            <b style="{{((jobTicket.balance+getTotalJobs()/config.currency['EUR'][0]+getTotalSpark()-getTotalPay())>0)?'color:red':''}}" >Остаток суммы  <span ng-bind="(jobTicket.balance + getTotalSpark()+getTotalJobs()/jobTicket.rate-getTotalPay()).toFixed(2)"></span> €</b>
+                        </div>
+
+                    <div class="clearfix"></div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-lg-10 col-md-offset-1">
+                            <table class="table table-bordered">
+                                <caption class="iconColor mb">Стоимость работ по ремонту и обслуживанию</caption>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Наименование</th>
+                                    <th class="text-center">Кол-во</th>
+
+                                    <th>Сумма</th>
+                                    <th class="text-center">Исполнитель</th>
+                                </tr>
+                                <tr ng-repeat="j in jobTicket.jobs">
+                                    <td ng-bind="$index+1"></td>
+                                    <td ng-bind="j.name"></td>
+                                    <td class="text-center">
+                                        <span ng-bind="j.q"></span>
+                                        <!--<select class="btn btn-color mb" ng-model="j.q">
+                                            <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                        </select>-->
+                                    </td>
+
+                                    <td ><span ng-bind="(j.sum).toFixed(2)"></span> грн</td>
+                                    <td class="text-center">
+                                        <span ng-bind="getNameWorker(j.worker)"></span>
+
+                                        <!--<a data-ng-click="deleteJob($index)">
+                                            <span class="glyphicon glyphicon-trash" style="color: #c8171a"></span>
+                                        </a>-->
+                                        <!--<button type="button" class="btn btn-danger btn-xs"
+                                                data-ng-click="deleteJob($index)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th colspan="2"> Итого</th>
+                                    <th><span  ng-bind="(getTotalJobs()*1.00000001).toFixed(2)"></span> грн</th>
+                                    <th></th>
+                                </tr>
+                            </table>
+
+                        </div>
+
+
+                        <div class="col-lg-10 col-md-offset-1">
+
+                            <p class="iconColor mb text-center">Стоимость запчастей</p>
+
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Код</th>
+                                    <th>Наименование</th>
+                                    <th class="text-center">Кол-во</th>
+                                    <th>Цена</th>
+                                    <th>Cумма</th>
+                                    <th><a data-ng-click="showElements.ship=!showElements.ship">ПР</a></th>
+                                    <th><a data-ng-click="showElements.invoice=!showElements.invoice">накл</a></th>
+                                    <th><a data-ng-click="showElements.supplier=!showElements.supplier">поставщик</a></th>
+                                    <!--<th class="text-center">Удалить</th>-->
+                                </tr>
+                                <tr ng-repeat="j in jobTicket.sparks">
+                                    <td ng-bind="$index+1"></td>
+                                    <td ng-bind="j.code"></td>
+                                    <td ng-bind="j.name"></td>
+                                    <td class="text-center">
+                                        <span ng-bind="j.q"></span>
+                                        <!--<select class="btn btn-color mb" ng-model="j.q">
+                                            <option ng-repeat="opt in quantityArr" ng-value="opt" >{{opt}}</option>
+                                        </select>-->
+                                    </td>
+                                    <td><span ng-bind="(j.price).toFixed(2)"> <span>€</span></span></td>
+                                    <td ><span ng-bind="(j.price*j.q*1.00001).toFixed(2)"></span> €</td>
+                                    <td><span data-ng-show="showElements.ship"
+                                            ng-bind="(j.incomePrice*j.q*1.00000001).toFixed(2)"></span><span data-ng-show="showElements.ship"> €</span></td>
+                                    <td>
+                                        <span data-ng-show="showElements.invoice" ng-bind="j.invoice"></span>
+                                    </td>
+                                    <td>
+                                        <span data-ng-show="showElements.supplier" ng-bind="getNameSupplier(j.supplier)"></span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th></th>
+                                    <th colspan="3"> Итого</th>
+                                    <th colspan="2"><span  ng-bind="(getTotalSpark()*1.00001).toFixed(2)"></span> €</th>
+
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-lg-12">
+
+                            <div class="col-lg-10 col-md-offset-1">
+                                <table class="table">
+                                    <caption class="iconColor mb">Платежная ведомость</caption>
+
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Дата</th>
+                                        <th>Сумма EUR</th>
+                                        <th>Сумма ГРН</th>
+
+                                    </tr>
+                                    <tr ng-repeat="pay in jobTicket.pay">
+                                        <td ng-bind="$index+1"></td>
+                                        <td><span ng-bind="moment(pay.date).format('ll')"></span></td>
+                                        <td><input ng-disabled="true" ng-model="pay.val"></td>
+                                        <td></td>
+
+                                    </tr>
+                                    <tr ng-repeat="pay in jobTicket.payGrn">
+                                        <td ng-bind="$index+1"></td>
+                                        <td><span ng-bind="moment(pay.date).format('ll')"></span></td>
+                                        <td></td>
+                                        <td><input ng-disabled="true" ng-model="pay.val"></td>
+
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th> Итого</th>
+                                        <th ><span  ng-bind="(getTotalPay('EUR')).toFixed(2)"></span> €</th>
+                                        <th ><span  ng-bind="(getTotalPay('GRN')).toFixed(2)"></span> ГРН</th>
+
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div>
+                                <p  class="text-center iconColor">Заметки</p>
+                                <div class="col-md-8 col-md-offset-2 mb">
+                                    <span ng-bind="jobTicket.text"></span>
+
+                                </div>
+                            </div>
+                            <!--<ul>
+                                <li ng-repeat="pay in jobTicket.pay">
+                                    <span ng-bind="pay.date"></span>
+                                    <div class="btn-group">
+                                        <input ng-model="pay.val">
+                                        <button type="button" class="btn btn-danger"
+                                                data-ng-click="deletePay($index)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>-->
+
+                            <!--<p> Итого <span ng-bind="getTotalPay()"></span></p>-->
+                        </div>
+                        <div class="col-lg-12 text-center">
+                            <button class="btn btn-primary col-lg-4 col-lg-offset-4 mb" style="font-size: 18px;" data-ng-click="printJobTicket(jobTicket)"><span>печать</span></button>
+
+
+                        </div>
+                        <div class="col-lg-12 text-center">
+                            <button class="btn btn-success col-lg-4 col-lg-offset-4 mb" style="font-size: 18px;" data-ng-click="cloneJobTicket(jobTicket)"><span>клонировать</span></button>
+
+
+                        </div>
+                        <div class="col-lg-12 text-center">
+                            <button class="btn btn-success col-lg-4 col-lg-offset-4 mb" ng-disabled="!jobTicket.customer.email"
+                                    style="font-size: 18px;" data-ng-click="sendEmail()"><span>отправить e-mail</span></button>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+
+            <!--<div class="col-lg-12" id="formContainer">
+
+            </div>-->
+
+
+
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+
+
+
+<style>
+    .full .modal-dialog{
+        width:auto;
+        margin-left:20px;
+        margin-right:20px;
+    }
+
+    .header {
+        color:#36A0FF;
+        font-size:27px;
+        padding:10px;
+    }
+    .bigicon {
+        font-size:35px;
+        color:#36A0FF;
+    }
+    .iconColor {
+        color:#36A0FF;
+    }
+
+    #formContainer {
+        border-top: 2px solid #aaa;
+        box-shadow:  0 2px 10px rgba(0,0,0,0.8);
+        /*width:288px;
+        height:321px;
+        background-color: #effff4;*/
+        /*margin:0 auto;
+        position:relative;
+        z-index:1;*/
+
+        -moz-perspective: 800px;
+        -webkit-perspective: 800px;
+        perspective: 800px;
+    }
+
+    #formContainer form {
+        width:100%;
+        height:100%;
+
+
+    }
+
+
+</style>
+

@@ -1,0 +1,50 @@
+<div class="select-modal">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">Текущий курс валют</h3>
+        <a class="cancel"  ng-click="$ctrl.cancel()"></a>
+    </div>
+    <div class="modal-body">
+        <p class="info-text col-xs-12">Основная валюта всегда имеет значение 1. Курсы других валют устанавливаются по отношению к основной валюте.<br>
+            Например, основная валюта гривна. Ее курс равен 1.<br> Вторая валюта доллар. Курс гривны к доллару
+            составляет 20 грн.<br> Соответственно, в систему необходимо внести курс 1/20=0.05</p>
+        <table class="table table-currency" >
+            <thead>
+            <th>валюта</th>
+            <th>курс на сайте</th>
+            <th>текущий курс</th>
+            <th>обозначение для валюты</th>
+            </thead>
+            <tr ng-repeat="(key,c) in $ctrl.item.currency track by $index">
+                <td>
+                   <div class="form-group">
+                        <strong><span ng-bind="key"></span></strong>
+                   </div>
+
+                </td>
+                <td>
+                    <input class="form-control"
+                               ng-model="$ctrl.item.currency[key][0]" ng-disabled="$ctrl.item.mainCurrency==key" type="number">
+
+
+                </td>
+                <td>
+                    <div class="form-group">
+                        <span ng-bind="(1/$ctrl.item.currency[key][0]).toFixed(4)" ng-if="$ctrl.item.mainCurrency!==key"></span>
+                    </div>
+                </td>
+                <td>
+                    <input class="form-control" ng-model="$ctrl.item.currency[key][2]">
+                </td>
+            </tr>
+        </table>
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="modal-footer">
+        <a class="btn btn-block btn-raised" ng-click="$ctrl.ok()">
+            установить
+        </a>
+    </div>
+    <div class="clearfix"></div>
+</div>

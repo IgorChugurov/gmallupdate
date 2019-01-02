@@ -1,0 +1,183 @@
+<div class="container">
+    <div class="main">
+
+        <div class="row">
+            <div class="col-lg-12 back">
+                <a href="" class="btn btn-default"ng-click="$state.transitionTo('mainFrame.brands')">
+                    <span class="glyphicon glyphicon-arrow-left" style="font-size: 12px;"></span> в список</a>
+                <!--<a href="" class="btn btn-info pull-left" ng-click="$state.transitionTo('mainFrame.stuff')">в список</a>-->
+            </div>
+            <ng-form name="myForm" class="form form-horizontal" role="form">
+
+            <article class="col-lg-5 col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>Фото, метки, фильтры</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class=" text-right" style="margin-bottom: 5px">
+                            <a  class="btn btn-default btn-xs" data-ng-click="showThumb=!showThumb" style="height: 26px;" >
+                                <span class="glyphicon glyphicon-resize-full"data-ng-show="showThumb"></span>
+                                <span class="glyphicon glyphicon-resize-small" data-ng-show="!showThumb"></span>
+                            </a>
+                        </div>
+                        <div class="col-md-12 text-center" data-ng-show="showThumb" >
+                            <div class="form-group col-md-12 text-center" ng-show="myFileSrc">
+                                <img ng-src="{{myFileSrc}}" class="img-responsive"/>
+                            </div>
+                        </div>
+                        <div class="form-group" >
+
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary btn-success"  ng-disabled="noChange" onclick ="javascript:document.getElementById('imagefile').click();">выбор фото</button>
+                            </div>
+                            <div class="col-md-4">
+                                <a class="btn btn-primary btn-danger pull-right" ng-click="deleteImg()" ng-disabled="myFileSrc">удалить</a>
+                            </div>
+                            <div class="col-md-4">
+                                <a class="btn btn-primary btn-info pull-right" ng-click="uploadImg()" ng-disabled="noLoad">загрузить</a>
+                            </div>
+                            <input type="file" file-read="myFile" name="image" id="imagefile" style='visibility: hidden;'/>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <h4>Местоположение</h4>
+                                страна<select class="btn"  style="width:120px" data-placeholder="выберите страну"  ng-model="country" ng-disabled="editDisabled">
+
+                                <option ng-repeat="country in countries|orderBy:'index' " value="{{country._id}}">{{country.name[config.DL]}}</option>
+                            </select>
+
+                                регион<select class="btn"  style="width:120px"data-placeholder="выберите регион"ng-model="region"ng-disabled="editDisabled">
+                                <option ng-repeat="region in regions|orderBy:'index' " value="{{region._id}}">{{region.name[config.DL]}}</option>
+                            </select>
+                                город <select class="btn"  style="width:120px"data-placeholder="выберите город" ng-model="city"ng-disabled="editDisabled">
+                                <option ng-repeat="city in cities|orderBy:'index' " value="{{city._id}}">{{city.name[config.DL]}}</option>
+                            </select>
+                            </div>
+                            <div class="col-md-6" ng-show="brand.categories.length>0">
+                                <h4 style="padding-left: 10px;">Категории</h4>
+                                <ul >
+                                    <li data-ng-repeat="item in brand.categories">{{item.name[config.DL]}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div ng-show="brand._id">
+                            <hr>
+                            <div class="panel-heading">
+                                <div class="form-group">
+                                    <label>Коллекции</label>
+                                    <a class="btn btn-success pull-right" type="button"  ng-click="editBrandTag()"
+                                       style=" margin-right: 10px">добавить</a>
+
+                                </div>
+                            </div>
+                            <!--<h4>Коллекции</h4>
+                            <a  ng-click="editBrandTag()" class="btn btn-info"><span class="a"></span> добавить</a>-->
+                            <div ng-show="editTagShow">
+
+                                <ng-form name="myFormTag" class="form form-horizontal" role="form">
+                                <div class="form-group"data-ng-repeat="lang in config.langArr" >
+                                    <label ng-bind="lang" class="col-md-4 control-label"></label>
+                                    <div class="col-md-8">
+                                        <input type="text" placeholder="наименование" class="form-control"
+                                               ng-model="brandTag.name[lang]"
+                                               ng-disabled="editDisabledTag"
+                                               required
+                                               focus-me="focusInputBrandTag[$index]"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">индекс</label>
+                                    <div class="col-md-8">
+                                        <input type="text" placeholder="index" class="form-control" ng-model="brandTag.index" required ng-disabled="editDisabledTag"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <div class="pull-right">
+
+                                            <button  type="submit" class="btn btn-primary" data-ng-click="saveBrandTag()">
+                                                <span class="glyphicon glyphicon-floppy-save" ></span> сохранить
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                </ng-form>
+                            </div>
+                            <ul  class="nav nav-pills nav-stacked">
+                                <li
+                                    class="pull-left col-lg-12 col-md-10 col-xs-10 back actve"
+                                    ng-repeat="tag in brandTags|orderBy:'index'">
+                            <span class="col-lg-6 col-md-6 col-xs-6">
+                            <a ng-click="editBrandTag(tag)"  href="">
+                                <span ng-bind="tag.name[config.DL]"></span>
+                            </a>
+                            </span>
+                                    <div class="col-lg-6 text-right">
+                                        <a ng-click="editBrandTag(tag)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                        <a ng-click="deleteBrandTag(tag)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+            </article>
+
+            <article class="col-lg-7 col-md-7 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>Описание</span>
+                    </div>
+                    <div class="panel-body">
+                        <h4>Наименование</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr"  style="padding-left: 10px;">
+                            <label ng-bind="lang" for="{{$index}}name" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <input type="text" placeholder="" id="{{$index}}name" class="form-control"
+                                       ng-model="brand.name[lang]"
+                                       ng-disabled="editDisabledC"
+                                       required
+                                       focus-me="focusInput[$index]"/>
+                            </div>
+                        </div>
+                       <h4>Описание</h4>
+                        <div class="form-group"data-ng-repeat="lang in config.langArr"  style="padding-left: 10px;">
+                            <label ng-bind="lang" for="{{$index}}desc" class="col-md-1 control-label"></label>
+                            <div class="col-md-11">
+                                <textarea placeholder="введите описание" ng-model="brand.desc[lang]"id="{{$index}}desc"rows="1" style="height: 100px">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-md-6 control-label">Индекс</label>
+                            <div class="col-md-6">
+                                <input type="text" placeholder="index" class="form-control" ng-model="brand.index" required/>
+                            </div>
+                        </div>
+                        <!--<h4>Индекс</h4>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <input type="text" placeholder="index" class="form-control" ng-model="brand.index" required/>
+                            </div>
+                        </div>-->
+
+                    </div>
+                </div>
+
+            </article>
+
+                            <button class="btn btn-block btn-primary  col-lg-12 col-md-12 col-sm-12 save" type="submit" ng-click="updateBrand()">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить
+                            </button>
+
+            </ng-form>
+
+        </div>
+
+    </div>
+</div>

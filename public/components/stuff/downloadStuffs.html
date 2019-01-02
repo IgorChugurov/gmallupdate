@@ -1,0 +1,109 @@
+<div class="downloads">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Каталог в формате XML/YML</h4>
+        </div>
+    </div>
+    <div class="container">
+        <div class="cart-detail">
+            <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 mb-20 text-center">
+                <h4 class="name-box">Каталог в формате   XML/YML</h4>
+                <p class="info-text">В файле присутствуют ссылки на фотографии каждой позиции каталога.</p>
+                <div class="radio">
+                    <label class="radio-inline">
+                        <input type="radio" name="extCatalog" ng-model="$ctrl.ext" value="xml">
+                        XML/YML
+                    </label>
+                </div>
+            </div>
+            <div class="step border-right col-lg-6 col-md-6 col-xs-6 col-sm-12 mb-20 text-center">
+                <h4 class="name-box"><span>ШАГ 1</span> - выбрать вид файла </h4>
+                <p class="text-left info-text">Формат файла адаптирован для портала prom.ua или для обмена данными между магазинами на платформе gmall.io.
+                    Выберите необходимую конфигурацию файла.</p>
+                <div class="radio">
+                    <label class="radio-inline">
+                        <input type="radio" name="typeCatalog" ng-model="$ctrl.catalog" value="prom">
+                        каталог для импорта на prom.ua
+                    </label>
+                    <label>
+                        <input type="radio" name="typeCatalog" ng-model="$ctrl.catalog" value="gmall">
+                        каталог для обмена данными на gmall.io
+                    </label>
+                </div>
+            </div>
+            <div class="step col-lg-6 col-md-6 col-xs-6 col-sm-12 mb-20 text-center">
+                <h4 class="name-box"><span>ШАГ 2</span> - выбрать бренд</h4>
+                <p class="text-left info-text">Для скачивания доступен, как общий каталог, так и каталоги отдельных брендов.</p>
+                <div class="radio">
+                    <label class="radio-inline">
+                        <input ng-model="$ctrl.brand" type="radio" name="optradio" value="all">{{$ctrl.global.get('lang').val.all}}
+                    </label>
+                    <label class="radio-inline" ng-repeat="brand in $ctrl.brands.val">
+                        <input ng-model="$ctrl.brand" type="radio" name="optradio" value="{{brand.url}}">{{brand.name}}
+                    </label>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <hr>
+            <div class="step border-right col-lg-6 col-md-6 col-xs-6 col-sm-12 mb-20 text-center">
+                <h4 class="name-box"><span>ШАГ 3</span> - выбрать валюту и язык прайса</h4>
+                <p class="text-left info-text">Ссылка формируется с учетом выбранной валюты и языка каталога.</p>
+                <div class="col-lg-6 col-md-6 col-xs-6 col-sm-12 mb-20">
+                    <ui-select ng-model="$ctrl.currency">
+                        <ui-select-match>
+                            <span ng-bind="$select.selected"></span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="item in $ctrl.currencyArray">
+                            <span ng-bind="item"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-6 col-md-6 col-xs-6 col-sm-12 mb-20">
+                    <ui-select ng-model="$ctrl.lang">
+                        <ui-select-match>
+                            <span ng-bind="$select.selected"></span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="item in $ctrl.langArr">
+                            <span ng-bind="item"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <div class="step col-lg-6 col-md-6 col-xs-6 col-sm-12 mb-20 text-center">
+                <h4 class="name-box"><span>ШАГ 4</span> - определить структуру каталога</h4>
+                <p class="text-left info-text">Если Вы используете ссылку для загрузки каталога на портал prom.ua и, если категории каталога (платья, блузы, и т.п.) должны располагаться в отдельной папке с наименованием, то поставьте метку "категории в папке".<br>
+                    Иначе все категории будут помещены в корневую папку вашего каталога.<br>
+                </p>
+                <div class="togglebutton text-center">
+                    <label for="razdel">
+                        <span ng-class="{'active':!$ctrl.razdel}"> категории без папки</span>
+                        <input type="checkbox"
+                               id="razdel"
+                               ng-model="$ctrl.razdel">
+                        <span ng-class="{'active':$ctrl.razdel}">категории в папке </span>
+                    </label>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <hr>
+            <div class="step col-lg-12 col-md-12 col-xs-12 col-sm-12 text-center">
+                <h4 class="name-box"><span>ШАГ 5</span> - скопировать ссылку в формате XML/YML</h4>
+                <p class="text-left info-text">Ссылку для портала prom.ua необходимо вставить в соответствующее поле загрузки каталога на портале, указав, что в файле есть разновидности.
+                    Эту ссылку также  можно использовать для автоматического обновления нашего каталога на вашем сайте. Чтобы увидеть формат файла, можно скопированную ссылку вставить в адресную строку браузера в новой вкладке и нажать enter.
+                </p>
+                <p>
+                    <strong>
+                        {{$ctrl.setLink()}}
+                    </strong>
+                </p>
+                <a class="btn btn-raised btn-success btn-block" ng-click="$ctrl.copyLink()" >скопировать ссылку в формате XML/YML</a>
+            </div>
+            <div class="clearfix"></div>
+         </div>
+    </div>
+</div>

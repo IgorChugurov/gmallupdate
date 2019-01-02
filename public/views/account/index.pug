@@ -1,0 +1,367 @@
+extends layout
+
+block content
+  div(id='dimScreen',content-loaded)
+    img(src='img/spinner.gif')
+  div(ng-cloak)
+    toaster-container
+    div(class="navbar navbar-fixed-top")
+        ul(class="pull-left left-menu")
+          li(class="home")
+            a(ui-sref="frame", title="главная")
+              i(class="material-icons") home
+          li
+            a(class="pull-left text-center",href="/bookkeep/warehouse")
+              //,ng-class="{'active':}"
+              i(class="material-icons") group_work
+              br
+              span склад
+          li(class="dropdown")
+            a(class="dropdown-toggle pull-left text-center",data-target="#",data-toggle="dropdown")
+              i(class="material-icons") add_circle
+              br
+              span поступления
+            ul(class="dropdown-menu")
+              li
+                a(href="/bookkeep/MoneyOrderCashDebet")
+                  span наличные
+              li
+                a(href="/bookkeep/MoneyOrderBankDebet")
+                  span безнал
+              li
+                a(href="/bookkeep/pns")
+                  span материалы
+              li
+                a(href="/bookkeep/MoneyOrderCashExchange")
+                  span обмен касса
+              li
+                a(href="/bookkeep/MoneyOrderBankExchange")
+                  span обмен банк
+              li
+                a(href="")
+                  span оказанные услуги
+          li(class="dropdown")
+            a(class="dropdown-toggle pull-left text-center",data-target="#",data-toggle="dropdown")
+              i(class="material-icons") remove_circle
+              br
+              span расход
+            ul(class="dropdown-menu")
+              li
+                a(href="/bookkeep/MoneyOrderCashCredit")
+                  span наличные
+              li
+                a(href="/bookkeep/MoneyOrderBankCredit")
+                  span безнал
+              li
+                a(href="/bookkeep/rns")
+                  span материалы
+
+              li
+                a(href="bookkeep/ZakazManufacture")
+                  span наряд-заказы
+              li
+                a(href="bookkeep/Act")
+                  span акты выполненных работ
+
+
+          li(class="dropdown")
+            a(class='dropdown-toggle pull-left text-center',data-target="#",data-toggle="dropdown")
+              i(class="material-icons") attach_money
+              br
+              span остатки
+            ul(class="dropdown-menu")
+              li
+                a(href="/bookkeep/money")
+                  span денежные средства
+              li
+                a(href="/bookkeep/Supplier")
+                  span поставщики
+              li
+                a(href="/bookkeep/Customer")
+                  span покупатели
+              li
+                a(href="/bookkeep/Worker")
+                  span сотрудники
+              li
+                a(href="/bookkeep/Contragent")
+                  span подотчет
+              li
+                a(href="/bookkeep/Founder")
+                  span учредители
+          li(class="dropdown")
+            a(class='dropdown-toggle pull-left text-center',data-target="#",data-toggle="dropdown")
+              i(class="material-icons") account_circle
+              br
+              span оборотные
+              br
+              span ведомости
+            ul(class="dropdown-menu")
+              li
+                a(href="/bookkeep/synopsis")
+                  span сводка
+              li
+                a(href="/bookkeep/money/turnover")
+                  span денежные средства
+              li
+                a(href="/bookkeep/warehouse/turnover")
+                  span склад
+              li
+                a(href="/bookkeep/Supplier/turnover")
+                  span поставщики
+              li
+                a(href="/bookkeep/Customer/turnover")
+                  span покупатели
+              li
+                a(href="/bookkeep/Worker/turnover")
+                  span сотрудники
+              li
+                a(href="/bookkeep/Contragent/turnover")
+                  span подотчет
+              li
+                a(href="/bookkeep/Founder/turnover")
+                  span учредители
+          li(class="dropdown")
+            a(class='dropdown-toggle pull-left text-center',data-target="#",data-toggle="dropdown")
+              i(class="material-icons") account_circle
+              br
+              span инвента-
+              br
+              span ризации
+            ul(class="dropdown-menu")
+              li
+                a(href="/bookkeep/money/stockadjustments")
+                  span денежные средства
+              li
+                a(href="/bookkeep/warehouse/stockadjustments")
+                  span склад
+              li
+                a(href="/bookkeep/Supplier/stockadjustments")
+                  span поставщики
+              li
+                a(href="/bookkeep/Customer/stockadjustments")
+                  span покупатели
+              li
+                a(href="/bookkeep/Worker/stockadjustments")
+                  span сотрудники
+              li
+                a(href="/bookkeep/Contragent/stockadjustments")
+                  span подотчет
+              li
+                a(href="/bookkeep/Founder/stockadjustments")
+                  span учредители
+          li(class="dropdown")
+            a(class='dropdown-toggle pull-left text-center',data-target="#",data-toggle="dropdown")
+              i(class="material-icons") tonality
+              br
+              span подраз-
+              br
+              span деления
+            ul(class="dropdown-menu")
+              li
+                a(href="/bookkeep/virtualAaccount")
+                  span подразделения
+              li
+                a(href="/bookkeep/account")
+                  span счета
+          li
+            a(class="pull-left text-center",href="/bookkeep/producer")
+              i(class="material-icons") settings_applications
+              br
+              span произво-
+              br
+              span дители
+          li
+            a(class="pull-left text-center",href="/bookkeep/sampleEntries")
+              i(class="material-icons") library_books
+              br
+              span проводки
+          li
+            a(class="pull-left text-center",href="/bookkeep/balance")
+              i(class="material-icons") playlist_add_check
+              br
+              span баланс
+          li
+            a(class="pull-left text-center",href="/bookkeep/closePeriod")
+              i(class="material-icons") view_week
+              br
+              span периоды
+        div(class="dropdown pull-right right-menu navbar-menu")
+          a(class='dropdown-toggle',data-target="#",data-toggle="dropdown")
+            i(class="material-icons menu-icon") apps
+          ul(class="dropdown-menu")
+            li
+              a(href='/bookkeep/materials')
+                i(class="material-icons link-info") queue
+                span товары
+            li
+              a(href='/bookkeep/material')
+                i(class="material-icons link-info") queue
+                span товар
+            li
+              a(href='/bookkeep/works')
+                i(class="material-icons link-info") queue
+                span услуги(работы)
+            li
+              a(href='/bookkeep/work')
+                i(class="material-icons link-info") queue
+                span услуга
+            li
+              a(href='/bookkeep/Rate')
+                i(class="material-icons link-info") queue
+                span курсы валют
+            li
+              a(href='/',target="blank")
+                i(class="material-icons link-info") web_asset
+                span перейти на сайт
+        div()
+          a(class="for-saving",ng-class="{'saving':global.get('saving').val}")
+            span(class="save")
+              | сохранено
+
+
+    div( ui-view)
+    audio(id="soundChat",style='display:none;',controls='controls')
+      source(src='sounds/chat.mp3')
+  - var socketHref=socketHost+'/socket.io/socket.io.js'
+
+  script(type='text/javascript').
+    var storeHost = !{JSON.stringify(storeHost)};
+    var accountHost = !{JSON.stringify(accountHost)};
+    var socketHost = !{JSON.stringify( socketHost )};
+    var notificationHost = !{JSON.stringify( notificationHost )};
+    var userHost = !{JSON.stringify( userHost )};
+    var stuffHost = !{JSON.stringify( stuffHost )};
+    var orderHost = !{JSON.stringify( orderHost )};
+    var photoHost = !{JSON.stringify( photoHost )};
+    var photoUpload = !{JSON.stringify( photoUpload )};
+    var globalStoreId = !{JSON.stringify(globalStoreId)};
+    var storeTemp = !{store};
+    var mobileFromServer = !{JSON.stringify(mobile)};
+    var local = !{JSON.stringify(local)};
+    var dataFromServer=!{dataF}
+
+  script(src=socketHref)
+  if(store.favicon)
+    - var favicon = photoHost+"/"+store.favicon
+    script.
+      (function () {
+        var link = document.createElement( 'link' );
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href = "#{favicon}";
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+      }());
+
+
+
+  if(true)
+    script(src="crawler.scripts164.min.js")
+    script(src='contentdev_scripts.min.js')
+    script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru.js")
+    script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru-ru.js")
+    script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru-ua.js")
+    script(src='scripts/myPrototype.js')
+    script(src='scripts/angular-node.js')
+    script(src='modules/account/js/app.js')
+    script(src='modules/account/js/controllers.js')
+    script(src='modules/account/js/services.js')
+    script(src='modules/account/js/directives.js')
+    script(src='scripts/service.global.js')
+
+    script(src="bookkeep/scripts/variables.js")
+    script(src="bookkeep/scripts/globalService.js")
+
+
+
+
+    script(src="bookkeep/components/account/scripts/account.component.js")
+    script(src="bookkeep/components/account/scripts/accounts.component.js")
+    script(src="bookkeep/components/account/scripts/account.service.js")
+
+    // склад
+    script(src="bookkeep/components/warehouse/js/warehouse.component.js")
+    script(src="bookkeep/components/material/js/material.component.js")
+    script(src="bookkeep/components/material/js/material.service.js")
+
+    // приходные накладные
+    script(src="bookkeep/components/pn/js/pn.component.js")
+    script(src="bookkeep/components/pn/js/pn.service.js")
+
+
+    script(src="bookkeep/components/rn/js/rn.component.js")
+    script(src="bookkeep/components/zakaz/js/zakaz.component.js")
+
+
+
+    // поставщики
+    script(src="bookkeep/components/supplier/js/supplier.component.js")
+    // шаблоны проводок
+    script(src="bookkeep/components/sampleEntries/js/sampleEntries.component.js")
+    // произыодители
+    script(src="bookkeep/components/producer/js/producer.component.js")
+    // баланс
+    script(src="bookkeep/components/balance/js/balance.component.js")
+    // оборот
+    script(src="bookkeep/components/turnover/js/turnover.component.js")
+    // баланс
+    script(src="bookkeep/components/closePeriod/js/closePeriod.component.js")
+    script(src="bookkeep/components/customer/js/customer.component.js")
+    script(src="bookkeep/components/worker/js/worker.component.js")
+    script(src="bookkeep/components/founder/js/founder.component.js")
+    script(src="bookkeep/components/contragent/js/contragent.component.js")
+    script(src="bookkeep/components/money/js/money.component.js")
+    script(src="bookkeep/components/act/js/act.component.js")
+  if(true)
+    script(src='components/sign-login/scripts/sign-login.component.js')
+    script(src='components/directives/check-password-match.directive.js')
+
+      //services
+    script(src='components/services/factory.exeption.js')
+    script(src='components/services/confirm.factory.js')
+    script(src='components/services/interceptor.factory.js')
+    script(src='components/storeSetting/scripts/store-seller.service.js')
+
+
+    script(src='scripts/service.helper.js')
+    script(src='scripts/service.email.js')
+
+
+      // notification
+    script(src='components/notification/scripts/service.notification.js')
+    script(src='components/notification/scripts/controller.notification.js')
+
+      // chat
+    script(src='components/chat/scripts/service.chat.js')
+    script(src='components/chat/scripts/controller.chat.js')
+    script(src='components/chat/scripts/directive.chat.js')
+    script(src='components/chat/scripts/chat.component.js')
+
+      // dialogs
+    script(src='components/dialogs/scripts/service.dialog.js')
+    script(src='components/dialogs/scripts/controller.dialog.js')
+    script(src='components/dialogs/scripts/directive.dialog.js')
+
+      // user
+    script(src='components/user/scripts/service.user.js')
+    script(src='components/user/scripts/controller.user.js')
+    script(src='components/user/scripts/directive.user.js')
+
+    script(src='components/storeSetting/scripts/store-seller.service.js')
+    script(src='components/storeSetting/scripts/component.storeSetting.js')
+
+      // directives
+    script(src='components/directives/directive.focus-element.js')
+    script(src='components/directives/directive.select-drop-down.js')
+    script(src='components/paginator/scripts/component.paginator.js')
+    script(src='components/directives/directive.lost-focus.js')
+    script(src='components/directives/ng-autocomplite-city.directive.js')
+
+
+
+    script(src='scripts/service.anchorSmoothScroll.js')
+
+    script(src='scripts/directive.datePicker.js')
+    script(src='scripts/directive.editNote.js')
+
+
+

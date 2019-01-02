@@ -1,0 +1,118 @@
+
+<div class="container">
+    <div class="main">
+        <h3 id="top"  ng-bind="categories.name.ua"></h3>
+        <p  class="back">активна &nbsp; &nbsp; &nbsp;<span class="activ" ng-bind="activeGoodName"></span></p>
+        <label class="filter" ng-repeat="c in categories.stuff">
+            <input  type="radio" name="categories"
+                   value="{{c.id}}" ng-model="$parent.section" />
+            {{c.name.ua}}
+        </label>
+        <div class="row">
+            <article class="col-lg-5 col-md-5" >
+
+                <div class="pull-left col-lg-12 col-md-12 col-xs-12 row back">
+                    <label class="btn-group-md">
+                        <input type="text" placeholder="пошук" ng-model="searchGood" />
+                        <button class="btn btn-info" ng-click="editGood(null)">створити</button>
+                    </label>
+                </div>
+
+                <ul class="list">
+
+                    <li class="pull-left col-lg-12 col-md-10 col-xs-10 back" ng-repeat="good in goods|filterSection:section|filter:{name.ua:searchGood}">
+                        <div class="form-group">
+                            <label class="control-label col-lg-6 col-md-5 col-xs-6"><a ng-click="editGood(good)"><span ng-bind-html="trustHtml(good.name.ua)"></span></a></label>
+                            <div class="col-lg-6 col-md-7  btn-group">
+
+                                <button title="редактировать" class="btn btn-success" ng-click="editGood(good)">
+                                    <img src="img/icons/edit.png" title="редактировать">
+                                </button>
+
+                                <button  title="комментарии" class="btn btn-info" ng-click="$state.transitionTo('mainFrame.comments', {id:good._id})">
+                                    <img src="img/icons/comm.png" title="комментарии">
+                                </button>
+
+                                <button title="удалить" class="btn btn-danger" ng-click="deleteGood(good)">
+                                    <img src="img/icons/delete.png" title="удалить">
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <div class="clearfix"></div>
+
+                </ul>
+            </article>
+            <article class="col-lg-7 col-md-7">
+
+                <form name="myForm" class="form form-horizontal" ng-submit="updateGood()">
+                    <p data-ng-show="saved">Сохранено</p>
+                    <p data-ng-show="loaded">Загружено</p>
+                    <p data-ng-show="mongoErrorShow" ng-bind="mongoError"></p>
+
+                    <div class="pull-left " style="margin-right: 30px;">
+                        <h3>Фото товару</h3>
+                        <div class="thumbnail back pull-left">
+                            <img ng-src="{{myFileSrc}}"alt="оберiть фото" />
+                            <div>
+                                <input type="file" file-read="myFile" name="image" id="imagefile" style='visibility: hidden;'/>
+                                <input type = "button" class="btn btn-success" value="выбор фото" ng-disabled="noChange" onclick ="javascript:document.getElementById('imagefile').click();">
+                                <button  class="btn btn-info pull-right" ng-click="uploadImg()" ng-disabled="noLoad">загрузити</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                        <div class="back col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                            <h3>Опис товару</h3>
+                            <p>Індекс</p>
+                            <input type="text" class="pfoto"  placeholder="введіть індекс"  ng-model="good.index" required/>
+                        </div>
+
+                        <p>Найменування</p>
+                        <div class="back col-lg-6 col-md-6 col-sm-6 row">
+                            <input focus-me="focusInput" type="text" class="form-control"  placeholder="введіть найменування" ng-model="good.name.ua" required>
+                        </div>
+                        <br>
+                        <p>Название</p>
+                        <div class="back col-lg-6 col-md-6 col-sm-6 row">
+                            <input  type="text" class="form-control"  placeholder="введіть найменування" ng-model="good.name.ru" required>
+                        </div>
+                    <div class="back col-lg-5 col-md-5 col-sm-5 col-xs-5 row">
+                        <p ng-show="categories.stuff" >Роздiл</p>
+                        <select ng-model="good.category" ng-show="categories.stuff">
+                            <option ng-value="c.id" ng-selected="c.id==good.category" ng-repeat="c in categories.stuff|orderBy:'id'">{{c.name.ua}}</option>
+                        </select>
+                    </div>
+
+                        <div class="clearfix"></div>
+
+                        <p>Короткий опис</p>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 back row">
+                            <textarea placeholder="короткий опис" ng-model="good.desc.ua">
+                            </textarea>
+                        </div>
+                        <p>Краткое описание</p>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 back row">
+                            <textarea placeholder="короткий опис" ng-model="good.desc.ru">
+                            </textarea>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+
+                        <div class="pull-right back ">
+                            <button class="btn btn-large btn-info save mt40" type="submit">зберегти</button>
+                        </div>
+
+
+
+                    <!--</article>-->
+
+                </form>
+            </article>
+        </div>
+    </div>
+    <br />
+    <br />

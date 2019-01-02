@@ -1,0 +1,389 @@
+<div class="template-list" ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}">
+    <div class="setting-list col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail" ng-repeat="listName in $ctrl.listOfListName">
+                <h4 class="name-box text-center row">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-left">
+                        <a  class="btn btn-fab btn-fab-mini btn-primary" ng-click="$ctrl.downloadPartOfTemplate(listName)">
+                            <i class="material-icons">vertical_align_bottom</i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 header-panel">
+                        <a ng-click="item.showDetai19=!item.showDetai19" ng-show="!item.showDetai19">
+                            настройка списка
+                            <span ng-repeat="(key,name) in $ctrl.listOfListNameObject" ng-if="listName==key">
+                                <span ng-bind="name"></span>
+                            </span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_down
+                            </i>
+                        </a>
+                        <a ng-click="item.showDetai19=!item.showDetai19" ng-show="item.showDetai19">
+                            настройка списка
+                            <span ng-repeat="(key,name) in $ctrl.listOfListNameObject" ng-if="listName==key">
+                                <span ng-bind="name"></span>
+                            </span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_up
+                            </i>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right">
+                        <a class="btn btn-fab btn-fab-mini btn-pink" ng-click="$ctrl.getImg($ctrl.item[listName],listName)">
+                            <i class="material-icons " title="загрузить рисунок">photo</i>
+                        </a>
+
+                        <a class="btn btn-fab btn-fab-mini btn-info"  ng-click="$ctrl.setColor($ctrl.item[listName],listName)">
+                            <i class="material-icons"  title="настроить стили списка">opacity</i>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </h4>
+                <div  uib-collapse="!item.showDetai19" class="collapse-item">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group" style="margin-top: 0">
+                        <h4 class="label-menu text-center">название</h4>
+                        <input class="form-control"
+                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                               ng-change="$ctrl.saveFieldStore('nameListsL',200)"
+                               ng-model="$ctrl.store.nameListsL[$ctrl.global.get('store').val.lang][listName]">
+                        <h4 class="label-menu text-center">анимация</h4>
+                        <ui-select ng-model="$ctrl.item[listName].animate" skip-focusser="true" search-enabled="false"
+                                   ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                            <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                        </ui-select>
+
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group text-center" style="margin-top: 0">
+                        <h4 class="label-menu">название в списке</h4>
+                        <div class="togglebutton">
+                            <label for="listInlistDdf{{$index}}">
+                                <span ng-class="{'active':!$ctrl.item[listName].hideNameList}">есть</span>
+                                <input type="checkbox"
+                                       id="listInlistDdf{{$index}}"
+                                       ng-model="$ctrl.item[listName].hideNameList"
+                                       ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                                <span ng-class="{'active':$ctrl.item[listName].hideNameList}">нет</span>
+                            </label>
+                        </div>
+                        <h4 class="label-menu">отображение блоков в карточке</h4>
+                        <div class="togglebutton">
+                            <label for="chess{{$index}}">
+                                <span class="ll" ng-class="{'active':!$ctrl.item[listName].chess}">без перестановки</span>
+                                <input type="checkbox"
+                                       id="chess{{$index}}"
+                                       ng-model="$ctrl.item[listName].chess"
+                                       ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                                <span class="lr" ng-class="{'active':$ctrl.item[listName].chess}">с перестановкой</span>
+                            </label>
+                        </div>
+                        <h4 class="label-menu">сортировка в списке</h4>
+                        <div class="togglebutton">
+                            <label for="listlabel{{$index}}">
+                                <span ng-class="{'active':!$ctrl.item[listName].listLabel}">есть метка</span>
+                                <input type="checkbox"
+                                       id="listlabel{{$index}}"
+                                       ng-model="$ctrl.item[listName].listLabel"
+                                       ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                                <span ng-class="{'active':$ctrl.item[listName].listLabel}">нет метки</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group" style="margin-top: 0">
+                        <h4 class="label-menu text-center">кол-во колонок</h4>
+                        <ui-select ng-model="$ctrl.item[listName].rows" skip-focusser="true" search-enabled="false"
+                                   ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                            <ui-select-match placeholder="к-во">{{$select.selected}}</ui-select-match>
+                            <ui-select-choices repeat="opt in [1,2,3,4,5]">{{ opt }}</ui-select-choices>
+                        </ui-select>
+                        <h4 class="label-menu text-center">номер карточки</h4>
+                        <ui-select ng-model="$ctrl.item[listName].templ" skip-focusser="true" search-enabled="false"
+                                   ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                            <ui-select-match placeholder="шаблон">{{$select.selected}}</ui-select-match>
+                            <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                        </ui-select>
+                        <h4 class="label-menu text-center">номер стиля</h4>
+                        <ui-select ng-model="$ctrl.item[listName].style" skip-focusser="true" search-enabled="false"
+                                   ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                            <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                            <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group text-center" style="margin-top: 0">
+                        <h4 class="label-menu">список на странице сущности</h4>
+                        <div class="togglebutton">
+                            <label for="listInlistD{{$index}}">
+                                <span ng-class="{'active':!$ctrl.item[listName].hideList}">есть</span>
+                                <input type="checkbox"
+                                       id="listInlistD{{$index}}"
+                                       ng-model="$ctrl.item[listName].hideList"
+                                       ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                                <span ng-class="{'active':$ctrl.item[listName].hideList}">нет</span>
+                            </label>
+                        </div>
+                        <h4 class="label-menu">карточка сущности в списке</h4>
+                        <div class="togglebutton">
+                            <label for="listInlistDd{{$index}}">
+                                <span ng-class="{'active':!$ctrl.item[listName].hideCart}">есть</span>
+                                <input type="checkbox"
+                                       id="listInlistDd{{$index}}"
+                                       ng-model="$ctrl.item[listName].hideCart"
+                                       ng-change="$ctrl.saveFieldTemplate(listName,$ctrl.item[listName])">
+                                <span ng-class="{'active':$ctrl.item[listName].hideCart}">нет</span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div class="clearfix"></div>
+
+                    <div class="bgcolor_one" ng-if="listName=='infoList'">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                            <h4 class="link-menu">информационная страница</h4>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 text-center">
+                            <ui-select ng-model="$ctrl.item.info.templ" skip-focusser="true" search-enabled="false"
+                                       ng-change="$ctrl.saveFieldTemplate('info',$ctrl.item.info)">
+                                <ui-select-match placeholder="шаблон">{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4 text-center">
+                            <ui-select ng-model="$ctrl.item.info.style" skip-focusser="true" search-enabled="false"
+                                       ng-change="$ctrl.saveFieldTemplate('info',$ctrl.item.info)">
+                                <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4 text-right">
+                            <a class="btn btn-fab btn-fab-mini btn-info" ng-click="$ctrl.setColor($ctrl.item.info,'info')">
+                                <i class="material-icons" title="установить стиль блока">opacity</i>
+                            </a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <!--<h3 class="text-center name-page">настройка списка
+                    <span ng-repeat="(key,name) in $ctrl.listOfListNameObject" ng-if="listName==key">
+                        <span ng-bind="name"></span>
+                    </span>
+                </h3>-->
+
+            </div>
+        <div class="cart-detail">
+            <h4 class="name-box text-center row">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-left">
+                    <a  class="btn btn-fab btn-fab-mini btn-primary" ng-click="$ctrl.downloadPartOfTemplate(pricegoods)">
+                        <i class="material-icons">vertical_align_bottom</i>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 header-panel">
+                    <a ng-click="item.showDetai191=!item.showDetai191" ng-show="!item.showDetai191">
+                        настройка прайса товаров
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_down
+                        </i>
+                    </a>
+                    <a ng-click="item.showDetai191=!item.showDetai191" ng-show="item.showDetai191">
+                        настройка прайса товаров
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_up
+                        </i>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right">
+                    <a class="btn btn-fab btn-fab-mini btn-pink" ng-click="$ctrl.getImg($ctrl.item['pricegoods'],'pricegoods')">
+                        <i class="material-icons " title="загрузить рисунок">photo</i>
+                    </a>
+
+                    <a class="btn btn-fab btn-fab-mini btn-info"  ng-click="$ctrl.setColor($ctrl.item['pricegoods'],'pricegoods')">
+                        <i class="material-icons"  title="настроить стили списка">opacity</i>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+            </h4>
+            <div  uib-collapse="!item.showDetai191" class="collapse-item">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">название</h4>
+                    <input class="form-control"
+                           ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                           ng-change="$ctrl.saveFieldStore('nameListsL',200)"
+                           ng-model="$ctrl.store.nameListsL[$ctrl.global.get('store').val.lang]['pricegoods']">
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">анимация</h4>
+                    <ui-select ng-model="$ctrl.item['pricegoods'].animate" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('pricegoods',$ctrl.item['pricegoods'])">
+                        <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                    </ui-select>
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">карточка</h4>
+                    <ui-select ng-model="$ctrl.item['pricegoods'].templ" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('pricegoods',$ctrl.item['pricegoods'])">
+                        <ui-select-match placeholder="карточка">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">стиль</h4>
+                    <ui-select ng-model="$ctrl.item['pricegoods'].style" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('pricegoods',$ctrl.item['pricegoods'])">
+                        <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                    </ui-select>
+                </div>
+                <!--<div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 form-group" style="margin-top: 0">
+                    <a class="btn btn-fab btn-fab-mini" ng-click="$ctrl.getImg($ctrl.item['pricegoods'],'pricegoods')">
+                        <i class="material-icons link-success md-42" title="загрузить рисунок">photo</i>
+                    </a>
+                    <a class="btn btn-fab btn-fab-mini" ng-click="$ctrl.setColor($ctrl.item['pricegoods'],'pricegoods')">
+                        <i class="material-icons link-info md-42" title="установить стиль блока">opacity</i>
+                    </a>
+                </div>-->
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="cart-detail">
+            <h4 class="name-box text-center row">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-left">
+                    <a  class="btn btn-fab btn-fab-mini btn-primary" ng-click="$ctrl.downloadPartOfTemplate(priceservices)">
+                        <i class="material-icons">vertical_align_bottom</i>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 header-panel">
+                    <a ng-click="item.showDetai192=!item.showDetai192" ng-show="!item.showDetai192">
+                        настройка прайса услуг
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_down
+                        </i>
+                    </a>
+                    <a ng-click="item.showDetai192=!item.showDetai192" ng-show="item.showDetai192">
+                        настройка прайса услуг
+                        <i class="material-icons link-success more">
+                            keyboard_arrow_up
+                        </i>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right">
+                    <a class="btn btn-fab btn-fab-mini btn-pink" ng-click="$ctrl.getImg($ctrl.item['priceservices'],'priceservices')">
+                        <i class="material-icons " title="загрузить рисунок">photo</i>
+                    </a>
+
+                    <a class="btn btn-fab btn-fab-mini btn-info"  ng-click="$ctrl.setColor($ctrl.item['priceservices'],'priceservices')">
+                        <i class="material-icons"  title="настроить стили списка">opacity</i>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+            </h4>
+            <div  uib-collapse="!item.showDetai192" class="collapse-item">
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">название</h4>
+                    <input class="form-control"
+                           ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                           ng-change="$ctrl.saveFieldStore('nameListsL',200)"
+                           ng-model="$ctrl.store.nameListsL[$ctrl.global.get('store').val.lang]['priceservices']">
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">анимация</h4>
+                    <ui-select ng-model="$ctrl.item['priceservices'].animate" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                        <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                        <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                    </ui-select>
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">карточка</h4>
+                    <ui-select ng-model="$ctrl.item['priceservices'].templ" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                        <ui-select-match placeholder="карточка">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 form-group" style="margin-top: 0">
+                    <h4 class="label-menu text-center">стиль</h4>
+                    <ui-select ng-model="$ctrl.item['priceservices'].style" skip-focusser="true" search-enabled="false"
+                               ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                        <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 form-group text-center" style="margin-top: 0">
+                    <h4 class="label-menu text-center">сотрудники привязаны к услуге</h4>
+                    <div class="togglebutton">
+                        <label for="showMosters{{$index}}">
+                            <span ng-class="{'active':!$ctrl.item['priceservices'].showMosters}">нет</span>
+                            <input type="checkbox"
+                                   id="showMosters{{$index}}"
+                                   ng-model="$ctrl.item['priceservices'].showMosters"
+                                   ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                            <span ng-class="{'active':$ctrl.item['priceservices'].showMosters}">да</span>
+                        </label>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <!--<div class="cart-detail">
+            <h3 class="text-center name-page">настройка прайса услуг</h3>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group" style="margin-top: 0">
+                <label class="control-label">название</label>
+                <input class="form-control"
+                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                       ng-change="$ctrl.saveFieldStore('nameListsL',200)"
+                       ng-model="$ctrl.store.nameListsL[$ctrl.global.get('store').val.lang]['priceservices']">
+                <label class="control-label">анимация</label>
+                <ui-select ng-model="$ctrl.item['priceservices'].animate" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                    <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 form-group" style="margin-top: 0">
+                <label class="control-label">номер карточки</label>
+                <ui-select ng-model="$ctrl.item['priceservices'].templ" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                    <ui-select-match placeholder="карточка">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                </ui-select>
+                <label class="control-label">номер стиля</label>
+                <ui-select ng-model="$ctrl.item['priceservices'].style" skip-focusser="true" search-enabled="false"
+                           ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                    <ui-select-match placeholder="стиль">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]">{{ opt }}</ui-select-choices>
+                </ui-select>
+
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 form-group" style="margin-top: 0">
+                <label class="control-label">сотрудники привязаны к услуге</label>
+                <div class="togglebutton">
+                    <label for="showMosters{{$index}}">
+                        <span ng-class="{'active':!$ctrl.item['priceservices'].showMosters}">нет</span>
+                        <input type="checkbox"
+                               id="showMosters{{$index}}"
+                               ng-model="$ctrl.item['priceservices'].showMosters"
+                               ng-change="$ctrl.saveFieldTemplate('priceservices',$ctrl.item['priceservices'])">
+                        <span ng-class="{'active':$ctrl.item['priceservices'].showMosters}">да</span>
+                    </label>
+                </div>
+                <a class="btn btn-fab btn-fab-mini" ng-click="$ctrl.getImg($ctrl.item['priceservices'],'priceservices')">
+                    <i class="material-icons link-success md-42" title="загрузить рисунок">photo</i>
+                </a>
+                <a class="btn btn-fab btn-fab-mini" ng-click="$ctrl.setColor($ctrl.item['priceservices'],'priceservices')">
+                    <i class="material-icons link-info md-42" title="установить стиль блока">opacity</i>
+                </a>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>-->
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

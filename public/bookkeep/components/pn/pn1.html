@@ -1,0 +1,203 @@
+<div style="margin-top: 100px">
+    <div class="news-stuff-container">
+        <div class="cart-detail">
+            <div class="stuff-admin col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <div>
+                    <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            <div class="form-group label-floating">
+                                <label for="name1" class="control-label">название</label>
+                                <input type="text" id="name1" class="form-control name"
+                                       ng-model="$ctrl.item.name"
+                                       ng-change="$ctrl.saveField('name')"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                            <p class="input-group">
+                                <input type="text" class="form-control" uib-datepicker-popup="dd-MMMM-yyyy" ng-model="$ctrl.item.date"
+                                       ng-change="$ctrl.saveField('date')"
+                                       ng-disabled="$ctrl.item.actived"
+                                       is-open="$ctrl.datePickerOpened" datepicker-options="$ctrl.dateOptions" ng-required="true" close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened"><i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
+                            </p>
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12 text-left">
+                            <!--<span ng-bind="$ctrl.item.supplier.name"></span>-->
+
+                            <ui-select ng-model="$ctrl.item.supplier"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('supplier')"
+                                       title="выберите поставщика">
+                                <ui-select-match  placeholder="поставщик">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.suppliers">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+
+                        </div>
+
+                        <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12 text-left">
+
+                            <ui-select ng-model="$ctrl.item.currency"
+                                       skip-focusser="true"
+                                       search-enabled="false"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('currency')"
+                                       title="выберите валюту учета">
+                                <ui-select-match  placeholder="валюта накладной">{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="opt in $ctrl.currencyArr">{{ opt }}</ui-select-choices>
+                            </ui-select>
+
+                        </div>
+
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" ng-show="$ctrl.item._id">
+                            <div class="form-group text-center">
+                                <span ng-show="!$ctrl.item.actived">не проведена <a class="btn" ng-click="$ctrl.activePN()">провести</a></span>
+                                <span ng-show="$ctrl.item.actived">проведена <a class="btn" ng-click="$ctrl.activePN()">отменить</a></span>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                            <a class="btn btn-fab btn-fab-mini" ng-click="$ctrl.createItem()" ng-hide="$ctrl.item._id">
+                                <i class="material-icons link-warning md-42">new</i>
+                            </a>
+                            <a class="btn" ng-click="$ctrl.createItem('active')" ng-hide="$ctrl.item._id">
+                                <span>создать и провести</span>
+                            </a>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-3">
+
+                        <ui-select ng-model="$ctrl.item.virtualAccount"
+                                   ng-disabled="$ctrl.item.actived"
+                                   skip-focusser="true"
+                                   search-enabled="true"
+                                   ng-change="$ctrl.saveField('virtualAccount')"
+                                   title="выберите субсчет">
+                            <ui-select-match  placeholder="субсчет">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                        </ui-select>
+                    </div>
+                   <!-- <div class="col-lg-3">
+
+                        <ui-select ng-model="$ctrl.item.debet"
+                                   skip-focusser="true"
+                                   search-enabled="true"
+                                   ng-change="$ctrl.saveField('debet')"
+                                   title="выберите субсчет">
+                            <ui-select-match  placeholder="дебет">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="opt._id as opt in $ctrl.debet.sub">{{ opt.name }}</ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-lg-3">
+                        <ui-select ng-model="$ctrl.item.credit"
+                                   skip-focusser="true"
+                                   search-enabled="true"
+                                   ng-change="$ctrl.saveField('credit')"
+                                   title="выберите субсчет">
+                            <ui-select-match  placeholder="кредит">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="opt._id as opt in $ctrl.credit.sub">{{ opt.name }}</ui-select-choices>
+                        </ui-select>
+                    </div>-->
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="col-lg-5">
+                        позиция
+                    </div>
+                    <div class="col-lg-1">
+                        количество
+                    </div>
+                    <div class="col-lg-2">
+                        цена за 1
+                    </div>
+                    <div class="col-lg-2">
+                        сумма
+                    </div>
+                    <div class="clearfix"></div>
+                    <div ng-repeat="m in $ctrl.item.materials">
+                        <div class="col-lg-5">
+                            <ui-select ng-model="m.item" reset-search-input="false" ng-change="$ctrl.changeMaterial(m.item,$index)" ng-disabled="$ctrl.item.actived">
+                                <ui-select-match allow-clear="true" placeholder="введите артикул(код)">
+                                    {{$select.selected.name}}  {{$select.selected.sku}}  {{$select.selected.sku2}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="m in $ctrl.materials track by $index"
+                                                   refresh="$ctrl.refreshMaterials($select.search)"
+                                                   refresh-delay="150">
+                                    <strong ng-bind="m.name"></strong>  <span ng-bind="m.sku"></span> <span ng-bind="m.sku2"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-lg-1">
+                            <div class="form-group">
+                                <input type="text" id="name1" class="form-control"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-model="m.qty"
+                                       ng-change="$ctrl.saveField('materials')"
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <input type="text" id="name1" class="form-control"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-model="m.price"
+                                       ng-change="$ctrl.saveField('materials')"
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                <span ng-bind="(m.price*m.qty).toFixed(2)">
+
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <span ng-hide="$ctrl.item.actived">
+                                 <a ng-click="$ctrl.deleteItem($index)">del</a>
+                            </span>
+
+                        </div>
+                        <div class="clearfix"></div>
+
+                    </div>
+                    <button type="button" class="btn" ng-click="$ctrl.addRow()" ng-disabled="$ctrl.item.actived">
+                        <span>
+                            добавить позицию
+                        </span>
+                    </button>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-5">
+
+                    </div>
+                    <div class="col-lg-1">
+
+                    </div>
+                    <div class="col-lg-2">
+                       итого
+                    </div>
+                    <div class="col-lg-2">
+                        <span ng-bind="$ctrl.getTotalSum()"></span>
+                    </div>
+
+
+                </div>
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

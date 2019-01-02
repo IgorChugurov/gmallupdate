@@ -1,0 +1,94 @@
+<div ng-hide="$ctrl.$state.current.name!='frame.sampleEntries'">
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <span class="default-btn"></span>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Список шаблонов</h4>
+        </div>
+       <!-- <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать шаблон">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <div class=" pull-right search">
+                <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                    <input type="text"  class="search-fluid"
+                           ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                           ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                           ng-model="$ctrl.searchStr"/>
+                    <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini">
+                        <i class="material-icons link-warning" title="очистить строку поиска">clear</i>
+                    </a>
+                </form>
+            </div>
+        </div>-->
+        <div class="text-center tab-nav-stuff pull-right">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div  class="sampleEntries">
+        <div class="news-stuff" >
+            <div class="news-stuff-container">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                        <div class="header-table">
+                            <div class="td-list-header col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                название шаблона
+                            </div>
+                            <div class="td-list-header col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                тип документа
+                            </div>
+                            <div class="td-list-header text-center col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                редактирование
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="stuff-admin"  ng-repeat="item in $ctrl.items">
+                            <div class="" ng-class="{'mobil':global.get('mobile')}">
+                                <div class="title-block-stuff" ng-class="{'mobil':global.get('mobile')}">
+                                    <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                        <div class="">
+                                            <input type="text" id="name1" class="form-control name"
+                                                   ng-model="item.name"
+                                                   required
+                                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                                   ng-change="$ctrl.saveField(item,'name')"/>
+                                        </div>
+                                    </div>
+                                    <div class="td-list col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                        <div class="form-group">
+                                            <span ng-bind="item.type"></span>
+                                        </div>
+                                    </div>
+                                    <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                        <a class="btn btn-fab btn-fab-mini  btn-success edit" ui-sref="frame.sampleEntries.item({id:item._id})">
+                                            <i class="material-icons">edit</i>
+                                        </a>
+                                        <!--<a class="btn btn-fab btn-fab-mini  edit pull-right" ng-click="$ctrl.deleteItem(item)">
+                                            <i class="material-icons link-warning md-42">delete</i>
+                                        </a>-->
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ui-view=""></div>

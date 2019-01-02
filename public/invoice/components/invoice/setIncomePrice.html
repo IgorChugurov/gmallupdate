@@ -1,0 +1,127 @@
+<div class="modal-header">
+    <a  ng-click="cancel()"><span class="pull-right glyphicon glyphicon-remove"></span></a>
+    <h3 class="modal-title"style="color: #666">Устоновка входных цен</h3>
+</div>
+<div class="modal-body">
+    <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            основной код
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            фактический
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            произ-тель
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            название
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+            цена
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            сумма
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-repeat="s in sparks">
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            <span ng-bind="s.code" ></span>
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            <span ng-bind="s.sku"></span>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <ui-select
+                    ng-model="s.producer"
+                    theme="select2"
+                    sortable="true"
+                    search="true"
+                    style2="min-width: 200px;" title="выберите производителя">
+                <ui-select-match placeholder="выберите производителя">{{$select.selected.name}}</ui-select-match>
+                <ui-select-choices repeat="s.name as s in producers| filter: $select.search">
+                    {{s.name}}
+                </ui-select-choices>
+            </ui-select>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+            <span ng-bind="s.name"></span>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+            <div class="input-group">
+                <span class="input-group-addon" ng-bind="s.q+'*'"></span>
+                <input  class="form-control" data-ng-model="s.incomePrice" >
+                <span class="input-group-addon" i><a ng-click="s.incomePrice=recalcOncomePrice(s.incomePrice)">
+                    <i class="fas fa-calculator"></i>
+                </a></span>
+            </div>
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            <span ng-bind="s.incomeSum=(s.incomePrice)?s.incomePrice*s.q:0*s.q"></span>
+            <span> €</span>/
+        </div>
+
+        <div class="clearfix"></div>
+        <hr>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+           итого
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6 col-xs-12">
+            <span  ng-bind="(getTotalSpark()).toFixed(2)"></span> €
+        </div>
+
+    </div>-->
+
+    <table class="table table-bordered">
+        <tr>
+            <th>#</th>
+            <th>название</th>
+            <th>поставщик</th>
+            <th>стоимость услуги</th>
+            <th>валюта услуги</th>
+        </tr>
+        <tr ng-repeat="s in jobs|filter:{supplierType:true}">
+            <td ng-bind="$index+1"></td>
+            <td>
+                <span ng-bind="s.name" ></span>
+            </td>
+            <td>
+                <span ng-bind="s.supplier"></span>
+            </td>
+            <td >
+                <div class="input-group" style="max-width: 300px">
+                    <span class="input-group-addon">€</span>
+                    <input  class="form-control" data-ng-model="s.incomeSum" type="number">
+                </div>
+            </td>
+            <td>
+                <select ng-model="s.currency" ui-select2 >
+                    <option value="">выберите валюту</option>
+                    <option data-ng-repeat="c in ['UAH','EUR','USD']" value="{{c}}">{{c}}</option>
+                </select>
+            </td>
+        </tr>
+
+    </table>
+</div>
+<div class="modal-footer">
+    <a  ng-click="ok()" class="btn bnt-default">ok</a>
+</div>

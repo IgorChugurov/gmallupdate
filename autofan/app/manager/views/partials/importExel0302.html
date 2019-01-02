@@ -1,0 +1,73 @@
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <spinner enable="sendFile"></spinner>
+            <p> код у поставщика 1 - четыре колонки. 2- три колонки (без цены)</p>
+            <div class="control-group">
+                <label class="control-label" for="">Поставщик</label>
+                <div class="controls">
+                    <select ng-model="shipperId" ng-options="opt._id as opt.name for opt in shippers ">
+                        <option value="">выберите поставщика</option>
+
+                    </select>
+                    <input ng-model="shipperName">
+                    код - <input ng-model="shipperCode">
+                    <button type="button" data-ng-click="saveShipper(shipperId)" >сохранить</button>
+                    <!--<button type="button" data-ng-click="saveShipper()" >сохранить как новый</button>-->
+                    <button type="button" data-ng-click="deleteShipper(shipperId)" >удалить</button>
+                </div>
+
+
+                <!--<div class="controls" ng-if="adding">
+                    <input data-ng-model="newShipper">
+
+                    <button  value="" data-ng-click="addShipper()">сохранить</button>
+                    <button  value="" data-ng-click="cancelShipper()">отмена</button>
+                </div>-->
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="cur">Валюта</label>
+                <div class="controls">
+                    <input id="cur" ng-model="shipperCur">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ratio1">Коэффициент на входную цену</label>
+                <div class="controls">
+                    <input id="ratio1" ng-model="shipperRatioEnter">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ratio">Коэффициент на цену для покупателя</label>
+                <div class="controls">
+                    <input id="ratio" ng-model="shipperRatio">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="">Файл</label>
+                <div class="controls">
+                    <input type="file" ng-file-select="onFileSelect($files)" ng-disabled="!shipperName">
+
+                    <!--<input type="file" ng-disabled="!shipperName">
+                    <button type="button" data-ng-click="loadFile()" ng-disabled="!shipperName" >загрузить</button>-->
+
+                </div>
+
+                <!--<div class="controls" ng-if="adding">
+                    <input data-ng-model="newShipper">
+
+                    <button  value="" data-ng-click="addShipper()">сохранить</button>
+                    <button  value="" data-ng-click="cancelShipper()">отмена</button>
+                </div>-->
+            </div>
+
+
+
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+
+
+

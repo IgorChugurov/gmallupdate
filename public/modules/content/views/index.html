@@ -1,0 +1,232 @@
+<div class="content" ng-class="{'content-mobile':global.get('mobile').val}" ng-if="$state.current.name=='frame'">
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref2="frame.stuffs({groupUrl:'group',categoryUrl:'category'})" class="content-box-link">
+            <div class="content-box catalog-home">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">work</i>
+                        </span><br>
+                        <a class="folder content-box-link" ng-repeat="sec in sectopnsForMenu" ui-sref="frame.stuffs({groupUrl:sec.url,categoryUrl:'category'})" ng-show="!sec.level">
+                            <span class="folder-item" ng-bind="sec.name"></span>
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a ui-sref="frame.sections" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span class="text-center">
+                            <i class="material-icons">business</i>
+                        </span><br>
+                        каталог
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.filters" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span class="text-center">
+                            <i class="material-icons">filter_list</i>
+                        </span><br>
+                        признаки
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.brands" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span>
+                            <i class="material-icons">art_track</i>
+                        </span><br>
+                        бренды и коллекции
+                    </h3>
+                </div>
+            </div>
+        </a>
+        <a  ui-sref="frame.externalCatalog" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">cloud_download</i>
+                        </span><br>
+                        загрузка внешнего каталога
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.homePage" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span>
+                            <i class="material-icons">aspect_ratio</i>
+                        </span><br>
+                        главная страница
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.stats" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span>
+                            <i class="material-icons">account_balance</i>
+                        </span><br>
+                        статические страницы
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.lookbook" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span>
+                            <i class="material-icons">photo_library</i>
+                        </span><br>
+                        галереи
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.paps" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">favorite</i>
+                        </span><br>
+                        post action page
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading" ng-class="{'clear-mobile':global.get('mobile').val}">
+        <a  ui-sref="frame.master" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">account_circle</i>
+                        </span><br>
+                        сотрудники
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.schedule" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">assignment</i>
+                        </span><br>
+                        расписание
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.workplace" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">android</i>
+                        </span><br>
+                        рабочие места (залы)
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.labels" class="content-box-link">
+            <div class="content-box">
+                <div class="">
+                    <h3>
+                        <span>
+                            <i class="material-icons">account_balance</i>
+                        </span><br>
+                        метки для списков
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 heading">
+        <a  ui-sref="frame.additionals" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">list</i>
+                        </span><br>
+                        дополнительные списки
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.info" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">info</i>
+                        </span><br>
+                        глоссарий
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.groupStuffs" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">group_work</i>
+                        </span><br>
+                        группы товаров
+                    </h3>
+                </div>
+            </div>
+        </a>
+
+        <a  ui-sref="frame.help" class="content-box-link">
+            <div class="content-box">
+                <div class="" >
+                    <h3>
+                        <span>
+                            <i class="material-icons">help_outline</i>
+                        </span><br>
+                        справка
+                    </h3>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="clearfix"></div>
+</div>
+
+<div ui-view></div>

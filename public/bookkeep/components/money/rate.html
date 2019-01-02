@@ -1,0 +1,66 @@
+<div>
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="изменить курс валют">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <!--<div class="tab-nav-stuff">
+            <span class="default-btn" ng-click="$ctrl.createItem()"></span>
+        </div>-->
+        <div class="tab-nav-stuff">
+            <h4 class="name-box">Список изменения курсов валют по датам.</h4>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+    <div  class="money">
+        <div class="news-stuff">
+            <div ng-show="!$ctrl.items.length" ng-cloak class="col-xs-12 col-md-12 col-sm-12 col-lg-12 text-center">
+                <p class="no_story">
+                    по вашему запросу нет записей
+                </p>
+            </div>
+            <div class="news-stuff-container">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                        <div class="header-table">
+                            <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                                дата изменения
+                            </div>
+                            <div class="td-list-header col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                значение курсов валют
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="stuff-admin"  ng-repeat="item in $ctrl.items">
+                            <div class="" ng-class="{'mobil':global.get('mobile')}">
+                                <div class="title-block-stuff" ng-class="{'mobil':global.get('mobile')}">
+                                    <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                       <span ng-bind="item.date"></span>
+                                    </div>
+                                    <div class="td-list col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                        <span class="currency-box" ng-repeat="(key,val) in item.currency">
+                                            <strong><span  ng-bind="key"></span></strong>
+                                            <span class="cur-val" ng-bind="val[0]"></span>
+                                            <span ng-if="val[0]!==1">
+                                                (курс - <span ng-bind="(1/val[0]).toFixed(4)"></span>)
+                                            </span>
+
+                                        </span>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

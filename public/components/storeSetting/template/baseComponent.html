@@ -1,0 +1,52 @@
+<div class="template-list base-icon" ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}" ng-if="$ctrl.item.index">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="cart-detail">
+            <h4 class="col-lg-6 col-md-6 col-sm-6 col-xs-12 name-box">
+                <a  class="btn btn-fab btn-fab-mini btn-primary" ng-click="$ctrl.downloadPartOfTemplate('index.icons')" title="загрузить из шаблона">
+                    <i class="material-icons" title="загрузить шаблон">vertical_align_bottom</i>
+                </a>
+                <span>иконки для сайта</span>
+            </h4>
+            <div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <input class="form-control" placeholder="поиск по имени" ng-model="$ctrl.iconSearch">
+            </div>
+            <span class="clearfix"></span>
+            <div class="">
+                <div class="text-center col-lg-4 col-md-4 col-sm-6 col-xs-12"  ng-repeat="(icon,item) in $ctrl.item.index.icons" ng-if="$ctrl.hasIcons(icon)">
+                    <div class="icon-box">
+                        <p class="name-box text-center"><small ng-bind="icon"></small></p>
+                        <hr>
+                        <span class="icon">
+                            <a class="icon-box-img"  ng-click="$ctrl.setIcon(icon,'img')">
+                                <img ng-if="item.img" ng-src="{{item.img}}">
+                                <span ng-if="!item.img">icon</span>
+                            </a>
+                            <a ng-if="item.img" ng-click="$ctrl.deleteIcon(icon,'img')">
+                                <i class="material-icons link-warning">clear</i>
+                            </a>
+                            <span class="clearfix"></span>
+                        </span>
+                        <span class="icon">
+                            <a class="icon-box-img" ng-click="$ctrl.setIcon(icon,'hoverImg')">
+                                <img ng-if="item.hoverImg" ng-src="{{item.hoverImg}}">
+                                <span ng-if="!item.hoverImg">inverse</span>
+                            </a>
+                            <a  ng-if="item.hoverImg" ng-click="$ctrl.deleteIcon(icon,'hoverImg')">
+                                <i class="material-icons link-warning">clear</i>
+                            </a>
+                            <span class="clearfix"></span>
+                        </span>
+                        <span class="icon pull-right" ng-init="field2='index.icons.'+icon+'.styles'">
+                            <a class="btn btn-fab btn-fab-mini btn-info"  ng-click="$ctrl.setColor(item.styles,field2,true)">
+                                <i class="material-icons" title="настроить стили">opacity</i>
+                            </a>
+                        </span>
+                        <span class="clearfix"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

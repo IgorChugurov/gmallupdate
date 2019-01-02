@@ -1,0 +1,163 @@
+<div class="container">
+<div class="main">
+    <h3>Редактирование заказов</h3>
+
+    <div class="row">
+
+        <article class="col-lg-12 col-md-12" >
+            <table class="status">
+                <tr>
+                    <td>
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="" ng-model="filterStatus"><span>все</span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="1"ng-model="filterStatus"><span>принятые</span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios3" value="2"ng-model="filterStatus"><span>оплаченные</span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios4" value="3"ng-model="filterStatus"><span>отправленные</span>
+                        </label>
+                    </td>
+                    <td>
+                        <label class="radio">
+                            <input type="radio" name="optionsRadios" id="optionsRadios5" value="4"ng-model="filterStatus"><span>доставленные</span>
+                        </label>
+                    </td>
+                    <div class="input-append pull-right right-filters mb">
+                        <input  class="span2" type="text" ng-model="filterNumber" placeholder="поиск по номеру">
+                    </div>
+                </tr>
+            </table>
+
+            <table class="table table-bordered table_admin">
+
+                <thead>
+                <tr>
+                    <th class="span1">№</th>
+                    <th class="span2" ><a href="#">Дата посту-пления</a></th>
+                    <th class="span2" ><a href="#">Дата оплаты</a></th>
+                    <th class="span2" ><a href="#">Дата отправки</a></th>
+                    <th class="span2" ><a href="#">Дата доставки</a></th>
+                    <th class="span1" >К-во единиц</th>
+                    <th class="span1" >Сумма</th>
+                    <th class="span2" >Изменить статус</th>
+                    <th class="span1">Удалить</th>
+
+                </tr>
+                </thead>
+                <tbody ng-repeat="order in orders|filter:{num:filterNumber,status:filterStatus}" class="my-repeat-animation">
+                <tr id="{{order._id}}">
+                    <td class="span1" ng-bind="order.num" > </td>
+                    <td class="span2"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date)"></a> </td>
+                    <td class="span2"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date1)"></a> </td>
+                    <td class="span2"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date2)"></a> </td>
+                    <td class="span2"> <a  ng-click="order.showdetail=!order.showdetail"class="black" ng-bind="dateConvert(order.date3)"></a> </td>
+
+                    <td class="span1" ng-bind="order.quantity"> </td>
+                    <td class="span1">{{order.sum*order.kurs}}&nbsp{{order.currency}}</td>
+                    <td class="span2">
+                        <select ng-model="order.status" ng-change="updateOrder(order)">
+                            <option value=1>принят</option>
+                            <option value=2>оплачен</option>
+                            <option value=3>отправлен</option>
+                            <option value=4>доставлен</option>
+                            <option value=5>в архив</option>
+                        </select>
+
+                    </td>
+                    <td class="span1">
+                        <button class="btn btn_ok" ng-click="deleteOrder(order)">X</button>
+                    </td>
+
+                </tr>
+                <tr  ng-switch="order.showdetail">
+                    <td ng-switch-when="true" colspan="9" style="background-color:#ccbcc0; padding:5; border:none;">
+                        <table class="col-lg-12 col-md-12 col-sm-12 col-xs-12 table table-bordered table_bag">
+                            <thead>
+                            <tr>
+                                <th class="col-lg-1">
+                                    #
+                                </th>
+                                <th class="col-lg-2">
+                                    Товар
+                                </th>
+                                <th class="col-lg-3">
+                                    Артикул
+                                </th>
+                                <th class="col-lg-1">
+                                     Размер
+                                </th>
+
+                                <th class="col-lg-1" >
+                                     Цена
+                                </th>
+
+                                <th class="col-lg-2" >
+                                    Количество
+                                </th>
+
+                                <th class="col-lg-2">
+                                    Стоимость
+                                </th>
+
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="good in order.cart">
+                            <tr >
+                                <td class="col-lg-1">
+                                    {{$index+1}}
+                                </td>
+                                <td class="col-lg-1">
+                                        <img style="max-width: 100px" class="span1 pull-left" ng-src="{{good.img}}"/>
+                                </td>
+                                <td class="col-lg-3">
+                                    <a class="black">{{good.name}} {{good.colorName}}</a>
+                                </td>
+
+                                <td class="col-lg-1">
+                                    <a class="black">{{good.sizeName}}</a>
+                                </td>
+                                <td class="col-lg-1">
+                                    {{ ( order.kurs*(price=(order.quantity>=5)?good.price:good.retail) ).toFixed(2) }}&nbsp{{order.currency}}
+                                </td>
+                                <td class="col-lg-2">
+                                    {{good.quantity}}
+                                </td>
+                                <td class="col-lg-2">
+                                    {{ ( order.kurs*price*good.quantity).toFixed(2) }}&nbsp{{order.currency}}
+                                </td>
+                            </tr>
+                            </tbody>
+                            <tbody class="cart-item-total">
+                            <tr>
+                                <td></td>
+                                <td>Итого</td>
+                                <td></td><td></td><td></td>
+                                <td>{{order.quantity}}</td>
+                                <td>{{ order.kurs*order.sum }}&nbsp{{order.currency}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </article>
+    </div>
+
+</div>
+<br />
+<br />
+</div>

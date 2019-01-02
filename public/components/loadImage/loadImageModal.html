@@ -1,0 +1,71 @@
+<div class="col-lg-12 col-md-12 col=sm-12 col-xs-12 text-center loadImageModal">
+    <div style="display: inline-block">
+        <div class="form-group">
+            <div class="radio">
+                <label>
+                    <input type="radio" ng-model="$ctrl.fileDimension" value="Origin">
+                    оригинальный
+                </label>
+                <label>
+                    <input type="radio" ng-model="$ctrl.fileDimension" value="Sticker">
+                    стикер
+                </label>
+                <label>
+                    <input type="radio" ng-model="$ctrl.fileDimension" value="Small">
+                    400px
+                </label>
+                <label>
+                    <input type="radio" ng-model="$ctrl.fileDimension" value="">
+                    600px
+                </label>
+                <label>
+                    <input type="radio" ng-model="$ctrl.fileDimension" value="Big">
+                    1200px
+                </label>
+                <label>
+                    <input type="radio" ng-model="$ctrl.fileDimension" value="FullImg">
+                    1920px
+                </label>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+    <form id="uploadImgForm" name="$ctrl.uploadForm" class="img-upload-box box" role="form" enctype="multipart/form-data" ng-disabled="$ctrl.isBusy">
+        <div class="form-group img-list" ng-show="$ctrl.hasFiles">
+            <p class="label-menu">Файлы для загрузки</p>
+            <ul class="list-unstyled">
+                <li ng-repeat="file in $ctrl.files">
+                    <img src="{{file.imgSrc}}">
+                    <p ng-bind="file.name"></p>
+                </li>
+                <li class="clearfix"></li>
+            </ul>
+            <div class="clearfix"></div>
+            <div class="" ng-show="$ctrl.hasFiles && !$ctrl.isUploading">
+                <a class="btn btn-fab btn-primary"  ng-click="$ctrl.uploadFiles()" title="загрузить фото">
+                    <i class="material-icons">vertical_align_bottom</i>
+                </a>
+                <button class="btn btn-fab btn-warning" title="отменить выбор" type="reset" value="Cancel">
+                    <i class="material-icons">delete</i>
+                </button>
+            </div>
+            <div class="img-upload" ng-show="$ctrl.isUploading">
+                <img class="img-responsive" src="../../img/spinner.gif">
+            </div>
+            <div class="clearfix" style="margin-bottom: 50px"></div>
+        </div>
+        <span class="add-photo-bg">
+            <a class="btn btn-fab add btn-success">
+                <i class="material-icons">add</i>
+            </a>
+        </span>
+        <div class="box__input">
+            <input id="inputFilesUpload" class="box__file" type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" multiple/>
+            <br>
+            <label class="label-box-input" for="file">Добавьте изображение<br>выберите файл<span class="box__dragndrop"> или пертащите его мышкой в это окно.</span></label>
+        </div>
+    </form>
+    <div class="clearfix"></div>
+</div>
+<div class="clearfix"></div>

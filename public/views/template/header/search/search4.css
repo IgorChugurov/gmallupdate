@@ -1,0 +1,94 @@
+/*semya*/
+/*.searchresults {
+    width: 300px;
+    position: absolute;
+    background-color: #fdfdfd;
+    max-height: 350px;
+    overflow: auto;
+}*/
+.mobile-wrapper .searchresults {
+    width: 240px;
+}
+.name-resalt {
+    font-size: 14px;
+    line-height: 14px;
+}
+.name-resalt p,
+.name-resalt {
+    color: #666666;
+}
+.search-window hr {
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.all-results {
+    cursor: pointer;
+}
+.all-results{
+    transition: all  0.3s ease-in-out 0.1s;
+    opacity: 0.7;
+    line-height: 28px;
+    display: inline-block;
+}
+.all-results:hover{
+    font-size: 14px;
+    opacity: 1;
+    line-height: 28px;
+}
+.searchResaltsInner{
+    padding: 20px;
+}
+
+
+.input-group {
+    width: auto;
+}
+.input-group-addon,
+.input-group-btn {
+    width: auto;
+}
+input[type="text"]::-webkit-input-placeholder {
+    color: $color;
+    font-family: $font-family;
+}
+input[type="search"]::-moz-placeholder {
+    color: $color;
+    font-family: $font-family;
+}
+.form-control {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    -webkit-transition: all 0.2s ease-in-out 0.2s;
+    -moz-transition: all 0.2s ease-in-out 0.2s;
+    -ms-transition: all 0.2s ease-in-out 0.2s;
+    -o-transition: all 0.2s  ease-in-out 0.2s;
+    transition: all 0.2s ease-in-out 0.2s;
+}
+.form-control {
+    font-size: $font-size;
+}
+.form-control:focus {
+    outline: none;
+    box-shadow: none;
+    border: none;
+}
+.form-control:hover{
+    border: none;
+}
+.btn-default{
+    border-radius: 0;
+    margin-bottom: 0;
+}
+.btn-default:hover,
+.btn-default:focus{
+    border: none;
+    outline: none;
+}
+.mobile-wrapper .search-button {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    color: rgba(255, 255, 255, 0.35);
+}
+

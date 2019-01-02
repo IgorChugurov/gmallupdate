@@ -1,0 +1,39 @@
+<div class="bg" ng-class="bgImg[2][good.category]">
+<div class="container">
+    <div class="jumbotron1 hero-spacer">
+        <h1><span ng-bind-template="{{good.name[lang]}}"></span></h1>
+        <h2>від ТМ "Артика"</h2>
+
+    </div>
+
+
+    <div class="row">
+        <div class="thumbnail">
+            <article class="col-lg-5 col-md-5 col-sm-5 col-xs-12  img-news-detail">
+                <img class="img-responsive  thumbnail col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-src="{{good.img}}" alt="">
+            </article>
+            <article class="col-lg-7 col-md-7 col-sm-7 col-xs-12  desc  content-news">
+                <a class="pull-right" ui-sref="language.list({'type':2,'id':0})">Повернутись назад</a>
+                <div class="clearfix"></div>
+                <p class="desc1" ng-bind-html="trustHtml(good.desc[lang])">
+
+                </p>
+
+            </article>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="thumbnail comment_content" ng-show="good.comments.length>0">
+            <h3>Коментарі</h3>
+            <div class=" col-lg-offset-2 col-lg-9" data-ng-repeat="item in good.comments">
+                <h4 ng-bind="item.author"></h4>
+                <p ng-bind-html="trustHtml(item.body)"></p>
+                <p ng-bind="item.date"></p>
+                <hr>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+</div>

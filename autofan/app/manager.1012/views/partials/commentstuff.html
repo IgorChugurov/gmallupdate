@@ -1,0 +1,105 @@
+<div class="container">
+<div class="main">
+    <div class="row">
+
+        <div class="col-lg-12 back">
+            <a href="" class="btn btn-primary btn-info"ng-click="$state.transitionTo('mainFrame.stuff')">
+                <span class="glyphicon glyphicon-arrow-left"></span> в список</a>
+        </div>
+
+
+
+
+        <article class="col-lg-5 col-md-5 col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>комментарии</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group" >
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-primary btn-success"  ng-click="focusInput=true;editComment()">новый</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <hr>
+                    </div>
+                   <!-- col-lg-6 col-md-6 col-xs-6-->
+                    <ul  class="nav nav-pills nav-stacked">
+                        <li class="phone-listing"
+                            class="pull-left col-lg-12 col-md-10 col-xs-10 back"
+                            ng-repeat="comment in stuff.comments|orderBy:'date'">
+                            <a ng-click="editComment(comment)" class="control-label " href="">
+                                <span>{{comment.author.name}} </span></a>
+
+                                <span>{{dateConvert(comment.date)}}</span><br>
+                                <span>{{comment.text | cut:true:25:' ...'}}</span><br>
+
+                            <div class="col-lg-4 pull-right btn-group">
+                                <a ng-click="focusInput=true;editComment(comment)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                <a ng-click="deleteComment(comment)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                            </div>
+                            <div class="col-md-12">
+                                <hr >
+                            </div>
+                            <div class="clearfix"></div>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+
+        </article>
+
+        <article class="col-lg-7 col-md-7 col-sm-12">
+            <form name="myForm" class="form form-horizontal" ng-submit="updateComment()">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>Содержание</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group" >
+                            <label   class="col-md-3 col-md-offset-1 control-label">автор</label>
+                            <div class="col-md-8">
+                                <input type="text" placeholder=""  class="form-control"
+                                       ng-model="comment.authorName"
+                                       ng-disabled="true"
+                                       required
+                                      />
+                            </div>
+                        </div>
+                        <div class="form-group" >
+                            <label   class="col-md-3 col-md-offset-1 control-label">дата</label>
+                            <div class="col-md-8">
+                                <input type="text" placeholder=""  class="form-control"
+                                       ng-model="comment.date"
+                                       ng-disabled="true"
+                                       required
+                                        />
+                            </div>
+                        </div>
+                        <div class="form-group" >
+                            <div class="col-md-12">
+                                <textarea placeholder="опис" ng-model="comment.text"rows="1" style="height: 100px"  focus-me="focusInput"
+                                          required class="form-control" ng-disabled="disallowEdit">
+                                </textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group" >
+                            <div class="col-md-12">
+                            <button class="btn btn-primary " type="submit" class="form-control" ng-disabled="disallowEdit">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp сохранить
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+
+            </form>
+        </article>
+
+
+    </div>
+</div>
+</div>

@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="main">
+        <div class="row">
+            <article class="col-lg-8 col-md-8 col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="form-group">
+                            <label  >Конвертирование заказов в евро!Будьте бдительны!!!</label>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal"ng-submit="updateCurrency()" name="myForm">
+
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <button ng-click="convertTicket()" class="btn btn-large btn-info save mt40" ng-disabled="disabledButton"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp основные</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-6">
+                                    <button  ng-click="convertTicketArch()" class="btn btn-large btn-info save mt40" ng-disabled="disabledButton"><span class="glyphicon glyphicon-floppy-disk"></span>&nbsp &nbsp архивны</button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <div class="alert alert-success" ng-show="showMessage">
+                            <a  class="close" data-dismiss="alert">&times;</a>
+                            <strong>Обновлено!</strong>
+                        </div>
+
+                        <!--<form name="LovelyForm">
+                            <input type="text" name="LovelyMimimi" placeholder="mimimi" ng-model="mimimi" mimimi/>
+                            <span ng-show="LovelyForm.LovelyMimimi.$error.mimimi">Mimimi, please</span>
+                            <span>{{mimimi}}</span>
+                        </form>-->
+
+                       <!-- <div  ng-show="showMessage">
+
+                            <p style="font-size: 18px;" class="bg-success">Курсы обновлены!</p>
+                        </div>-->
+                    </div>
+                </div>
+
+
+
+            </article>
+
+        </div>
+
+
+    </div>
+</div>
+

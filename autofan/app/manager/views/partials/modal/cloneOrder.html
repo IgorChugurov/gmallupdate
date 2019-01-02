@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h2 class="modal-title text-center">клонирование ордера</h2>
+    <a class="cancel"  ng-click="cancel()"></a>
+</div>
+<div class="modal-body">
+    <div class="form-search">
+        <form ng-submit="ok(customer)">
+            <div class="form-group">
+                <span class="col-md-2 col-md-offset-1"><b class="iconColor pull-right">клиент</b></span>
+                <div class="col-md-8">
+                    <select ng-model="customer" ui-select2 id="customer">
+                        <option value="">выберите VIN</option>
+                        <option data-ng-repeat="c in customers" value="{{c._id}}">{{c.vin}}</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-raised btn-block" type="submit" >клонировать</button>
+        </form>
+    </div>
+</div>
+<div class="clearfix"></div>
+<!--<div class="modal-footer">
+
+</div>-->
+<div class="clearfix"></div>

@@ -1,0 +1,268 @@
+<div class="nav-box-stuff" >
+    <div class="tab-nav-stuff">
+        <a class="btn btn-fab btn-fab-mini btn-info"
+           ui-sref="frame.Act"
+           title="вернуться в список">
+            <i class="material-icons">reply</i>
+        </a>
+    </div>
+    <div class="tab-nav-stuff">
+        <h4 class="name-box">Акт выполненных работ</h4>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="pn act">
+    <div class="news-stuff-container">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="name1" class="control-label">название</label>
+                            <input type="text" id="name1" class="form-control name"
+                                   ng-model="$ctrl.item.name"
+                                   ng-change="$ctrl.saveField('name')"
+                                   ng-disabled="$ctrl.item.actived"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="date" class="control-label">дата</label>
+                            <p class="input-group">
+                                <input type="text" id="date" class="form-control"
+                                       uib-datepicker-popup="dd-MMMM-yyyy"
+                                       ng-model="$ctrl.item.date"
+                                       ng-change="$ctrl.saveField('date')"
+                                       ng-disabled="$ctrl.item.actived"
+                                       is-open="$ctrl.datePickerOpened"
+                                       datepicker-options="$ctrl.dateOptions"
+                                       ng-required="true"
+                                       close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-fab btn-fab-mini btn-violet" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened">
+                                        <i class="material-icons ">
+                                            insert_invitation
+                                        </i>
+                                    </button>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 text-left">
+                        <label class="control-label" style="margin-top: 0">сумма</label>
+                        <h4>
+                            <strong>
+                                <span ng-bind="$ctrl.getTotalSum()"></span>
+                            </strong>
+                        </h4>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 text-left">
+                        <div class="form-group label-floating">
+                            <label for="currency" class="control-label">валюта</label>
+                            <ui-select ng-model="$ctrl.item.currency"
+                                       id="currency"
+                                       skip-focusser="true"
+                                       search-enabled="false"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('currency')"
+                                       title="выберите валюту учета">
+                                <ui-select-match  placeholder="валюта накладной">{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="opt in $ctrl.currencyArr">{{ opt }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+                        <div class="form-group label-floating">
+                            <label for="currency" class="control-label">название подразделения</label>
+                            <ui-select ng-model="$ctrl.item.virtualAccount"
+                                       ng-disabled="$ctrl.item._id"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-change="$ctrl.changeVirtualAccount()"
+                                       title="выберите субсчет">
+                                <ui-select-match  placeholder="субсчет">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.virtualAccounts">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-left" ng-show="$ctrl.item.typeOfZakaz=='manufacture'">
+                        <label for="sup23" class="control-label" style="margin-top: 0">связанный документ</label>
+                        <h4><a ng-show="$ctrl.item._id" ui-sref="frame.ZakazManufacture.item({id:$ctrl.item.zakaz._id})"><span ng-bind="$ctrl.item.zakaz.name"></span></a></h4>
+                        <div ng-if="!$ctrl.item._id">
+                            <ui-select ng-model="$ctrl.item.zakaz"
+                                       id="sup23"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item._id"
+                                       ng-change="$ctrl.setDocument()"
+                                       title="выберите cуществующий документ или новый">
+                                <ui-select-match  placeholder="{{self.conrtAgent.name}}">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.documents"
+                                                   refresh="$ctrl.refreshDocuments($select.search)"
+                                                   refresh-delay="150">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-left" ng-show="$ctrl.item.zakaz=='new'">
+                        <div class="form-group label-floating">
+                            <label for="supl" class="control-label">вид контрагент</label>
+                            <ui-select ng-model="$ctrl.item.typeOfContrAgent"
+                                       id="supl"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('typeOfContrAgent')"
+                                       title="выберите тип контрагента">
+                                <ui-select-match  placeholder="контрагент">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt.type as opt in $ctrl.typeOfContrAgents">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-left" ng-show="$ctrl.item.zakaz=='new' && $ctrl.item.typeOfContrAgent">
+                        <div class="form-group label-floating">
+                            <label for="sup2" class="control-label">контрагент</label>
+                            <ui-select ng-model="$ctrl.item.contrAgent"
+                                       id="sup2"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('contrAgent')"
+                                       title="выберите {{self.conrtAgent.name}}">
+                                <ui-select-match  placeholder="{{self.conrtAgent.name}}">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.contrAgents|filter:$select.search">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left">
+                        <div class="">
+                            <label class="control-label">коммертарии</label>
+                            <textarea class="form-control"  rows="1"
+                                      ng-model="$ctrl.item.desc"
+                                      ng-disabled="$ctrl.item.actived"
+                                      ng-change="$ctrl.saveField('desc')">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left" ng-show="$ctrl.item._id">
+                        <div class="form-group label-floating" style="padding-bottom: 0; margin-bottom: 0">
+                            <label class="control-label">статус</label>
+                            <div>
+                                <h4 ng-show="!$ctrl.item.actived">
+                                    <span class="pull-left" style="padding-top: 15px"><strong>не проведена</strong></span>
+                                    <a class="btn btn-success btn-raised pull-right" ng-click="$ctrl.activeAct()">провести</a>
+                                </h4>
+                                <h4 ng-show="$ctrl.item.actived">
+                                    <span class="pull-left" style="padding-top: 15px"><strong>проведена</strong></span>
+                                    <a class="btn  btn-warning btn-raised pull-right" ng-click="$ctrl.activeAct()">отменить проводку</a>
+                                </h4>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-right"  ng-hide="$ctrl.item._id">
+                        <h4>
+                            <a class=" btn btn-raised btn-success" ng-click="$ctrl.createItem()">
+                                <span>Создать</span>
+                            </a>
+                        </h4>
+                        <h4>
+                            <a class=" btn  btn-raised btn-info" ng-click="$ctrl.createItem('active')">
+                                <span>Создать и провести</span>
+                            </a>
+                        </h4>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 40px">
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            позиция
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            количество часов
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            сумма
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            валюта
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                           исполнитель
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            редактировать
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin"   ng-repeat="m in $ctrl.item.works">
+                        <div class="td-list name-goods col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <span>
+                               {{m.item.name}}
+                            </span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <input type="number" id="name2" class="form-control"
+                                   ng-disabled="$ctrl.item.actived"
+                                   ng-change="$ctrl.saveField('works')"
+                                   ng-model="m.qty"/>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="$ctrl.getSum(m)"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="$ctrl.item.currency"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 worker-name">
+                            <ui-select ng-model="m.worker"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-disabled="$ctrl.item.actived"
+                                       ng-change="$ctrl.saveField('works')"
+                                       title="выберите сотрудника">
+                                <ui-select-match  placeholder="сотрудник">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt._id as opt in $ctrl.workers|filter:$select.search">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-hide="$ctrl.item.actived">
+                                <a class="btn btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteItem($index)">
+                                    <i class="material-icons">delete</i>
+                                </a>
+                            </span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 action-box">
+                        <ui-select ng-model="$ctrl.newWork" reset-search-input="false" ng-change="$ctrl.addWork()" ng-disabled="$ctrl.item.actived">
+                            <ui-select-match allow-clear="true" placeholder="название работы"></ui-select-match>
+                            <ui-select-choices repeat="m in $ctrl.works track by $index"
+                                               refresh="$ctrl.refreshWorks($select.search)"
+                                               refresh-delay="150">
+                                <strong ng-bind="m.name"></strong>&nbsp;
+                                 нормочас&nbsp; <strong ng-bind="m.workingHour"></strong>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs1 form-group">
+                        <strong>итого</strong>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 form-group">
+                        <strong><span ng-bind="$ctrl.getTotalSum()"></span></strong>&nbsp;
+                        <span ng-bind="$ctrl.item.currency"></span>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

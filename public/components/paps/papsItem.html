@@ -1,0 +1,61 @@
+<div class="paps-item" ng-class="{'paps-item-mobile':$ctrl.mobile}">
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-violet"  ui-sref="frame.paps">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box text-center">pap
+                <span class="category-name">{{$ctrl.item.name}}</span>
+            </h4>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <div class="form-group label-static">
+                    <label class="control-label">заголовок</label>
+                    <input class="form-control name" ng-model="$ctrl.item.name" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                           ng-change="$ctrl.saveField('name')">
+                </div>
+                <h4 class="text-center name-box">код цели из adWords</h4>
+                <p class="info-text">устанавливается если вы ведете рекламную компании в adWords</p>
+                <div class="form-group label-floating">
+                    <label class="control-label">код цели из adWords</label>
+                    <textarea rows='6' class="form-control name" ng-model="$ctrl.item.googleGoal" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                              ng-change="$ctrl.saveField('googleGoal')"></textarea>
+                </div>
+            </div>
+            <div class="cart-detail">
+                <h4 class="text-center name-box">баннер</h4>
+                <load-image
+                        upload-url="/api/collections/Photo/fileUploadBig?collectionName=Paps"
+                        item-id="{{$ctrl.item._id}}"
+                        item-url="{{$ctrl.item.url}}"
+                        item-resourse="$ctrl.Items"
+                        file-src="$ctrl.item.img"
+                        name-img="img">
+                </load-image>
+
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <h4 class="text-center name-box">текст на странице</h4>
+                <div class="editor form-group">
+                    <div text-angular  ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                         ng-change="$ctrl.saveField('desc',200)"
+                         ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
+                         ng-model="$ctrl.item.desc"
+                         ta-paste="$ctrl.global.get('functions').val.taPaste($html)"
+                         ta-html-editor-class="border-around">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

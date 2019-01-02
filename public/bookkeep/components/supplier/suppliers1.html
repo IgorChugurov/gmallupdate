@@ -1,0 +1,141 @@
+<style>
+    .debet-credit .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+
+        /* Position the tooltip text - see examples below! */
+        position: absolute;
+        z-index: 1;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .debet-credit:hover .tooltiptext {
+        visibility: visible;
+    }
+</style>
+<div ng-hide="$ctrl.$state.current.name!='frame.suppliers'">
+    <div class="nav-box-stuff" >
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать поставщика">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <div class=" pull-right search">
+                <form ng-submit="$ctrl.searchItems($ctrl.searchStr)">
+                    <input type="text"  class="search-fluid"
+                           ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"
+                           ng-change="$ctrl.searchItems($ctrl.searchStr)"
+                           ng-model="$ctrl.searchStr"/>
+                    <a ng-click="$ctrl.clearSearch()" class="btn btn-fab btn-fab-mini">
+                        <i class="material-icons link-warning" title="очистить строку поиска">clear</i>
+                    </a>
+                </form>
+            </div>
+        </div>
+        <div class="text-center tab-nav-stuff">
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="news-stuff" style="margin-top: 150px">
+
+        <div ng-show="!$ctrl.items.length" ng-cloak class="col-xs-12 col-md-12 col-sm-12 col-lg-12 text-center">
+            <p class="no_story">
+                по вашему запросу нет записей
+            </p>
+        </div>
+        <div class="news-stuff-container">
+            <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                        поставщик
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        процент наценки
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                       дебет
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                       кредит
+                    </div>
+                </div>
+                <div class="stuff-admin col-lg-12 col-md-12 col-sm-12 col-xs-12"  ng-repeat="item in $ctrl.items">
+
+                    <div class="" ng-class="{'mobil':global.get('mobile')}">
+                        <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <div class="form-group label-floating">
+                                    <label for="name1" class="control-label">название</label>
+                                    <input type="text" id="name1" class="form-control name"
+                                           ng-model="item.name"
+                                           required
+                                           ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                           ng-change="$ctrl.saveField(item,'name')"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                <div class="form-group label-floating">
+                                    <label class="control-label">процент наценки</label>
+                                    <input type="number" ng-model="item.rate" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                           ng-change="$ctrl.saveField(item,'rate')"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <div class="debet-credit">
+                                    <span ng-bind="item.debet"></span>
+                                    <div class="tooltiptext">
+                                        <p ng-repeat="(c,d) in item.data">
+                                            <span ng-bind="c"></span>
+                                            <span>-</span>
+                                            <span ng-bind="d.debet"></span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <div class="debet-credit">
+                                    <span ng-bind="item.credit"></span>
+                                    <div class="tooltiptext">
+                                        <p ng-repeat="(c,d) in item.data">
+                                            <span ng-bind="c"></span>
+                                            <span>-</span>
+                                            <span ng-bind="d.credit"></span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-2 col-md-6 col-sm-6 col-xs-12">
+                                <a class="btn btn-fab btn-fab-mini  edit pull-right" ui-sref="frame.suppliers.supplier({id:item._id})">
+                                    <i class="material-icons link-warning md-42">edit</i>
+                                </a>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ui-view=""></div>
+

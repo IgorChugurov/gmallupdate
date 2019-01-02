@@ -1,0 +1,46 @@
+<div class="container" ng-hide="$state.includes('mainFrame.stat.edit')||$state.includes('mainFrame.stat.editStatGallery')">
+    <div class="main">
+        <div class="row">
+              <div class="col-sm-7 col-md-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <span class="panel-title">Статические страницы</span>
+                        </div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <div class="col-md-5 text-left col-md-offset-1">
+                                            <input type="text" placeholder="поиск" ng-model="searchStat" class="search-query"/>
+                                        </div>
+                                        <div class="col-md-5  col-md-offset-1">
+                                            <a href=""class="btn btn-success" type="button"  ng-click="editStat()">создать страницу</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                                <ul  class="nav nav-pills nav-stacked">
+                                    <li
+                                        class="pull-left col-lg-12 col-md-10 col-xs-10"
+                                        ng-repeat="stat in filteredList=( statList|orderBy:'index'|filter:searchStat)">
+                                        <a ng-click="editStat(stat)" class="control-label col-lg-6 col-md-6 col-xs-6" href="">
+                                            <span ng-bind="stat.name"></span>
+                                        </a>
+                                        <div class="col-lg-6 btn-group">
+                                            <a ng-click="editStatGallery(stat)" class="btn btn-sm btn-success"><span class="glyphicon glyphicon-camera"></span></a>
+                                            <a ng-click="editStat(stat)" class="btn btn-sm btn-info"><span class="glyphicon glyphicon-pencil"></span> </a>
+                                            <a ng-click="deleteStat(stat)" class="btn btn-sm btn-danger"><span class="glyphicon glyphicon-trash"></span> </a>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </li>
+                                </ul>
+                            <a data-ng-click="setPage()" class="btn btn-sm btn-success" ng-show="statList.length<totalItems">
+                                <span class="glyphicon glyphicon-resize-vertical"></span> еще</a>
+                            <div ng-show="filteredList.length<=0" class="alert alert-success"><h3>Нет объектов</h3></div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<div ui-view></div>

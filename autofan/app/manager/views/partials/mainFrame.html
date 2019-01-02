@@ -1,0 +1,97 @@
+
+
+	<header>
+		<nav class="navbar navbar-fixed-top">
+        	<div class="container" >
+                <div class="row">
+                	<div class="navbar-header">
+                        <a  class="navbar-brand" ui-sref="mainFrame.home" style="margin-left: 0px;">АДМИНПАНЕЛЬ</a>
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+          				</button>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-ex1-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a data-ng-click="toMainSite()">на сайт</a></li>
+                            <li ><a  ui-sref="mainFrame.customerList">наряд-заказы</a></li>
+                            <li ><a  ui-sref="mainFrame.jobTicketArch">closed</a></li>
+                           <!-- <li ng-repeat="item in menuItem"><a ui-sref="mainFrame.goods({id:$index})"><span ng-bind="item.name.ua"></span></a></li>-->
+                            <li class="active"><a  ui-sref="mainFrame.orders">заказы</a></li>
+                           <!-- <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span >объекты</span>
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li ><a  ui-sref="mainFrame.filters">фильтры</a></li>
+                                    <li ><a  ui-sref="mainFrame.brands">бренды</a></li>
+                                    <li ><a  ui-sref="mainFrame.category">категории</a></li>
+                                    <li ><a  ui-sref="mainFrame.stuff">товары</a></li>
+                                    <li ><a  ui-sref="mainFrame.collection">коллекции</a></li>
+                                    <li ><a  ui-sref="mainFrame.news">новости</a></li>
+                                    <li ><a  ui-sref="mainFrame.importExel">импорт exel</a></li>
+
+                                </ul>
+                            </li>-->
+                            <li uib-dropdown on-toggle="toggled(open)">
+                                <a href="#" uib-dropdown-toggle><span >доп</span>
+                                    <b class="caret"></b>
+                                </a>
+                                <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+                                    <li><a  ui-sref="mainFrame.slides">слайдер</a></li>
+                                    <li><a  ui-sref="mainFrame.summary">сводка</a></li>
+                                    <!--<li><a  ui-sref="mainFrame.shippers">поставщики</a></li>-->
+                                    <li><a  ui-sref="mainFrame.workers">сотрудники</a></li>
+                                    <li><a  ui-sref="mainFrame.places">регионы</a></li>
+                                    <li><a  ui-sref="mainFrame.currency">валюта</a></li>
+                                    <li><a  ui-sref="mainFrame.users">users</a></li>
+                                    <li><a  ui-sref="mainFrame.stat">стат страници</a></li>
+                                    <li><a  ui-sref="mainFrame.convert">конвертация</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a ng-disabled="!$state.includes('mainFrame.customerList.custom')"data-ng-click="printTicket()"><span class="glyphicon glyphicon-print"></span></a>
+                            </li>
+                            <li>
+                                <p>
+                                    курс - <span style="color: #c80000; "><edit-in-place></edit-in-place></span>
+                                </p>
+                            </li>
+                        </ul>
+            		</div>
+            	</div>
+  			</div>
+		</nav>
+    </header>
+
+
+    <section class="content">
+        <section >
+            <div ui-view></div>
+        </section>
+    </section>
+
+            
+<script>
+	//$('.dropdown-toggle').dropdown()
+</script>	
+<style>
+    .edit-in-place span {
+        cursor: pointer;
+        color: red;
+    }
+
+    .edit-in-place input {
+        display: none;
+    }
+
+    .edit-in-place.active span {
+        display: none;
+    }
+
+    .edit-in-place.active input {
+        display: inline-block;
+    }
+</style>

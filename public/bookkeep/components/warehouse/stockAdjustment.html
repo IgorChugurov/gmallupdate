@@ -1,0 +1,328 @@
+<div ng-cloak>
+    <div class="nav-box-stuff">
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-info"
+               ui-sref="frame.warehouse.stockadjustments"
+               title="вернуться">
+                <i class="material-icons">reply</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff">
+            <h4 class="name-box"><span>подразделение </span><span ng-bind="$ctrl.item.virtualAccount.name"></span></h4>
+        </div>
+
+        <div class="tab-nav-stuff pull-right">
+            <a class="btn btn-raised btn-success"
+               ng-click="$ctrl.activeSA()" ng-show="!$ctrl.item.actived"
+               title="провести инвентаризацию">
+                <span>провести<br> документ</span>
+            </a>
+            <a class="btn btn-raised btn-warning"
+               ng-click="$ctrl.activeSA()" ng-show="$ctrl.item.actived"
+               title="отменить проводку">
+                <span>отменить<br> проводку</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff pull-right" ng-show="$ctrl.item._id">
+            <a ng-click="$ctrl.makeBalances()" class="btn btn-raised btn-success">
+                <span title="сформировать остатки">сформировать<br> остатки</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff pull-right">
+            <a class="btn btn-raised btn-primary"
+               ng-click="$ctrl.getDiff()" ng-show="!$ctrl.item.actived"
+               title="расчитать разницу">
+                <span>рассчитать<br> разницу</span>
+            </a>
+        </div>
+        <div class="tab-nav-stuff date-box pull-right">
+            <div class="form-group label-floating">
+                <label for="date" class="control-label">дата</label>
+                <p class="input-group">
+                    <input type="text" id="date" class="form-control"
+                           uib-datepicker-popup="dd-MMMM-yyyy"
+                           ng-model="$ctrl.item.date"
+                           ng-change="$ctrl.saveField('date')"
+                           ng-disabled="$ctrl.item.actived"
+                           is-open="$ctrl.datePickerOpened"
+                           datepicker-options="$ctrl.dateOptions"
+                           ng-required="true"
+                           close-text="Close" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-fab btn-fab-mini btn-violet" ng-click="$ctrl.datePickerOpened=!$ctrl.datePickerOpened">
+                            <i class="material-icons ">insert_invitation</i>
+                        </button>
+                    </span>
+                </p>
+            </div>
+        </div>
+        <!--<div class="tab-nav-stuff pull-right">
+            <a class="btn btn-raised btn-success"
+               ng-click="$ctrl.activeSA()" ng-show="!$ctrl.item.actived"
+               title="провести инвентаризацию">
+                <span>провести</span>
+            </a>
+            <a class="btn btn-raised btn-warning"
+               ng-click="$ctrl.activeSA()" ng-show="$ctrl.item.actived"
+               title="отменить проводку">
+                <span>отменить</span>
+            </a>
+        </div>-->
+    </div>
+    <div class="clearfix"></div>
+    <div class="stockAdjusment">
+        <div class="news-stuff-container">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="cart-detail diff-all">
+                    <h4 class="name-box">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3"><span>Разница</span></div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" ng-repeat="(cur,val) in $ctrl.item.diff">
+                            <span ng-class="{green:val>0,red:val<0}">
+                                <span ng-bind="(val).toFixed(2)"></span>
+                                <span ng-bind="cur"></span>
+                            </span>
+                        </div>
+                        <div class="clearfix"></div>
+                    </h4>
+                </div>
+            <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <p>разница</p>
+                <span class="diff-item-tab" ng-repeat="(cur,val) in $ctrl.item.diff">
+                    <span ng-bind="(val).toFixed(2)"></span> <span ng-bind="cur"></span>
+                </span>
+            </div>-->
+            <div class="clearfix"></div>
+            <div ng-hide="$ctrl.item.actived">
+                <div class="cart-detail diff-all">
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="sku" class="control-label">добавить материал</label>
+                            <input type="text"id="sku" class="form-control name"
+                                   autocomplete="off"
+                                   name="sku"
+                                   ng-maxlength="100"
+                                   ng-model="$ctrl.newMaterial.name"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':300,'blur':0}}"
+                                   ng-change="$ctrl.refreshData($ctrl.newMaterial.name)"
+                                   placeholder="название материала или артикул"/>
+                        </div>
+                        <div class="all-sku" ng-show="$ctrl.materials.length">
+                            <span class="pull-right" ng-click="$ctrl.clearMaterials()">
+                                <i class="material-icons link-warning">clear</i>
+                            </span>
+                            <p ng-repeat="m in $ctrl.materials">
+                                <a ng-click="$ctrl.changeNewMaterial(m)">
+                                    <strong ng-bind="m.name"></strong>
+                                    <span ng-bind="m.sku"></span>
+                                    <span ng-bind="m.sku2"></span>
+                                    <span ng-bind="m.producer.name"></span>
+                                    <span ng-bind="m.currency"></span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                        <div class="form-group label-floating ">
+                            <label class="control-label">количество</label>
+                            <input class="form-control" ng-model="$ctrl.qty" type="number">
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                        <div class="form-group label-floating ">
+                            <label class="control-label">цена учетная</label>
+                            <input class="form-control" ng-model="$ctrl.price" type="number">
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                        <div class="form-group label-floating ">
+                            <label class="control-label">цена продажи</label>
+                            <input class="form-control" ng-model="$ctrl.priceForSale" type="number">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="supl1" class="control-label">вид контрагента</label>
+                            <ui-select ng-model="$ctrl.typeOfContrAgent"
+                                       id="supl1"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       ng-change="$ctrl.getContrAgents($ctrl.typeOfContrAgent)"
+                                       title="выберите вид контрагента">
+                                <ui-select-match  placeholder="вид контрагента">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt.type as opt in $ctrl.typeOfContrAgents">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group label-floating">
+                            <label for="sup2" class="control-label">контрагент</label>
+                            <ui-select ng-model="$ctrl.contrAgent"
+                                       id="sup2"
+                                       skip-focusser="true"
+                                       search-enabled="true"
+                                       title="выберите контрагента">
+                                <ui-select-match  placeholder="выберите контрагента">{{$select.selected.name}}</ui-select-match>
+                                <ui-select-choices repeat="opt in $ctrl.contrAgents|filter:$select.search">{{ opt.name }}</ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 text-right">
+                        <a class="btn btn-raised btn-success" ng-click="$ctrl.createItem()">
+                            <span>добавить в инвентаризацию</span>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="">
+                <div class="cart-detail">
+                    <div class="header-table">
+                        <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <small>название</small>
+                            <input class="form-control" ng-model="$ctrl.name">
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>артикул</small>
+                            <input class="form-control" ng-model="$ctrl.sku">
+                        </div>
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <small>доп. артикул</small>
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>сумма</small>
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>учетное кол-во</small>
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>факт. количество</small>
+
+                        </div>
+                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>разница</small>
+                        </div>
+                        <div class="td-list-header text-center col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <small>редактирование</small>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="stuff-admin"  ng-repeat-start="m in $ctrl.item.materials|filter:$ctrl.name|filter:$ctrl.sku">
+                        <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <a ng-click="item.showDetail=!item.showDetail">
+                                <span ng-bind="m.item.name"></span>
+                            </a>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span ng-bind="m.item.sku"></span>
+                        </div>
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <span ng-bind="m.item.sku2[0]"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.sum"></span>
+                            <span ng-bind="m.item.currency"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-bind="m.qty"></span>
+                        </div>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <span ng-show="m.data.length>1 || m.data[0].manufacture.length" ng-bind="$ctrl.getQty(m.data,'newQty')"></span>
+                            <input ng-show="m.data.length==1 && !m.data[0].manufacture.length"  type="number" class="form-control"
+                                   ng-model="m.data[0].newQty"
+                                   ng-change="$ctrl.saveField('materials.{{$index}}.data',m.data)">
+                        </div>
+                        <div class="td-list col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1" ng-class="{green:m.diff>0,red:m.diff<0}">
+                            <span ng-bind="$ctrl.getDiffForMaterial(m)"></span>
+                            <span ng-bind="m.item.currency"></span>
+                        </div>
+                        <div class="td-list create col-lg-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <bytton class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.editData($index)" ng-disabled="$ctrl.item.actived">
+                                <i class="material-icons">edit</i>
+                            </bytton>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div  class="warehous-item" ng-repeat-end uib-collapse="!item.showDetail" ng-show="m.data.length">
+                        <div class="header-table-item">
+                            <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                тип поставщика
+                            </div>
+                            <div class="td-list-header col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                поставщик
+                            </div>
+                            <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                учетная сумма
+                            </div>
+                            <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                учетное кол-во
+                            </div>
+                            <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                факт кол-во
+                            </div>
+                            <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                разница
+                            </div>
+                            <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="" ng-repeat="d in m.data">
+                            <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <span ng-bind="$ctrl.getcontrAgentTypeName(d.supplierType)"></span>
+                            </div>
+                            <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                <span ng-bind="d.supplier.name"></span>
+                            </div>
+                            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <span  ng-bind="(d.sum).toFixed(2)"></span>
+                            </div>
+                            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <span ng-bind="d.qty"></span>
+                            </div>
+                            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <span ng-bind="d.newQty"></span>
+                            </div>
+                            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1" ng-class="{green:d.diff>0,red:d.diff<0}">
+                                <span  ng-if="d.diff" ng-bind="(d.diff).toFixed(2)"></span>
+                                <span  ng-if="d.diff" ng-bind="m.item.currency"></span>
+                            </div>
+                            <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+
+                            </div>
+
+                            <div class="clearfix"></div>
+                            <div ng-repeat="manufacture in d.manufacture">
+                                <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    в производстве
+                                </div>
+                                <div class="td-list col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                                    <a target="_blank" ui-sref="frame.Rn.item({id:manufacture.rn._id})"><span ng-bind="manufacture.rn.name"></span></a>
+                                </div>
+                                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                    <span  ng-bind="manufacture.sum"></span>
+                                </div>
+                                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                    <span ng-bind="manufacture.qty"></span>
+                                </div>
+                                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                    <span ng-bind="manufacture.newQty"></span>
+                                </div>
+                                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                </div>
+                                <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

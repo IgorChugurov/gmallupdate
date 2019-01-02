@@ -1,0 +1,50 @@
+<div class="col-lg-10 col-lg-offset-1">
+    <div class="main">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p class="panel-title">USERS<span class="pull-right" style="margin-top: 5px; font-size: 26px;">AUTOFAN</span></p>
+                </div>
+                <div class="panel-body">
+                    <table class="table col-lg-12  table-bordered " style="font-size: 14px; width: 100%; overflow: auto">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th >name</th>
+                                <th>email</th>
+                                <th>role</th>
+                                <th>tel</th>
+                                <th>Страна</th>
+                                <th>Город</th>
+                                <th>Адрес</th>
+                                <th>Удалить</th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            <tr ng-repeat="user in users">
+                               <td>{{$index+1}}</td>
+                                <td>{{user.name}}</td>
+                                <td>{{user.email}}</td>
+                                <td>
+                                    <select class="btn" ng-model="user.role" ng-change="updateUser(user)">
+                                        <option value='user'>юзер</option>
+                                        <option value='admin'>админ</option>
+                                    </select>
+                                </td>
+                                <td>{{user.profile.phone}}</td>
+                                <td>{{user.profile.country}}</td>
+                                <td>{{user.profile.city}}</td>
+                                <td>{{user.profile.address}}</td>
+                                <td class="text-center">
+                                    <a  style="padding-top: 8px; color: #c8171a" ng-click="deleteUser(user)"><span class=" glyphicon glyphicon-remove"></span> </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<br />
+<br />
+</div>

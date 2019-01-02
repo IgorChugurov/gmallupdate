@@ -1,0 +1,89 @@
+<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html"><img src="img/bg/2.png"></a>
+        </div>
+
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse pull-left">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Продукция <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">овочі</a></li>
+                        <li><a href="#">фрукти</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#">Кулінарна книга</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span ng-bind="categories[1].name[lang]"></span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="item in categories[1].stuff"><a ui-sref="language.news({'id':$index})"><span ng-bind="item.name[lang]"></span></a></li>
+                        <!--<li><a href="#">фрукти</a></li>-->
+                    </ul>
+                </li>
+                <li><a ui-sref="language.contacts">Контакти</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img class="lw" ng-src="{{lanImg}}"><span ng-bind="langName"><b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="changeLanguage('ua')"><img class="lw" src="img/icon/ua.png">українськийs</a></li>
+                        <li><a ng-click="changeLanguage('ru')"><img class="lw" src="img/icon/ru.png">русский</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <ul class="navbar-nav nav" data-ng-hide="currentUser">
+                        <li><a ui-sref="language.login">вход</a></li>
+                    </ul>
+                </li>
+                <ul class="navbar-nav nav" data-ng-show="currentUser" style="cursor: pointer;">
+                    <li class="dropdown">
+                        <a  class="dropdown-toggle" data-toggle="dropdown">
+                            {{currentUser.name}} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+
+                            <li><a href=""  ui-sref="language.settings">личные данные</a></li>
+                            <li><a href="" ng-click="logout()">выход</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </ul>
+
+        </div><!-- /.navbar-collapse -->
+
+    </div><!-- /.container -->
+</nav>
+
+
+<div ui-view></div>
+
+<footer class="clearfix">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <a class="col-lg-4 col-md-4 col-sm-4 col-xs-4" href="#"><div class="glyphicon glyphicon-arrow-down">Каталог продукції</div></a>
+                <p class="col-lg-4 col-md-4 col-sm-4 col-xs-4">Copyright &copy; w3lab.com 2013 &middot; права захищені</p>
+                <a  class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right" href="#" ><div class="glyphicon glyphicon-pencil">Напишіть нам</div></a>
+            </div>
+        </div>
+    </div>
+</footer>
+</div> <!-- /container -->
+
+
+

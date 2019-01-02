@@ -1,0 +1,58 @@
+.dialogsStuff {
+    margin-top: 140px;
+}
+.dialogsStuff .cart-detail {
+    cursor: pointer;
+}
+.dialogsStuff .thumbnail {
+    padding: 0;
+    border-color: #999;
+}
+.dialogsStuff .on-line {/*ok*/
+    font-size: 18px;
+    font-weight: bold;
+}
+.dialogsStuff .btn-clear{
+    position: absolute;
+    bottom: 20px;
+    right: 25px;
+}
+.dialogsStuff .dialog-add .btn-fab-mini{
+    width: 100%;
+}
+.dialogsStuff .info-chat {
+    font-size: 16px;
+    padding: 8px 15px;
+    text-align: left;
+}
+.dialogsStuff label {
+    font-size: 12px;
+}
+.dialogsStuff .button-box {
+    padding: 0;
+}
+.dialogsStuff .data-box,
+.dialogsStuff .dialog-box {
+    padding: 5px 15px;
+}
+.dialogsStuff .name-box,
+.dialogsStuff .dialog-box {
+    border-left: 1px solid #999;
+    height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.chat-item {
+    margin-top: 140px;
+}
+/*.dialog-mobile .dialog-box {
+    border-left: none;
+}*/
+@media (max-width: 400px) {
+    .dialogsStuff .name-box {
+        border-left: none;
+        border-top: 1px solid #999;
+    }
+}
+
