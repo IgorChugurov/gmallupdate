@@ -6,6 +6,7 @@ mongoose.Promise = global.Promise;
 var Schema = mongoose.Schema;
 var myUtil=require('../controllers/myUtil.js');
 const util = require('util')
+
 var stores={};
 var blockSchema = new Schema({
     type:String, // text,missia,info,news,campaign,map,banner,slider,video,categories,brandTags,brands,filterTags,stuffs
@@ -50,6 +51,7 @@ var blockSchema = new Schema({
     categories:[{type : Schema.ObjectId, ref : 'Category'}],
     brands:[{type : Schema.ObjectId, ref : 'Brand'}],
     stuffs:[{type : Schema.ObjectId, ref : 'Stuff'}],
+
     news:[{type : Schema.ObjectId, ref : 'News'}],
     campaign:[{type : Schema.ObjectId, ref : 'Campaign'}],
     info:[{type : Schema.ObjectId, ref : 'Info'}],
@@ -72,12 +74,15 @@ var blockSchema = new Schema({
     autoPlaySlider:Boolean,
     template:Boolean,// если шаблон то доступен для загрузки
     nameTemplate:String,
+    qwslide:Number,// количество слайдов для оwl slider
+    autoPlaySlider:Boolean,
     link:String,
     link1:String,
     position:String,// left,right,top
     useImg:Boolean,
     useDesc:Boolean,
     videoControl:Boolean,
+    dontScrollBlock:Boolean,
 })
 
 var SfuffSchema = new Schema({
@@ -94,6 +99,7 @@ var SfuffSchema = new Schema({
     brandTag:{type : Schema.ObjectId, ref : 'BrandTags'},
     sortsOfStuff:{type:Schema.ObjectId,ref:'SortsOfStuff'},
     addInfo:{type:Schema.ObjectId,ref:'AddInfo'},
+    groupStuffs:{type:Schema.ObjectId,ref:'GroupStuffs'},
 
 
     //collection:{type : Schema.ObjectId, ref : 'Collection'},
@@ -111,6 +117,7 @@ var SfuffSchema = new Schema({
       * notag : 9023jd-293jd-03jddl*/
     },
     stock:{type:{},default:{notag:{quantity:1}}},// наличие товара
+
     sort:String,// текущая разновидность для списка
 
     sale:Boolean, // if true, apply save value from store to get priceSale
@@ -133,6 +140,13 @@ var SfuffSchema = new Schema({
     descL: {type:{},default:{}},
     desc1L: {type:{},default:{}},
     desc2L: {type:{},default:{}},
+
+    //descSortL:{type:{},default:{}},// описание для сортов товара
+    descLSort:{type:{},default:{}},// описание для сортов товара
+
+    //descFLLLL:String,
+
+
     keywords:{},
 
     img:[String],
@@ -186,6 +200,19 @@ var SfuffSchema = new Schema({
     translated:{},
     asin:String,
 
+    video:{},
+    video1:{},
+    media:String,
+    media2:String,
+    videoTime:Number,
+    hrefInsteadVideo : String, //ссылка для перехода когда контент по подписке не доступен
+
+    access:{
+        t:Number,
+        d:Number,
+        p:Boolean
+    }, // доступ к контенту t - тип доступа d - длительность в днях p- приоритет (активное предложение для подписки)
+    accessLevel:Number,// уровень доступа к контенту данного товара, корреспондируется с access.t
 }, {
     toObject: {
         virtuals: true
@@ -193,7 +220,8 @@ var SfuffSchema = new Schema({
     toJSON: {
         virtuals: true }});
 
-
+const mongooseLeanVirtuals = require('mongoose-lean-virtuals');
+SfuffSchema.plugin(mongooseLeanVirtuals);
 
 /*SfuffSchema.virtual('priceForFilter').get(function() {
     if(!this)return
@@ -215,7 +243,10 @@ function price_transform(stuff) {
 
 
 SfuffSchema.add({descL:{type:{}}})
+//SfuffSchema.add({descFLLLL:{type:String}})
+//SfuffSchema.add({descSortL:{type:{}}})
 SfuffSchema.add({priceForFilter:{type:[]}})
+//SfuffSchema.add({descLSort:{type:{}}})
 function salePrice(doc,sale){
     doc.priceSale=Math.ceil10(Number(doc.price)-sale*doc.price,1);
     for(var key in doc.stock){
@@ -342,7 +373,7 @@ SfuffSchema.statics = {
             if (doc.sortsOfStuff && doc.sortsOfStuff.stuffs && doc.sortsOfStuff.stuffs.length){
                 self.populate(doc.sortsOfStuff,{path:'stuffs',
                     //select:'gallery tags name price artikul url stock sortsOfStuff nameL artikulL category link currency actived archived',options: { lean: true}},function(){
-                    select:'gallery tags name price artikul url stock sortsOfStuff nameL artikulL category link currency actived archived'},function(){
+                    select:'gallery tags name price artikul url stock sortsOfStuff nameL artikulL category link currency actived archived descLSort'},function(){
                     doc.sortsOfStuff.stuffs.forEach(function(el,i){
 
                         var sortFun;
@@ -369,10 +400,20 @@ SfuffSchema.statics = {
         this.findOne(query)
             .populate('sortsOfStuff addInfo')
             .populate('blocks.stuffs','name artikul nameL artikulL link gallery actived')
-            .populate('category','name nameL')
-            .populate('brand','name nameL')
+
+            .populate('category','name nameL url')
+            .populate('brand','name nameL url')
+            .populate({
+                path: 'groupStuffs',
+                select:'name nameL desc descL url img video video1 link masters',
+                // Get friends of friends - populate the 'friends' array for every friend
+                populate: { path: 'masters' ,select:'name nameL url desc descL blocks'}
+            })
             .lean()
             .exec(function(err,doc){
+               /* console.log('doc.descSortL',doc.descSortL)
+                console.log('doc.descLSort',doc.descLSort)*/
+                //console.log('doc.descLSort',doc.descLSort)
                 if (err) return next(err)
                 if (doc) {
                     if(doc.blocks && doc.blocks.length){
@@ -397,6 +438,74 @@ SfuffSchema.statics = {
                     }
                     if(!doc.img && doc.gallery && doc.gallery.length){
                         doc.img=doc.gallery[0].img
+                    }
+
+                    if(doc.groupStuffs && doc.groupStuffs.masters && doc.groupStuffs.masters.length){
+                        doc.groupStuffs.masters.forEach(function (eee,idx){
+                            //console.log(eee.toObject)
+                            let el = doc.groupStuffs.masters[idx];
+                            let img,imgs,desc,position,stuffs,video,positionL,descL;
+                            if(el.blocks && el.blocks.length){
+                                el.blocks.sort(function (a,b) {
+                                    return a.index-b.index
+                                })
+
+                                for(let i=0;i<el.blocks.length;i++){
+                                    if(!el.blocks[i] || !el.blocks[i].is){continue}
+                                    if(el.blocks[i].useImg){
+                                        img=el.blocks[i].img;
+                                        imgs=null;
+                                        video=null;
+                                    }
+                                    if(el.blocks[i].useDesc){
+                                        let s = el.blocks[i].desc.myTrim().clearTag().substring(0,150);
+                                        //console.log(s)
+                                        if(s){
+                                            desc=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                            descL=el.blocks[i].descL;
+                                        }
+                                    }
+                                    if(!desc && el.blocks[i].desc){
+                                        let s = el.blocks[i].desc.myTrim().clearTag().substring(0,150);
+                                        //console.log(s)
+                                        if(s){
+                                            desc=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                            descL=el.blocks[i].descL;
+                                        }
+                                    }
+                                    if(img || video || imgs){continue}
+                                    if((el.blocks[i].type=='banner'||el.blocks[i].type=='bannerOne') && el.blocks[i].img){
+                                        img = el.blocks[i].img
+                                    }
+                                    if(img || video || imgs){continue}
+                                    if(el.blocks[i].type=='videoLink' && el.blocks[i].videoLink){
+                                        video = el.blocks[i].videoLink
+                                    }
+                                    if(img || video || imgs){continue}
+                                    if(el.blocks[i].type=='slider' &&el.blocks[i].imgs && el.blocks[i].imgs.length){
+                                        imgs= el.blocks[i].imgs
+                                    }
+                                }
+                                if(img){el.img=img}else{el.img=null}
+                                if(imgs){el.imgs=imgs}else{el.imgs=null}
+                                if(desc){el.desc=desc}else{el.desc=null}
+                                if(descL && typeof descL=='object'){
+                                    for(let k in descL){
+                                        if(descL[k] && descL[k].clearTag){
+                                            let s = descL[k].clearTag().substring(0,150)
+                                            descL[k]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                        }
+                                    }
+                                    el.descL=descL;
+                                }else{
+                                    el.descL={}
+                                }
+                                if(video){el.video=video;}else{el.video=null;}
+                                el.blocks=null;
+                                //console.log(el.img,el.descL)
+                            }
+                        })
+
                     }
                     fillMembersInGroup(doc,function(){
                         //doc=doc.toObject();
@@ -479,11 +588,11 @@ SfuffSchema.statics = {
                 try{
                     criteria.store=store
                     let promise = self.find(criteria)
-                        .select('name tags brandTag brand category gallery price store artikul url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePrt color blocks translated templateUrl asin')
+                        .select('access name tags brandTag brand category gallery price store artikul url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePrt color blocks translated templateUrl asin groupStuffs')
                         .sort({'index': -1}) // sort by date
                         .limit(options.perPage)
                         .skip(options.perPage * options.page)
-                        .populate('sortsOfStuff','filter differentPrice')
+                        .populate('sortsOfStuff','filter differentPrice filterGroup')
                         .populate('brand','name')
                         .populate('brandTag','name')
                         .exec(function(err,docs){
@@ -540,12 +649,13 @@ SfuffSchema.statics = {
         }else{
             //console.log(criteria)
             var query =this.find(criteria);
-            query.select('name tags brandTag brand category gallery price store artikul artikulL url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePart backgroundcolor priceForFilter blocks translated templateUrl asin')
+            query.select('access name tags brandTag brand category gallery price store artikul artikulL url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePart backgroundcolor priceForFilter blocks translated templateUrl asin groupStuffs')
             query.sort({'index': -1}) // sort by date
             query.limit(options.perPage)
             query.skip(options.perPage * options.page)
-            query.populate('sortsOfStuff','filter differentPrice')
-            query.populate('brand','name')
+            query.populate('sortsOfStuff','filter differentPrice filterGroup')
+            query.populate('brand','name nameL url')
+            query.populate('brandTag','name nameL url')
             query.exec(function(err,docs){
                 if (docs && docs.length){
                     docs = docs.map(function(doc){
@@ -650,7 +760,7 @@ SfuffSchema.statics = {
                // console.log(util.inspect(criteria, false, null))
                 //console.log(o)
                 var query =self.find(o);
-                query.select('name tags brandTag brand category gallery price store artikul url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL desc descL artikulL archived link')
+                query.select('access name tags brandTag brand category gallery price store artikul url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL desc descL artikulL archived link groupStuffs')
                 .sort({'index': -1})
                 .limit(options.perPage)
                 .skip(options.perPage * options.page)
@@ -842,22 +952,69 @@ var groupStuffsSchema=new Schema({
     stuffs:[{type : Schema.ObjectId, ref : 'Stuff'}],
     category:{type : Schema.ObjectId, ref : 'Category'},
     url:{type :String,index:true},
+    link:String,
     actived:{type:Boolean,default:true},
     index: Number,
     img:String,
+    tags:[{type : Schema.ObjectId, ref : 'FilterTags'}],
+    masters:[{type : Schema.ObjectId, ref : 'Master'}],
+    video:{},
+    video1:{},
+    videoPoster:String,
+    video1Poster:String,
 });
 groupStuffsSchema.statics = {
     load: function (query, cb) {
         this.findOne(query)
-            .populate('stuffs','name nameL desc descL price currency gallery')
-            .exec(cb)
+            .populate('stuffs')
+            .populate('masters')
+            .populate('filterTags','name nameL desc descL')
+
+            .populate({
+                path: 'tags',
+                select:'name nameL desc descL filter',
+                // Get producer of item - populate the 'producer'  for every item
+                populate: { path: 'filter' ,select:'name nameL'}
+            })
+            .lean()
+            .exec(function(err,doc){
+                if(err){
+                    return cb(err)
+                }
+                try{
+                    if(doc.masters && doc.masters.length){
+                        doc.masters.forEach(m=>{
+                            let o= img_transform(m);
+                            //console.log('o',o)
+                            m.img=o.img;
+                            m.imgs=o.imgs;
+                            m.descL=o.descL;
+                            m.desc=o.desc;
+                        })
+                    }
+                    if(doc.stuffs && doc.stuffs.length){
+                        doc.stuffs.forEach(s=>{
+                            if(s.gallery && s.gallery[0]){
+                                s.img=(s.gallery[0].img)?s.gallery[0].img:s.gallery[0].thumb
+                            }
+                        })
+                    }
+                }catch(err){
+                    console.log(err)
+                    cb(err)
+                }
+
+                cb(null,doc)
+
+            })
     },
     list: function (options, cb) {
         var criteria = options.criteria || {}
         this.find(criteria)
             .sort({'index': 1})
             .limit(options.perPage)
-            .populate('stuffs','name nameL desc descL price currency gallery')
+            .populate('stuffs','name nameL desc descL price currency gallery url link accessLevel videoTime')
+            .populate('masters','name nameL desc descL url')
             .skip(options.perPage * options.page)
             .exec(cb)
     }
@@ -865,5 +1022,128 @@ groupStuffsSchema.statics = {
 }
 
 mongoose.model('GroupStuffs', groupStuffsSchema);
+
+function img_transform(item){
+    //console.log(item)
+    let o ={
+        img:null,
+        desc:null,
+        descL:null,
+        imgs:null,
+        video:null
+    }
+    if(item && item.blocks && item.blocks.length){
+        try{
+            item.blocks.sort(function (a,b) {
+                return a.index-b.index
+            })
+            for(let i=0;i<item.blocks.length;i++){
+                if(!item.blocks[i].is){continue}
+                if(item.blocks[i].useImg){
+                    if(item.blocks[i].img){
+                        o.img=item.blocks[i].img;
+                        o.imgs=null;
+                        o.video=null;
+                    }else if(item.blocks[i].imgs && item.blocks[i].imgs.length){
+                        o.imgs=item.blocks[i].imgs;
+                        o.img=null;
+                        o.video=null;
+                    }else if(item.blocks[i].videoLink){
+                        o.imgs=null;
+                        o.img=null;
+                        o.video=item.blocks[i].videoLink;
+                    }
+                }
+                if(item.blocks[i].useDesc && ((item.blocks[i].desc && typeof item.blocks[i].desc=='string') || (item.blocks[i].descL && typeof item.blocks[i].descL=='object'))){
+
+                    o.desc=null;
+                    o.descL=null;
+                    if(item.blocks[i].descL){
+                        for(let key in item.blocks[i].descL){
+                            if(item.blocks[i].descL[key]){
+                                /*if(key=='ru'){
+                                 console.log(1,item.blocks[i].descL[key].clearTag().myTrim().substring(0,150))
+                                 }*/
+                                let s  = item.blocks[i].descL[key].clearTag().myTrim().substring(0,150);
+                                if(s){
+                                    if(!o.descL){o.descL={}}
+                                    o.descL[key]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                }
+                                /*if(key=='ru'){
+                                 console.log(2,s)
+                                 console.log(3,s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...')
+                                 }*/
+
+                            }
+                        }
+                    }else if(item.blocks[i].desc){
+                        let  s = item.blocks[i].desc.clearTag().myTrim().substring(0,150);
+                        if(s){
+                            o.desc=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                        }
+
+                    }
+                }else if((!o.desc && !o.descL) && ((item.blocks[i].desc && typeof item.blocks[i].desc=='string') || (item.blocks[i].descL && typeof item.blocks[i].descL=='object'))){
+                    if(item.blocks[i].descL){
+                        for(let key in item.blocks[i].descL){
+                            if(item.blocks[i].descL[key]){
+                                let s  = item.blocks[i].descL[key].myTrim().clearTag().substring(0,150);
+                                if(s){
+                                    if(!o.descL){o.descL={}}
+                                    o.descL[key]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                }
+
+                            }
+                        }
+                    }else if(item.blocks[i].desc){
+                        let  s = item.blocks[i].desc.myTrim().clearTag().substring(0,150);
+                        if(s){
+                            o.desc=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                        }
+                        //o.descL=item.blocks[i].descL;
+                    }
+                }
+
+                if(o.img || o.video || o.imgs){continue}
+                if((item.blocks[i].type=='banner'||item.blocks[i].type=='bannerOne') && item.blocks[i].img){
+                    o.img = item.blocks[i].img
+                }
+                if(o.img || o.video || o.imgs){continue}
+                if(item.blocks[i].type=='videoLink' && item.blocks[i].videoLink){
+                    o.video = item.blocks[i].videoLink
+                }
+                if(o.img || o.video || o.imgs){continue}
+                if(item.blocks[i].type=='slider' &&item.blocks[i].imgs && item.blocks[i].imgs.length){
+                    o.imgs= item.blocks[i].imgs
+                }
+
+                /*if(o.desc && (o.img || o.video || o.imgs)){
+                 break
+                 }*/
+            }
+
+        }catch(error){
+            console.log(error)
+        }
+        //console.log(o.descL)
+        try{
+            if(o.descL){
+                item.descL=o.descL;
+                for(let k in o.descL){
+                    if(o.descL && o.descL[k] && o.descL[k].clearTag &&  o.descL[k].length>155 && o.descL[k].substring(e.desc.length - 3)!=='...'){
+                        let s = o.descL[k].clearTag().substring(0,150)
+                        o.descL[k]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                    }
+                }
+            }
+            if(o.img){item.img=o.img}
+            if(o.desc){item.desc=o.desc}
+            if(o.video){item.video=o.video}
+        }catch(error){
+            console.log(error)
+        }
+        return o;
+    }
+}
 
 

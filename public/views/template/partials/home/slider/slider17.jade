@@ -3,7 +3,11 @@ div(class=dj[key].wrapclass)
         div(class="container")
             div(class="slide-zoom col-lg-12 col-md-12 col-sm-12 col-xs-12")
                 if(dj[key].name)
-                    h3(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)=dj[key].name
+                    h3(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)
+                        | !{dj[key].name}
+                if(dj[key].desc)
+                    div(class="desc-block")
+                        | !{dj[key].desc}
                 if(dj[key].arrowDownDiv)
                     arrow-down
                 div(id=dj[key].id,home-page-stuff-owl="owlslider"+dj[key].id,zoom-img='true',items=dj[key].qwslide,autoplay=dj[key].autoPlaySlider,duration=dj[key].duration,set-animate=dj[key].animate,data-animation=dj[key].animate,data-animation-repeat=dj[key].animateRepeat)
@@ -19,9 +23,11 @@ div(class=dj[key].wrapclass)
                                             div(class="half-shadow")
                                                 div(class="title-block")
                                                     if(dj[key].imgs[i].name)
-                                                        h1(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)=dj[key].imgs[i].name
+                                                        h1(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)
+                                                            | !{dj[key].imgs[i].name}
                                                     if(dj[key].imgs[i].desc)
-                                                        p=dj[key].imgs[i].desc
+                                                        p
+                                                            | !{dj[key].imgs[i].desc}
                     div(class="clearfix")
                     div(class="nav-right")
                         i(class="icon-next-img")

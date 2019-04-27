@@ -450,12 +450,8 @@ fieldset[disabled] .btn:hover {
 
 .modalProject {
   font-size: 13px;
-  position: absolute !important;
   /*modalProject*/
-  /*sign-login*/
-  /*.ui-select-bootstrap .ui-select-match-text {
-    padding-right: 0;
-}*/ }
+  /*sign-login*/ }
   .modalProject .modal-content {
     /*@if $height {
         max-height: $height;
@@ -520,37 +516,42 @@ fieldset[disabled] .btn:hover {
         margin-left: 20px !important;
         margin-right: 20px !important; } }
   @media (max-width: 400px) {
-    .modalProject .modal-header-project {
-      padding-top: 20px; }
-    .modalProject .modal-dialog {
-      width: 98% !important;
-      margin: 0 auto !important; }
-    .modalProject .modal-content {
-      padding: 10px !important;
-      margin-top: 20px !important; }
-    .modalProject .sign {
-      border-left: none  !important; }
-    .modalProject .login {
-      border-bottom: 1px solid #ccc; }
-    .modalProject .sign,
-    .modalProject .login {
-      padding-left: 20px !important;
-      padding-right: 20px !important;
-      padding-bottom: 20px; }
-    .modalProject .modal-body-project {
-      width: 100%;
-      margin-right: 0 !important;
-      margin-left: 0 !important;
-      margin-top: 40px !important;
-      padding-left: 5px;
-      padding-right: 5px; }
-    .modalProject .btn-project {
-      font-size: 11.7px !important;
-      letter-spacing: 1px !important; }
-    .modalProject .witget {
-      width: 100% !important; }
-    .modalProject .shipinfo {
-      width: 100% !important; } }
+    .modalProject {
+      /*.modal-header-project {
+        padding-top: 20px;
+    }*/ }
+      .modalProject .modal-dialog {
+        width: 98% !important;
+        margin: 0 auto !important; }
+      .modalProject .modal-content {
+        padding: 10px !important;
+        margin-top: 20px !important; }
+      .modalProject .sign {
+        border-left: none  !important; }
+      .modalProject .login {
+        border-bottom: 1px solid #ccc; }
+      .modalProject .sign,
+      .modalProject .login {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        padding-bottom: 20px; }
+      .modalProject .modal-body-project {
+        width: 100%;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        margin-top: 40px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important; }
+      .modalProject .btn-project {
+        font-size: 11.7px !important;
+        letter-spacing: 1px !important; }
+      .modalProject .witget {
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-bottom: 0 !important; }
+      .modalProject .shipinfo {
+        width: 100% !important; } }
   .modalProject .filters-first-box {
     min-height: 250px; }
   .modalProject .ui-select-bootstrap .ui-select-choices-row.active > span {
@@ -2599,11 +2600,6 @@ body.ng-pageslide-body-closed::before {
     background-color: transparent;
     opacity: 1;
     margin: 1px 5px; }
-  .zoom img {
-    width: 100%; }
-  .zoom .modal-content {
-    width: 100%;
-    height: 100vh !important; }
   .zoom .zoom-cancel {
     background-color: #ffffff;
     padding-top: 6px;
@@ -2770,16 +2766,13 @@ body.ng-pageslide-body-closed::before {
   background-color: #ffffff;
   font-size: 12px;
   font-family: OpenSansLight;
-  border-radius: none;
+  border-radius: 0;
   border: 1px solid #e31e1e;
-  opacity: 1;
+  opacity: 1 !important;
   /*toast-error*/ }
   .toast-error .toast-message {
-    color: #000000 !important; }
-  .toast-error #toast-container > div:hover {
-    box-shadow: none !important; }
-  .toast-error .toast.toast-error .toast-message div {
-    color: #000000 !important; }
+    color: #000000 !important;
+    opacity: 1 !important; }
   .toast-error .toast-title {
     color: #000000; }
   .toast-error .toast-close-button {
@@ -2788,24 +2781,19 @@ body.ng-pageslide-body-closed::before {
   .toast-error .toast-close-button:focus,
   .toast-error .toast-close-button:hover {
     opacity: 1; }
-  .toast-error #toast-container > .toast-error {
-    /*background-image: url($backgroundImg);*/ }
 
 .toast-info {
   color: #000000;
   background-color: #ffffff;
   font-size: 13px;
   font-family: OpenSansLight;
-  border-radius: none;
+  border-radius: 0;
   border: 1px solid #333;
-  opacity: 1;
+  opacity: 1 !important;
   /*toast-info*/ }
-  .toast-info #toast-container > div {
-    color: #000000 !important; }
-  .toast-info #toast-container > div:hover {
-    box-shadow: none !important; }
-  .toast-info .toast.toast-info .toast-message div {
-    color: #000000 !important; }
+  .toast-info .toast-message {
+    color: #000000 !important;
+    opacity: 1 !important; }
   .toast-info .toast-title {
     color: #000000; }
   .toast-info .toast-close-button {

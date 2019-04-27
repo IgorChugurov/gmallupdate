@@ -106,19 +106,39 @@ exports.list = function(req, res, next) {
         }
         //console.log('options.criteria ',options.criteria)
         //console.log('req.collectionName ',req.collectionName)
-        req.collection.list(options,function(e, results){
-            if (e) return next(e)
-            if (page==0){
-                req.collection.count(options.criteria).exec(function (err, count) {
-                    if (results.length>0){
-                        results.unshift({'index':count});
-                    }
-                    return res.json(results)
-                })
-            } else {
+        options.req=req; // какой-то хак. где-то был нужен req
+        //console.log(req.query)
+        if (req.query && req.query.search && req.collection.searchList){
+
+            options.perPage=20;
+            options.searchStr= req.query.search
+
+            req.collection.searchList(options,function(e, results){
+                //console.log('results',results)
+                //myUtil.setLangField(results,req.store.lang)
+
+                if (e) return next(e)
                 return res.json(results)
-            }
-        })
+            })
+        } else {
+            req.collection.list(options,function(e, results){
+                if (e) return next(e)
+                if (page==0){
+                    req.collection.count(options.criteria).exec(function (err, count) {
+                        if (results.length>0){
+                            results.unshift({'index':count});
+                        }
+                        return res.json(results)
+                    })
+                } else {
+                    return res.json(results)
+                }
+            })
+        }
+
+
+
+
 
     })
 }
@@ -130,6 +150,7 @@ exports.save = function(req, res, next) {
     });
     d.run(function () {
         var stuff,upsertData;
+        //console.log(req.body)
         Promise.resolve()
             .then(function () {
                 return new Promise(function(resolve,reject){

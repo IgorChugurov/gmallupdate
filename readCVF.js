@@ -32,6 +32,7 @@ async function run() {
                     header= line;
                     //console.log(line)
                 }else{
+
                     let qq = {
                         store:'5867d1b3163808c33b590c12',
                         stuff:line[3],
@@ -61,7 +62,9 @@ async function run() {
                             stuff:line[3],
                             sort:line[4]
                         }
+
                         material = new Material(m);
+                        console.log('material',material)
                         let r = await material.save()
                         console.log(r)
                     }

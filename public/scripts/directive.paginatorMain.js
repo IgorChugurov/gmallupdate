@@ -13,7 +13,7 @@ angular.module('gmall.directives')
             scroll:"@"
         },
         link: function (scope, element, attrs, controller) {
-            console.log('likn paginator');
+            console.log('likn paginator!!!');
             var l;
             scope.paginator={};
             //scope.paginator.page=scope.page;

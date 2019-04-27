@@ -106,6 +106,11 @@ var CartInOrderSchema = new Schema({
         // названия для группы разновидности
         groupName:String,
         groupTagName:String,
+        access:{
+            t:Number,
+            d:Number,
+            p:Boolean
+        }
 
     }]
 });
@@ -178,6 +183,8 @@ var OrderSchema = new Schema({
 
     /*createByAPI */
     createByAPI:String,
+    pn:String,
+    rn:String,
 });
 
 

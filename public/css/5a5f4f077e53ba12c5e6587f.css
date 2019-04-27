@@ -266,10 +266,7 @@ ul.pagination {
   box-shadow: none;
   border-color: #f02222; }
 
-/*inverse*/
-.btn {
-  transition: all .3s ease-out; }
-
+/*border*/
 .btn,
 .btn:active,
 .btn:focus,
@@ -278,9 +275,8 @@ ul.pagination {
 .btn-sm,
 .btn-xs {
   letter-spacing: 1px;
-  border-radius: 0;
   outline: none;
-  margin-bottom: 20px; }
+  border-radius: 0; }
 
 .btn:hover,
 .btn:active,
@@ -292,17 +288,18 @@ ul.pagination {
   min-width: 200px;
   padding-top: 15px;
   padding-bottom: 15px;
-  background-color: #ffffff;
-  border: 1px solid #7eaf4a;
+  font-size: 16px;
+  text-transform: uppercase;
   border-radius: 0;
   font-size: 16px;
+  border: 1px solid #7eaf4a;
+  background-color: #ffffff;
   color: #7eaf4a; }
 
 .btn-project:hover,
 .btn-project:focus,
 .btn-project:active {
   background-color: #7eaf4a;
-  font-size: 16px;
   color: #ffffff;
   border: 1px solid #7eaf4a; }
 
@@ -322,17 +319,17 @@ fieldset[disabled] .btn:hover {
   border: 1px solid #7eaf4a;
   opacity: 0.8; }
 
-.btn-project.btn-border {
+/*.btn-project.btn-border {
   background-color: transparent;
-  border: 1px solid #7eaf4a;
-  color: #7eaf4a; }
-
+  border: $border-width  solid $addColor1;
+  color: $addColor1;
+}
 .btn-project.btn-border:hover,
 .btn-project.btn-border:focus {
-  background-color: #7eaf4a;
-  border: 1px solid #7eaf4a;
-  color: #ffffff; }
-
+  background-color: $addColor1;
+  border: $border-width  solid $addColor1;
+  color: $addColor4;
+}*/
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn {
@@ -351,8 +348,12 @@ fieldset[disabled] .btn:hover {
   min-width: 200px;
   padding-top: 15px;
   padding-bottom: 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+  border-radius: 0;
+  font-size: 16px;
   background-color: #7eaf4a;
-  border: 1px solid #7eaf4a;
+  border: 1px solid #ffffff;
   font-size: 16px;
   color: #ffffff; }
 
@@ -360,7 +361,6 @@ fieldset[disabled] .btn:hover {
 .btn-project-inv:focus,
 .btn-project-inv:active {
   background-color: #ffffff;
-  font-size: 16px;
   color: #7eaf4a;
   border: 1px solid #7eaf4a; }
 
@@ -373,8 +373,7 @@ fieldset[disabled] .btn:hover {
 .btn-project-inv:active.focus,
 .btn-project-inv.active.focus,
 .open > .dropdown-toggle.btn-project-inv.focus {
-  background-color: #333333;
-  border: #ffffff;
+  background-color: #7eaf4a;
   color: #ffffff;
   border: 1px solid #ffffff; }
 
@@ -402,14 +401,23 @@ fieldset[disabled] .btn:hover {
   border: none; }
 
 .btn-project.btn-noborder:hover {
-  color: #333333; }
+  color: #7eaf4a; }
 
 /*.mobile-wrapper .btn-project */
-.tablet-wrapper .btn-project {
-  min-width: 160px;
-  font-size: 12.8px;
-  letter-spacing: 0; }
-
+/*.tablet-wrapper .btn-project{
+  @if $width{
+    min-width: $width*0.8;
+  }
+  @if font-size{
+    font-size: $font-size*0.8;
+  }
+  letter-spacing: 0;
+}
+.mobile-wrapper .btn-project {
+  @if $width{
+    min-width: $width*0.7;
+  }
+}*/
 .nav-down {
   z-index: 1049;
   position: fixed;
@@ -500,6 +508,19 @@ fieldset[disabled] .btn:hover {
       .modalProject .modal-body-project {
         margin-left: 20px !important;
         margin-right: 20px !important; } }
+  @media (max-width: 768px) and (min-width: 401px) {
+    .modalProject .login {
+      padding-left: 0;
+      padding-right: 0; }
+    .modalProject .sign {
+      padding-left: 0;
+      padding-right: 0; }
+    .modalProject .modal-body-project {
+      padding-right: 0;
+      padding-left: 0; }
+    .modalProject .btn-project.btn-block {
+      font-size: 14px;
+      min-width: 1px; } }
   @media (max-width: 400px) {
     .modalProject {
       /*.modal-header-project {
@@ -573,6 +594,11 @@ fieldset[disabled] .btn:hover {
     margin-bottom: 0;
     margin-left: auto;
     width: 70%; }
+  .modalProject .sub-text {
+    display: inline-block;
+    font-size: 12px;
+    text-align: justify;
+    line-height: 13px; }
 
 .modalBackdropClass {
   /*modalBackDrop*/
@@ -1010,10 +1036,6 @@ body.ng-pageslide-body-closed::before {
   border-left: 1px solid #999;
   height: 100%;
   min-height: 100vh; }
-
-.datetime {
-  min-height: 100vh;
-  position: relative; }
 
 /*slideMenuhumburger*/
 .humburger {
@@ -2460,21 +2482,7 @@ body.ng-pageslide-body-closed::before {
   animation-name: fadeInRightBig; }
 
 .zoom {
-  /*zoom1*/
-  /*.zoom-slide  .carousel-control.right {
-    right: -50px;
-}
-.zoom-slide .carousel-control.left {
-    left: -50px;
-}*/
-  /*.zoom-slide  .carousel-control.right {
-    background: url("../../../../../../img/icon/next1.png") no-repeat;
-    background-position: center;
-}
-.zoom-slide  .carousel-control.left {
-    background: url("../../../../../../img/icon/prev1.png") no-repeat;
-    background-position: center;
-}*/ }
+  /*zoom test*/ }
   .zoom .zoom-slide {
     position: relative;
     color: #ffffff; }
@@ -2500,23 +2508,49 @@ body.ng-pageslide-body-closed::before {
   .zoom .zoom-slide .carousel-control.right span,
   .zoom .zoom-slide .carousel-control.left span {
     display: none; }
-  .zoom .carousel-indicators li {
+  .zoom .zoom-slide .carousel-indicators li {
     background-color: #fff;
     border: 3px solid #fff;
     width: 15%;
     height: 5px;
     border-radius: 0;
-    border-width: 3px;
     opacity: 0.6;
     display: inline-block;
     margin: 1px 5px; }
-  .zoom .carousel-indicators .active {
+  .zoom .zoom-slide .carousel-indicators .active {
+    border: 3px solid #fff;
     width: 15%;
     height: 5px;
-    border-width: 3px;
     background-color: transparent;
     opacity: 1;
     margin: 1px 5px; }
+  @media (max-width: 400px) {
+    .zoom .zoom-slide .carousel-indicators {
+      width: 100%;
+      margin-left: -50%; }
+    .zoom .zoom-slide .carousel-indicators li {
+      height: 1px;
+      opacity: 0.6;
+      background-color: #fff;
+      border: 1px solid #fff;
+      border-width: 1px;
+      width: 8%; }
+    .zoom .zoom-slide .carousel-indicators .active {
+      height: 1px;
+      background-color: transparent;
+      opacity: 1;
+      border: 1px solid #fff;
+      border-width: 1px;
+      width: 8%; }
+    .zoom .zoom-slide .icon-cancelzoom-img {
+      width: 15px;
+      height: 15px;
+      top: 10px;
+      right: 10px; }
+    .zoom .gallery .carousel-control.left,
+    .zoom .gallery .carousel-control.right {
+      width: 25px !important;
+      background-size: 25px !important; } }
   .zoom .icon-zoom-inverse {
     display: none; }
   .zoom .zoom-nav.nav-left {
@@ -2574,6 +2608,19 @@ body.ng-pageslide-body-closed::before {
   .datetime .datetime hr {
     margin-top: 5px;
     margin-bottom: 5px; }
+  .datetime .reminder {
+    font-size: 12px; }
+  .datetime .reminder .togglebutton {
+    margin-top: 20px; }
+  .datetime .reminder label {
+    font-weight: normal; }
+  .datetime .reminder input {
+    margin-right: 10px; }
+  .datetime .reminder label span {
+    display: none; }
+  .datetime .reminder label .active {
+    display: inline-block;
+    float: right; }
   .datetime .logo {
     text-align: center; }
   .datetime .img-logo {
@@ -3068,6 +3115,10 @@ body.ng-pageslide-body-closed::before {
 .cabinet .btn-pay input {
   font-size: 12px;
   max-width: 150px; }
+
+.cabinet .ui-select-bootstrap .ui-select-choices-row.active > span {
+  background-color: #7eaf4a;
+  padding: 7px 20px; }
 
 @media (max-width: 1200px) {
   .cabinet .container {

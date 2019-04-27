@@ -252,7 +252,7 @@
                 return $q.reject(error);
             }
         }
-        function newBooking(master,timePart,services,date,entryDate,start){
+        function newBooking(master,timePart,services,date,entryDate,start,workplaces){
 
             //console.log(services)
             return $q(function(resolve,reject){
@@ -260,10 +260,11 @@
                     animation: true,
                     size:'lg',
                     templateUrl: 'components/ORDERS/online/newBooking.html',
-                    controller: function ($uibModalInstance,global,$timeout,$user,exception,master,timePart,services,Booking,entryDate,start){
+                    controller: function ($uibModalInstance,global,$timeout,$user,exception,master,timePart,services,Booking,entryDate,start,workplaces){
                         //console.log(services)
                         var self=this;
                         self.global=global;
+                        self.workplaces=workplaces;
                         //console.log(global.get('store').val.nameLists)
                         self.date=moment(date).format('L');
                         self.phoneCodes=(global.get('store').val.phoneCodes)?global.get('store').val.phoneCodes:[{code:'+38',country:'Украина'}];
@@ -509,7 +510,9 @@
                             }
 
 
-
+                            if(self.workplace){
+                                item.workplace=self.workplace;
+                            }
 
                             $uibModalInstance.close(item);
                         }
@@ -542,6 +545,9 @@
                         services:function(){return services},
                         entryDate:function(){return entryDate},
                         start:function(){return start},
+                        workplaces:function () {
+                            return workplaces;
+                        }
 
                     }
                 });
@@ -552,19 +558,22 @@
             })
 
         }
-        function editBooking(entry,masters){
+        function editBooking(entry,masters,workplaces){
+            //console.log(workplaces)
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     size:'lg',
                     templateUrl: 'components/ORDERS/online/editBooking.html',
-                    controller: function (global,$uibModalInstance,$user,Booking,$timeout,UserEntry,exception,entry,masters,Confirm){
+                    controller: function (global,$uibModalInstance,$user,Booking,$timeout,UserEntry,exception,entry,masters,Confirm,workplaces){
                         //console.log(entry)
                         var self=this;
                         self.master=masters[entry.master];
                         self.global=global;
                         self.moment=moment;
                         self.entry=entry;
+                        self.workplaces=workplaces;
+                        console.log(self.workplaces)
                         var currentDate=Booking.getDateStringFromEntry(entry,true)
                         self.dateEntry=moment(currentDate).format('LL')+','+moment(currentDate).format('dddd');
                         var oldEntry=angular.copy(entry)
@@ -608,6 +617,7 @@
                         self.deleteUser=deleteUser;
                         self.addUser=addUser;
                         self.changeService=changeService;
+                        self.changeWorkplace=changeWorkplace;
 
 
 
@@ -970,6 +980,11 @@
                             entry.stuffLink=self.service.link;
                             saveField('stuffLink')
                         }
+                        function changeWorkplace() {
+                            //console.log(self.service)
+
+                            saveField('workplace')
+                        }
 
                         self.ok=function(){
                             update=''
@@ -1009,7 +1024,10 @@
                     controllerAs:'$ctrl',
                     resolve:{
                         entry:function(){return entry},
-                        masters:function(){return masters}
+                        masters:function(){return masters},
+                        workplaces:function () {
+                            return workplaces;
+                        }
 
                     }
                 });

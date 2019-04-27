@@ -11,8 +11,13 @@
     }
 </style>-->
 <div class="sign-box">
+    <div class="tab-head"  ng-show="$ctrl.typeOfReg!='email' && $ctrl.typeOfReg!='phone'">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 head-box  text-center" ng-class="{'active-tab':$ctrl.block=='email'}"><a ng-click="$ctrl.block='email'">{{$ctrl.global.get('langForm').val.fromEmail}}</a></div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 head-box text-center" ng-class="{'active-tab':$ctrl.block=='online'}"><a ng-click="$ctrl.block='online'">{{$ctrl.global.get('langForm').val.fromPhone}}</a></div>
+        <div class="clearfix"></div>
+    </div>
 
-    <form method="post" ng-submit="$ctrl.signup(signupForm)" name="signupForm" ng-init="$ctrl.user.type='subscription'" novalidate>
+    <form  ng-show="$ctrl.block=='email'" method="post" ng-submit="$ctrl.signup(signupForm)" name="signupForm" ng-init="$ctrl.user.type='subscription'" novalidate>
 
         <div class="form-group has-feedback">
             <input ng-class="{ 'has-error' : signupForm.displayName.$invalid&& signupForm.$submitted}" class="form-control input-lg"
@@ -80,29 +85,94 @@
         </p>
             <!--<div vc-recaptcha
                     key="6LfW0gcUAAAAAPBl-LPkiKPpF2E84zUPTzg8WEKl"></div>-->
-
         <p class="help-block" ng-hide="$ctrl.user.password">
             {{$ctrl.global.get('langError').val.notenterPswd}}
         </p>
         <div class="checkbox sub-box">
             <label>
                 <input type="checkbox" ng-model="$ctrl.user.subscription">
-                <span class="sub-text">{{$ctrl.global.get('langForm').val.subText}}</span>
+                <small><span class="sub-text">{{$ctrl.global.get('langForm').val.subText}}</span></small>
             </label>
         </div>
-        <button type="submit"  class="btn btn-lg btn-block  btn-project">{{$ctrl.global.get('langForm').val.signUp}}</button>
-
+        <button type="submit"  class="btn btn-block  btn-project">{{$ctrl.global.get('langForm').val.signUp}}</button>
             <!--<div class="g-recaptcha" data-sitekey="6LfW0gcUAAAAAPBl-LPkiKPpF2E84zUPTzg8WEKl"></div>-->
     </form>
-    <div class="sn-button">
-        <h4 class="text-center" ng-if="$ctrl.global.get('store').val.fb.id||$ctrl.global.get('store').val.gl.id||$ctrl.global.get('store').val.vk.id">{{$ctrl.global.get('langForm').val.upthrough}}</h4>
-        <div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.fb.id">
-            <button class="btn btn-block btn-facebook" ng-click="$ctrl.authenticate('facebook')" style="padding-left: 5px;padding-right: 5px; vertical-align: middle">
-                <span class="icon-fbwhite-img"></span>
-                <span>Facebook</span>
+    <form ng-show="$ctrl.block=='online'" method="post" ng-submit="$ctrl.signup(signupFormPhone)" name="signupFormPhone" ng-init="$ctrl.user.type='subscription'" novalidate>
+        <div class="form-group has-feedback">
+            <input ng-class="{ 'has-error' : signupFormPhone.displayName.$invalid&& signupFormPhone.$submitted}" class="form-control input-lg"
+                   type="text"
+                   name="displayName"
+                   ng-model="$ctrl.user.name"
+                   placeholder="{{$ctrl.global.get('langForm').val['name']}}"
+                   ng-maxlength="50"
+                   required
+                   ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}">
+            <span class="ion-person form-control-feedback"></span>
+        </div>
+        <span class="help-block text-danger" ng-show="signupFormPhone.displayName.$invalid && signupFormPhone.$submitted" ng-messages="signupFormPhone.displayName.$error">
+            <span ng-message="required">{{$ctrl.global.get('langError').val.namelong}}</span>
+            <span ng-message="maxlength">{{$ctrl.global.get('langError').val.namelong}}</span>
+            <!--<span ng-message="minlength">{{$ctrl.global.get('langError').val.nameshort}}</span>-->
+        </span>
+        <div enter-phone-numder="$ctrl.user.profile.phone"></div>
+        <span class="help-block text-danger" ng-show="!$ctrl.user.profile.phone && signupFormPhone.$submitted">
+            <span>{{$ctrl.global.get('langError').val.namelong}}</span><!--введите номер телефона-->
+        </span>
+
+        <p ng-show="$ctrl.global.get('store').val.textCondition" style="margin-bottom: 10px">
+            <small ng-bind-html="$ctrl.global.get('store').val.textCondition|unsafe"></small>
+        </p>
+        <!--<div vc-recaptcha
+                key="6LfW0gcUAAAAAPBl-LPkiKPpF2E84zUPTzg8WEKl"></div>-->
+        <div class="checkbox sub-box">
+            <label>
+                <input type="checkbox" ng-model="$ctrl.user.subscription">
+                <small><span class="sub-text">{{$ctrl.global.get('langForm').val.subText}}</span></small>
+            </label>
+        </div>
+        <button type="submit"  class="btn btn-block  btn-project">{{$ctrl.global.get('langForm').val.signUp}}</button>
+    </form>
+    <form  novalidate name="smscode32" ng-submit="$ctrl.verifyCode(smscode32)" ng-show="$ctrl.phoneExist">
+        <h4 class="text-center">{{$ctrl.global.get('langForm').val.enterCode}}</h4>
+        <div class="form-group text-center">
+            <input  ng-class="{'has-error': smscode32.smscode.$invalid && smscode32.smscode.$dirty}" class="form-control input-code"
+                    type="text"
+                    ng-model="$ctrl.code"
+                    ui-mask="9 9 9 9 9 9"
+                    ui-mask-placeholder
+                    ui-mask-placeholder-char="_"
+                    ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                    name="smscode"
+                    placeholder="{{$ctrl.global.get('langForm').val.code}}"
+                    required/>
+
+        </div>
+        <span class="help-block" ng-show="smscode32.smscode.$invalid && smscode32.smscode.$dirty" ng-messages="smscode32.smscode.$error">
+                    <span ng-message="required">{{$ctrl.global.get('langError').val.enterCode}}</span>
+            </span>
+        <span class="help-block" ng-show="$ctrl.wrongCode && smscode32.smscode.$dirty">
+                    <span>{{$ctrl.global.get('langError').val.errorCode}}</span>
+            </span>
+        <button class="btn btn-block  btn-project" type="submit" ng-disabled="$ctrl.sendVerifyCodeDisable">{{$ctrl.global.get('langForm').val.logIn}}</button>
+    </form>
+
+
+    <div class="sn-button" ng-if="$ctrl.global.get('store').val.fb.id||$ctrl.global.get('store').val.gl.id||$ctrl.global.get('store').val.vk.id">
+        <h4 class="text-center"></h4>
+        <div class="sn-login" ng-if="$ctrl.global.get('store').val.fb.id">
+            <button class="btn btn-facebook  text-center" ng-click="$ctrl.authenticate('facebook')">
+                <span class="box-sn">
+                    <span class="icon-fbwhite-img pull-left"></span>
+                    <span  class="pull-left">
+                        <span>{{$ctrl.global.get('langForm').val.upthrough}}</span>
+                        <span>Facebook</span>
+                    </span>
+                    <div class="clearfix"></div>
+                </span>
+
             </button>
         </div>
-        <div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.gl.id">
+        <!--<div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.gl.id">
             <button class="btn btn-block btn-google-plus" ng-click="$ctrl.authenticate('google')" style="padding-left: 5px;padding-right: 5px; vertical-align: middle">
                 <span class="icon-googlewhite-img"></span>
                 <span>Google</span>
@@ -113,7 +183,7 @@
                 <span class="icon-vkwhite-img"></span>
                 <span>Vkontakte</span>
             </button>
-        </div>
+        </div>-->
         <!--<div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.tw.id">
             <button class="btn btn-twitter" ng-click="$ctrl.authenticate('twitter')">
                     <i class="icon-twwhite-img"></i>

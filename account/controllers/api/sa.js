@@ -15,6 +15,8 @@ var Material=mongoose.model('Material');
 var ClosePeriod=mongoose.model('ClosePeriod');
 var calculate=require('../calculate');
 
+var Excel = require('exceljs');
+
 exports.hold = async function(req, res, next) {
     const currency = req.store.currency
     const currencyArr = req.store.currencyArr
@@ -828,7 +830,7 @@ async function handlePns(query,items) {
         let docs= await Pn.find(query).lean().exec()
         //console.log(docs)
         docs.forEach(pn=>{
-            //console.log('pn',doc)
+            //console.log('pn',pn)
             const currency= pn.currencyData
             const pnCurrency=(pn.currency)?pn.currency:'UAH';
             const pnCurrencyRate=(currency[pnCurrency]&& currency[pnCurrency][0])?currency[pnCurrency][0]:1;
@@ -836,6 +838,11 @@ async function handlePns(query,items) {
                 //console.log(m)
                 let mId=(m.item.toString)?m.item.toString():m.item;
                 let item=items[mId];
+                /*console.log(items)
+                console.log(item,mId)
+                if(!item){
+                    console.log(m)
+                }*/
                 //let item= items.find(it=>it.item==((m.item.toString)?m.item.toString():m.item));
                 let materialCurrency = (item.currency)?item.currency:'UAH';
                 let materialCurrencyRate =(currency[materialCurrency]&& currency[materialCurrency][0])?currency[materialCurrency][0]:1;
@@ -1001,6 +1008,79 @@ async function handleZakaz(query,items) {
         return err
     }
 }
+
+exports.makeBalancesForExcel = async function (req, res, next) {
+    try {
+
+        let Model = Material, virtualAccounts, sa;
+
+        if (req.params.id == 'allVirtualAccounts') {
+            virtualAccounts = await VirtualAccount.find({store: req.store._id, actived: true}).lean().exec();
+            virtualAccounts = virtualAccounts.map(va => ((va._id.toString) ? va._id.toString() : va._id))
+        } else {
+            virtualAccounts = await VirtualAccount.find({store: req.store._id, actived: true}).lean().exec();
+            virtualAccounts = virtualAccounts.map(va => ((va._id.toString) ? va._id.toString() : va._id)).filter(va => va === req.params.id)
+        }
+        if (!virtualAccounts || !virtualAccounts.length) {
+            return next('нет такого подразделения')
+        }
+
+        //console.log('virtualAccounts',virtualAccounts)
+
+        let query = {store: req.store._id}
+        query['data.virtualAccount']={$in:virtualAccounts}
+        let itemsFromBD = await Material.find(query).populate('producer','name').lean().exec();
+        //console.log(query,itemsFromBD)
+        /* вытаскиваем весь склад*/
+        let error = await createXLSXFile(req.store, itemsFromBD)
+        if (error) {
+            throw error;
+        }
+
+        return res.json({msg: 'ok'})
+    } catch (err) {
+        console.log(err)
+        next(err);
+    }
+
+};
+
+function createXLSXFile(store,materials) {
+    let  filePath='./public/warehouse/'+store.subDomain+'.xlsx'
+    var workbook = new Excel.Workbook();
+    var sheetMaterials = workbook.addWorksheet('Export Products Sheet');
+    sheetMaterials.columns = [
+        { header: 'производитель', key: 'producer'},
+        { header: 'код', key: 'sku'},
+        { header: 'описание', key: 'name'},
+        { header: 'цена', key: 'price'},
+        { header: 'наличие', key: 'qty'},
+    ]
+    materials.forEach(function(material,idx){
+        createRow(sheetMaterials,material);
+    })
+
+    //console.log('saving')
+    return workbook.xlsx.writeFile(filePath)
+
+    function createRow(sheetMaterials,m) {
+        if(m.qty){
+            let o ={
+                sku:m.sku,
+                name:m.name,
+                price:m.priceForSale,
+                qty:m.qty,
+                producer:(m.producer && m.producer.name)?m.producer.name:'?????'
+            }
+            sheetMaterials.addRow(o)
+        }
+
+    }
+
+}
+
+
+
 
 
 

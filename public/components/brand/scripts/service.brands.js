@@ -285,12 +285,15 @@
                 $uibModalInstance.dismiss('cancel');
             };
             self.ok = function (filterTag) {
-                if(self.section){
-                    filterTag.section=self.section;
+                if(filterTag){
+                    if(self.section){
+                        filterTag.section=self.section;
+                    }
+
+                    filterTag.brand=self.filters.find(function(b){
+                        return b._id==filterTag.brand
+                    })
                 }
-                filterTag.brand=self.filters.find(function(b){
-                    return b._id==filterTag.brand
-                })
                 $uibModalInstance.close(filterTag);
             };
         }

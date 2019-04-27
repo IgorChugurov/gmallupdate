@@ -1,10 +1,11 @@
-<div ng-hide="$ctrl.$state.current.name!='frame.warehouse'" ng-cloak="">
+<div  class="warehouse-nav" ng-hide="$ctrl.$state.current.name!='frame.warehouse'" ng-cloak="">
     <div class="nav-box-stuff">
         <div class="tab-nav-stuff">
             <span class="default-btn"></span>
         </div>
         <div class="tab-nav-stuff">
             <h4 class="name-box">Склад - наличие</h4>
+            <span class="name" ng-bind="$ctrl.excelLink"></span>
         </div>
         <div class="tab-nav-stuff pull-right">
             <a ng-click="$ctrl.makeBalances()" class="btn btn-raised action-btn btn-success">
@@ -89,6 +90,13 @@
                     </ui-select>
                 </div>
             </div>
+        </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-primary"
+               ng-click="$ctrl.getExcel()"
+               title="получить выгрузку в эксель">
+                <i class="material-icons">cloud_download</i>
+            </a>
         </div>
 
     </div>

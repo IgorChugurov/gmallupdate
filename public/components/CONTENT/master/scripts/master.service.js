@@ -34,7 +34,6 @@
                         paginate.items=0;
                     }
                 }
-                //console.log(response)
                 return response;
             }
 
@@ -68,13 +67,14 @@
                 return $q.reject(error);
             }
         }
-        function create(){
+        function create(clone){
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'components/CONTENT/master/createMaster.html',
-                    controller: function($uibModalInstance){
+                    controller: function($uibModalInstance,clone){
                         var self=this;
+                        self.header=(clone)?'Клонирование объекта':'Создание объекта';
                         self.name=''
                         self.ok=function(){
                             $uibModalInstance.close(self.name);
@@ -82,6 +82,11 @@
                         self.cancel = function () {
                             $uibModalInstance.dismiss();
                         };
+                    },
+                    resolve:{
+                        clone:function () {
+                            return clone;
+                        }
                     },
                     controllerAs:'$ctrl',
                 });

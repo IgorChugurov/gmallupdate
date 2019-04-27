@@ -572,6 +572,7 @@ var listOfBlocksForAll={
     slider:'слайдер',
     sn:'кнопки социальных сетей',
     stuffs:'товары',
+    groupStuffs:'группы товаров',
     subscription:'подписка',
     subscriptionAdd:'подписка с доп полями',
     text:'текстовый блок',
@@ -761,6 +762,12 @@ var listOfBlocksForStuffDetail={
     tags:'характеристики',
     blocks:'медиа блоки',
     back:'кнопка назад в список',
+    master:'блок специалистов',
+    stuffs:'блок товаров',
+    video:'первое видео',
+    videoOne:'второе видео',
+    media:'внешнее видео',
+    mediaOne:'второе внешнее видео'
 }
 
 var listOfBlocksForStuffDetailBlocks={
@@ -775,7 +782,7 @@ var listOfBlocksForStuffDetailBlocks={
     map:'карта',
     mapOne:'карта + текстовый блок',
     mapTwo:'текстовый блок + карта',
-    masters:'блок мастеров',
+    masters:'блок специалистов',
     name:'имя',
     position:'должность',
     slider:'слайдер',
@@ -807,7 +814,7 @@ var listOfBlocksForStuffList={
 var tableOfColorsForButton={0:'black-white',1:'pink-white',2:'turquoise-white',3:'yellow-white',4:'bordo-white',5:'braun-white',6:'powder-white',7:'pinklight-white',8:'white-black',9:'black-white'}
 var tableOfButtonsFile={0:'standart',1:'border-radius',2:'no border',3:'inverse',4:'border',5:'transparent'}
 
-var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','menu','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','vk','vkwhite','see','enter','zoom','yt','ytwhite']
+var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','lock','lockwhite','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','vk','vkwhite','see','enter','zoom','yt','ytwhite']
 
 var notificationsTypeLang={
     //клиенту
@@ -815,6 +822,12 @@ var notificationsTypeLang={
         'ru':'счет',
         'ua':'рахунок',
         'en':'invoice',
+        'de':'',
+    },
+    dateTime:{
+        'ru':'запись онлайн',
+        'ua':'запис онлайн',
+        'en':'booking',
         'de':'',
     },
     accepted:{
@@ -1606,11 +1619,14 @@ Array.prototype.diff = function(a) {
 String.prototype.clearTag = function(num){
     var regex=/<\/?[^>]+(>|$)/g;
     if (num){
-        return (this.replace(regex, '').substring(0,num))
+        var ss =  (this.replace(regex, '').substring(0,num))
     } else {
         //console.log('?????')
-        return this.replace(regex, '')
+        var ss = this.replace(regex, '')
     }
+    //console.log(ss)
+    return ss.replace(/\./g, ". ")
+
 }
 
     String.prototype.myTrim = function(){
@@ -1618,11 +1634,14 @@ String.prototype.clearTag = function(num){
             return str;
         }).map(function (str) {
             var s =str.replace(/&nbsp;/g, " ");
+            //console.log(s)
             return s.trim();
+            //return s
         }).filter(function (str) {
             return str;
         }).join('')
     }
+
 
     String.prototype.clearFirstTag = function(tag){
         var i = tag.length;
@@ -1914,10 +1933,16 @@ String.prototype.getFormatedDate=function(){
         }
 
         this._isStuffInCampaign=function(stuff,campaign){
+
             //console.log(stuff)
             var stuffCategory = (typeof stuff.category=='object' && stuff.category.length)?stuff.category[0]:stuff.category;
             var stuffBrand=(stuff.brand && stuff.brand._id)?stuff.brand._id:stuff.brand
+            var stuffBrandTag=(stuff.brandTag && stuff.brandTag._id)?stuff.brandTag._id:stuff.brandTag
             function check(__campaign){
+                /*if(stuff._id=="5c0a3606092d863b3e9197a3"){
+                    console.log(stuff)
+                    console.log(__campaign)
+                }*/
                 //console.log(stuffCategory,__campaign.categories)
                 //console.log(__campaign,stuff.name)
                 if (__campaign.stuffs && __campaign.stuffs.length && __campaign.stuffs.indexOf(stuff._id)>-1){
@@ -1926,7 +1951,7 @@ String.prototype.getFormatedDate=function(){
                 if (__campaign.tags && __campaign.tags.length && stuff.tags && __campaign.tags.some(function(tag){return stuff.tags.indexOf(tag)>-1})){
                     return true;
                 }
-                if (__campaign.brandTags && __campaign.brandTags.length && __campaign.brandTags.indexOf(stuff.brandTag)>-1){
+                if (__campaign.brandTags && __campaign.brandTags.length && __campaign.brandTags.indexOf(stuffBrandTag)>-1){
                     return true
                 }
                 if (__campaign.brands && __campaign.brands.length && __campaign.brands.indexOf(stuffBrand)>-1){
@@ -1962,7 +1987,10 @@ String.prototype.getFormatedDate=function(){
             if (!campaign) {
                 for (var j=0,ll=self.campaign.length;j<ll;j++){
                     var is=check(self.campaign[j]);
-                    //console.log(is,(is && !self.campaign[j].revers),(!is && self.campaign[j].revers))
+                    /*if(stuff._id=="5c0a3606092d863b3e9197a3"){
+                        console.log(is,(is && !self.campaign[j].revers),(!is && self.campaign[j].revers))
+                    }*/
+
                     if ((is && !self.campaign[j].revers)||(!is && self.campaign[j].revers)){
                         setCampaignPrice(self.campaign[j])
                         return self.campaign[j];
@@ -2980,6 +3008,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /*UA-106626597-1*/
 
 
+
 Number.isInteger = Number.isInteger || function(value) {
         return typeof value === 'number' &&
             isFinite(value) &&
@@ -3217,6 +3246,7 @@ angular.module('gmall', ['ngRoute',
 
     var firstStateChenged;
     $rootScope.$on('$stateChangeStart', function(event, to, toParams, fromState, fromParams){
+        //console.log('window.videojs',window.videojs)
         //console.log('????')
         $rootScope.globalProperty.displaySearch=false;
         if(fromState.name=='master.item' && to.name=='master.item' ){return}
@@ -3250,12 +3280,16 @@ angular.module('gmall', ['ngRoute',
             /*console.log('sec',sec)
             console.log(groups,toParams.groupUrl)*/
             global.set('sectionType',sec.type);
+            global.set('section',sec)
             //console.log(global.get('sectionType'))
             /*Stuff.set*/
             //console.log(fromState.name!='stuffs.stuff' && !global.get('tempContent').val )
             if(fromState.name!='stuffs.stuff' && !global.get('tempContent').val ){
                 $rootScope.$emit('$stateChangeStartToStuff');
             }
+        }
+        if(to.name=='likes'){
+            global.set('sectionType','good');
         }
         /*if(fromState.name=='stuffs' && to.name=='stuffs.stuff'){
             $rootScope.srollPosition=$(window).scrollTop();
@@ -3671,6 +3705,79 @@ angular.module('gmall', ['ngRoute',
             masters=dataFromServer[16].filter(function (m) {
                 return m.actived
             });
+        var widthAbs=$(document.body).width()
+        /*console.log('widthAbs',widthAbs)
+        console.log(window.location)*/
+        var addChar = '?'
+        if(window.location.href.indexOf('?')>-1){
+            addChar = '&'
+        }
+        //console.log(widthAbs<1024  && widthAbs>750  && !tablet)
+        if(widthAbs<1200  && widthAbs>750  && !tablet){
+            window.location.href = window.location.href+ addChar+'tablet=true';
+           /* console.log(window.location.search)
+            window.location.reload(true);*/
+        }else if(widthAbs<=750  && !mobile){
+                window.location.href = window.location.href+ addChar+'mobile=true';
+                /* console.log(window.location.search)
+                 window.location.reload(true);*/
+        }
+        var droch;
+        $(window).resize(function () {
+            if(droch){return}
+            droch=true;
+            $timeout(function(){
+                droch=false
+            },50)
+            widthAbs=$(document.body).width()
+            if(widthAbs>=1024 && (tablet || mobile)){
+                var k = window.location.href.indexOf('tablet=true');
+                var l = window.location.href.indexOf('mobile=true');
+                if(k>-1){
+                    window.location.href=window.location.href.substring(0,k-1)
+                }else if (l>-1){
+                    window.location.href=window.location.href.substring(0,l-1)
+                }else{
+                    window.location.reload(true)
+                }
+
+                //window.location.href = window.location.href + addChar+'tablet=true';
+                /* console.log(window.location.search)
+                 window.location.reload(true);*/
+            }else if(widthAbs<1024  && widthAbs>750  && !tablet){
+
+                var k = window.location.href.indexOf('mobile=true');
+                if(k>-1){
+                    window.location.href = window.location.href.substring(0,k)+'tablet=true';
+                }else{
+                    var addChar = '?'
+                    if(window.location.href.indexOf('?')>-1){
+                        addChar = '&'
+                    }
+                    window.location.href = window.location.href+ addChar+'tablet=true';
+                }
+
+
+            }else if(widthAbs<=750  && !mobile){
+                var k = window.location.href.indexOf('tablet=true');
+                if(k>-1){
+                    window.location.href = window.location.href.substring(0,k)+'mobile=true';
+                }else{
+
+                    var addChar = '?'
+                    if(window.location.href.indexOf('?')>-1){
+                        addChar = '&'
+                    }
+
+                    window.location.href = window.location.href+ addChar+'mobile=true';
+                }
+
+
+                /* console.log(window.location.search)
+                 window.location.reload(true);*/
+            }
+        })
+
         //console.log(labels)
         if(labels && labels.length){
             global.set('labels',labels)
@@ -3985,7 +4092,8 @@ angular.module('gmall', ['ngRoute',
             zoomImg:_zoomImg,
             cloneStore:_cloneStore,
             orderGroupStuffs:_orderGroupStuffs,
-            bookingFromSchedule:bookingFromSchedule
+            bookingFromSchedule:bookingFromSchedule,
+            orderStuffDirect:_orderStuffDirect
         }
 
         function bookingFromSchedule(entry){
@@ -4150,6 +4258,68 @@ angular.module('gmall', ['ngRoute',
                 .then(function(){
                     $rootScope.$emit('$stateChangeStartToStuff');
                     return $order.sendOrder()
+                })
+                .then(function () {
+                    $rootScope.$emit('Purchase',{value:$order.paySum,currency:$order.currency});
+                    $rootScope.$emit('$stateChangeEndToStuff');
+                    $order.reinitCart()
+                    $rootScope.order=$order.getOrder();
+                    $order.clearCart()
+                    $rootScope.checkedMenu.cart=false
+                })
+                .then(function(){
+                    return $user.saveProfile(global.get('user' ).val)
+                })
+                .catch(function(err){
+                    $rootScope.$emit('$stateChangeEndToStuff');
+                    if(!err){return;}
+                    console.log('errerrerr ',err)
+                    if(err.data){
+                        var content = JSON.stringify(err.data);
+                    }else{
+                        var content = JSON.stringify(err, ["message", "arguments", "type", "name"]);
+                    }
+                    if(global.get('user').val){
+                        content +="\r"+global.get('user').val.email
+                    }
+                    if($order.getOrder()){
+                        content +="\r"+JSON.stringify($order.getOrder(), null, 4)
+                    }
+                    var domain=global.get('store').val.domain;
+                    var o={email:['igorchugurov@gmail.com','vikachugurova@gmail.com'],content:content,
+                        subject:'error in order ✔',from:  global.get('store').val.name+'<'+global.get('store').val.subDomain+'@'+domain+'>'};
+                    //console.log(o)
+                    $q(function(resolve,reject){$email.save(o,function(res){resolve()},function(err){resolve()} )})
+                    if(err){
+                        exception.catcher(global.get('langNote').val.error)(err)
+                    }
+                })
+
+        }
+        function _orderStuffDirect(stuff){
+            //console.log(stuff)
+            $order.clearCart();
+            stuff.quantity=1;
+            stuff.cena=stuff.price;
+            stuff.sum= stuff.cena*stuff.quantity;
+            $order.addItemToCart(stuff)
+            return $q.when()
+                .then(function(){
+                    if(!global.get('user' ).val || !global.get('user' ).val._id){
+                        console.log(1)
+                        return $user.login();
+                    }else{
+                        return
+                    }
+                })
+                .then(function(){
+                    //return $order.getShipInfo('short')
+                })
+                .then(function(){
+                    $rootScope.$emit('$stateChangeStartToStuff');
+                    console.log(2)
+                    return $order.sendOrder()
+
                 })
                 .then(function () {
                     $rootScope.$emit('Purchase',{value:$order.paySum,currency:$order.currency});
@@ -4443,7 +4613,8 @@ angular.module('gmall', ['ngRoute',
         function _openSlideMenu(){
             if(clickForOpen){return}
             clickForOpen=true;
-            $rootScope.checkedMenuChange('slideMenu',true)
+            var v = !$rootScope.checkedMenu['slideMenu']
+            $rootScope.checkedMenuChange('slideMenu',v)
             setTimeout(function(){
                 clickForOpen=false;
             },200)
@@ -4573,7 +4744,7 @@ angular.module('gmall', ['ngRoute',
 
 }])
 .config(['$stateProvider', '$urlRouterProvider','$locationProvider','globalProvider','$authProvider','$httpProvider','$animateProvider',function ($stateProvider,$urlRouterProvider,$locationProvider,globalProvider,$authProvider,$httpProvider,$animateProvider){
-
+/*https://github.com/angular/angular.js/issues/3613*/
     $animateProvider.classNameFilter(/^((?!(repeat-modify)).)*$/)
     $httpProvider.interceptors.push('myInterceptorService');
     //$authProvider.baseUrl=userHost;
@@ -4640,6 +4811,7 @@ angular.module('gmall', ['ngRoute',
 
 
     globalProvider.set('sections','penging')
+    globalProvider.set('section')
     globalProvider.set('categories','penging'); // from sections
     globalProvider.set('categoriesO');
     globalProvider.set('category'); // data for seoContent
@@ -4683,6 +4855,7 @@ angular.module('gmall', ['ngRoute',
     globalProvider.set('services')
     globalProvider.set('stuffsInList')
     globalProvider.set('campaignStuffCart')
+    globalProvider.set('workplaces')
 
 
 
@@ -5390,6 +5563,38 @@ angular.module('gmall.directives', [])
             }
         }
     }])
+    .directive('playVideoByHover',[function(){
+        return{
+            restrict : 'A',
+            scope:{
+            },
+            link:function(scope,element){
+                //console.log(element)
+                $(element).mouseenter( handlerIn ).mouseleave( handlerOut );
+                function handlerIn() {
+                    //console.log('in ')
+                    $(element).get(0).play()
+                }
+                function handlerOut() {
+
+                    //console.log('out' )
+                    $(element).get(0).pause()
+                }
+                //$(window).scroll(scrollHandler)
+                /*var done = false
+                function scrollHandler() {
+                    console.log('scroll')
+                    if(!done){
+                        element.removeClass(scope.className)
+                        done = true;
+                    } else{
+                        $(window).off("scroll", scrollHandler);
+                    }
+                }*/
+
+            }
+        }
+    }])
     .directive('addRemoveClassByScroll',['$rootScope',function($rootScope){
         return{
             restrict : 'A',
@@ -5519,7 +5724,8 @@ angular.module('gmall.directives', [])
         return {
             restrict:'E',
             link:function(scope,element){
-
+                scope.$ctrl={};
+                scope.$ctrl.global=global;
                 var m1 =global.get('store').val.template.menu1
                 var m2 =global.get('store').val.template.menu2
                 var menu1Section1=$("#menu1-section");
@@ -5712,6 +5918,17 @@ angular.module('gmall.directives', [])
                                 $(d).attr("id",id)
                             }
                         })
+                    }
+                    var vs=$('.videoStuff')
+                    vs.each(function (i,v) {
+                        $(v).hover( hoverVideo, hideVideo );
+                    })
+                    function hoverVideo(e) {
+                        $('video', this).get(0).play();
+                    }
+
+                    function hideVideo(e) {
+                        $('video', this).get(0).pause();
                     }
                 })
             }
@@ -7161,8 +7378,8 @@ angular.module('lazyImg').directive(
             restrict:'AE'
         }
     }
-    signupCtrl.$inject=['$scope','$auth', 'toaster','$q','global','Account','$state','Stuff','CreateContent','$email','exception'];
-    function signupCtrl($scope,$auth, toaster,$q,global,Account,$state,Stuff,CreateContent,$email,exception){
+    signupCtrl.$inject=['$scope','$auth', 'toaster','$q','global','Account','$state','Stuff','CreateContent','$email','exception','$user','$http','$timeout','sendPhoneFactory'];
+    function signupCtrl($scope,$auth, toaster,$q,global,Account,$state,Stuff,CreateContent,$email,exception,$user,$http,$timeout,sendPhoneFactory){
         var self=this;
         self.global=global;
         self.formData=(global.get('store').val.bonusForm)?global.get('store').val.bonusForm:{phone:true,fields:[]}
@@ -7170,12 +7387,224 @@ angular.module('lazyImg').directive(
         if(!self.buttonName){self.buttonName=='подписаться!!'}
         //console.log(self.buttonName)
 
+        self.block='email';
+        console.log(global.get('store').val.typeOfReg)
+        if(global.get('store').val.typeOfReg){
+            if(global.get('store').val.typeOfReg.phone){
+                self.typeOfReg='phone';
+                self.block='phone'
+            }else if(global.get('store').val.typeOfReg.email){
+                self.typeOfReg='email'
+            }
+        }
+
+
         self.signup=signup;
         self.authenticate=authenticate;
+        self.sendCodeToPhone=sendCodeToPhone;
+        self.verifyCode=verifyCode;
+
+
+
+        $scope.$watch(function () {
+            return self.user.profile.phone
+        },function(n,o){
+            console.log(n,o)
+            self.phoneExist=false;
+            /*if(n){
+                regitration(n)
+            }*/
+        });
+
+
+        function checkUserEntry(phone) {
+            var query = {phone:phone};
+            return $q.when()
+                .then(function () {
+                    //return $user.checkPhoneForExist(phone)
+                    return $user.getItem(phone,'profile.phone')
+                })
+                .then(function(res){
+                    //console.log(res)
+                    if(res){return res}else{return null}
+                })
+        }
+
+
+
+        function createUser(name,phone) {
+            var email= phone+'@gmall.io'
+            var user = {email:email,name:name,profile:{phone:phone,fio:name}};
+            return $auth.signup(user)
+                .then(function(response) {
+                    console.log(response)
+                    if(response && response.data &&  response.data.token){
+                        if(response.data.token=='update'){
+                            throw null;
+                        }else{
+                            $auth.setToken(response);
+                            return Account.getProfile()
+                        }
+                    } else{
+                        throw response;
+                    }
+
+                })
+                .then(function(response){
+                    console.log(response)
+                    if(response){
+                        global.set('user',response.data);
+                        global.get('functions').val.logged();
+                    }
+
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('new client')(err)
+                    }
+                })
+
+        }
+        function sendCodeToPhone(phone) {
+            var o = {phone:phone}
+            self.sendCodeDisable=true;
+            $q.when()
+                .then(function () {
+                    return $http.post('/api/users/sendSMS',o)
+                })
+                .then(function () {
+                    exception.showToaster('info','send code','success')
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('send code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+
+        }
+
+
+        function sendCodeToPhone__(phone) {
+            if(self.sendCodeDisable){return}
+            self.sendCodeDisable=true;
+            //console.log(self.phone)
+            if(!phone){
+                return;
+            }
+            $q.when()
+                .then(function(){
+                    return sendPhoneFactory.checkPhone(phone)
+                })
+                .then(function (res) {
+                    //console.log(res)
+                    if(!res || !res._id){
+                        return $user.newUserByPhone(self.name,self.phone)
+                    }
+                })
+                .then(function () {
+                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    return sendPhoneFactory.sendCodeToPhone(self.phone)
+                })
+                .then(function () {
+                    self.codeSent=true;
+                    exception.showToaster('info','send code','success')
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('send code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+        }
+        function verifyCode(form) {
+            if(self.sendVerifyCodeDisable){return}
+            if(form.$invalid){return}
+            if(!self.code || !self.user.profile.phone){
+                return;
+            }
+            self.sendVerifyCodeDisable=true;
+            $q.when()
+                .then(function () {
+                    return sendPhoneFactory.verifyCode(self.code,self.phone)
+                })
+                .then(function (response) {
+                    //console.log(response)
+                    exception.showToaster('info','verify code','success')
+                    $timeout(function () {
+                        self.sendVerifyCodeDisable=false
+                    },5000);
+                    if(response && response.data &&  response.data.token){
+                        $auth.setToken(response);
+                        return Account.getProfile()
+                    }else{throw 'wrong response'}
+                })
+                .then(function(response){
+                    $scope.$emit('closeWitget')
+                    toaster.info(global.get('langNote').val.authComplite);
+                    if(response){
+                        global.set('user',response.data);
+                        global.get('functions').val.logged();
+                        $scope.$emit('cartslide',{event:'signLogin'})
+                    }
+
+                })
+                .catch(function (err) {
+                    self.wrongCode=true;
+                    global.set('user',null);
+                    if(err){
+                        exception.catcher('verify code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendVerifyCodeDisable=false
+                    },5000)
+                })
+        }
+
+
+        function regitration(phone) {
+            $q.when()
+                .then(function () {
+                    return checkUserEntry(phone)
+                })
+                .then(function (res) {
+                    if(res && res._id){
+                        self.phoneExist=true;
+                        sendCodeToPhone()
+                        //self.currentBlock=5;
+                        return null
+                    }else{
+                        return createUser(self.user.name,phone)
+                    }
+
+                })
+                .catch(function (err) {
+                    exception.catcher(global.get('lang').val.error)(err)
+                    //console.log(err)
+                })
+        }
 
 
         function signup(form) {
+
+            console.log(form)
             if(!form.$valid){return}
+
+            if(self.typeOfReg=='phone' && self.user.profile.phone){
+                return regitration(self.user.profile.phone)
+            }
+
+
             self.user.store=global.get('store').val._id;
             $auth.signup(self.user)
                 .then(function(response) {
@@ -7304,7 +7733,17 @@ angular.module('lazyImg').directive(
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
         }
-
+        //console.log(global.get('store').val)
+        self.block='email';
+        if(global.get('store').val.typeOfReg){
+           if(global.get('store').val.typeOfReg.phone){
+                self.typeOfReg='phone';
+               self.block='online'
+           }else if(global.get('store').val.typeOfReg.email){
+               self.typeOfReg='email'
+           }
+        }
+        //console.log(self.typeOfReg)
         self.login=login;
         self.authenticate=authenticate;
         self.sendCodeToPhone=sendCodeToPhone;
@@ -7516,6 +7955,15 @@ angular.module('lazyImg').directive(
         var self=this;
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
+
+        }
+        //console.log(global.get('store').val)
+        if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.oferta){
+            self.oferta=true;
+
+        }
+        if(global.get('store').val.texts && global.get('store').val.texts.oferta){
+            self.ofertaText=global.get('store').val.texts.oferta[global.get('store').val.lang];
         }
 
         self.sendCodeToPhone=sendCodeToPhone;
@@ -7530,7 +7978,11 @@ angular.module('lazyImg').directive(
 
 
 
-        function sendCodeToPhone() {
+        function sendCodeToPhone(form) {
+            if(form.$invalid){
+                return
+            }
+
             if(self.sendCodeDisable){return}
             self.sendCodeDisable=true;
             //console.log(self.phone)
@@ -7544,7 +7996,7 @@ angular.module('lazyImg').directive(
                 .then(function (res) {
                     //console.log(res)
                     if(!res || !res._id){
-                        return $user.newUserByPhone(self.name,self.phone)
+                        return $user.newUserByPhone(self.name,self.phone,self.confirmCondition)
                     }
                 })
                 .then(function () {
@@ -8097,7 +8549,8 @@ function confirmFactory($q,$uibModal) {
                 template : [
                     '<div class="modal-header">',
                         '<h3 class="modal-title text-center" ng-bind="$ctrl.question"></h3>',
-                        "<span class='icon-cancel-img' ng-click='$ctrl.cancel()'></span>",
+                        '<span class="cancel-confirm"><span class="icon-cancel-img" ng-click=""$ctrl.cancel()"></span></span>',
+
                     '</div>',
                     '<div class="modal-body confirm">',
                     '<form ng-submit="$ctrl.ok()">'+
@@ -8547,19 +9000,23 @@ angular.module('gmall.services')
                 }
 
             }
-                    s+='</span></td></tr>'+
-                        '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
-                            if(global.get('store').val.footer && global.get('store').val.footer.text){
-                                s+=global.get('store').val.footer.text;
-                            }
+            s+='</span></td></tr>'+
+                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
+            if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
+            }
 
-                        s+='</span></td>';
-                        s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-                            if(global.get('store').val.footer && global.get('store').val.footer.text1){
-                                s+=global.get('store').val.footer.text1;
-                            }
+            s+='</span></td>';
+            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
+             s+=global.get('store').val.footer.text1;
+             }*/
+            if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
+            }
 
-                    s+='</span></td></tr></table>';
+            s+='</span></td></tr></table>';
             return s
         }
         // ********************пустой контент
@@ -8586,6 +9043,8 @@ angular.module('gmall.services')
             }
         }
         function emailFromNews(item){
+            console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
+            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])
             var s=
                 '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></a></td></tr>'+
@@ -8718,10 +9177,10 @@ angular.module('gmall.services')
 
 
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            /*s+='<table width="900px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr><td border="0" colspan="2" style="border:none; border-top:#cccccc 5px solid;"></td></tr>'+
-                /*'<tr><td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td><td/><td/>'+*/
-                /*'<td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td></tr>'+*/
+                /!*'<tr><td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td><td/><td/>'+*!/
+                /!*'<td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td></tr>'+*!/
                 '<tr><td align="right" style="vertical-align: top"><span style="font-family:Tahoma; font-size:12px; color:#404040;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
@@ -8740,7 +9199,41 @@ angular.module('gmall.services')
                 s+=global.get('store').val.footer.text;
             }
             s+='</span></td></tr>'+
-                '</table>'
+                '</table>'*/
+            s +='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
+                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            if(global.get('store').val.sn){
+                for(var key in global.get('store').val.sn){
+                    if(global.get('store').val.sn[key].is){
+                        if(global.get('store').val.template.index && global.get('store').val.template.index.icons
+                            &&global.get('store').val.template.index.icons[key+'white']){
+                            s+='<a href="'+global.get('store').val.sn[key].link+'">'+
+                                '<img style="width: 24px; height: 24px;margin: 0 10px" src="'+global.get('store').val.link+global.get('store').val.template.index.icons[key+'white'].img+'">'
+                                +'</a>'
+                        }
+
+                    }
+                }
+
+            }
+            s+='</span></td></tr>'+
+                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
+            if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
+            }
+
+            s+='</span></td>';
+            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
+             s+=global.get('store').val.footer.text1;
+             }*/
+            if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
+            }
+
+            s+='</span></td></tr></table>';
+
             return s;
             return '<!DOCTYPE html><html><head>' +
                 '<link rel="stylesheet" type="text/css" href="http://gmall.io/bower_components/bootstrap/dist/css/bootstrap.css" />' +
@@ -8821,12 +9314,17 @@ angular.module('gmall.services')
             s+='<p>'+global.get('langOrder').val.sum+' '+(order.paySum).toFixed(2)+' '+order.currency+'</p>';
             return s;
         }
-        function dateTimeNote(entry){
+        function dateTimeNote(entry,user){
+            //console.log(user)
             //console.log(order)
             var s='';
             s +='<h3 class="order-name">'+global.get('langOrder').val.dateTime+'</h3> '+global.get('langOrder').val.onn+' '+entry.dateForNote;
             s+='<p>'+global.get('store').val.texts.masterName[global.get('store').val.lang]+' - '+entry.masterName+'</p>';
             s+='<p>'+entry.service.name+'</p>';
+            if(user){
+                s+='<p>'+user.name+' '+user.phone+'</p>';
+            }
+
             return s;
         }
         function dateTimeCancelNote(entry){
@@ -9136,13 +9634,14 @@ angular.module('gmall.services')
             }*/
             return s;
         }
-        function call(number){
+        function call(number,name){
             //console.log(number)
             //number=number.substring(0,20)
             var s='';
-            s+='<h3>'+number+'</h3>'
-            s+='<p>'+global.get('langOrder').val.requestacallback+'</p>'
+            s+='<h3>'+global.get('langOrder').val.requestacallback+'</h3>'
+            s+='<p>'+number+((name)?' '+name:'')+'</p>'
             s+='<p>'+moment().format('LLLL')+'</p>'
+            console.log(s)
             return s;
         }
 
@@ -9276,7 +9775,7 @@ angular.module('gmall.services')
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: function () {
-                return (field && field=='video')?'components/loadImage/loadVideoModal.html':'components/loadImage/loadImageModal.html';
+                return ((field && (field=='video') || field=='video.link' ||  field=='video1.link'))?'components/loadImage/loadVideoModal.html':'components/loadImage/loadImageModal.html';
                 if(field=='video'){'components/loadImage/loadVideoModal.html'}else{return 'components/loadImage/loadImageModal.html'}
             },
             controller: function(uploadUrl,field,itemUrl,itemId,index,$uibModalInstance,$scope,$timeout,exception){
@@ -9288,7 +9787,7 @@ angular.module('gmall.services')
                 self.suffix=(self.urlArr[1])?self.urlArr[1]:'';
                 self.dimen= self.urlArr[0].split('/');
                 self.fileDimension=''
-                if(field!='video'){
+                if(field!='video' &&  field=='video.link' &&  field=='video1.link'){
                     self.fileDimension=self.dimen[self.dimen.length-1].slice(10);
                 }
                 self.uploadFiles=uploadFiles;
@@ -10725,9 +11224,12 @@ function photoFactory($http) {
                     return user;
                 })
         }
-        function newUserByPhone(name,phone) {
+        function newUserByPhone(name,phone,confirmCondition) {
             var email= phone+'@gmall.io'
             var user = {email:email,name:name,profile:{phone:phone,fio:name}};
+            if(confirmCondition){
+                user.confirmCondition=confirmCondition;
+            }
             return $auth.signup(user)
                 .then(function(response) {
                     console.log(response)
@@ -10839,11 +11341,12 @@ function photoFactory($http) {
         }
 
         function selectOrCreat(){
+            //console.log('lddl')
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'components/user/modal/selectOrCreate.html',
-                    controller: function($user,UserEntry,global,$uibModalInstance){
+                    controller: function($user,UserEntry,$http,global,$uibModalInstance){
                         var self=this;
                         self.items=[];
                         self.user='';
@@ -10871,13 +11374,13 @@ function photoFactory($http) {
                             if(isNumeric(str)){
                                 if(str.length>10){
                                     self.oldPhone=str.substring(0,10);
-                                }else{
+                                }/*else{
                                     var d = 10-str.length;
                                     for(var i=0;i<d;i++){
                                         str+='0';
                                     }
                                     self.oldPhone=str
-                                }
+                                }*/
 
                                 self.userName=''
                             }else{
@@ -10891,8 +11394,9 @@ function photoFactory($http) {
                             var q1= {$or:[{'phone':str},{name:str},{email:str}]}
 
                             var acts=[];
+                            q={search:str}
                             acts.push(get$user(q))
-                            acts.push(getEntryUser(q1))
+                            //acts.push(getEntryUser(q1))
                             $q.all(acts)
                                 .then(function(res){
                                     if(res[0] && res[0].length){
@@ -10901,36 +11405,53 @@ function photoFactory($http) {
                                             users.push(item)
                                         })
                                     }
-                                    if(res[1] && res[1].length){
+                                    /*if(res[1] && res[1].length){
                                         res[1].forEach(function(item){
                                             item.type='userEntry'
                                             users.push(item)
                                         })
-                                    }
+                                    }*/
                                     self.users=users;
+                                    //console.log(self.users)
                                 })
 
 
                         }
                         function get$user(q){
+                            return $user.query(q).$promise
                             return $user.getList(paginate,q)
                         }
                         function getEntryUser(q){
                             return  UserEntry.getList(paginate,q)
                         }
                         function addUser(){
-                           // console.log('add user')
+                           console.log('add user')
                             var user={name:self.userName,
                                 email:self.userEmail,
-                                phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),
-                                type:"userEntry"
+                                profile:{fio:self.userName,phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),}
+                                //phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),
+                                //type:"userEntry"
+                            }
+                            if(!self.userEmail){
+                               user.email=user.profile.phone+"@gmall.io"
                             }
                             return $q.when()
                                 .then(function(){
-                                    return UserEntry.save(user).$promise
+                                    return $user.checkEmailForExist(user.email)
                                 })
                                 .then(function(res){
-                                    user._id=(res._id)?res._id:res.id;
+                                    if(res && res.exist){throw 'email exist'}
+                                })
+                                .then(function(){
+                                    var uploadUrl='/api/createUser'
+                                    return $http.post(userHost+uploadUrl,user);
+                                })
+                                /*.then(function(){
+                                    return User.save(user).$promise
+                                })*/
+                                .then(function(res){
+                                    //console.log(res)
+                                    user._id=(res.data && res.data._id)?res.data._id:res.data.id;
                                     self.addingUser=false;
                                     self.userName='';
                                     self.user=user;
@@ -10967,14 +11488,16 @@ function photoFactory($http) {
         function saveProfile(user){
             return Items.save({update:'profile'},{_id:user._id,profile:user.profile}).$promise;
         }
-        function login(){
+        function login(bookeep){
             return $q(function(resolve,reject){
                 if(global.get('user') && global.get('user').val && global.get('user').val._id){
                     return resolve()
                 }
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'components/user/modal/login-sign.html',
+                    templateUrl: function () {
+                        return ((bookeep)?'components/user/modal/login-only.html':'components/user/modal/login-sign.html')
+                    },
                     controller: loginCtrl2,
                     controllerAs:'$ctrl',
                     //size: 'lg',
@@ -11399,6 +11922,10 @@ function photoFactory($http) {
             var self=this;
             self.global=global;
             //self.closeModal=closeModal;
+            if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.phone){
+                self.phone=true;
+            }
+            //console.log(global.get('store').val)
             $scope.$on('closeWitget',function () {
                 //console.log('ssss')
                 $uibModalInstance.close()
@@ -11700,9 +12227,12 @@ function photoFactory($http) {
 (function(){
     angular.module('gmall.directives')
         .directive('userShipInfo',userShipInfo)
+        .directive('userShipInfoShort',userShipInfoShort)
     function userShipInfo(){
         return {
-            scope: {},
+            scope: {
+                short:'@'
+            },
             bindToController: true,
             controller: shipInfoCtrl,
             controllerAs: '$ctrl',
@@ -11710,9 +12240,23 @@ function photoFactory($http) {
             restrict:'AE'
         }
     }
-    shipInfoCtrl.$inject=['global','$order','exception','$window','$rootScope','$q','$user','$timeout'];
-    function shipInfoCtrl(global,$order,exception,$window,$rootScope,$q,$user,$timeout){
+
+    function userShipInfoShort(){
+        return {
+            scope: {
+                short:'@'
+            },
+            bindToController: true,
+            controller: shipInfoCtrl,
+            controllerAs: '$ctrl',
+            templateUrl: '/components/user/shipInfoShort.html',
+            restrict:'AE'
+        }
+    }
+    shipInfoCtrl.$inject=['global','$order','exception','$window','$rootScope','$q','$user','$timeout','$attrs'];
+    function shipInfoCtrl(global,$order,exception,$window,$rootScope,$q,$user,$timeout,$attrs){
         var self=this;
+        //console.log($attrs.short)
         self.order = $order.getOrder();
         self.global = global;
         self.user = global.get('user');
@@ -12117,6 +12661,7 @@ angular.module('gmall.controllers')
         if(form.$valid) {
             $scope.callCtrl.blockButton=true;
             o.content=global.get('langOrder').val.requestacallback+' '+self.user.val.profile.phone+((self.user.val.fio)?' '+self.user.val.fio:'')+' '+moment().format('LLLL');
+            o.content=CreateContent.call(self.user.val.profile.phone,((self.user.val.fio)?' '+self.user.val.fio:''))
 
             if(self.stuff){
                 o.content +=','+self.stuff
@@ -12855,6 +13400,7 @@ angular.module('gmall.services')
     }
     this.getFilters=function(){
         return $q(function(resolve,reject){
+            //console.log(global.get('filters'))
             if(global.get('filters') && global.get('filters').val){
                 if(!filters){filters=global.get('filters').val}
                 return resolve(global.get('filters').val);
@@ -13211,6 +13757,10 @@ var __filterTags=_filterTags
         function getSticker(tags){
             if(tags && tags.length && filterTags && filterTags.length){
                 for(var i =0;i<tags.length;i++){
+                    /*if(tags[i]=='5c07f407a43847154c0e5d03'){
+                        console.log(__filterTagsO)
+                        console.log(__filterTagsO[tags[i]])
+                    }*/
                     if(__filterTagsO[tags[i]] && __filterTagsO[tags[i]].sticker){
                         //console.log(angular.copy(__filterTagsO[tags[i]].sticker))
                         return __filterTagsO[tags[i]].sticker
@@ -13509,7 +14059,7 @@ angular.module('gmall.services')
             }else{
                 self.order=$order.getOrder();
             }
-            console.log(self.order)
+            //console.log(self.order)
             //console.log(self.order.cart.stuffs)
             $anchorScroll();
             // купон
@@ -13569,11 +14119,8 @@ angular.module('gmall.services')
             $order.increaseQty(i)
         }
         function checkOut(){
-
+            self.textCheckWarehouse=null;
             $rootScope.$emit('InitiateCheckout')
-
-
-
             //console.log('checkOut')
             if(!self.order.cart.stuffs.length){return}
             //console.log(global.get('user').val)
@@ -13594,17 +14141,30 @@ angular.module('gmall.services')
                             return
                         }
                     })
+                    .then(function () {
+                        if(global.get('store').val.bookkeep){
+                            return $order.checkWarehouse()
+                        }
+                    })
+
                     .then(function(){
                         return $order.getShipInfo()
                     })
                     .then(function(){
                         return sendOrder()
                     })
+                    .catch(function(err){
 
+                        //console.log(err)
+                        if(err){
+                            if(err.status=='checkWarehouse'){
+                                self.textCheckWarehouse=err.message;
+                            }
+                            exception.catcher('заказ')(err)
+                        }
+                        //return sendOrder()
+                    })
             }
-
-
-
         }
 
         function sendOrder(){
@@ -14100,12 +14660,15 @@ angular.module('gmall.services')
                 $uibModalInstance.dismiss('cancel');
             };
             self.ok = function (filterTag) {
-                if(self.section){
-                    filterTag.section=self.section;
+                if(filterTag){
+                    if(self.section){
+                        filterTag.section=self.section;
+                    }
+
+                    filterTag.brand=self.filters.find(function(b){
+                        return b._id==filterTag.brand
+                    })
                 }
-                filterTag.brand=self.filters.find(function(b){
-                    return b._id==filterTag.brand
-                })
                 $uibModalInstance.close(filterTag);
             };
         }
@@ -14599,7 +15162,7 @@ angular.module('gmall.controllers')
         }
 
         function _salePrice(doc,sale){
-            //console.log(doc.stack)
+            //console.log(doc.stock,doc.driveSalePrice)
             if(doc.driveSalePrice && doc.driveSalePrice.maxDiscount){
                 doc.maxDiscount=doc.driveSalePrice.maxDiscount;
             }
@@ -14707,7 +15270,13 @@ angular.module('gmall.controllers')
             return el;
         }
 
+
         function _changeSortOfStuff(sort){
+            if(this.stock[sort]){
+                this.filterActiveTagName=this.stock[sort].name;
+            }else{
+                this.filterActiveTagName='';
+            }
             /*console.log(this.stock && sort && this.stock[sort] && !this.stock[sort].quantity)
             console.log(this.stock,sort,this.stock[sort],this.stock[sort].quantity)*/
             if(this.stock && sort && this.stock[sort] && !this.stock[sort].quantity){
@@ -14974,6 +15543,7 @@ angular.module('gmall.controllers')
             if(item.category && item.category._id){
                 item.category=[item.category]
             }
+            //console.log(item)
             if(item.category && item.category.length){
                 //console.log(global.get('category').val)
                 var i=0;
@@ -15022,20 +15592,22 @@ angular.module('gmall.controllers')
                 if(b){
                     item.brandUrl= b.url;
                     item.brandName=b.name;
-                    if(item.brandTag){
+                    if(item.brandTag && !item.brandTag._id){
                         var bt = b.tags.getOFA('_id',item.brandTag)
                         if(bt){
                             item.brandTagUrl=bt.url;
                             item.brandTagName=bt.name;
                         }
-
-
+                    }else if(item.brandTag && item.brandTag._id){
+                        item.brandTagUrl=item.brandTag.url;
+                        item.brandTagName=item.brandTag.name;
                     }
                 }
             }
 
         }
         function _setDataForStuff(stuff,filterTags,stuffsState){
+            //console.log(stuff.name,stuff.stock,global.get('store').val.template.stuffListType[global.get('sectionType').val])
             //console.log(JSON.parse(JSON.stringify(stuff)));
             stuff.changeSortOfStuff=_changeSortOfStuff;
             stuff.addItemToOrder=_addItemToOrder;
@@ -15130,19 +15702,67 @@ angular.module('gmall.controllers')
                 /*console.log(stuff.stock)
                 console.log(stuff.stockKeysArray)*/
                 var sort_Id=null;
+                //console.log(stuff)
                 stuff.stockKeysArray.forEach(function (key) {
+                    //console.log(key,stuff.stock[key._id])
                     // устанавливаем  разновидноть
                     //if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort)) {
-                    if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort || $state.current.name!='stuffs.stuff' || stuffsState)) {
-                        //console.log('устанавливаем разновидность')
-                        if (!sort_Id && stuff.stock[key._id].quantity) {
-                            sort_Id = key._id;
-                            stuff.sort = sort_Id;
-                            //console.log(key.name)
+                    //console.log(stuff.name,key.name,'устанавливаем разновидность',$state.current.name!='stuffs.stuff' || stuffsState)
+                    if(!stuff.minPrice){
+                        stuff.minPrice=Number(stuff.stock[key._id].price);
+                    }
+                    if(!stuff.maxPrice){
+                        stuff.maxPrice=Number(stuff.stock[key._id].price);
+                    }
+                    /*console.log(stuff.stock[key._id].price,stuff.minPrice)
+                    console.log(stuff.stock[key._id].price<stuff.minPrice)
+                    console.log(typeof stuff.stock[key._id].price)*/
+                    if(Number(stuff.stock[key._id].price)<stuff.minPrice){
+                        stuff.minPrice=Number(stuff.stock[key._id].price);
+                    }
+                    if(Number(stuff.stock[key._id].price)>stuff.maxPrice){
+                        stuff.maxPrice=Number(stuff.stock[key._id].price);
+                    }
+
+
+                    if(stuff.stock[key._id].priceSale){
+                        if(!stuff.minPriceSale){
+                            stuff.minPriceSale=Number(stuff.stock[key._id].priceSale);
                         }
+                        if(!stuff.maxPriceSale){
+                            stuff.maxPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+                        if(Number(stuff.stock[key._id].priceSale)<stuff.minPriceSale){
+                            stuff.minPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+                        if(Number(stuff.stock[key._id].priceSale)>stuff.maxPriceSale){
+                            stuff.maxPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+
+                    }
+
+                    if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort || $state.current.name!='stuffs.stuff' || stuffsState)) {
+                        //console.log($state.current.name)
+                        if($state.current.name==='stuffs' || $state.current.name==='likes'){
+                            if(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSortList){
+                                if (!sort_Id && stuff.stock[key._id].quantity) {
+                                    sort_Id = key._id;
+                                    stuff.sort = sort_Id;
+                                    //console.log(key.name)
+                                }
+                            }
+                        }else{
+                            if (!sort_Id && stuff.stock[key._id].quantity) {
+                                sort_Id = key._id;
+                                stuff.sort = sort_Id;
+                                //console.log(key.name)
+                            }
+                        }
+
                     }else{
                         //console.log('не устанавливаем разновидность')
                     }
+
 
 
 
@@ -15159,13 +15779,18 @@ angular.module('gmall.controllers')
                         }
                     }
                     stuff.stock[key._id].name=key.name;
+
                     //console.log(stuff.stock[key._id])
+                    if(key._id==stuff.sort){
+                        stuff.filterActiveTagName=stuff.stock[key._id].name;
+                    }
                 })
 
                 if(stuff.stockKeysArray.length && sort_Id){
                     _changeSortOfStuff.call(stuff,sort_Id);
                 }
-                //console.log(stuff.sort)
+                /*console.log(stuff.minPrice,stuff.maxPrice)
+                console.log(stuff.minPriceSale,stuff.maxPriceSale)*/
 
             }else if(stuff.stock && typeof stuff.stock == 'object' && stuff.stock.notag){
                 if(stuff.stock['notag'].quantity){
@@ -15204,8 +15829,12 @@ angular.module('gmall.controllers')
                         for(var ii=0;ii<itemS.tags.length;ii++){
                             var idx=filterGroupTags.indexOf(itemS.tags[ii]);
                             if(idx>-1){
+                                if(itemS._id===stuff._id){
+                                    stuff.sortsOfStuff.filterActiveTagName=filterGroup.tags[idx].name;
+                                }
                                 if(filterGroup.tags[idx].img){
                                     stuff.sortsOfStuff.stuffs[i].gallery[0].thumbSmallTag=filterGroup.tags[idx].img
+                                    //stuff.sortsOfStuff.stuffs[i].tagName=filterGroup.tags[idx].name
                                 }
                                 break;
                             }
@@ -15684,7 +16313,7 @@ angular.module('gmall.controllers')
                         var sections=data[0],brands=data[1],filters=data[2];
                         //console.log(stateParams)
                         parentSection=Sections.getSection(sections,stateParams.groupUrl);
-                        //console.log(parentSection)
+                        //console.log('parentSection',parentSection)
 
                         global.set('parentSection',parentSection)
                         if(parentSection){
@@ -15720,12 +16349,15 @@ angular.module('gmall.controllers')
                                     sectionCategories.forEach(function (cat) {
                                         //console.log(cat)
                                         var c = global.get('categoriesO').val[cat];
-
-                                        c.filters.forEach(function(f){
+                                        if(parentSection && parentSection.filters){
+                                            categoryFilters=parentSection.filters;
+                                        }
+                                        /*c.filters.forEach(function(f){
                                             if(categoryFilters.indexOf(f)<0){
                                                 categoryFilters.push(f)
                                             }
-                                        })
+                                        })*/
+
                                         c.brands.forEach(function(b){
                                             if(categoryBrands.indexOf(b)<0){
                                                 categoryBrands.push(b)
@@ -15840,6 +16472,7 @@ angular.module('gmall.controllers')
 
 
                         query.queryTags={}
+                        //console.log(categoryFilters)
                         filters.forEach(function (f) {
                             f.inList=false;
                             if((to.name=='stuffs' || to.name=='stuffs.stuff')){
@@ -15851,12 +16484,14 @@ angular.module('gmall.controllers')
                                 f.inList=true;
                             }
 
+                            //console.log(f.name,f.inList)
                             if(categoryFilters && categoryFilters.length){
                                 if(categoryFilters.indexOf(f._id)>-1){
                                     f.inList=true;
                                     f.open=false;
                                 }
                             }
+
                             if(f.count){
                                 //console.log(query.filters[f._id])
                                 if(query.filters[f._id]){
@@ -15881,7 +16516,9 @@ angular.module('gmall.controllers')
                                     }
                                 })
                             }
+
                         })
+
                         _setQueryForTags(query,filters)
                         global.set('breadcrumbs',breadcrumbs);
                         // для клиенского запроса только опубликованные товары
@@ -15908,6 +16545,7 @@ angular.module('gmall.controllers')
 
 
         function setFilters(){
+            //console.log('stuff setFilters')
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
@@ -15979,6 +16617,7 @@ angular.module('gmall.controllers')
                     delete stuff.sort;
                     delete stuff.sortsOfStuff;
                     delete stuff.keywords;
+                    delete stuff.groupStuffs;
                     if(stuff.blocks && stuff.blocks.length){
                        stuff.blocks.forEach(function (b) {
                            delete b._id
@@ -15986,11 +16625,12 @@ angular.module('gmall.controllers')
                            b.templateName=null;
                            if(b.img){b.img=null}
                            if(b.video){b.video=null}
-                           if(b.imgs && b.imgs.length){
+                           /*if(b.imgs && b.imgs.length){
                                b.imgs.forEach(function (slide) {
                                    if(slide.img){slide.img=null;}
                                })
-                           }
+                           }*/
+                           if(b.imgs){b.imgs=[]}
                        })
                     }
                     //console.log(stuff.blocks)
@@ -17044,11 +17684,24 @@ angular.module('gmall.controllers')
                 }*/
 
                 $scope.stuff = Stuff.setDataForStuff($scope.stuff,global.get('filterTags').val,'stuffs')
-                //console.log($scope.stuff.name)
+                //console.log($scope.stuff)
+                if($scope.stuff.sortsOfStuff && $scope.stuff.sortsOfStuff.filterGroup && global.get('filtersO').val[$scope.stuff.sortsOfStuff.filterGroup]){
+                    //console.log(global.get('filtersO').val[$scope.stuff.sortsOfStuff.filter])
+
+                    var ttt;
+                    for(var i=0;i<$scope.stuff.tags.length;i++){
+                        ttt = global.get('filtersO').val[$scope.stuff.sortsOfStuff.filterGroup].tags.getOFA('_id',$scope.stuff.tags[i]);
+                        if(ttt){
+                            $scope.stuff.tagFromFilterFromSortOfStuffs=ttt;
+                            break;
+                        }
+                    }
+
+                }
+                //console.log($scope.stuff.tagFromFilterFromSortOfStuffs)
                 $scope.stuff.stateObj=angular.copy($stateParams);
                 //console.log($scope.stuff.stateObj)
                 $scope.stuff.stateObj.stuffUrl=$scope.stuff.url;
-
                 self.stuff=$scope.stuff;
                 self.getMastersName=getMastersName
                 self.getAveragePrice=getAveragePrice;
@@ -17220,6 +17873,11 @@ angular.module('gmall.controllers')
         global.set('stuffsInList',stuffsInList)
         var self = this;
         $scope.global=global;
+        if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
+            self.displayableFilters=true;
+        }else if(global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+            self.displayableFilters=true;
+        }
         self.stuffs={}
         self.Items=Stuff;
         self.mobile=global.get('mobile').val;
@@ -17315,7 +17973,7 @@ angular.module('gmall.controllers')
                     var linkFn = $compile(response.data.html);
                     var content = linkFn($scope);
                 }else{
-                    console.log('ldldldl')
+                    //console.log('ldldldl')
                     var linkFn = $compile(response.data.html);
                     var content = linkFn($scope);
                 }
@@ -17569,7 +18227,7 @@ angular.module('gmall.controllers')
         }
 
     }
-    function stuffListTemplateDirectiveCampaignList(){
+    function stuffListTemplateDirectiveCampaignList($state,global){
         return {
             scope: {
                 campaignCondition:'@',
@@ -17577,7 +18235,17 @@ angular.module('gmall.controllers')
             bindToController: true,
             controller: campaignStuffListCtrl,
             controllerAs: '$ctrl',
-            template:"<div></div>",
+            template:function () {
+                //console.log($state.current)
+                if($state.current.name==='likes'){
+                    var s =  "<div>" +
+                            "<h1 class='wishlist-header'>"+global.get("lang").val.wishlist+"</h1>"+
+                        "</div>"
+                }else{
+                    var s =  "<div></div>"
+                }
+                return s;
+            },
             /*templateUrl: function (el,attr) {
                 var campaign = attr.campaign;
                 var url = 'views/template/partials/'+campaign+'/stuffs';
@@ -18323,7 +18991,7 @@ angular.module('gmall.controllers')
                 } )
                 .then(function (item) {
                     var o={}
-                    o.brand=item._id;
+                    o.brand=(item)?item._id:null;
                     o.brandTag=null;
                     massSaveField(o)
                 })
@@ -18337,8 +19005,13 @@ angular.module('gmall.controllers')
                 .then(function (item) {
                     //console.log(item)
                     var o={}
-                    o.brand=item.brand._id;
-                    o.brandTag=item._id;
+                    if(item){
+                        o.brand=item.brand._id;
+                        o.brandTag=item._id;
+                    }else{
+                        o.brandTag=null;
+                    }
+
                     massSaveField(o)
                 })
         }
@@ -18644,51 +19317,53 @@ angular.module('gmall.controllers')
         }
 
         function changeAction(){
+            if(!self.action){return}
+            var a=angular.copy(self.action);
+            self.action=null;
+            self.mark=false;
+            switch (a) {
+                case 'category':
+                    return selectCategory()
+                    break;
+                case 'brand':
+                    return selectBrand()
+                    break;
+                case 'brandTag':
+                    return selectBrandTag()
+                    break;
+                case 'filterTag':
+                    return selectFilterTag()
+                    break;
+                case 'unfilterTag':
+                    return unSelectFilterTag()
+                    break;
+                case 'addInfo':
+                    return selectAddInfo()
+                    break;
+                case 'actived':
+                    return selectActived()
+                    break;
+                case 'index':
+                    return selectPosition()
+                    break;
+                case 'order':
+                    return changeOrderType()
+                    break;
+                case 'changePrice':
+                    return changePrice()
+                    break;
+                case 'changeMinMax':
+                    return changeMinMax()
+                    break;
+                case 'deleteStuffs':
+                    return deleteStuffs()
+                    break;
+
+            }
+            return;
             Confirm('подтвердите действие')
                 .then(function () {
-                    if(!self.action){return}
-                    var a=angular.copy(self.action);
-                    self.action=null;
-                    self.mark=false;
-                    switch (a) {
-                        case 'category':
-                            return selectCategory()
-                            break;
-                        case 'brand':
-                            return selectBrand()
-                            break;
-                        case 'brandTag':
-                            return selectBrandTag()
-                            break;
-                        case 'filterTag':
-                            return selectFilterTag()
-                            break;
-                        case 'unfilterTag':
-                            return unSelectFilterTag()
-                            break;
-                        case 'addInfo':
-                            return selectAddInfo()
-                            break;
-                        case 'actived':
-                            return selectActived()
-                            break;
-                        case 'index':
-                            return selectPosition()
-                            break;
-                        case 'order':
-                            return changeOrderType()
-                            break;
-                        case 'changePrice':
-                            return changePrice()
-                            break;
-                        case 'changeMinMax':
-                            return changeMinMax()
-                            break;
-                        case 'deleteStuffs':
-                            return deleteStuffs()
-                            break;
 
-                    }
                 })
 
         }
@@ -18844,12 +19519,32 @@ angular.module('gmall.controllers')
         self.global=global;
 
 
+        if($stateParams.categoryUrl!='category'){
+            self.sectionName=global.get('category').val.name;
+        }else{
+            self.sectionName=(global.get('section') && global.get('section').val)?global.get('section').val.name:'раздел';
+        }
+        self.breadcrumbs=global.get('breadcrumbs').val;
         //console.log('set filers')
 
         //console.log(self.filters)
 
-        self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+        self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
         self.char=self.chars[0]
+        var sT = (global.get('sectionType') && global.get('sectionType').val)?global.get('sectionType').val:'good';
+        if(global.get('store').val.template.stuffListType[sT].filtersCategories){
+            if(global.get('sections') && global.get('sections').val){
+                self.sections = global.get('sections').val.filter(function (s) {
+
+                    return s.viewsFilters;
+                });
+            }
+
+        }else{
+            self.sections = [];
+        }
+        //console.log(self.sections)
+
         self.changeAllBrands=changeAllBrands;
         self.changeAllTags=changeAllTags;
         self.clearAll=clearAll;
@@ -18859,6 +19554,33 @@ angular.module('gmall.controllers')
 
         self.filterBrands = filterBrands;
         self.setCharForBrands=setCharForBrands;
+        self.changeCategory=changeCategory;
+        self.changeAllCategories=changeAllCategories;
+        self.deleteCrumb=deleteCrumb;
+        self.showReset=showReset;
+        self.showResetAll=AllshowReset;
+        self.showResetAllBrand=showResetAllBrand;
+
+        function showReset(filter) {
+            //console.log(filter)
+            return filter.tags.some(function (t) {
+                return t.set
+            })
+        }
+        function AllshowReset() {
+            return self.filters.some(function (f) {
+                return f.tags.some(function (t) {
+                    return t.set
+                })
+            })
+        }
+        function showResetAllBrand() {
+            return self.brands.some(function (f) {
+                return f.tags.some(function (t) {
+                    return t.set
+                })
+            })
+        }
 
         $rootScope.$on('changeCurrency',function () {
             console.log('changeCurrency',global.get('rate').val)
@@ -18880,8 +19602,19 @@ angular.module('gmall.controllers')
         })
 
         activate()
+        //console.log(global.get('categories').val)
+        /*console.log(global.get('sections').val)
+        console.log(global.get('store').val.template.stuffListType[global.get('sectionType').val].filtersCategories)*/
 
         function activate(){
+            /*console.log(global.get('section').val)
+            console.log(global.get('category').val)*/
+            if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
+                self.displayable=true;
+            }else if(global.get('section') && global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+                self.displayable=true;
+            }
+            //if(global.get('section').val)
             $q.when()
                 .then(function(){
                     return Brands.getBrands()
@@ -18899,24 +19632,63 @@ angular.module('gmall.controllers')
                     return Filters.getFilters()
                 })
                 .then(function(filters){
+
+                    //console.log(global.get('rate').val)
                     filters.forEach(function (f) {
-                        if(f.count && f.price){
+                        //console.log(f)
+                        var rate =(global.get('rate') && global.get('rate').val)?global.get('rate').val:1;
+                        if(f.count){
                             if(!f.maxSave){
                                 f.maxSave =f.max
                             }
                             if(!f.mixSave){
                                 f.mixSave =f.min
                             }
+
                             /*f.maxValue =f.maxValue*global.get('rate').val
                             f.minValue =f.minValue*global.get('rate').val*/
-                            f.min =Math.ceil10(f.mixSave*global.get('rate').val,0)
-                            f.max =Math.ceil10(f.maxSave*global.get('rate').val,0)
+                            if(f.price){
+                                f.min =Math.ceil10(f.mixSave*rate,0)
+                                f.max =Math.ceil10(f.maxSave*rate,0)
+                            }
+
+                            if(!f.set){
+                                f.minValue=f.min;
+                                f.maxValue=f.max;
+                            }
+
+
+
+
                             //console.log(f)
+                            $scope.$watch(function () {
+                                return f.open
+                            },function (n,o) {
+                                if(n){
+                                    $timeout(function () {
+                                        $scope.$broadcast('reCalcViewDimensions');
+                                    },300)
+                                }
+                            })
                         }
                     })
-                    self.filters=filters
+                    self.filters=filters.filter(function (f) {
+                        if(self.displayable){
+                            if(global.get('category').val){
+                                return global.get('category').val.filters.indexOf(f._id)>-1
+                            }else{
+                                return global.get('section').val.filters.indexOf(f._id)>-1
+                            }
+                        }
+                    })
+                    //console.log(self.filters)
 
                 })
+                /*.then(function () {
+                    $timeout(function () {
+                        $scope.$broadcast('reCalcViewDimensions');
+                    },1500)
+                })*/
         }
 
         self.changeTag=changeTag;
@@ -19116,7 +19888,8 @@ angular.module('gmall.controllers')
 
 
 
-        function changeTag(){
+        function changeTag(_filter,_tag){
+            //console.log(_filter,_tag)
             var queryTag='',brandTag='',brand='',filterTag='';
             //console.log(self.filters)
             self.filters.forEach(function(filter){
@@ -19128,6 +19901,16 @@ angular.module('gmall.controllers')
                     }
                 }else{
                     filter.tags.forEach(function(tag){
+                        if(_filter && _tag && _filter._id===filter._id){
+                            if(_tag._id===tag._id){
+                                //console.log(tag.set)
+                                //tag.set=!tag.set;
+                                //console.log(tag.set)
+                            }else{
+                                tag.set=false;
+                            }
+
+                        }
                         if (tag.set){
                             //console.log(filter.tags)
                             if(queryTag){queryTag+='__'}
@@ -19231,6 +20014,8 @@ angular.module('gmall.controllers')
         }
         function clearCountFilter(filter) {
             filter.set=null;
+            filter.minValue=filter.min;
+            filter.maxValue=filter.max;
             changeTag();
 
         }
@@ -19245,6 +20030,59 @@ angular.module('gmall.controllers')
         function filterBrands(item) {
             //console.log(item)
             return item.name.toUpperCase()[0]==self.char
+        }
+        function changeCategory(category) {
+            var o={
+                groupUrl:category.linkData.groupUrl,
+                categoryUrl:category.linkData.categoryUrl,
+                queryTag:null,
+                brand:null,
+                brandTag:null,
+                categoryList:null
+
+            };
+            $state.go('stuffs',o)
+        }
+        function changeAllCategories(s) {
+            self.sections.forEach(function (s) {
+                s.categories.forEach(function (c) {
+                    c.set=false;
+                })
+                s.child.forEach(function (child) {
+                    if(child.categories && child.categories.length){
+                        child.categories.forEach(function (c) {
+                            c.set=false;
+                        })
+                    }
+
+                })
+            })
+            var o={
+                groupUrl:s.url,
+                categoryUrl:'category',
+                queryTag:null,
+                brand:null,
+                brandTag:null,
+                categoryList:null
+
+            };
+            $state.go('stuffs',o)
+        }
+        function deleteCrumb(index){
+            change(self.breadcrumbs.splice(index,1)[0].type)
+            function change(type){
+                var query = self.breadcrumbs.reduce(function(q,item){
+                    if(item.type==type){
+                        if(q){q+='__'}
+                        q+=item.url;
+                    }
+                    return q;
+                },'')
+                if(!query){
+                    query=null;
+                }
+                $location.search(type,query)
+            }
         }
 
 
@@ -19305,6 +20143,7 @@ angular.module('gmall.controllers')
         .directive('videolinkBlockStuff',videoLinkBlockStuff)
         .directive('snBlockStuff',snBlockStuff)
         .directive('calendarBlockStuff',calendarBlockStuff)
+        .directive('galleryCarouselControls',galleryСarouselControls)
         .directive('carouselControls', function() {
             return {
                 restrict: 'A',
@@ -19411,7 +20250,30 @@ angular.module('gmall.controllers')
 
                 }
             };
-        }]);
+        }])
+
+
+
+
+
+    function galleryСarouselControls(){
+        console.log("galleryСarouselgalleryСarousel ")
+        return {
+            restrict:'AC',
+            scope: {
+                /*homePageStuffOwl:'@',
+                zoomImg:"@",
+                stuffs:'@',
+                items:"@",
+                autoplay:'@',
+                duration:'@',
+                gallery:'='*/
+            },
+            bindToController: true,
+            controllerAs: '$ctrl',
+            controller: galleryСarouselCtrl
+        }
+    }
 
 
 
@@ -20100,7 +20962,6 @@ angular.module('gmall.controllers')
         //self.activeSlide=0
         var arrowUp = $element.find('.arrow-up-gallery-small')
         var arrowDown = $element.find('.arrow-down-gallery-small')
-        //console.log(arrowUp,arrowDown)
         $(arrowUp).css('display','none')
         $(arrowDown).css('display','none')
         $scope.arrowUp=function(display){
@@ -20117,6 +20978,37 @@ angular.module('gmall.controllers')
                 $(arrowDown).css('display','none')
             }
         }
+        var arrowPrev = $element.find('.arrow-prev-gallery-small')
+        var arrowNext = $element.find('.arrow-next-gallery-small')
+        $(arrowPrev).css('display','none')
+        $(arrowNext).css('display','none')
+        $scope.arrowPrev=function(display){
+            if(display){
+                $scope.arrowPrevDisabled=false;
+                $(arrowPrev).removeAttr("disabled");
+                //$(arrowPrev).css('display','inline-block')
+            }else{
+                $scope.arrowPrevDisabled=true
+                $(arrowPrev).attr("disabled", "disabled");
+                //$(arrowPrev).css('display','none')
+            }
+            //console.log(display,$scope.arrowPrevDisabled)
+        }
+        $scope.arrowNext=function(display){
+
+            if(display){
+                $scope.arrowNextDisabled=false
+                $(arrowNext).removeAttr("disabled");
+                //$(arrowNext).css('display','inline-block')
+            }else{
+                $(arrowNext).attr("disabled", "disabled");
+                $scope.arrowNextDisabled=true
+                //$(arrowNext).css('display','none')
+            }
+            //console.log(display,$scope.arrowNextDisabled)
+        }
+
+
         $timeout(function(){
 
             var images = $element.find('img');
@@ -20127,37 +21019,63 @@ angular.module('gmall.controllers')
                     listener()
 
                     //console.log('!!!!!!')
-                    top=$(child).offset().top;
-                    bottom =$(child).offset().top+$(child).height()
-                    left=$(child).offset().left;
-                    right =$(child).offset().top+$(child).width()
-                    //console.log(bottom,)
 
-                    if(!$attrs.orientation || $attrs.orientation!="horizontal"){
-                        child.style.right = child.clientWidth - child.offsetWidth + "px";
-                        var topFirstImg=$(images[0]).offset().top
-                        var bottomLastImg=$(images[images.length-1]).offset().top+$(images[images.length-1]).height()
-                        if(top>topFirstImg){
-                            $scope.arrowUp(true);
+                    $timeout(function(){
+                        top=$(child).offset().top;
+                        bottom =$(child).offset().top+$(child).height()
+                        left=$(child).offset().left;
+                        right =$(child).offset().top+$(child).width()
+                        //console.log(bottom,)
+
+                        if(!$attrs.orientation || $attrs.orientation!="horizontal"){
+                            child.style.right = child.clientWidth - child.offsetWidth + "px";
+                            var topFirstImg=$(images[0]).offset().top
+                            var bottomLastImg=$(images[images.length-1]).offset().top+$(images[images.length-1]).height()
+                            if(top>topFirstImg){
+                                $scope.arrowUp(true);
+                            }
+                            if(bottom<bottomLastImg){
+                                $scope.arrowDown(true);
+                            }
+                        }else if($attrs.orientation && $attrs.orientation=="horizontal"){
+                            paddingLeft=$(child).css('padding-left').replace(/[^-\d\.]/g, '');
+                            paddingRight=$(child).css('padding-right').replace(/[^-\d\.]/g, '');
+                            //console.log(paddingLeft,paddingRight)
+                            var leftFirstImg=$(images[0]).offset().left
+                            var rightLastImg=$(images[images.length-1]).offset().left+$(images[images.length-1]).width()
+                            //console.log(images)
+                            var www =0;
+                            images.each(function (i,img) {
+                                www+=$(img).width();
+                            })
+
+
+                            //console.log(left,leftFirstImg,left<leftFirstImg)
+                            /*if(left>leftFirstImg){
+                             $scope.arrowPrev(true);
+                             }*/
+                            //console.log(right,rightLastImg);
+
+                            if(www>$(child).width()){
+                                $(arrowPrev).css('display','inline-block')
+                                $(arrowNext).css('display','inline-block')
+                                $scope.arrowNext(true);
+                            }
+                            /*if(left<leftFirstImg){
+                             $scope.arrowNext(true);
+                             }else{
+                             $scope.arrowNext(false);
+                             }
+                             //console.log(right,rightLastImg)
+                             if(right>rightLastImg){
+                             $scope.arrowPrev(true);
+                             }else {
+                             $scope.arrowPrev(false);
+                             }*/
                         }
-                        if(bottom<bottomLastImg){
-                            $scope.arrowDown(true);
-                        }
-                    }else if($attrs.orientation && $attrs.orientation=="horizontal"){
-                        paddingLeft=$(child).css('padding-left').replace(/[^-\d\.]/g, '');
-                        paddingRight=$(child).css('padding-right').replace(/[^-\d\.]/g, '');
-                        //console.log(paddingLeft,paddingRight)
-                        var leftFirstImg=$(images[0]).offset().left
-                        var rightLastImg=$(images[images.length-1]).offset().left+$(images[images.length-1]).width()
-                        //console.log(left,leftFirstImg)
-                        if(left>leftFirstImg){
-                            $scope.arrowUp(true);
-                        }
-                        //console.log(right,rightLastImg)
-                        if(right<rightLastImg){
-                            $scope.arrowDown(true);
-                        }
-                    }
+                    },500)
+
+
 
 
                 }
@@ -20192,8 +21110,8 @@ angular.module('gmall.controllers')
                                 wrapDiv.css('height',galleryBigH)
                             }else if($attrs.orientation && $attrs.orientation=="horizontal"){
                                 galleryBigH=imagesBig.width()
-                                //console.log(galleryBigH)
-                                wrapDiv.css('width',galleryBigH)
+
+                                wrapDiv.css('width',galleryBigH-40)
                             }
                             top=$(child).offset().top;
                             bottom =$(child).offset().top+$(child).height()
@@ -20214,7 +21132,7 @@ angular.module('gmall.controllers')
 
                             galleryBigH=imagesBig.width()
                             //console.log(galleryBigH)
-                            wrapDiv.css('width',galleryBigH)
+                            wrapDiv.css('width',galleryBigH-40)
                         }
                         top=$(child).offset().top;
                         bottom =$(child).offset().top+$(child).height()
@@ -20243,6 +21161,7 @@ angular.module('gmall.controllers')
             })
             //console.log(imagesQty)
             $(child).bind('scroll', scrollFoo);
+
             function scrollFoo(reload) {
                 console.log('scrollFoo')
                 //if(reload){self.activeSlide=0;console.log(self.activeSlide)}
@@ -20268,18 +21187,30 @@ angular.module('gmall.controllers')
                     var right =$(child).offset().left+$(child).width()
                     var leftFirstImg=$(images[0]).offset().left
                     var rightLastImg=$(images[imagesQty-1]).offset().left+$(images[imagesQty-1]).width()
-                    //console.log(left,leftFirstImg)
+                    /*console.log(left,leftFirstImg)
+                    console.log(left<leftFirstImg)*/
                     if(left>leftFirstImg){
-                        $scope.arrowUp(true);
+                        $scope.arrowPrev(true);
                     }else{
-                        $scope.arrowUp(false);
+                        $scope.arrowPrev(false);
                     }
-                    //console.log(right,rightLastImg)
-                    if(right<rightLastImg){
-                        $scope.arrowDown(true);
+                    if(right>=rightLastImg){
+                        $scope.arrowNext(false);
                     }else {
-                        $scope.arrowDown(false);
+                        $scope.arrowNext(true);
                     }
+
+                    /*if(left<leftFirstImg){
+                        $scope.arrowNext(true);
+                    }else{
+                        $scope.arrowNext(false);
+                    }
+
+                    if(right>rightLastImg){
+                        $scope.arrowPrev(true);
+                    }else {
+                        $scope.arrowPrev(false);
+                    }*/
                 }
             }
             function move_up() {
@@ -20448,6 +21379,7 @@ angular.module('gmall.controllers')
         }
     }
     function calendarBlockStuff(){
+        //console.log('sssdds')
         return {
             templateUrl: 'views/template/partials/stuffDetail/blocks/blocks/calendarBlock.html',
         }
@@ -20468,7 +21400,7 @@ angular.module('gmall.controllers')
     function stuffDetailFromServerCtrl($scope,$element,$compile,$http,$stateParams,$state,$anchorScroll,global,$q,$rootScope,$location,$timeout,$sce){
         var self=this;
         self.global=global;
-        //console.log(global.get('store').val)
+        self.lang = global.get('store').val.lang;
         $q.when()
             .then(function(){
                 if(global.get('tempContent').val){
@@ -20482,8 +21414,13 @@ angular.module('gmall.controllers')
                     }
                     return o;
                 }else{
-
-                    return $http.get('views/template/partials/stuffDetail/stuffDetailNew/'+global.get('sectionType').val+'/'+$stateParams.stuffUrl+'.html')
+                    //console.log($stateParams)
+                    /*var o={
+                        group:$stateParams.groupUrl,
+                        category:$stateParams.categoryUrl
+                    }*/
+                    var url ='views/template/partials/stuffDetail/stuffDetailNew/'+global.get('sectionType').val+'/'+$stateParams.stuffUrl+'.html?group='+$stateParams.groupUrl+'&category='+$stateParams.categoryUrl;
+                    return $http.get(url)
                 }
             })
             .then(function (response) {
@@ -20533,20 +21470,25 @@ angular.module('gmall.controllers')
             bindToController: true,
             controllerAs: '$ctrl',
             restrict:'A',
-            controller:function($scope,Stuff,global,$attrs,$stateParams,$q,seoContent,$timeout,$rootScope,$anchorScroll,$location,Comments,exception,$element){
+            controller:function($scope,Stuff,global,$attrs,$stateParams,$q,seoContent,$timeout,$rootScope,$anchorScroll,$location,Comments,exception,$element,localStorage,$animate,$uibModal){
+
+                /*
+                 ng-hide and ng-show showing at the same time for a short period of time
+                /https://github.com/angular/angular.js/issues/14015 */
                 var self=this;
                 self.global=global;
                 $scope.global=global;
                 $scope.stuff=JSON.parse($attrs.stuffFromServer)
+                var subDomain = global.get('store').val.subDomain;
                 //console.log(JSON.parse($attrs.stuffFromServer))
                 //$scope.stuff22=JSON.parse($attrs.stuffFromServer)
                 //console.log($scope.stuff22)
                 $scope.stuff = Stuff.setDataForStuff($scope.stuff,global.get('filterTags').val)
                 self.stuff=$scope.stuff;
-                //console.log(self.stuff)
+                console.log(self.stuff)
                 self.item=$scope.stuff
                 self.objShare=seoContent.setDataItem(self.item);
-                console.log(self.item)
+                //console.log(self.item)
                 var stuffsInList=[];
                 var currentStuffInList=null;
                 var maxNumInRow=0;
@@ -20577,7 +21519,44 @@ angular.module('gmall.controllers')
 
                 self.getAveragePrice=getAveragePrice;
                 self.goToSchedule=goToSchedule;
+                self.addToLikes=addToLikes;
+                self.getAddInfoInModal=getAddInfoInModal;
 
+                function getAddInfoInModal() {
+                    var options={
+                        animation: true,
+                        bindToController: true,
+                        controllerAs: '$ctrl',
+                        windowClass:  function(){
+                            return 'modalProject'
+                        },
+                        templateUrl:'views/template/partials/stuffDetail/addInfo/modal/addinfo.html',
+                        controller: function ($uibModalInstance,global,item){
+                            var self=this;
+                            self.item=item;
+                            self.modal=global.get('mobile').val
+                            self.lang=global.get('store').val.lang
+                            self.getTagName=getTagName;
+                            self.ok=function(){
+                                $uibModalInstance.close();
+                            }
+                            self.cancel = function () {
+                                $uibModalInstance.dismiss();
+                            };
+                            function getTagName(tag) {
+                                if(tag){
+                                    return global.get('filterTagsO').val[tag].name;
+                                }
+                            }
+                        },
+                        resolve:{
+                            item:function(){
+                                return self.item
+                            }
+                        }
+                    }
+                    $uibModal.open(options);
+                }
 
 
                 var currency=global.get('currency').val
@@ -20854,6 +21833,12 @@ angular.module('gmall.controllers')
                                 }
                                 return null
                             })
+                            var likes  = localStorage.get(subDomain+'-likes');
+                            if(likes && likes.length && likes.some(function(s){return s ===$scope.stuff._id})){
+                                $scope.stuff.inLikes=true
+                            }else {
+                                $scope.stuff.inLikes=false
+                            }
                         })
                         .then(function () {
                             //prepareStuffList()
@@ -20969,12 +21954,49 @@ angular.module('gmall.controllers')
                 }
 
 
+                var likes  = localStorage.get(subDomain+'-likes');
+                if(likes && likes.length && likes.some(function(s){return s ===$scope.stuff._id})){
+                    $scope.stuff.inLikes=true
+                }else {
+                    $scope.stuff.inLikes=false
+                }
+                function addToLikes($event) {
+                    $event.stopPropagation()
+                    console.log('addToLikes')
+                    likes  = localStorage.get(subDomain+'-likes');
+                    //console.log(likes)
+                    if(!likes){
+                        likes=[];
+                    }
+                    var i = likes.indexOf($scope.stuff._id);
+                    if(i>-1){
+                        $scope.stuff.inLikes=false;
+                        likes.splice(i,1);
+                    }else{
+                        $scope.stuff.inLikes=true;
+                        likes.push($scope.stuff._id);
+                    }
+                    localStorage.set(subDomain+'-likes', likes);
+                    $rootScope.likes.totalCount=likes.length;
+                }
 
 
 
                 getMastersName();
 
                 setComments()
+
+
+
+
+
+
+
+                //$animate.enabled(false);
+                $scope.$on('$destroy',
+                    function() {
+                        $animate.enabled(true);
+                    });
             },
             transclude: true,
             link: function(scope, element, attrs, ctrl, transclude) {
@@ -20984,15 +22006,203 @@ angular.module('gmall.controllers')
                             global.get('stuffsInList').val[element[0].parentElement.parentElement.id].push(scope.stuff)
                         }
                     }
+
+                    transclude(scope, function(clone) {
+                        element.append(clone);
+                        //console.log(scope.stuff)
+                        try{
+                            if(window.videojs){
+                                var vv = document.getElementsByClassName("mainVideo");
+                                if(vv[0]) {
+                                    videojs(vv[0], {
+                                        "fluid": true,
+                                        "techOrder": ["vimeo"],
+                                        "sources": [{ "type": "video/vimeo", "src": scope.stuff.videoLink}],
+                                        "vimeo": { "color": "#fbc51b"}
+                                    }, function () {
+                                    });
+                                }
+                                var videoTizer = document.getElementsByClassName("videoTeaser");
+                                if(videoTizer[0]){
+                                    videojs(videoTizer[0], {"fluid": true,controls: true}, function () {
+                                    });
+                                }
+                                var videoPreview = document.getElementsByClassName("videoPreview");
+                                if(videoPreview[0]){
+                                    videojs(videoPreview[0], {"fluid": true,controls: true}, function () {
+                                    });
+                                }
+                                /*videojs(scope.stuff._id+"video", {}, function(){
+                                });*/
+
+
+                                //console.log('window.videojs',window.videojs)
+                                //console.log(document.getElementsByClassName("video-js")[0])
+                                /*var vv = document.getElementsByClassName("video-js");
+                                if(vv[0]){
+                                    videojs(vv[0], {
+                                        controls: true,
+                                        plugins: {
+                                            videoJsResolutionSwitcher: {
+                                                default: 'high',
+                                                dynamicLabel: true
+                                            }
+                                        }
+                                    }, function(){
+                                        var player = this;
+                                        var arr = [];
+                                        if(scope.stuff.videoLink2){
+                                            arr.push({
+                                                src: scope.stuff.videoLink2,
+                                                type: 'video/mp4',
+                                                label: 'SD',
+                                                res: 360
+                                            })
+                                        }
+                                        if(scope.stuff.videoLink){
+                                            arr.push({
+                                                src: scope.stuff.videoLink,
+                                                type: 'video/mp4',
+                                                label: 'HD',
+                                                res: 720
+                                            })
+                                        }
+                                        player.updateSrc(arr)
+
+                                        console.log(arr)
+
+                                        player.on('resolutionchange', function(){
+                                            console.info('Source changed to %s', player.src())
+                                        })
+                                    })
+                                }*/
+
+
+                                //var videoTizer = document.getElementsByClassName("videoTeaser");
+                                /*var videoT = videojs("videoTeaser");
+                                if(videoT && videoT.src && scope.stuff.video.link){
+                                    videoT.src(scope.stuff.video.link);
+                                }*/
+                                //console.log(videoTizer)
+                                /*if(videoTizer[0]){
+                                    videojs(videoTizer[0], {
+                                        controls: true,
+                                        plugins: {
+                                            videoJsResolutionSwitcher: {
+                                                default: 'high',
+                                                dynamicLabel: true
+                                            }
+                                        }
+                                    }, function(){
+                                        var playerT = this;
+                                        window.playerT = playerT;
+                                        var arr = [];
+                                        //console.log(scope.stuff)
+                                        if(scope.stuff.video){
+                                            arr.push({
+                                                src: scope.stuff.video.link,
+                                                type: 'video/mp4',
+                                            })
+                                        }
+
+                                        playerT.updateSrc(arr)
+                                    })
+                                }
+
+
+*/
+
+                                /*var videoP = videojs("videoPreview");
+                                if(videoP && videoP.src && scope.stuff.video1.link){
+                                    videoP.src(scope.stuff.video1.link);
+                                }*/
+
+                                /*var videoPreview = document.getElementsByClassName("videoPreview");
+                                if(videoTizer[0]){
+                                    videojs(videoPreview[0], {
+                                        controls: true,
+                                        plugins: {
+                                            videoJsResolutionSwitcher: {
+                                                default: 'high',
+                                                //dynamicLabel: true
+                                            }
+                                        }
+                                    }, function(){
+                                        var playerP = this;
+                                        window.playerP = playerP;
+                                        var arr = [];
+                                        //console.log(scope.stuff)
+                                        if(scope.stuff.video1){
+                                            arr.push({
+                                                src: scope.stuff.video1.link,
+                                                type: 'video/mp4',
+                                            })
+                                        }
+
+                                        playerP.updateSrc(arr)
+                                    })
+                                }*/
+
+
+
+                                /* videojs(document.getElementsByClassName("video-js")[0], {}, function(){
+
+                                 });*/
+                                //afterglow.init()
+                            }
+                            if(window.afterglow){
+                                //console.log(afterglow)
+                                //http://afterglowplayer.com/
+                                //https://blog.bitsrc.io/5-open-source-html5-video-players-for-2018-38fa85932afb
+                               //afterglow.init()
+                                /*var play= $('.icon-videoplay-img');
+                                 console.log(play)
+                                 $(play).click(function () {
+                                 console.log(this)
+                                 })*/
+                            }
+                        }catch(err){
+                            console.log(err)
+                        }
+
+
+                    });
+
+
                 },200)
-                transclude(scope, function(clone) {
-                    element.append(clone);
-                });
+
+
+
+
             }
 
         }
     }
 
+
+    galleryСarouselCtrl.$inject=['$scope','$timeout','$element','$compile','global']
+    function galleryСarouselCtrl($scope,$timeout,$element,$compile,global){
+        console.log('galleryСarouselCtrl')
+        var self = this;
+        self.prev=prev;
+        self.next=next;
+        self.moment=moment;
+        self.global=global;
+        this.$onInit = function(){
+            $timeout(function () {
+                var navLeft=$element.find('.nav-left')
+                $(navLeft).click(function () {prev()})
+                var navRight=$element.find('.nav-right')
+                $(navRight).click(function () {next()})
+            },100)
+        }
+        function prev() {
+            console.log('prev')
+        }
+        function next() {
+            console.log('next')
+        }
+    }
 
 
 })()
@@ -22532,6 +23742,8 @@ angular.module('gmall.services')
                 order.user=res.user;
                 order.shipDetail=res.shipDetail;
                 order.domain=global.get('store').val.domain||global.get('store').val.subDomain;
+                order.pn=res.pn;
+                order.rn=res.rn;
                 //order=res;
                 q.resolve(order)
             },function(err){
@@ -22663,7 +23875,7 @@ angular.module('gmall.services')
                 try{
                     if(user){
                         if(!user._id){
-                            conosole.log(user)
+                            //console.log(user)
                             throw  'не авторизирован!';
                         }
                     } else{
@@ -22879,7 +24091,7 @@ angular.module('gmall.services')
         order.seller=global.get('store').val.seller._id;
         return this.sendOrder(user)
     }
-    this.getShipInfo=function(){
+    this.getShipInfo=function(short){
         return $q(function(resolve,reject){
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -22891,15 +24103,22 @@ angular.module('gmall.services')
                 //windowTopClass:'modalTopProject',
                 backdropClass:'modalBackdropClass',
                 //openedClass:'modalOpenedClass'
+                resolve: {
+                    short :function () {
+                        return short;
+                    }
+                }
             });
             $rootScope.$emit('modalOpened')
             modalInstance.result.then(function(item){$rootScope.$emit('modalClosed');resolve(item)},function(){$rootScope.$emit('modalClosed');reject()});
         })
     }
-    shipInfoCtrl.$inject=['$uibModalInstance','$rootScope']
-    function shipInfoCtrl($uibModalInstance,$rootScope) {
+    shipInfoCtrl.$inject=['$uibModalInstance','$rootScope','short']
+    function shipInfoCtrl($uibModalInstance,$rootScope,short) {
 
         var self = this;
+        self.short=short;
+        //console.log(self.short)
         $rootScope.$on('closeShipModal',function(){
             $uibModalInstance.close();
         })
@@ -22955,6 +24174,237 @@ angular.module('gmall.services')
     }
 
 
+    this.checkWarehouse=function () {
+        //console.log(order)
+        var virtualAccount;
+        return $q.when()
+            .then(function () {
+                if(!global.get('store').val.virtualAccount){
+                    return $http.get('/api/collections/VirtualAccount')
+                }
+            })
+            .then(function (r) {
+                //console.log(r)
+                if(r && r.data && r.data.length){
+                    global.get('store').val.virtualAccount=r.data[1]._id
+                }
+                virtualAccount=global.get('store').val.virtualAccount;
+                if(!virtualAccount){
+                    throw 'невозможно установить подразделение'
+                }
+
+            })
+            .then(function () {
+                var acts = order.cart.stuffs.map(function (s) {
+                    var q = {stuff:s._id,sort:s.sort}
+                    var url = '/api/collections/Material?query='+JSON.stringify(q)
+                    return $http.get(url)
+                })
+                return $q.all(acts)
+            })
+            .then(function (checkResult) {
+                //console.log(checkResult)
+                if(checkResult){
+                    var r = checkResult.map(function (rr,index) {
+                        if(rr.data && rr.data.length && rr.data[1]){
+                            var material =  rr.data[1];
+                            for(var i =0;i<material.data.length;i++){
+                                if(((material.data[i].virtualAccount && material.data[i].virtualAccount._id)?material.data[i].virtualAccount._id:material.data[i].virtualAccount)==virtualAccount && material.data[i].qty>=order.cart.stuffs[index].quantity){
+                                    order.cart.stuffs[index].priceUchet=material.data[i].price;
+                                    order.cart.stuffs[index].supplierType=material.data[i].supplierType;
+                                    order.cart.stuffs[index].supplier=((material.data[i].supplier && material.data[i].supplier._id)?material.data[i].supplier._id:material.data[i].supplier);
+                                    order.cart.stuffs[index].virtualAccount=virtualAccount;
+                                    //console.log(order.cart.stuffs[index])
+                                    return;
+                                }
+                            }
+                        }
+                        return order.cart.stuffs[index]
+                    })
+                    return r;
+                }else{
+                    throw 'не возможно проверить наличие на складе'
+                }
+            })
+            .then(function (stuffs) {
+                //console.log(stuffs)
+                stuffs = stuffs.filter(function (s) {
+                    return s
+                })
+                if(stuffs.length){
+                    var error='';
+                    stuffs.forEach(function (s) {
+                        var n = s.name;
+                        if(s.artikul){
+                            n+=' '+s.artikul;
+                        }
+                        if(s.sortName){
+                            n+=' '+s.sortName;
+                        }
+                        error +="Необходимое количество "+n+" отсутствует. Перейдите на страницу товара и уточните наличие."
+                    })
+                    throw {status : "checkWarehouse", message : error};
+                    //throw {status:''checkWarehouse,message:error};
+                }
+
+            })
+    }
+    this.makeRn = function (){
+        console.log('makeRn')
+        //console.log(global.get('store'))
+        var o ={
+            currency: order.currency,
+            name:'Расходная накладная на заказ '+order.num,
+            materials:[],
+            typeOfZakaz: "order",
+            virtualAccount: global.get('store').val.virtualAccount,
+            store: global.get('store')._id,
+            worker: 'any',
+            zakaz: order._id,
+            invoice:order._id,
+            makeReserve:true,
+            customer:{
+                name : order.profile.fio, email : order.user.email
+            }
+        };
+
+
+        if(order.profile.phone){
+            o.customer.phone=order.profile.phone;
+        }
+        if(order.profile.city){
+            o.customer.field1=order.profile.city;
+        }
+
+        if(order.shipCost){
+            o.delivery = Math.round((Number(order.shipCost))*100)/100;
+        }
+
+
+        order.cart.stuffs.forEach(function (s) {
+            //console.log(s)
+            var m = {}
+            /*m.name=s.name;
+            if(s.brand){
+                var b = global.get('brands').val.getOFA('_id',s.brand)
+                if(b){
+                    m.producer=b.name;
+                }
+            }
+            if(s.artikul){
+                m.sku = s.artikul
+            }
+            if(s.sortName){
+                m.sku+=' '+s.sortName;
+            }*/
+            m.stuff = s._id;
+            m.sort = s.sort;
+            m.qty = s.quantity;
+            m.priceForSale = Math.round((s.sum/s.quantity)*100)/100;
+            m.price = Math.round((s.priceUchet)*100)/100;
+            m.supplier = s.supplier;
+            m.supplierType = s.supplierType;
+            m.virtualAccount=global.get('store').val.virtualAccount;
+            //m.supplier = m.supplier.charAt(0).toUpperCase() + m.supplier.slice(1);
+            o.materials.push(m)
+
+        })
+        console.log(o)
+
+
+        if(!o.materials.length){
+            return exception.catcher('создание накладной','не выбраны товары');
+        }
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/createByAPIFromSite',o);
+            })
+            .then(function (res) {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная в резерве');
+                return res
+            })
+
+
+
+    }
+    this.cancelRn = function (){
+        console.log('cancelRn',order)
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        if(order.pn){
+            o.pn=order.pn;
+        }
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/cancelByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
+            })
+            /*.catch(function (err) {
+                console.log(err);
+                if(err){
+                    exception.catcher('обработка данных в бухгалтерии')(err);
+                }
+            });*/
+
+
+    }
+    this.holdZakaz = function (){
+        console.log('holdZakaz')
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/holdByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная проведена');
+            })
+            /*.catch(function (err) {
+                console.log(err);
+                if(err){
+                    exception.catcher('обработка данных в бухгалтерии')(err);
+                }
+            });*/
+
+
+    }
+    this.cancelZakaz = function (){
+        console.log('cancelZakaz')
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        if(order.pn){
+            o.pn=order.pn;
+        }
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/cancelZakazByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
+            })
+    }
+
+
 }])
 .factory('localStorage', function(){
     var APP_ID =  'frame-local-storage';
@@ -22987,7 +24437,6 @@ angular.module('gmall.services')
     };
 
 })
-
 'use strict';
 (function(){
 
@@ -25715,7 +27164,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 
 'use strict';
 angular.module('gmall.directives')
-.directive('paginatorMain', function (anchorSmoothScroll,$anchorScroll) {
+.directive('paginatorMain', function (anchorSmoothScroll,$anchorScroll,global) {
         return {
             restrict:'E',
             scope :{
@@ -25725,6 +27174,18 @@ angular.module('gmall.directives')
             },
             link: function (scope, element, attrs, controller) {
                //console.log('likn paginator',scope.paginate);
+                var store = global.get('store').val
+                var stuffListType = (global.get('sectionType'))?global.get('sectionType').val:'good';
+                //console.log(store.template.stuffListType)
+                var rows=(store.template.stuffListType[stuffListType] && store.template.stuffListType[stuffListType].rows)||3;
+                var filterBlock=store.template.stuffListType[stuffListType].parts.find(function(e){return e.name=='filters' && e.is && e.is!='false'})
+                var filtersInModal=store.template.stuffListType[stuffListType].filtersInModal;
+                if(filterBlock && !global.get('mobile').val && !filtersInModal){
+                    rows--
+                }
+
+                //console.log(rows,filterBlock,filtersInModal)
+
                if(!scope.paginate || typeof scope.paginate!='object'){
                    //console.log('exit')
                    return;
@@ -25825,7 +27286,20 @@ angular.module('gmall.directives')
                     return scope.paginate.page == scope.paginator.pageCount() - 1;
                 };
                 scope.paginator.pageCount = function () {
-                    var count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(scope.paginate.rows, 10)); if (count === 1) { scope.paginate.page = 0; }
+                    var perPage =scope.paginate.rows;
+                    var delta = perPage%rows;
+                    var midleRows=Math.round(rows/2);
+                    if(delta>=midleRows){
+                        perPage+=(rows-delta)
+                    }else{
+                        perPage-=delta
+                    }
+                    //console.log(perPage,delta)
+
+                    var count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(perPage, 10));
+                    /*count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(scope.paginate.rows, 10));*/
+                    //console.log(count)
+                    if (count === 1) { scope.paginate.page = 0; }
                     return count;
                 };
 
@@ -27257,19 +28731,14 @@ angular.module('gmall.directives')
             mobile:'@',
             blockElement:'@'
         },
-        template:'<h3 class="text-center" ng-bind="header"></h3>'+
-            '<div id="lastViewedWrapper" class="owl-carousel owl-theme">' +
-            '<div ng-repeat="s in stuffs track by $index" class="item">' +
-            '<a ui-sref="stuffs.stuff(s.linkData)">'+
-        '<img style="max-width: 200px; border-color: transparent" ng-src="{{s.img}}" >' +
-        '</a>'+
-        '</div>'+
-        '</div>',
-                    /*'<ul id="carouse{{localId}}"  class="elastislide-list">'+
-                    '<li ng-repeat="s in stuffs track by $index"><a ui-sref="stuffs.stuff(s.getUrlParams())">'+
-                    '<img style="max-width: 100px; border-color: transparent" ng-src="{{s.img}}" />'+
-                    '</a></li>'+
-                    '</ul>',*/
+        templateUrl: function(element,attrs){
+            var s=(attrs && attrs.templ && attrs.templ!='0')?attrs.templ:'';
+            //var sM=(attrs && attrs.mobile)?'Mobile':'';
+            var sM='';
+            var url = 'views/template/partials/stuffDetail/lastViewed/directive/lastViewed'+s+sM+'.html'
+            //console.log(url)
+            return url
+        },
         link: function(scope, element, attrs) {
             var subDomain = global.get('store').val.subDomain
             
@@ -27354,8 +28823,11 @@ angular.module('gmall.directives')
 
                 var linkData=global.get('categories').val.getOFA('_id',stuff.category).linkData;
                 linkData.stuffUrl=stuff.url;
-                viewedStuffs.unshift({_id:stuff._id,linkData:linkData,url:stuff.url,
-                    img:img})
+                var o={_id:stuff._id,linkData:linkData,url:stuff.url, img:img,name:stuff.name}
+                    if(stuff.artikul){
+                        o.artikul = stuff.artikul;
+                    }
+                viewedStuffs.unshift(o)
                 // ограничиваем список
                 if (viewedStuffs.length>15){
                     viewedStuffs.splice(15,1);
@@ -29526,7 +30998,6 @@ angular.module('gmall.directives')
                         paginate.items=0;
                     }
                 }
-                //console.log(response)
                 return response;
             }
 
@@ -29560,13 +31031,14 @@ angular.module('gmall.directives')
                 return $q.reject(error);
             }
         }
-        function create(){
+        function create(clone){
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'components/CONTENT/master/createMaster.html',
-                    controller: function($uibModalInstance){
+                    controller: function($uibModalInstance,clone){
                         var self=this;
+                        self.header=(clone)?'Клонирование объекта':'Создание объекта';
                         self.name=''
                         self.ok=function(){
                             $uibModalInstance.close(self.name);
@@ -29574,6 +31046,11 @@ angular.module('gmall.directives')
                         self.cancel = function () {
                             $uibModalInstance.dismiss();
                         };
+                    },
+                    resolve:{
+                        clone:function () {
+                            return clone;
+                        }
                     },
                     controllerAs:'$ctrl',
                 });
@@ -29737,7 +31214,7 @@ angular.module('gmall.directives')
         }
         function cloneItem(item){
             var name;
-            self.Items.create()
+            self.Items.create('clone')
                 .then(function (res) {
                     name=res;
                     return self.Items.getItem(item._id)
@@ -31921,13 +33398,15 @@ angular.module('gmall.directives')
             }
 
             function checkOut(userEntry) {
+                //console.log(userEntry);return
                 //console.log(self.selectedStuff)
                 /*console.log(userEntry);
                 return;*/
                 /*console.log(self.remind,self.timeRemind)
                 return;*/
                 prepareMessage(self.selectedStuff,userEntry,self.timePart.date,self.timePart.i)
-                //return;
+                /*console.log(self.dataForSend);
+                return;*/
                 var entry={
                     services:self.selectedStuff,
                     user:userEntry,
@@ -32034,8 +33513,8 @@ angular.module('gmall.directives')
                             var mm = self.masters.getOFA('_id',entry.master);
                             entry.masterName=(mm)?mm.name:'?????'
                             entry.dateForNote = self.dataForSend.date;
-                            var content=CreateContent.dateTimeNote(entry)
-                            //console.log(content)
+                            var content=CreateContent.dateTimeNote(entry,userEntry)
+                            //console.log(userEntry,content)
                             var o={addressee:'seller',
                                 type:'dateTime',
                                 content:content,
@@ -32342,7 +33821,8 @@ angular.module('gmall.directives')
                 self.dataForSend.name=user.name
                 self.dataForSend.userId=user._id
                 self.dataForSend.phone=user.phone
-                self.dataForSend.text=global.get('langOrder').val.recordedOn+' '+stuffs[0].name.toUpperCase()+' '+global.get('langOrder').val.onn+' '+date;
+                self.dataForSend.text=global.get('langOrder').val.recordedOn+' '+stuffs[0].name.toUpperCase()+' '+global.get('langOrder').val.onn+' '+date+' '+self.dataForSend.phone+
+                    ((self.dataForSend.name)?' '+self.dataForSend.name:'');
                 self.dataForSend.date=date//.toString()
                 //self.dataForSend.date2=date.toISOString()
                 //self.dataForSend.date3=date.toUTCString()
@@ -33980,7 +35460,7 @@ angular.module('gmall.directives')
                 return $q.reject(error);
             }
         }
-        function newBooking(master,timePart,services,date,entryDate,start){
+        function newBooking(master,timePart,services,date,entryDate,start,workplaces){
 
             //console.log(services)
             return $q(function(resolve,reject){
@@ -33988,10 +35468,11 @@ angular.module('gmall.directives')
                     animation: true,
                     size:'lg',
                     templateUrl: 'components/ORDERS/online/newBooking.html',
-                    controller: function ($uibModalInstance,global,$timeout,$user,exception,master,timePart,services,Booking,entryDate,start){
+                    controller: function ($uibModalInstance,global,$timeout,$user,exception,master,timePart,services,Booking,entryDate,start,workplaces){
                         //console.log(services)
                         var self=this;
                         self.global=global;
+                        self.workplaces=workplaces;
                         //console.log(global.get('store').val.nameLists)
                         self.date=moment(date).format('L');
                         self.phoneCodes=(global.get('store').val.phoneCodes)?global.get('store').val.phoneCodes:[{code:'+38',country:'Украина'}];
@@ -34237,7 +35718,9 @@ angular.module('gmall.directives')
                             }
 
 
-
+                            if(self.workplace){
+                                item.workplace=self.workplace;
+                            }
 
                             $uibModalInstance.close(item);
                         }
@@ -34270,6 +35753,9 @@ angular.module('gmall.directives')
                         services:function(){return services},
                         entryDate:function(){return entryDate},
                         start:function(){return start},
+                        workplaces:function () {
+                            return workplaces;
+                        }
 
                     }
                 });
@@ -34280,19 +35766,22 @@ angular.module('gmall.directives')
             })
 
         }
-        function editBooking(entry,masters){
+        function editBooking(entry,masters,workplaces){
+            //console.log(workplaces)
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     size:'lg',
                     templateUrl: 'components/ORDERS/online/editBooking.html',
-                    controller: function (global,$uibModalInstance,$user,Booking,$timeout,UserEntry,exception,entry,masters,Confirm){
+                    controller: function (global,$uibModalInstance,$user,Booking,$timeout,UserEntry,exception,entry,masters,Confirm,workplaces){
                         //console.log(entry)
                         var self=this;
                         self.master=masters[entry.master];
                         self.global=global;
                         self.moment=moment;
                         self.entry=entry;
+                        self.workplaces=workplaces;
+                        console.log(self.workplaces)
                         var currentDate=Booking.getDateStringFromEntry(entry,true)
                         self.dateEntry=moment(currentDate).format('LL')+','+moment(currentDate).format('dddd');
                         var oldEntry=angular.copy(entry)
@@ -34336,6 +35825,7 @@ angular.module('gmall.directives')
                         self.deleteUser=deleteUser;
                         self.addUser=addUser;
                         self.changeService=changeService;
+                        self.changeWorkplace=changeWorkplace;
 
 
 
@@ -34698,6 +36188,11 @@ angular.module('gmall.directives')
                             entry.stuffLink=self.service.link;
                             saveField('stuffLink')
                         }
+                        function changeWorkplace() {
+                            //console.log(self.service)
+
+                            saveField('workplace')
+                        }
 
                         self.ok=function(){
                             update=''
@@ -34737,7 +36232,10 @@ angular.module('gmall.directives')
                     controllerAs:'$ctrl',
                     resolve:{
                         entry:function(){return entry},
-                        masters:function(){return masters}
+                        masters:function(){return masters},
+                        workplaces:function () {
+                            return workplaces;
+                        }
 
                     }
                 });
@@ -36568,8 +38066,8 @@ angular.module('gmall.directives')
             template: '<div ng-transclude></div>'*/
         }
     };
-    schedulePlaceFromServerCtrl.$inject=['$scope','$http','global','$q','$compile','$attrs']
-    function schedulePlaceFromServerCtrl($scope,$http,global,$q,$compile,$attrs) {
+    schedulePlaceFromServerCtrl.$inject=['$rootScope','Booking','$scope','$http','global','$q','$compile','$attrs','$uibModal','$state','$timeout']
+    function schedulePlaceFromServerCtrl($rootScope,Booking,$scope,$http,global,$q,$compile,$attrs,$uibModal,$state,$timeout) {
         var self = this;
         self.moment=moment;
         self.mobile=global.get('mobile' ).val;
@@ -36577,6 +38075,9 @@ angular.module('gmall.directives')
         self.changeWeek=changeWeek;
         self.chancheActiveSlide=chancheActiveSlide;
         self.changeService=changeService;
+        self.setDataForEntry=setDataForEntry;
+
+
 
         self.week=0;
         var delay;
@@ -36604,6 +38105,7 @@ angular.module('gmall.directives')
             }
         })
         function changeWeek(week,service) {
+            //console.log(week)
             self.week=week
             if(!service){service=$attrs.stuff}
             //console.log(week)
@@ -36664,6 +38166,93 @@ angular.module('gmall.directives')
             changeWeek(self.week,s).then(function () {
                 delay=false;
             })
+        }
+        function setDataForEntry(entry) {
+            //console.log(global.get('seller').val)
+            if(!global.get('seller').val){return}
+            console.log(entry)
+            //console.log('setDataForEntry')
+
+
+
+
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/ORDERS/online/classInfo.html',
+                    controller: classInfoCtrl,
+                    controllerAs:'$ctrl',
+                    //size: 'lg',
+                    windowClass:'modalProject',
+                    //windowTopClass:'modalTopProject',
+                    backdropClass:'modalBackdropClass',
+                    //openedClass:'modalOpenedClass'
+                    resolve: {
+                        entry :function () {
+                            return entry;
+                        }
+                    }
+                });
+                $rootScope.$emit('modalOpened')
+                modalInstance.result.then(function(entry){
+                    $rootScope.$emit('modalClosed');
+                    //console.log(item)
+                    var o ={_id:entry._id}
+                    var field ='masterReplace pays members'
+                    o['masterReplace']=entry['masterReplace']
+                    o['pays']=entry['pays']
+                    o['members']=entry['members']
+                    //console.logmembers
+                    Booking.save({update:field},o,function(err){
+                        global.set('saving',true);
+                        $timeout(function(){
+                            global.set('saving',false);
+                            $state.reload();
+                        },1500)
+
+
+                    })
+                    resolve(entry)
+                },function(){$rootScope.$emit('modalClosed');reject()});
+            })
+
+        }
+        classInfoCtrl.$inject=['$scope','$uibModalInstance','$rootScope','global','exception','Booking','entry']
+        function classInfoCtrl($scope,$uibModalInstance,$rootScope,global,exception,Booking,entry) {
+
+            var self = this;
+            self.entry=entry;
+            self.ok = function ok() {
+                $uibModalInstance.close($scope.entry);
+            }
+            self.cancel = function cancel() {
+                $uibModalInstance.dismiss();
+            };
+            $scope.entry=entry;
+            var currentDate=Booking.getDateStringFromEntry(entry,true)
+            self.dateEntry=moment(currentDate).format('LL')+','+moment(currentDate).format('dddd');
+            $scope.dateEntry=self.dateEntry;
+            $q.when()
+                .then(function(){
+                    return global.get('masters').val;
+                })
+                .then(function(data){
+                    //console.log(data)
+                    $scope.masters=data.map(function(m){
+                        //m.stuffs=m.stuffs.map(function(s){return s._id})
+                        return m
+                    })
+                    //.filter(function(m){return (m.stuffs && m.stuffs.length)});
+
+
+                })
+                .catch(function(err){
+                    exception.catcher('получение списка мастеров')(err)
+                });
+
+
+
+
         }
     }
 })()
@@ -36753,9 +38342,10 @@ angular.module('gmall.directives')
             bindToController: true,
             controller: listCtrl,
             controllerAs: '$ctrl',
-            templateUrl: function () {
-                var s=(global.get('mobile') && global.get('mobile').val)?'Mobile':'';
-               return 'views/template/partials/home/schedule/directive/schedule'+s+'.html'
+            templateUrl: function (element,attrs) {
+                var s=(attrs && attrs.templ && attrs.templ!='0')?attrs.templ:'';
+                var sM=(attrs && attrs.mobile)?'Mobile':'';
+               return 'views/template/partials/home/schedule/directive/schedule'+s+sM+'.html'
             }
         }
     };
@@ -36791,8 +38381,8 @@ angular.module('gmall.directives')
             template: '<div ng-transclude></div>'*/
         }
     };
-    listCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','$state'];
-    function listCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,$state){
+    listCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','$state','Workplace'];
+    function listCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,$state,Workplace){
         var self = this;
         //console.log('listCtrl!!')
         self.moment=moment;
@@ -36904,6 +38494,7 @@ angular.module('gmall.directives')
         self.filterTimePartForMaster=filterTimePartForMaster;
         self.booking=booking;
         self.getDateObj=getDateObj;
+        self.getDateObj2=getDateObj2;
         self.changeWeek=changeWeek;
         self.disabledTimePart=disabledTimePart;
 
@@ -36955,7 +38546,19 @@ angular.module('gmall.directives')
                 .then(function () {
                     return getMasters()
                 })
-                .then(function(){
+                .then(function () {
+                    if(!global.get('workplaces').val){
+                        return Workplace.getList()
+                    }
+
+                })
+                .then(function(wp){
+
+                    if(wp){
+                        global.set('workplaces',wp);
+                        self.workplaces=global.get('workplaces').val
+                    }
+
                     /*console.log(self.masters)
                     console.log(self.masterId)*/
                     self.selectedMaster=angular.copy(self.masters.getOFA('_id',self.masterId))
@@ -37046,9 +38649,14 @@ angular.module('gmall.directives')
 
 
         function getBooking() {
+            console.log(global.get('workplaces').val)
             //console.log(self.query,self.datesOfWeeks)
             Booking.getBookingWeek(self.query,self.selectedMaster,self.datesOfWeeks,ngClickOnEntry)
                 .then(function(data) {
+                    //console.log(self.selectedMaster.week)
+                    for(var date in self.selectedMaster.week){
+                        self.selectedMaster.week[date].dateStr=getDateObj2(date,self.selectedMaster.week[date].entryTimeTable);
+                    }
                     if(global.get('user').val){
                         setUserAtEntry()
                     }
@@ -37177,6 +38785,7 @@ angular.module('gmall.directives')
         }
         function setUserAtEntry() {
             var user= global.get('user').val
+            if(!self.selectedMaster || !self.selectedMaster.week){return}
             for(var key in self.selectedMaster.week){
                 self.selectedMaster.week[key].entryTimeTable.forEach(function (part) {
                     if(part.userId && part.userId==user._id){
@@ -37382,6 +38991,51 @@ angular.module('gmall.directives')
                 var s =moment(date).format('ddd');
                 return s+'/'+day;
             }catch(err){console.log(err);return 'error handle date'}
+        }
+        function getDateObj2(dateStr,data) {
+
+
+            //console.log(data)
+            if(!data || !data.length){return}
+            var arr = data.filter(function (el) {
+                if(el.busy && el.i && el.entry && el.entry.start==el.i){
+                    if(el.entry.workplace && self.workplaces && self.workplaces.length){
+                        //console.log(el.workplace)
+                        var wp = self.workplaces.getOFA('_id',el.entry.workplace);
+                        if(wp){
+                           el.workplaceName=wp.name;
+                        }
+                        el.comment=el.entry.comment;
+                        //console.log(wp)
+                    }
+                }
+                return !el.out && el.busy
+            })
+            //console.log(arr)
+            if(!arr.length){
+                return
+            }
+            var year = dateStr.substring(4,8)
+            var month = dateStr.substring(8,10)
+            var day = dateStr.substring(10)
+
+
+            try{
+                var date = new Date(year,month,day)
+                //console.log(date)
+                var s =moment(date).format('dddd');
+                var d =moment(date).format('DD.MM.YY');
+                //console.log(capitalizeFirstLetter(s)+' </br>'+d)
+                return capitalizeFirstLetter(s)+' '+d;
+
+
+               // var s =moment(date).format('ddd');
+                //return s+'/'+day;
+            }catch(err){console.log(err);return 'error handle date'}
+
+        }
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
         function getDateObjFromStr(dateStr) {
             var year = dateStr.substring(4,8)

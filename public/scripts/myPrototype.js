@@ -473,11 +473,14 @@ Array.prototype.diff = function(a) {
 String.prototype.clearTag = function(num){
     var regex=/<\/?[^>]+(>|$)/g;
     if (num){
-        return (this.replace(regex, '').substring(0,num))
+        var ss =  (this.replace(regex, '').substring(0,num))
     } else {
         //console.log('?????')
-        return this.replace(regex, '')
+        var ss = this.replace(regex, '')
     }
+    //console.log(ss)
+    return ss.replace(/\./g, ". ")
+
 }
 
     String.prototype.myTrim = function(){
@@ -485,11 +488,14 @@ String.prototype.clearTag = function(num){
             return str;
         }).map(function (str) {
             var s =str.replace(/&nbsp;/g, " ");
+            //console.log(s)
             return s.trim();
+            //return s
         }).filter(function (str) {
             return str;
         }).join('')
     }
+
 
     String.prototype.clearFirstTag = function(tag){
         var i = tag.length;

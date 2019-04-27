@@ -49,9 +49,14 @@ function setLangForBlock(blocks,lang) {
             })
         }
         if(b.type && (b.type=='info' ||b.type=='news' || b.type=='filterTags'||b.type=='stuffs'||b.type=='campaign'
-            ||b.type=='brands'||b.type=='brandTags'||b.type=='categories' ||b.type=='filters')){
-            //console.log(b[b.type])
+            ||b.type=='brands'||b.type=='brandTags'||b.type=='categories' ||b.type=='filters' ||b.type=='groupStuffs')){
+            /*if(b.type=='groupStuffs'){
+                console.log(b[b.type])
+            }*/
             setLangField(b[b.type],lang);
+            /*if(b.type=='groupStuffs'){
+                console.log(b[b.type])
+            }*/
         }
 
     })
@@ -117,10 +122,12 @@ function doSingle(item,lang) {
         item.desc2=item.desc2L[lang];
         //item.desc2L=null
     }
+
+    //if(item.descLSort)
+
     if(item.img_tr && item.img_tr.descL && typeof item.img_tr.descL=='object' && typeof item.img_tr.descL[lang] !='undefined'){
         item.img_tr.desc=item.img_tr.descL[lang];
     }
-
     if(item.blocks && item.blocks.length){
         setLangForBlock(item.blocks,lang)
     }
@@ -134,9 +141,6 @@ function doSingle(item,lang) {
     if(item.header && typeof item.header=='object'){
         setLangForBlock(item.header,lang)
     }
-
-
-
     if(item.tags && item.tags.length){
         item.tags.forEach(function (tag) {
             doSingle(tag,lang)
@@ -147,7 +151,6 @@ function doSingle(item,lang) {
             if(tag && tag._id){
                 doSingle(tag,lang)
             }
-
         })
     }
 

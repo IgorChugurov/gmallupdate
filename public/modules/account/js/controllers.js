@@ -10,7 +10,7 @@ angular.module('gmall.controllers', [] )
         $q.when($auth.isAuthenticated())
             .then(function(auth){
                 if(!auth){
-                    return $user.login()
+                    return $user.login('bookkeep')
                 }
             })
             .then(function(){

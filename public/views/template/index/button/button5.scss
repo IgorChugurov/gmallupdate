@@ -11,6 +11,7 @@
 .btn-xs{
   letter-spacing: $letter-spacing;
   outline: none;
+  border-radius: 0;
 }
 .btn:hover,
 .btn:active,
@@ -37,6 +38,7 @@
   font-weight: $font-weight;
   font-family: $font-family;
   font-size: $font-size;
+  text-shadow: $text-shadow;
   border: $border-width solid $addColor1;
   border-radius: $border-radius;
   background-color: $addColor3;
@@ -110,6 +112,7 @@ fieldset[disabled] .btn:hover {
   font-weight: $font-weight;
   font-family: $font-family;
   font-size: $font-size;
+  text-shadow: $text-shadow;
   background-color: $addColor1;
   border: $border-width  solid $addColor1;
   font-size: $font-size;

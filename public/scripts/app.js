@@ -23,6 +23,7 @@
 /*UA-106626597-1*/
 
 
+
 Number.isInteger = Number.isInteger || function(value) {
         return typeof value === 'number' &&
             isFinite(value) &&
@@ -260,6 +261,7 @@ angular.module('gmall', ['ngRoute',
 
     var firstStateChenged;
     $rootScope.$on('$stateChangeStart', function(event, to, toParams, fromState, fromParams){
+        //console.log('window.videojs',window.videojs)
         //console.log('????')
         $rootScope.globalProperty.displaySearch=false;
         if(fromState.name=='master.item' && to.name=='master.item' ){return}
@@ -293,12 +295,16 @@ angular.module('gmall', ['ngRoute',
             /*console.log('sec',sec)
             console.log(groups,toParams.groupUrl)*/
             global.set('sectionType',sec.type);
+            global.set('section',sec)
             //console.log(global.get('sectionType'))
             /*Stuff.set*/
             //console.log(fromState.name!='stuffs.stuff' && !global.get('tempContent').val )
             if(fromState.name!='stuffs.stuff' && !global.get('tempContent').val ){
                 $rootScope.$emit('$stateChangeStartToStuff');
             }
+        }
+        if(to.name=='likes'){
+            global.set('sectionType','good');
         }
         /*if(fromState.name=='stuffs' && to.name=='stuffs.stuff'){
             $rootScope.srollPosition=$(window).scrollTop();
@@ -714,6 +720,79 @@ angular.module('gmall', ['ngRoute',
             masters=dataFromServer[16].filter(function (m) {
                 return m.actived
             });
+        var widthAbs=$(document.body).width()
+        /*console.log('widthAbs',widthAbs)
+        console.log(window.location)*/
+        var addChar = '?'
+        if(window.location.href.indexOf('?')>-1){
+            addChar = '&'
+        }
+        //console.log(widthAbs<1024  && widthAbs>750  && !tablet)
+        if(widthAbs<1200  && widthAbs>750  && !tablet){
+            window.location.href = window.location.href+ addChar+'tablet=true';
+           /* console.log(window.location.search)
+            window.location.reload(true);*/
+        }else if(widthAbs<=750  && !mobile){
+                window.location.href = window.location.href+ addChar+'mobile=true';
+                /* console.log(window.location.search)
+                 window.location.reload(true);*/
+        }
+        var droch;
+        $(window).resize(function () {
+            if(droch){return}
+            droch=true;
+            $timeout(function(){
+                droch=false
+            },50)
+            widthAbs=$(document.body).width()
+            if(widthAbs>=1024 && (tablet || mobile)){
+                var k = window.location.href.indexOf('tablet=true');
+                var l = window.location.href.indexOf('mobile=true');
+                if(k>-1){
+                    window.location.href=window.location.href.substring(0,k-1)
+                }else if (l>-1){
+                    window.location.href=window.location.href.substring(0,l-1)
+                }else{
+                    window.location.reload(true)
+                }
+
+                //window.location.href = window.location.href + addChar+'tablet=true';
+                /* console.log(window.location.search)
+                 window.location.reload(true);*/
+            }else if(widthAbs<1024  && widthAbs>750  && !tablet){
+
+                var k = window.location.href.indexOf('mobile=true');
+                if(k>-1){
+                    window.location.href = window.location.href.substring(0,k)+'tablet=true';
+                }else{
+                    var addChar = '?'
+                    if(window.location.href.indexOf('?')>-1){
+                        addChar = '&'
+                    }
+                    window.location.href = window.location.href+ addChar+'tablet=true';
+                }
+
+
+            }else if(widthAbs<=750  && !mobile){
+                var k = window.location.href.indexOf('tablet=true');
+                if(k>-1){
+                    window.location.href = window.location.href.substring(0,k)+'mobile=true';
+                }else{
+
+                    var addChar = '?'
+                    if(window.location.href.indexOf('?')>-1){
+                        addChar = '&'
+                    }
+
+                    window.location.href = window.location.href+ addChar+'mobile=true';
+                }
+
+
+                /* console.log(window.location.search)
+                 window.location.reload(true);*/
+            }
+        })
+
         //console.log(labels)
         if(labels && labels.length){
             global.set('labels',labels)
@@ -1028,7 +1107,8 @@ angular.module('gmall', ['ngRoute',
             zoomImg:_zoomImg,
             cloneStore:_cloneStore,
             orderGroupStuffs:_orderGroupStuffs,
-            bookingFromSchedule:bookingFromSchedule
+            bookingFromSchedule:bookingFromSchedule,
+            orderStuffDirect:_orderStuffDirect
         }
 
         function bookingFromSchedule(entry){
@@ -1193,6 +1273,68 @@ angular.module('gmall', ['ngRoute',
                 .then(function(){
                     $rootScope.$emit('$stateChangeStartToStuff');
                     return $order.sendOrder()
+                })
+                .then(function () {
+                    $rootScope.$emit('Purchase',{value:$order.paySum,currency:$order.currency});
+                    $rootScope.$emit('$stateChangeEndToStuff');
+                    $order.reinitCart()
+                    $rootScope.order=$order.getOrder();
+                    $order.clearCart()
+                    $rootScope.checkedMenu.cart=false
+                })
+                .then(function(){
+                    return $user.saveProfile(global.get('user' ).val)
+                })
+                .catch(function(err){
+                    $rootScope.$emit('$stateChangeEndToStuff');
+                    if(!err){return;}
+                    console.log('errerrerr ',err)
+                    if(err.data){
+                        var content = JSON.stringify(err.data);
+                    }else{
+                        var content = JSON.stringify(err, ["message", "arguments", "type", "name"]);
+                    }
+                    if(global.get('user').val){
+                        content +="\r"+global.get('user').val.email
+                    }
+                    if($order.getOrder()){
+                        content +="\r"+JSON.stringify($order.getOrder(), null, 4)
+                    }
+                    var domain=global.get('store').val.domain;
+                    var o={email:['igorchugurov@gmail.com','vikachugurova@gmail.com'],content:content,
+                        subject:'error in order ✔',from:  global.get('store').val.name+'<'+global.get('store').val.subDomain+'@'+domain+'>'};
+                    //console.log(o)
+                    $q(function(resolve,reject){$email.save(o,function(res){resolve()},function(err){resolve()} )})
+                    if(err){
+                        exception.catcher(global.get('langNote').val.error)(err)
+                    }
+                })
+
+        }
+        function _orderStuffDirect(stuff){
+            //console.log(stuff)
+            $order.clearCart();
+            stuff.quantity=1;
+            stuff.cena=stuff.price;
+            stuff.sum= stuff.cena*stuff.quantity;
+            $order.addItemToCart(stuff)
+            return $q.when()
+                .then(function(){
+                    if(!global.get('user' ).val || !global.get('user' ).val._id){
+                        console.log(1)
+                        return $user.login();
+                    }else{
+                        return
+                    }
+                })
+                .then(function(){
+                    //return $order.getShipInfo('short')
+                })
+                .then(function(){
+                    $rootScope.$emit('$stateChangeStartToStuff');
+                    console.log(2)
+                    return $order.sendOrder()
+
                 })
                 .then(function () {
                     $rootScope.$emit('Purchase',{value:$order.paySum,currency:$order.currency});
@@ -1486,7 +1628,8 @@ angular.module('gmall', ['ngRoute',
         function _openSlideMenu(){
             if(clickForOpen){return}
             clickForOpen=true;
-            $rootScope.checkedMenuChange('slideMenu',true)
+            var v = !$rootScope.checkedMenu['slideMenu']
+            $rootScope.checkedMenuChange('slideMenu',v)
             setTimeout(function(){
                 clickForOpen=false;
             },200)
@@ -1616,7 +1759,7 @@ angular.module('gmall', ['ngRoute',
 
 }])
 .config(['$stateProvider', '$urlRouterProvider','$locationProvider','globalProvider','$authProvider','$httpProvider','$animateProvider',function ($stateProvider,$urlRouterProvider,$locationProvider,globalProvider,$authProvider,$httpProvider,$animateProvider){
-
+/*https://github.com/angular/angular.js/issues/3613*/
     $animateProvider.classNameFilter(/^((?!(repeat-modify)).)*$/)
     $httpProvider.interceptors.push('myInterceptorService');
     //$authProvider.baseUrl=userHost;
@@ -1683,6 +1826,7 @@ angular.module('gmall', ['ngRoute',
 
 
     globalProvider.set('sections','penging')
+    globalProvider.set('section')
     globalProvider.set('categories','penging'); // from sections
     globalProvider.set('categoriesO');
     globalProvider.set('category'); // data for seoContent
@@ -1726,6 +1870,7 @@ angular.module('gmall', ['ngRoute',
     globalProvider.set('services')
     globalProvider.set('stuffsInList')
     globalProvider.set('campaignStuffCart')
+    globalProvider.set('workplaces')
 
 
 

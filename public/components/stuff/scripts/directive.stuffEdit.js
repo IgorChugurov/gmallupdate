@@ -3,7 +3,7 @@ angular.module('gmall.directives')
     .directive('driveSale',driveSaleDirective)
     .directive('driveRetail',driveRetailDirective)
 
-.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks){
+.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks','$fileUpload',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks,$fileUpload){
     return {
         restrict:"E",
         scope:{},
@@ -26,6 +26,7 @@ angular.module('gmall.directives')
             $scope.$ctrl.addBlock=addBlock;
             $scope.$ctrl.deleteBlock=deleteBlock;
             $scope.$ctrl.saveField=saveFieldBlocks;
+            $scope.$ctrl.saveFieldStuff=saveField;
             $scope.$ctrl.type='Stuff';
             /*$scope.$ctrl.setStyles=setStyles;
              $scope.$ctrl.deleteSlide=deleteSlide;
@@ -36,6 +37,8 @@ angular.module('gmall.directives')
 
             $scope.$ctrl.changeStock=changeStock;
             $scope.$ctrl.refreshBlocks=refreshBlocks;
+            $scope.$ctrl.loadVideo=loadVideo;
+            $scope.$ctrl.deleteVideo=deleteVideo;
 
             $scope.$ctrl.animationTypes=animationTypes;
             $scope.$ctrl.tinymceOption = {
@@ -47,6 +50,52 @@ angular.module('gmall.directives')
                 /*plugins: 'link image code',
                  toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'*/
             };
+
+
+            function loadVideo(item,field){
+                if(!item[field]){
+                    item[field]={link:''}
+                }
+                $q.when()
+                    .then(function () {
+                        self.uploadVideoUrl="/api/collections/Stuff/uploadVideoFile?collectionName=Stuff"
+                        return $fileUpload.fileUpload(self.uploadVideoUrl,field+'.link',item.url)
+                    })
+                    .then(function (res) {
+                        console.log(res)
+                        if(res && res.length){
+                            var a=[];
+                            if((field=='video1' || field=='video') && res[0].data && res[0].data.img){
+                                if(item[field] && item[field].link){
+                                    a.push(item[field].link)
+                                }
+                                item[field].link=res[0].data.img;
+                                //console.log(field)
+                                saveField(item,field)
+                            }
+                            if(a.length){
+                                Photo.deleteFiles(self.type,a)
+                            }
+
+                        }
+
+                        //console.log(res)
+                    })
+                    .catch(function (err) {
+                        console.log(err)
+                    })
+            }
+            function deleteVideo(item,field) {
+                Confirm('Удалить?')
+                    .then(function () {
+                        return Photo.deleteFiles(self.type,[item[field].link])
+                    })
+                    .then(function(response) {
+                        item[field]=null;
+                        saveField(item,field)
+                    },function(err) {console.log(err)});
+            }
+
 
 
 
@@ -368,7 +417,7 @@ angular.module('gmall.directives')
                         return  Stuff.getItem($stateParams.stuffUrl)
                     })
                     .then(function(item){
-                        //console.log(item);
+                        console.log(item);
                        if(item.addInfo && item.addInfo._id){
                            item.addInfo=item.addInfo._id
                        }
@@ -472,6 +521,7 @@ angular.module('gmall.directives')
                 return Math.ceil10(Number(price)+(global.get('store').val.seller.retail/100)*price,-2);
             }
             function saveField(stuff,field){
+                console.log(stuff,field)
                 if(field=='name' ||field=='artikul' || field=='category' || field=='brand' || field=='brandTag'){
                     var lang= global.get('store').val.lang
                     //console.log($scope.item.keywords[lang]);
@@ -547,6 +597,7 @@ angular.module('gmall.directives')
                 }
 
                 var o={_id:stuff._id};
+
                 var fieldArr=field.split(' ');
                 fieldArr.forEach(function(el){
                     if(el.indexOf('.')>-1){

@@ -22,7 +22,8 @@ var FilterSchema = new Schema({
     descL:{},
     img:String,
     stiker:String,
-    comment:String// дополнительное служебное описание характеристики
+    comment:String,// дополнительное служебное описание характеристики
+    photo:Boolean,
 
 });
 

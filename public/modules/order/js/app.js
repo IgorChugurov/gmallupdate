@@ -292,6 +292,7 @@ var myApp= angular.module('gmall', [
         $auth.logout()
         global.set('user',null)
         socket.emit('getUser:data',{user:null})
+        $state.go('frame',{},{reload:true})
     }
     function _logged(){
         var id=(global.get('user').val)?global.get('user').val._id:null;

@@ -905,11 +905,14 @@ Array.prototype.diff = function(a) {
 String.prototype.clearTag = function(num){
     var regex=/<\/?[^>]+(>|$)/g;
     if (num){
-        return (this.replace(regex, '').substring(0,num))
+        var ss =  (this.replace(regex, '').substring(0,num))
     } else {
         //console.log('?????')
-        return this.replace(regex, '')
+        var ss = this.replace(regex, '')
     }
+    //console.log(ss)
+    return ss.replace(/\./g, ". ")
+
 }
 
     String.prototype.myTrim = function(){
@@ -917,11 +920,14 @@ String.prototype.clearTag = function(num){
             return str;
         }).map(function (str) {
             var s =str.replace(/&nbsp;/g, " ");
+            //console.log(s)
             return s.trim();
+            //return s
         }).filter(function (str) {
             return str;
         }).join('')
     }
+
 
     String.prototype.clearFirstTag = function(tag){
         var i = tag.length;
@@ -1213,10 +1219,16 @@ String.prototype.getFormatedDate=function(){
         }
 
         this._isStuffInCampaign=function(stuff,campaign){
+
             //console.log(stuff)
             var stuffCategory = (typeof stuff.category=='object' && stuff.category.length)?stuff.category[0]:stuff.category;
             var stuffBrand=(stuff.brand && stuff.brand._id)?stuff.brand._id:stuff.brand
+            var stuffBrandTag=(stuff.brandTag && stuff.brandTag._id)?stuff.brandTag._id:stuff.brandTag
             function check(__campaign){
+                /*if(stuff._id=="5c0a3606092d863b3e9197a3"){
+                    console.log(stuff)
+                    console.log(__campaign)
+                }*/
                 //console.log(stuffCategory,__campaign.categories)
                 //console.log(__campaign,stuff.name)
                 if (__campaign.stuffs && __campaign.stuffs.length && __campaign.stuffs.indexOf(stuff._id)>-1){
@@ -1225,7 +1237,7 @@ String.prototype.getFormatedDate=function(){
                 if (__campaign.tags && __campaign.tags.length && stuff.tags && __campaign.tags.some(function(tag){return stuff.tags.indexOf(tag)>-1})){
                     return true;
                 }
-                if (__campaign.brandTags && __campaign.brandTags.length && __campaign.brandTags.indexOf(stuff.brandTag)>-1){
+                if (__campaign.brandTags && __campaign.brandTags.length && __campaign.brandTags.indexOf(stuffBrandTag)>-1){
                     return true
                 }
                 if (__campaign.brands && __campaign.brands.length && __campaign.brands.indexOf(stuffBrand)>-1){
@@ -1261,7 +1273,10 @@ String.prototype.getFormatedDate=function(){
             if (!campaign) {
                 for (var j=0,ll=self.campaign.length;j<ll;j++){
                     var is=check(self.campaign[j]);
-                    //console.log(is,(is && !self.campaign[j].revers),(!is && self.campaign[j].revers))
+                    /*if(stuff._id=="5c0a3606092d863b3e9197a3"){
+                        console.log(is,(is && !self.campaign[j].revers),(!is && self.campaign[j].revers))
+                    }*/
+
                     if ((is && !self.campaign[j].revers)||(!is && self.campaign[j].revers)){
                         setCampaignPrice(self.campaign[j])
                         return self.campaign[j];
@@ -2228,6 +2243,45 @@ var myApp= angular.module('gmall', [
             url: "/labels",
             template: '<labels></labels>',
         })
+
+
+
+        .state('frame.sections', {
+            url: "/sections",
+            template :'<sections-list></sections-list>'
+        })
+        .state('frame.sections.editCategory', {
+            abstract: true,
+            url: '/editCategory',
+            template: '<ui-view/>'
+        })
+        .state("frame.sections.editCategory.category", {
+            url: "/:id",
+            template:'<category-edit></category-edit>',
+        })
+        .state('frame.sections.editSection', {
+            abstract: true,
+            url: '/editSection',
+            template: '<ui-view/>'
+        })
+        .state("frame.sections.editSection.section", {
+            url: "/:id",
+            template:'<section-edit></section-edit>',
+        })
+
+
+        /*.state('frame.contacts.list', {
+            // url will become '/contacts/list'
+            url: '/list'
+            //...more
+        })
+        .state('frame.contacts.detail', {
+            // url will become '/contacts/detail'
+            url: '/detail',
+            //...more
+        })
+
+
         .state("frame.sections", {
             url: "/sections",
             template :'<sections-list></sections-list>'
@@ -2235,7 +2289,7 @@ var myApp= angular.module('gmall', [
         .state("frame.sections.category", {
             url: "/:id",
             template:'<category-edit></category-edit>',
-        })
+        })*/
         .state("frame.filterEdit", {
             url: "/filterEdit",
             template:'<div ui-view=""></div>',
@@ -2773,8 +2827,8 @@ angular.module('gmall.filters', [] )
             restrict:'AE'
         }
     }
-    signupCtrl.$inject=['$scope','$auth', 'toaster','$q','global','Account','$state','Stuff','CreateContent','$email','exception'];
-    function signupCtrl($scope,$auth, toaster,$q,global,Account,$state,Stuff,CreateContent,$email,exception){
+    signupCtrl.$inject=['$scope','$auth', 'toaster','$q','global','Account','$state','Stuff','CreateContent','$email','exception','$user','$http','$timeout','sendPhoneFactory'];
+    function signupCtrl($scope,$auth, toaster,$q,global,Account,$state,Stuff,CreateContent,$email,exception,$user,$http,$timeout,sendPhoneFactory){
         var self=this;
         self.global=global;
         self.formData=(global.get('store').val.bonusForm)?global.get('store').val.bonusForm:{phone:true,fields:[]}
@@ -2782,12 +2836,224 @@ angular.module('gmall.filters', [] )
         if(!self.buttonName){self.buttonName=='подписаться!!'}
         //console.log(self.buttonName)
 
+        self.block='email';
+        console.log(global.get('store').val.typeOfReg)
+        if(global.get('store').val.typeOfReg){
+            if(global.get('store').val.typeOfReg.phone){
+                self.typeOfReg='phone';
+                self.block='phone'
+            }else if(global.get('store').val.typeOfReg.email){
+                self.typeOfReg='email'
+            }
+        }
+
+
         self.signup=signup;
         self.authenticate=authenticate;
+        self.sendCodeToPhone=sendCodeToPhone;
+        self.verifyCode=verifyCode;
+
+
+
+        $scope.$watch(function () {
+            return self.user.profile.phone
+        },function(n,o){
+            console.log(n,o)
+            self.phoneExist=false;
+            /*if(n){
+                regitration(n)
+            }*/
+        });
+
+
+        function checkUserEntry(phone) {
+            var query = {phone:phone};
+            return $q.when()
+                .then(function () {
+                    //return $user.checkPhoneForExist(phone)
+                    return $user.getItem(phone,'profile.phone')
+                })
+                .then(function(res){
+                    //console.log(res)
+                    if(res){return res}else{return null}
+                })
+        }
+
+
+
+        function createUser(name,phone) {
+            var email= phone+'@gmall.io'
+            var user = {email:email,name:name,profile:{phone:phone,fio:name}};
+            return $auth.signup(user)
+                .then(function(response) {
+                    console.log(response)
+                    if(response && response.data &&  response.data.token){
+                        if(response.data.token=='update'){
+                            throw null;
+                        }else{
+                            $auth.setToken(response);
+                            return Account.getProfile()
+                        }
+                    } else{
+                        throw response;
+                    }
+
+                })
+                .then(function(response){
+                    console.log(response)
+                    if(response){
+                        global.set('user',response.data);
+                        global.get('functions').val.logged();
+                    }
+
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('new client')(err)
+                    }
+                })
+
+        }
+        function sendCodeToPhone(phone) {
+            var o = {phone:phone}
+            self.sendCodeDisable=true;
+            $q.when()
+                .then(function () {
+                    return $http.post('/api/users/sendSMS',o)
+                })
+                .then(function () {
+                    exception.showToaster('info','send code','success')
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('send code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+
+        }
+
+
+        function sendCodeToPhone__(phone) {
+            if(self.sendCodeDisable){return}
+            self.sendCodeDisable=true;
+            //console.log(self.phone)
+            if(!phone){
+                return;
+            }
+            $q.when()
+                .then(function(){
+                    return sendPhoneFactory.checkPhone(phone)
+                })
+                .then(function (res) {
+                    //console.log(res)
+                    if(!res || !res._id){
+                        return $user.newUserByPhone(self.name,self.phone)
+                    }
+                })
+                .then(function () {
+                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    return sendPhoneFactory.sendCodeToPhone(self.phone)
+                })
+                .then(function () {
+                    self.codeSent=true;
+                    exception.showToaster('info','send code','success')
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('send code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+        }
+        function verifyCode(form) {
+            if(self.sendVerifyCodeDisable){return}
+            if(form.$invalid){return}
+            if(!self.code || !self.user.profile.phone){
+                return;
+            }
+            self.sendVerifyCodeDisable=true;
+            $q.when()
+                .then(function () {
+                    return sendPhoneFactory.verifyCode(self.code,self.phone)
+                })
+                .then(function (response) {
+                    //console.log(response)
+                    exception.showToaster('info','verify code','success')
+                    $timeout(function () {
+                        self.sendVerifyCodeDisable=false
+                    },5000);
+                    if(response && response.data &&  response.data.token){
+                        $auth.setToken(response);
+                        return Account.getProfile()
+                    }else{throw 'wrong response'}
+                })
+                .then(function(response){
+                    $scope.$emit('closeWitget')
+                    toaster.info(global.get('langNote').val.authComplite);
+                    if(response){
+                        global.set('user',response.data);
+                        global.get('functions').val.logged();
+                        $scope.$emit('cartslide',{event:'signLogin'})
+                    }
+
+                })
+                .catch(function (err) {
+                    self.wrongCode=true;
+                    global.set('user',null);
+                    if(err){
+                        exception.catcher('verify code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendVerifyCodeDisable=false
+                    },5000)
+                })
+        }
+
+
+        function regitration(phone) {
+            $q.when()
+                .then(function () {
+                    return checkUserEntry(phone)
+                })
+                .then(function (res) {
+                    if(res && res._id){
+                        self.phoneExist=true;
+                        sendCodeToPhone()
+                        //self.currentBlock=5;
+                        return null
+                    }else{
+                        return createUser(self.user.name,phone)
+                    }
+
+                })
+                .catch(function (err) {
+                    exception.catcher(global.get('lang').val.error)(err)
+                    //console.log(err)
+                })
+        }
 
 
         function signup(form) {
+
+            console.log(form)
             if(!form.$valid){return}
+
+            if(self.typeOfReg=='phone' && self.user.profile.phone){
+                return regitration(self.user.profile.phone)
+            }
+
+
             self.user.store=global.get('store').val._id;
             $auth.signup(self.user)
                 .then(function(response) {
@@ -2916,7 +3182,17 @@ angular.module('gmall.filters', [] )
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
         }
-
+        //console.log(global.get('store').val)
+        self.block='email';
+        if(global.get('store').val.typeOfReg){
+           if(global.get('store').val.typeOfReg.phone){
+                self.typeOfReg='phone';
+               self.block='online'
+           }else if(global.get('store').val.typeOfReg.email){
+               self.typeOfReg='email'
+           }
+        }
+        //console.log(self.typeOfReg)
         self.login=login;
         self.authenticate=authenticate;
         self.sendCodeToPhone=sendCodeToPhone;
@@ -3128,6 +3404,15 @@ angular.module('gmall.filters', [] )
         var self=this;
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
+
+        }
+        //console.log(global.get('store').val)
+        if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.oferta){
+            self.oferta=true;
+
+        }
+        if(global.get('store').val.texts && global.get('store').val.texts.oferta){
+            self.ofertaText=global.get('store').val.texts.oferta[global.get('store').val.lang];
         }
 
         self.sendCodeToPhone=sendCodeToPhone;
@@ -3142,7 +3427,11 @@ angular.module('gmall.filters', [] )
 
 
 
-        function sendCodeToPhone() {
+        function sendCodeToPhone(form) {
+            if(form.$invalid){
+                return
+            }
+
             if(self.sendCodeDisable){return}
             self.sendCodeDisable=true;
             //console.log(self.phone)
@@ -3156,7 +3445,7 @@ angular.module('gmall.filters', [] )
                 .then(function (res) {
                     //console.log(res)
                     if(!res || !res._id){
-                        return $user.newUserByPhone(self.name,self.phone)
+                        return $user.newUserByPhone(self.name,self.phone,self.confirmCondition)
                     }
                 })
                 .then(function () {
@@ -3472,7 +3761,8 @@ function confirmFactory($q,$uibModal) {
                 template : [
                     '<div class="modal-header">',
                         '<h3 class="modal-title text-center" ng-bind="$ctrl.question"></h3>',
-                        "<span class='icon-cancel-img' ng-click='$ctrl.cancel()'></span>",
+                        '<span class="cancel-confirm"><span class="icon-cancel-img" ng-click=""$ctrl.cancel()"></span></span>',
+
                     '</div>',
                     '<div class="modal-body confirm">',
                     '<form ng-submit="$ctrl.ok()">'+
@@ -5272,6 +5562,167 @@ angular.module('gmall.directives')
         templateUrl:'components/sections/category.html',
     }
 }])
+    .directive('sectionEdit',[function(){
+
+        function sectionCtrl($scope,$q,$stateParams,Filters,global,$timeout,Sections,$http,Photo){
+            var self=this;
+            self.Items=Sections;
+            self.global=global;
+            self.block='desc';
+            self.listOfBlocks=angular.copy(listOfBlocksForAll);
+            self.addBlock=addBlock;
+            self.deleteBlock=deleteBlock;
+            self.refreshBlocks=refreshBlocks;
+            $q.when()
+                .then(function(){
+                    return Sections.get({id:$stateParams.id} ).$promise;
+                })
+                .then(function(res){
+                    if(!res.blocks){res.blocks=[];}
+                    res.blocks.forEach(function(b,i){
+                        b.i=i
+                    })
+                    //res.filters= res.filters.map(function(el){return el._id})
+                    self.item=res;
+                })
+                .then(function(){
+                    return Filters.getFilters()
+                })
+                .then(function(filters){
+                    self.filters=filters.filter(function (f) {
+                        return f.actived
+                    })
+                })
+
+                .catch(function(err){
+                    self.edit=false;
+                })
+
+
+
+
+
+            self.saveField = function(field,defer){
+                console.log('field')
+                defer =defer||0
+                $timeout(function(){
+                    var o={_id:self.item._id};
+                    o[field]=self.item[field]
+                    Sections.save({update:field},o,function(){
+                        global.set('saving',true)
+                        $timeout(function () {
+                            global.set('saving',false);
+                        },1500)
+                    });
+                },defer)
+            };
+            function saveField(field,data){
+                var o={_id:self.item._id};
+                o[field]=data
+                Sections.save({update:field},o,function(){
+                    global.set('saving',true)
+                    $timeout(function () {
+                        global.set('saving',false);
+                    },1500)
+                });
+            };
+            $scope.$on('changeLang',function(){
+                $q.when()
+                    .then(function(){
+                        return Sections.get({id:$stateParams.id} ).$promise;
+                    })
+                    .then(function(res){
+                        if(!res.blocks){res.blocks=[];}
+                        res.blocks.forEach(function(b,i){
+                            b.i=i
+                        })
+                        self.item=res;
+                    })
+            })
+
+            function refreshBlocks() {
+                // console.log('???????????????')
+                return Category.get({_id:$stateParams.id} ).$promise
+                //console.log(id)
+                    .then(function(data) {
+                        /*console.log(data)
+                         console.log(self.item.blocks.length)*/
+                        data.blocks.forEach(function (b,i) {
+                            b.i=i;
+                            if(!b.desc){b.desc=''}
+                            if(!b.descL){b.descL={}}
+                            if(!b.desc1){b.desc1=''}
+                            if(!b.desc1L){b.desc1L={}}
+                            if(!b.name){b.name=''}
+                            if(!b.nameL){b.nameL={}}
+                            if(!b.name1){b.name1=''}
+                            if(!b.name1L){b.name1L={}}
+                            if(!b.videoLink){b.videoLink=''}
+                        })
+                        self.item.blocks=data.blocks
+                        /*console.log(self.item.blocks.length)*/
+                    })
+            }
+            function addBlock(type){
+                if(!type){return}
+                $scope.$broadcast('addNewBlock',{type:type})
+                self.newBlock=null;
+                return;
+            }
+            function deleteBlock(block) {
+                console.log(block)
+                var o={_id:self.item._id};
+                o['id']=block.id;
+                var update={update:'id',embeddedName:'blocks'};
+                update.embeddedPull=true;
+
+                console.log(update,o)
+                //return;
+                Confirm('удалить?')
+                    .then(function () {
+                        return self.Items.save(update,o).$promise;
+                    })
+                    .then(function (res) {
+                        self.item.blocks.splice(block.i,1)
+                        self.item.blocks.forEach(function(b,i){
+                            b.i=i;
+                        })
+
+                        var images=[]
+                        if(block.img){
+                            images.push(block.img);
+                        }
+                        if(block.video){
+                            images.push(block.video);
+                        }
+                        if(block.videoCover){
+                            images.push(block.videoCover);
+                        }
+                        if(block.imgs && block.imgs.length){
+                            block.imgs.forEach(function(im){
+                                if(im.img){
+                                    images.push(im.img);
+                                }
+                            })
+
+                        }
+                        if(images.length){
+                            return Photo.deleteFiles('Stuff',images)
+                        }
+
+                    })
+
+            }
+
+        }
+        return {
+            scope: {},
+            bindToController: true,
+            controller: sectionCtrl,
+            controllerAs: '$ctrl',
+            templateUrl:'components/sections/section.html',
+        }
+    }])
 
 .directive('fixSection',[function(){
     return{
@@ -5675,12 +6126,15 @@ angular.module('gmall.directives')
                 $uibModalInstance.dismiss('cancel');
             };
             self.ok = function (filterTag) {
-                if(self.section){
-                    filterTag.section=self.section;
+                if(filterTag){
+                    if(self.section){
+                        filterTag.section=self.section;
+                    }
+
+                    filterTag.brand=self.filters.find(function(b){
+                        return b._id==filterTag.brand
+                    })
                 }
-                filterTag.brand=self.filters.find(function(b){
-                    return b._id==filterTag.brand
-                })
                 $uibModalInstance.close(filterTag);
             };
         }
@@ -6523,7 +6977,7 @@ angular.module('gmall.controllers')
         }
 
         function _salePrice(doc,sale){
-            //console.log(doc.stack)
+            //console.log(doc.stock,doc.driveSalePrice)
             if(doc.driveSalePrice && doc.driveSalePrice.maxDiscount){
                 doc.maxDiscount=doc.driveSalePrice.maxDiscount;
             }
@@ -6631,7 +7085,13 @@ angular.module('gmall.controllers')
             return el;
         }
 
+
         function _changeSortOfStuff(sort){
+            if(this.stock[sort]){
+                this.filterActiveTagName=this.stock[sort].name;
+            }else{
+                this.filterActiveTagName='';
+            }
             /*console.log(this.stock && sort && this.stock[sort] && !this.stock[sort].quantity)
             console.log(this.stock,sort,this.stock[sort],this.stock[sort].quantity)*/
             if(this.stock && sort && this.stock[sort] && !this.stock[sort].quantity){
@@ -6707,25 +7167,48 @@ angular.module('gmall.controllers')
         var delay
         function zoomImgGlobal(i,images,home) {
             //console.log(images[i])
-            var imgs = $("img[src$='"+images[i].img+"']"),img,horizontalOrient;
+            var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+            var imgs = $("img[src$='"+images[i].img+"']"),img,horizontalOrient,squareH,squareV;
             //console.log(imgs)
             if(imgs && imgs[0]){
                 img=$(imgs[0]);
-                if(img.width() && img.height() && img.width() > img.height()){
-                    horizontalOrient=true;
+
+                if(img.width() && img.height()){
+                    if(img.width() >img.height()){
+                        horizontalOrient=true;
+                    }
+                    if(img.width() === img.height() || (img.width()- img.height())<5){
+                        if(w>h){squareH=true;}else{squareV=true}
+                        horizontalOrient=false;
+                    }
+
                 }
             }else{
                 imgs = $("img[src$='"+images[i].thumb+"']")
+
                 //console.log(imgs)
                 if(imgs && imgs[0]){
                     img=$(imgs[0]);
-                    if(img.width() && img.height() && img.width() > img.height()){
-                        horizontalOrient=true;
+                    if(img.width() && img.height()){
+                        if(img.width() >img.height()){
+                            horizontalOrient=true;
+                        }
+                        if((img.width() === img.height() || (img.width()- img.height())<5)){
+                            horizontalOrient=false;
+                            if(w>h){squareH=true;}else{squareV=true}
+                        }
                     }
                 }else{
                     if(images[i].el){
-                        if(images[i].el.width && images[i].el.height && images[i].el.width > images[i].el.height){
-                            horizontalOrient=true;
+                        if(images[i].el.width && images[i].el.height){
+                            if(images[i].el.width >images[i].el.height){
+                                horizontalOrient=true;
+                            }
+                            if(images[i].el.width === images[i].el.height||(images[i].el.width - images[i].el.height)<5){
+                                horizontalOrient=false;
+                                if(w>h){squareH=true;}else{squareV=true}
+                            }
                         }
                         //console.log(images[i].el)
                     }
@@ -6754,7 +7237,18 @@ angular.module('gmall.controllers')
                 animation: true,
                 bindToController: true,
                 controllerAs: '$ctrl',
-                windowClass:  function(){return((horizontalOrient)?'zoom zoom-modal-horizontal':'zoom zoom-modal-vertical')},//'app-modal-window',
+                windowClass:  function(){
+                    if(squareH){
+                        return 'zoom zoom-modal-squareH'
+                    }else if(squareV){
+                        return 'zoom zoom-modal-squareV'
+                    } else if(horizontalOrient){
+                        return 'zoom zoom-modal-horizontal'
+                    } else{
+                        return 'zoom zoom-modal-vertical'
+                    }
+                },
+                    //return((horizontalOrient)?'zoom zoom-modal-horizontal':'zoom zoom-modal-vertical')},//'app-modal-window',
                 templateUrl: templateUrl,
                 controller: function ($uibModalInstance,global,gallery,i,home,horizontalOrient){
                     var self=this;
@@ -6864,6 +7358,7 @@ angular.module('gmall.controllers')
             if(item.category && item.category._id){
                 item.category=[item.category]
             }
+            //console.log(item)
             if(item.category && item.category.length){
                 //console.log(global.get('category').val)
                 var i=0;
@@ -6912,20 +7407,22 @@ angular.module('gmall.controllers')
                 if(b){
                     item.brandUrl= b.url;
                     item.brandName=b.name;
-                    if(item.brandTag){
+                    if(item.brandTag && !item.brandTag._id){
                         var bt = b.tags.getOFA('_id',item.brandTag)
                         if(bt){
                             item.brandTagUrl=bt.url;
                             item.brandTagName=bt.name;
                         }
-
-
+                    }else if(item.brandTag && item.brandTag._id){
+                        item.brandTagUrl=item.brandTag.url;
+                        item.brandTagName=item.brandTag.name;
                     }
                 }
             }
 
         }
         function _setDataForStuff(stuff,filterTags,stuffsState){
+            //console.log(stuff.name,stuff.stock,global.get('store').val.template.stuffListType[global.get('sectionType').val])
             //console.log(JSON.parse(JSON.stringify(stuff)));
             stuff.changeSortOfStuff=_changeSortOfStuff;
             stuff.addItemToOrder=_addItemToOrder;
@@ -7020,19 +7517,67 @@ angular.module('gmall.controllers')
                 /*console.log(stuff.stock)
                 console.log(stuff.stockKeysArray)*/
                 var sort_Id=null;
+                //console.log(stuff)
                 stuff.stockKeysArray.forEach(function (key) {
+                    //console.log(key,stuff.stock[key._id])
                     // устанавливаем  разновидноть
                     //if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort)) {
-                    if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort || $state.current.name!='stuffs.stuff' || stuffsState)) {
-                        //console.log('устанавливаем разновидность')
-                        if (!sort_Id && stuff.stock[key._id].quantity) {
-                            sort_Id = key._id;
-                            stuff.sort = sort_Id;
-                            //console.log(key.name)
+                    //console.log(stuff.name,key.name,'устанавливаем разновидность',$state.current.name!='stuffs.stuff' || stuffsState)
+                    if(!stuff.minPrice){
+                        stuff.minPrice=Number(stuff.stock[key._id].price);
+                    }
+                    if(!stuff.maxPrice){
+                        stuff.maxPrice=Number(stuff.stock[key._id].price);
+                    }
+                    /*console.log(stuff.stock[key._id].price,stuff.minPrice)
+                    console.log(stuff.stock[key._id].price<stuff.minPrice)
+                    console.log(typeof stuff.stock[key._id].price)*/
+                    if(Number(stuff.stock[key._id].price)<stuff.minPrice){
+                        stuff.minPrice=Number(stuff.stock[key._id].price);
+                    }
+                    if(Number(stuff.stock[key._id].price)>stuff.maxPrice){
+                        stuff.maxPrice=Number(stuff.stock[key._id].price);
+                    }
+
+
+                    if(stuff.stock[key._id].priceSale){
+                        if(!stuff.minPriceSale){
+                            stuff.minPriceSale=Number(stuff.stock[key._id].priceSale);
                         }
+                        if(!stuff.maxPriceSale){
+                            stuff.maxPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+                        if(Number(stuff.stock[key._id].priceSale)<stuff.minPriceSale){
+                            stuff.minPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+                        if(Number(stuff.stock[key._id].priceSale)>stuff.maxPriceSale){
+                            stuff.maxPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+
+                    }
+
+                    if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort || $state.current.name!='stuffs.stuff' || stuffsState)) {
+                        //console.log($state.current.name)
+                        if($state.current.name==='stuffs' || $state.current.name==='likes'){
+                            if(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSortList){
+                                if (!sort_Id && stuff.stock[key._id].quantity) {
+                                    sort_Id = key._id;
+                                    stuff.sort = sort_Id;
+                                    //console.log(key.name)
+                                }
+                            }
+                        }else{
+                            if (!sort_Id && stuff.stock[key._id].quantity) {
+                                sort_Id = key._id;
+                                stuff.sort = sort_Id;
+                                //console.log(key.name)
+                            }
+                        }
+
                     }else{
                         //console.log('не устанавливаем разновидность')
                     }
+
 
 
 
@@ -7049,13 +7594,18 @@ angular.module('gmall.controllers')
                         }
                     }
                     stuff.stock[key._id].name=key.name;
+
                     //console.log(stuff.stock[key._id])
+                    if(key._id==stuff.sort){
+                        stuff.filterActiveTagName=stuff.stock[key._id].name;
+                    }
                 })
 
                 if(stuff.stockKeysArray.length && sort_Id){
                     _changeSortOfStuff.call(stuff,sort_Id);
                 }
-                //console.log(stuff.sort)
+                /*console.log(stuff.minPrice,stuff.maxPrice)
+                console.log(stuff.minPriceSale,stuff.maxPriceSale)*/
 
             }else if(stuff.stock && typeof stuff.stock == 'object' && stuff.stock.notag){
                 if(stuff.stock['notag'].quantity){
@@ -7094,8 +7644,12 @@ angular.module('gmall.controllers')
                         for(var ii=0;ii<itemS.tags.length;ii++){
                             var idx=filterGroupTags.indexOf(itemS.tags[ii]);
                             if(idx>-1){
+                                if(itemS._id===stuff._id){
+                                    stuff.sortsOfStuff.filterActiveTagName=filterGroup.tags[idx].name;
+                                }
                                 if(filterGroup.tags[idx].img){
                                     stuff.sortsOfStuff.stuffs[i].gallery[0].thumbSmallTag=filterGroup.tags[idx].img
+                                    //stuff.sortsOfStuff.stuffs[i].tagName=filterGroup.tags[idx].name
                                 }
                                 break;
                             }
@@ -7574,7 +8128,7 @@ angular.module('gmall.controllers')
                         var sections=data[0],brands=data[1],filters=data[2];
                         //console.log(stateParams)
                         parentSection=Sections.getSection(sections,stateParams.groupUrl);
-                        //console.log(parentSection)
+                        //console.log('parentSection',parentSection)
 
                         global.set('parentSection',parentSection)
                         if(parentSection){
@@ -7610,12 +8164,15 @@ angular.module('gmall.controllers')
                                     sectionCategories.forEach(function (cat) {
                                         //console.log(cat)
                                         var c = global.get('categoriesO').val[cat];
-
-                                        c.filters.forEach(function(f){
+                                        if(parentSection && parentSection.filters){
+                                            categoryFilters=parentSection.filters;
+                                        }
+                                        /*c.filters.forEach(function(f){
                                             if(categoryFilters.indexOf(f)<0){
                                                 categoryFilters.push(f)
                                             }
-                                        })
+                                        })*/
+
                                         c.brands.forEach(function(b){
                                             if(categoryBrands.indexOf(b)<0){
                                                 categoryBrands.push(b)
@@ -7730,6 +8287,7 @@ angular.module('gmall.controllers')
 
 
                         query.queryTags={}
+                        //console.log(categoryFilters)
                         filters.forEach(function (f) {
                             f.inList=false;
                             if((to.name=='stuffs' || to.name=='stuffs.stuff')){
@@ -7741,12 +8299,14 @@ angular.module('gmall.controllers')
                                 f.inList=true;
                             }
 
+                            //console.log(f.name,f.inList)
                             if(categoryFilters && categoryFilters.length){
                                 if(categoryFilters.indexOf(f._id)>-1){
                                     f.inList=true;
                                     f.open=false;
                                 }
                             }
+
                             if(f.count){
                                 //console.log(query.filters[f._id])
                                 if(query.filters[f._id]){
@@ -7771,7 +8331,9 @@ angular.module('gmall.controllers')
                                     }
                                 })
                             }
+
                         })
+
                         _setQueryForTags(query,filters)
                         global.set('breadcrumbs',breadcrumbs);
                         // для клиенского запроса только опубликованные товары
@@ -7798,6 +8360,7 @@ angular.module('gmall.controllers')
 
 
         function setFilters(){
+            //console.log('stuff setFilters')
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
@@ -7869,6 +8432,7 @@ angular.module('gmall.controllers')
                     delete stuff.sort;
                     delete stuff.sortsOfStuff;
                     delete stuff.keywords;
+                    delete stuff.groupStuffs;
                     if(stuff.blocks && stuff.blocks.length){
                        stuff.blocks.forEach(function (b) {
                            delete b._id
@@ -7876,11 +8440,12 @@ angular.module('gmall.controllers')
                            b.templateName=null;
                            if(b.img){b.img=null}
                            if(b.video){b.video=null}
-                           if(b.imgs && b.imgs.length){
+                           /*if(b.imgs && b.imgs.length){
                                b.imgs.forEach(function (slide) {
                                    if(slide.img){slide.img=null;}
                                })
-                           }
+                           }*/
+                           if(b.imgs){b.imgs=[]}
                        })
                     }
                     //console.log(stuff.blocks)
@@ -8934,11 +9499,24 @@ angular.module('gmall.controllers')
                 }*/
 
                 $scope.stuff = Stuff.setDataForStuff($scope.stuff,global.get('filterTags').val,'stuffs')
-                //console.log($scope.stuff.name)
+                //console.log($scope.stuff)
+                if($scope.stuff.sortsOfStuff && $scope.stuff.sortsOfStuff.filterGroup && global.get('filtersO').val[$scope.stuff.sortsOfStuff.filterGroup]){
+                    //console.log(global.get('filtersO').val[$scope.stuff.sortsOfStuff.filter])
+
+                    var ttt;
+                    for(var i=0;i<$scope.stuff.tags.length;i++){
+                        ttt = global.get('filtersO').val[$scope.stuff.sortsOfStuff.filterGroup].tags.getOFA('_id',$scope.stuff.tags[i]);
+                        if(ttt){
+                            $scope.stuff.tagFromFilterFromSortOfStuffs=ttt;
+                            break;
+                        }
+                    }
+
+                }
+                //console.log($scope.stuff.tagFromFilterFromSortOfStuffs)
                 $scope.stuff.stateObj=angular.copy($stateParams);
                 //console.log($scope.stuff.stateObj)
                 $scope.stuff.stateObj.stuffUrl=$scope.stuff.url;
-
                 self.stuff=$scope.stuff;
                 self.getMastersName=getMastersName
                 self.getAveragePrice=getAveragePrice;
@@ -9110,6 +9688,11 @@ angular.module('gmall.controllers')
         global.set('stuffsInList',stuffsInList)
         var self = this;
         $scope.global=global;
+        if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
+            self.displayableFilters=true;
+        }else if(global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+            self.displayableFilters=true;
+        }
         self.stuffs={}
         self.Items=Stuff;
         self.mobile=global.get('mobile').val;
@@ -9205,7 +9788,7 @@ angular.module('gmall.controllers')
                     var linkFn = $compile(response.data.html);
                     var content = linkFn($scope);
                 }else{
-                    console.log('ldldldl')
+                    //console.log('ldldldl')
                     var linkFn = $compile(response.data.html);
                     var content = linkFn($scope);
                 }
@@ -9459,7 +10042,7 @@ angular.module('gmall.controllers')
         }
 
     }
-    function stuffListTemplateDirectiveCampaignList(){
+    function stuffListTemplateDirectiveCampaignList($state,global){
         return {
             scope: {
                 campaignCondition:'@',
@@ -9467,7 +10050,17 @@ angular.module('gmall.controllers')
             bindToController: true,
             controller: campaignStuffListCtrl,
             controllerAs: '$ctrl',
-            template:"<div></div>",
+            template:function () {
+                //console.log($state.current)
+                if($state.current.name==='likes'){
+                    var s =  "<div>" +
+                            "<h1 class='wishlist-header'>"+global.get("lang").val.wishlist+"</h1>"+
+                        "</div>"
+                }else{
+                    var s =  "<div></div>"
+                }
+                return s;
+            },
             /*templateUrl: function (el,attr) {
                 var campaign = attr.campaign;
                 var url = 'views/template/partials/'+campaign+'/stuffs';
@@ -10213,7 +10806,7 @@ angular.module('gmall.controllers')
                 } )
                 .then(function (item) {
                     var o={}
-                    o.brand=item._id;
+                    o.brand=(item)?item._id:null;
                     o.brandTag=null;
                     massSaveField(o)
                 })
@@ -10227,8 +10820,13 @@ angular.module('gmall.controllers')
                 .then(function (item) {
                     //console.log(item)
                     var o={}
-                    o.brand=item.brand._id;
-                    o.brandTag=item._id;
+                    if(item){
+                        o.brand=item.brand._id;
+                        o.brandTag=item._id;
+                    }else{
+                        o.brandTag=null;
+                    }
+
                     massSaveField(o)
                 })
         }
@@ -10534,51 +11132,53 @@ angular.module('gmall.controllers')
         }
 
         function changeAction(){
+            if(!self.action){return}
+            var a=angular.copy(self.action);
+            self.action=null;
+            self.mark=false;
+            switch (a) {
+                case 'category':
+                    return selectCategory()
+                    break;
+                case 'brand':
+                    return selectBrand()
+                    break;
+                case 'brandTag':
+                    return selectBrandTag()
+                    break;
+                case 'filterTag':
+                    return selectFilterTag()
+                    break;
+                case 'unfilterTag':
+                    return unSelectFilterTag()
+                    break;
+                case 'addInfo':
+                    return selectAddInfo()
+                    break;
+                case 'actived':
+                    return selectActived()
+                    break;
+                case 'index':
+                    return selectPosition()
+                    break;
+                case 'order':
+                    return changeOrderType()
+                    break;
+                case 'changePrice':
+                    return changePrice()
+                    break;
+                case 'changeMinMax':
+                    return changeMinMax()
+                    break;
+                case 'deleteStuffs':
+                    return deleteStuffs()
+                    break;
+
+            }
+            return;
             Confirm('подтвердите действие')
                 .then(function () {
-                    if(!self.action){return}
-                    var a=angular.copy(self.action);
-                    self.action=null;
-                    self.mark=false;
-                    switch (a) {
-                        case 'category':
-                            return selectCategory()
-                            break;
-                        case 'brand':
-                            return selectBrand()
-                            break;
-                        case 'brandTag':
-                            return selectBrandTag()
-                            break;
-                        case 'filterTag':
-                            return selectFilterTag()
-                            break;
-                        case 'unfilterTag':
-                            return unSelectFilterTag()
-                            break;
-                        case 'addInfo':
-                            return selectAddInfo()
-                            break;
-                        case 'actived':
-                            return selectActived()
-                            break;
-                        case 'index':
-                            return selectPosition()
-                            break;
-                        case 'order':
-                            return changeOrderType()
-                            break;
-                        case 'changePrice':
-                            return changePrice()
-                            break;
-                        case 'changeMinMax':
-                            return changeMinMax()
-                            break;
-                        case 'deleteStuffs':
-                            return deleteStuffs()
-                            break;
 
-                    }
                 })
 
         }
@@ -10734,12 +11334,29 @@ angular.module('gmall.controllers')
         self.global=global;
 
 
+        if($stateParams.categoryUrl!='category'){
+            self.sectionName=global.get('category').val.name;
+        }else{
+            self.sectionName=global.get('section').val.name;
+        }
+        self.breadcrumbs=global.get('breadcrumbs').val;
         //console.log('set filers')
 
         //console.log(self.filters)
 
-        self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+        self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
         self.char=self.chars[0]
+
+        if(global.get('store').val.template.stuffListType[global.get('sectionType').val].filtersCategories){
+            self.sections = global.get('sections').val.filter(function (s) {
+
+                return s.viewsFilters;
+            });
+        }else{
+            self.sections = [];
+        }
+        //console.log(self.sections)
+
         self.changeAllBrands=changeAllBrands;
         self.changeAllTags=changeAllTags;
         self.clearAll=clearAll;
@@ -10749,6 +11366,25 @@ angular.module('gmall.controllers')
 
         self.filterBrands = filterBrands;
         self.setCharForBrands=setCharForBrands;
+        self.changeCategory=changeCategory;
+        self.changeAllCategories=changeAllCategories;
+        self.deleteCrumb=deleteCrumb;
+        self.showReset=showReset;
+        self.showResetAll=AllshowReset;
+
+        function showReset(filter) {
+            //console.log(filter)
+            return filter.tags.some(function (t) {
+                return t.set
+            })
+        }
+        function AllshowReset() {
+            return self.filters.some(function (f) {
+                return f.tags.some(function (t) {
+                    return t.set
+                })
+            })
+        }
 
         $rootScope.$on('changeCurrency',function () {
             console.log('changeCurrency',global.get('rate').val)
@@ -10770,8 +11406,19 @@ angular.module('gmall.controllers')
         })
 
         activate()
+        //console.log(global.get('categories').val)
+        /*console.log(global.get('sections').val)
+        console.log(global.get('store').val.template.stuffListType[global.get('sectionType').val].filtersCategories)*/
 
         function activate(){
+            /*console.log(global.get('section').val)
+            console.log(global.get('category').val)*/
+            if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
+                self.displayable=true;
+            }else if(global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+                self.displayable=true;
+            }
+            //if(global.get('section').val)
             $q.when()
                 .then(function(){
                     return Brands.getBrands()
@@ -10789,24 +11436,63 @@ angular.module('gmall.controllers')
                     return Filters.getFilters()
                 })
                 .then(function(filters){
+
+                    //console.log(global.get('rate').val)
                     filters.forEach(function (f) {
-                        if(f.count && f.price){
+                        //console.log(f)
+                        var rate =(global.get('rate') && global.get('rate').val)?global.get('rate').val:1;
+                        if(f.count){
                             if(!f.maxSave){
                                 f.maxSave =f.max
                             }
                             if(!f.mixSave){
                                 f.mixSave =f.min
                             }
+
                             /*f.maxValue =f.maxValue*global.get('rate').val
                             f.minValue =f.minValue*global.get('rate').val*/
-                            f.min =Math.ceil10(f.mixSave*global.get('rate').val,0)
-                            f.max =Math.ceil10(f.maxSave*global.get('rate').val,0)
+                            if(f.price){
+                                f.min =Math.ceil10(f.mixSave*rate,0)
+                                f.max =Math.ceil10(f.maxSave*rate,0)
+                            }
+
+                            if(!f.set){
+                                f.minValue=f.min;
+                                f.maxValue=f.max;
+                            }
+
+
+
+
                             //console.log(f)
+                            $scope.$watch(function () {
+                                return f.open
+                            },function (n,o) {
+                                if(n){
+                                    $timeout(function () {
+                                        $scope.$broadcast('reCalcViewDimensions');
+                                    },300)
+                                }
+                            })
                         }
                     })
-                    self.filters=filters
+                    self.filters=filters.filter(function (f) {
+                        if(self.displayable){
+                            if(global.get('category').val){
+                                return global.get('category').val.filters.indexOf(f._id)>-1
+                            }else{
+                                return global.get('section').val.filters.indexOf(f._id)>-1
+                            }
+                        }
+                    })
+                    //console.log(self.filters)
 
                 })
+                /*.then(function () {
+                    $timeout(function () {
+                        $scope.$broadcast('reCalcViewDimensions');
+                    },1500)
+                })*/
         }
 
         self.changeTag=changeTag;
@@ -11006,7 +11692,8 @@ angular.module('gmall.controllers')
 
 
 
-        function changeTag(){
+        function changeTag(_filter,_tag){
+            //console.log(_filter,_tag)
             var queryTag='',brandTag='',brand='',filterTag='';
             //console.log(self.filters)
             self.filters.forEach(function(filter){
@@ -11018,6 +11705,16 @@ angular.module('gmall.controllers')
                     }
                 }else{
                     filter.tags.forEach(function(tag){
+                        if(_filter && _tag && _filter._id===filter._id){
+                            if(_tag._id===tag._id){
+                                //console.log(tag.set)
+                                //tag.set=!tag.set;
+                                //console.log(tag.set)
+                            }else{
+                                tag.set=false;
+                            }
+
+                        }
                         if (tag.set){
                             //console.log(filter.tags)
                             if(queryTag){queryTag+='__'}
@@ -11121,6 +11818,8 @@ angular.module('gmall.controllers')
         }
         function clearCountFilter(filter) {
             filter.set=null;
+            filter.minValue=filter.min;
+            filter.maxValue=filter.max;
             changeTag();
 
         }
@@ -11136,6 +11835,59 @@ angular.module('gmall.controllers')
             //console.log(item)
             return item.name.toUpperCase()[0]==self.char
         }
+        function changeCategory(category) {
+            var o={
+                groupUrl:category.linkData.groupUrl,
+                categoryUrl:category.linkData.categoryUrl,
+                queryTag:null,
+                brand:null,
+                brandTag:null,
+                categoryList:null
+
+            };
+            $state.go('stuffs',o)
+        }
+        function changeAllCategories(s) {
+            self.sections.forEach(function (s) {
+                s.categories.forEach(function (c) {
+                    c.set=false;
+                })
+                s.child.forEach(function (child) {
+                    if(child.categories && child.categories.length){
+                        child.categories.forEach(function (c) {
+                            c.set=false;
+                        })
+                    }
+
+                })
+            })
+            var o={
+                groupUrl:s.url,
+                categoryUrl:'category',
+                queryTag:null,
+                brand:null,
+                brandTag:null,
+                categoryList:null
+
+            };
+            $state.go('stuffs',o)
+        }
+        function deleteCrumb(index){
+            change(self.breadcrumbs.splice(index,1)[0].type)
+            function change(type){
+                var query = self.breadcrumbs.reduce(function(q,item){
+                    if(item.type==type){
+                        if(q){q+='__'}
+                        q+=item.url;
+                    }
+                    return q;
+                },'')
+                if(!query){
+                    query=null;
+                }
+                $location.search(type,query)
+            }
+        }
 
 
 
@@ -11149,7 +11901,7 @@ angular.module('gmall.directives')
     .directive('driveSale',driveSaleDirective)
     .directive('driveRetail',driveRetailDirective)
 
-.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks){
+.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks','$fileUpload',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks,$fileUpload){
     return {
         restrict:"E",
         scope:{},
@@ -11172,6 +11924,7 @@ angular.module('gmall.directives')
             $scope.$ctrl.addBlock=addBlock;
             $scope.$ctrl.deleteBlock=deleteBlock;
             $scope.$ctrl.saveField=saveFieldBlocks;
+            $scope.$ctrl.saveFieldStuff=saveField;
             $scope.$ctrl.type='Stuff';
             /*$scope.$ctrl.setStyles=setStyles;
              $scope.$ctrl.deleteSlide=deleteSlide;
@@ -11182,6 +11935,8 @@ angular.module('gmall.directives')
 
             $scope.$ctrl.changeStock=changeStock;
             $scope.$ctrl.refreshBlocks=refreshBlocks;
+            $scope.$ctrl.loadVideo=loadVideo;
+            $scope.$ctrl.deleteVideo=deleteVideo;
 
             $scope.$ctrl.animationTypes=animationTypes;
             $scope.$ctrl.tinymceOption = {
@@ -11193,6 +11948,52 @@ angular.module('gmall.directives')
                 /*plugins: 'link image code',
                  toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'*/
             };
+
+
+            function loadVideo(item,field){
+                if(!item[field]){
+                    item[field]={link:''}
+                }
+                $q.when()
+                    .then(function () {
+                        self.uploadVideoUrl="/api/collections/Stuff/uploadVideoFile?collectionName=Stuff"
+                        return $fileUpload.fileUpload(self.uploadVideoUrl,field+'.link',item.url)
+                    })
+                    .then(function (res) {
+                        console.log(res)
+                        if(res && res.length){
+                            var a=[];
+                            if((field=='video1' || field=='video') && res[0].data && res[0].data.img){
+                                if(item[field] && item[field].link){
+                                    a.push(item[field].link)
+                                }
+                                item[field].link=res[0].data.img;
+                                //console.log(field)
+                                saveField(item,field)
+                            }
+                            if(a.length){
+                                Photo.deleteFiles(self.type,a)
+                            }
+
+                        }
+
+                        //console.log(res)
+                    })
+                    .catch(function (err) {
+                        console.log(err)
+                    })
+            }
+            function deleteVideo(item,field) {
+                Confirm('Удалить?')
+                    .then(function () {
+                        return Photo.deleteFiles(self.type,[item[field].link])
+                    })
+                    .then(function(response) {
+                        item[field]=null;
+                        saveField(item,field)
+                    },function(err) {console.log(err)});
+            }
+
 
 
 
@@ -11514,7 +12315,7 @@ angular.module('gmall.directives')
                         return  Stuff.getItem($stateParams.stuffUrl)
                     })
                     .then(function(item){
-                        //console.log(item);
+                        console.log(item);
                        if(item.addInfo && item.addInfo._id){
                            item.addInfo=item.addInfo._id
                        }
@@ -11618,6 +12419,7 @@ angular.module('gmall.directives')
                 return Math.ceil10(Number(price)+(global.get('store').val.seller.retail/100)*price,-2);
             }
             function saveField(stuff,field){
+                console.log(stuff,field)
                 if(field=='name' ||field=='artikul' || field=='category' || field=='brand' || field=='brandTag'){
                     var lang= global.get('store').val.lang
                     //console.log($scope.item.keywords[lang]);
@@ -11693,6 +12495,7 @@ angular.module('gmall.directives')
                 }
 
                 var o={_id:stuff._id};
+
                 var fieldArr=field.split(' ');
                 fieldArr.forEach(function(el){
                     if(el.indexOf('.')>-1){
@@ -14419,6 +15222,7 @@ angular.module('gmall.services')
     }
     this.getFilters=function(){
         return $q(function(resolve,reject){
+            //console.log(global.get('filters'))
             if(global.get('filters') && global.get('filters').val){
                 if(!filters){filters=global.get('filters').val}
                 return resolve(global.get('filters').val);
@@ -14775,6 +15579,10 @@ var __filterTags=_filterTags
         function getSticker(tags){
             if(tags && tags.length && filterTags && filterTags.length){
                 for(var i =0;i<tags.length;i++){
+                    /*if(tags[i]=='5c07f407a43847154c0e5d03'){
+                        console.log(__filterTagsO)
+                        console.log(__filterTagsO[tags[i]])
+                    }*/
                     if(__filterTagsO[tags[i]] && __filterTagsO[tags[i]].sticker){
                         //console.log(angular.copy(__filterTagsO[tags[i]].sticker))
                         return __filterTagsO[tags[i]].sticker
@@ -15818,19 +16626,23 @@ angular.module('gmall.services')
                 }
 
             }
-                    s+='</span></td></tr>'+
-                        '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
-                            if(global.get('store').val.footer && global.get('store').val.footer.text){
-                                s+=global.get('store').val.footer.text;
-                            }
+            s+='</span></td></tr>'+
+                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
+            if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
+            }
 
-                        s+='</span></td>';
-                        s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-                            if(global.get('store').val.footer && global.get('store').val.footer.text1){
-                                s+=global.get('store').val.footer.text1;
-                            }
+            s+='</span></td>';
+            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
+             s+=global.get('store').val.footer.text1;
+             }*/
+            if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
+            }
 
-                    s+='</span></td></tr></table>';
+            s+='</span></td></tr></table>';
             return s
         }
         // ********************пустой контент
@@ -15857,6 +16669,8 @@ angular.module('gmall.services')
             }
         }
         function emailFromNews(item){
+            console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
+            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])
             var s=
                 '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></a></td></tr>'+
@@ -15989,10 +16803,10 @@ angular.module('gmall.services')
 
 
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            /*s+='<table width="900px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr><td border="0" colspan="2" style="border:none; border-top:#cccccc 5px solid;"></td></tr>'+
-                /*'<tr><td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td><td/><td/>'+*/
-                /*'<td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td></tr>'+*/
+                /!*'<tr><td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td><td/><td/>'+*!/
+                /!*'<td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td></tr>'+*!/
                 '<tr><td align="right" style="vertical-align: top"><span style="font-family:Tahoma; font-size:12px; color:#404040;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
@@ -16011,7 +16825,41 @@ angular.module('gmall.services')
                 s+=global.get('store').val.footer.text;
             }
             s+='</span></td></tr>'+
-                '</table>'
+                '</table>'*/
+            s +='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
+                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            if(global.get('store').val.sn){
+                for(var key in global.get('store').val.sn){
+                    if(global.get('store').val.sn[key].is){
+                        if(global.get('store').val.template.index && global.get('store').val.template.index.icons
+                            &&global.get('store').val.template.index.icons[key+'white']){
+                            s+='<a href="'+global.get('store').val.sn[key].link+'">'+
+                                '<img style="width: 24px; height: 24px;margin: 0 10px" src="'+global.get('store').val.link+global.get('store').val.template.index.icons[key+'white'].img+'">'
+                                +'</a>'
+                        }
+
+                    }
+                }
+
+            }
+            s+='</span></td></tr>'+
+                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
+            if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
+            }
+
+            s+='</span></td>';
+            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
+             s+=global.get('store').val.footer.text1;
+             }*/
+            if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
+            }
+
+            s+='</span></td></tr></table>';
+
             return s;
             return '<!DOCTYPE html><html><head>' +
                 '<link rel="stylesheet" type="text/css" href="http://gmall.io/bower_components/bootstrap/dist/css/bootstrap.css" />' +
@@ -16092,12 +16940,17 @@ angular.module('gmall.services')
             s+='<p>'+global.get('langOrder').val.sum+' '+(order.paySum).toFixed(2)+' '+order.currency+'</p>';
             return s;
         }
-        function dateTimeNote(entry){
+        function dateTimeNote(entry,user){
+            //console.log(user)
             //console.log(order)
             var s='';
             s +='<h3 class="order-name">'+global.get('langOrder').val.dateTime+'</h3> '+global.get('langOrder').val.onn+' '+entry.dateForNote;
             s+='<p>'+global.get('store').val.texts.masterName[global.get('store').val.lang]+' - '+entry.masterName+'</p>';
             s+='<p>'+entry.service.name+'</p>';
+            if(user){
+                s+='<p>'+user.name+' '+user.phone+'</p>';
+            }
+
             return s;
         }
         function dateTimeCancelNote(entry){
@@ -16407,13 +17260,14 @@ angular.module('gmall.services')
             }*/
             return s;
         }
-        function call(number){
+        function call(number,name){
             //console.log(number)
             //number=number.substring(0,20)
             var s='';
-            s+='<h3>'+number+'</h3>'
-            s+='<p>'+global.get('langOrder').val.requestacallback+'</p>'
+            s+='<h3>'+global.get('langOrder').val.requestacallback+'</h3>'
+            s+='<p>'+number+((name)?' '+name:'')+'</p>'
             s+='<p>'+moment().format('LLLL')+'</p>'
+            console.log(s)
             return s;
         }
 
@@ -16712,7 +17566,7 @@ angular.module('gmall.services')
                 try{
                     if(user){
                         if(!user._id){
-                            conosole.log(user)
+                            console.log(user)
                             throw  'не авторизирован!';
                         }
                     } else{
@@ -16928,7 +17782,7 @@ angular.module('gmall.services')
         order.seller=global.get('store').val.seller._id;
         return this.sendOrder(user)
     }
-    this.getShipInfo=function(){
+    this.getShipInfo=function(short){
         return $q(function(resolve,reject){
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -16940,15 +17794,22 @@ angular.module('gmall.services')
                 //windowTopClass:'modalTopProject',
                 backdropClass:'modalBackdropClass',
                 //openedClass:'modalOpenedClass'
+                resolve: {
+                    short :function () {
+                        return short;
+                    }
+                }
             });
             $rootScope.$emit('modalOpened')
             modalInstance.result.then(function(item){$rootScope.$emit('modalClosed');resolve(item)},function(){$rootScope.$emit('modalClosed');reject()});
         })
     }
-    shipInfoCtrl.$inject=['$uibModalInstance','$rootScope']
-    function shipInfoCtrl($uibModalInstance,$rootScope) {
+    shipInfoCtrl.$inject=['$uibModalInstance','$rootScope','short']
+    function shipInfoCtrl($uibModalInstance,$rootScope,short) {
 
         var self = this;
+        self.short=short;
+        //console.log(self.short)
         $rootScope.$on('closeShipModal',function(){
             $uibModalInstance.close();
         })
@@ -17004,6 +17865,49 @@ angular.module('gmall.services')
     }
 
 
+    this.checkWarehouse=function () {
+        console.log(order)
+        return $q.when()
+            .then(function () {
+                var acts = order.cart.stuffs.map(function (s) {
+                    var q = {stuff:s._id,sort:s.sort}
+                    var url = '/api/collections/Material?query='+JSON.stringify(q)
+                    return $http.get(url)
+                })
+                return $q.all(acts)
+            })
+            .then(function (checkResult) {
+                //console.log(checkResult)
+                if(checkResult){
+                    var r = checkResult.map(function (rr,index) {
+                        if(rr.data && rr.data.length && rr.data[1] && rr.data[1].qty &&  rr.data[1].qty>=order.cart.stuffs[index].quantity){
+                            return
+                        }
+                        return order.cart.stuffs[index]
+                    })
+                    return r;
+                }else{
+                    throw 'не возможно проверить наличие на складе'
+                }
+            })
+            .then(function (stuffs) {
+                //console.log(stuffs)
+                stuffs = stuffs.filter(function (s) {
+                    return s
+                })
+                if(stuffs.length){
+                    var error='';
+                    stuffs.forEach(function (s) {
+                        error +="Необходимое количество "+s.name+" отсутствует. Перейдите на страницу товара и уточните наличие."
+                    })
+
+                    throw error;
+                }
+
+            })
+    }
+
+
 }])
 .factory('localStorage', function(){
     var APP_ID =  'frame-local-storage';
@@ -17036,7 +17940,6 @@ angular.module('gmall.services')
     };
 
 })
-
 'use strict';
 (function(){
 
@@ -17427,11 +18330,24 @@ angular.module('gmall.services')
                             return
                         }
                     })
+                    .then(function () {
+                        if(global.get('store').val.bookkeep){
+                            return $order.checkWarehouse()
+                        }
+                    })
+
                     .then(function(){
                         return $order.getShipInfo()
                     })
                     .then(function(){
                         return sendOrder()
+                    })
+                    .catch(function(err){
+                        console.log(err)
+                        if(err){
+                            exception.catcher('заказ')(err)
+                        }
+                        //return sendOrder()
                     })
 
             }
@@ -17827,9 +18743,12 @@ angular.module('gmall.services')
                     return user;
                 })
         }
-        function newUserByPhone(name,phone) {
+        function newUserByPhone(name,phone,confirmCondition) {
             var email= phone+'@gmall.io'
             var user = {email:email,name:name,profile:{phone:phone,fio:name}};
+            if(confirmCondition){
+                user.confirmCondition=confirmCondition;
+            }
             return $auth.signup(user)
                 .then(function(response) {
                     console.log(response)
@@ -17941,11 +18860,12 @@ angular.module('gmall.services')
         }
 
         function selectOrCreat(){
+            //console.log('lddl')
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'components/user/modal/selectOrCreate.html',
-                    controller: function($user,UserEntry,global,$uibModalInstance){
+                    controller: function($user,UserEntry,$http,global,$uibModalInstance){
                         var self=this;
                         self.items=[];
                         self.user='';
@@ -17973,13 +18893,13 @@ angular.module('gmall.services')
                             if(isNumeric(str)){
                                 if(str.length>10){
                                     self.oldPhone=str.substring(0,10);
-                                }else{
+                                }/*else{
                                     var d = 10-str.length;
                                     for(var i=0;i<d;i++){
                                         str+='0';
                                     }
                                     self.oldPhone=str
-                                }
+                                }*/
 
                                 self.userName=''
                             }else{
@@ -17993,8 +18913,9 @@ angular.module('gmall.services')
                             var q1= {$or:[{'phone':str},{name:str},{email:str}]}
 
                             var acts=[];
+                            q={search:str}
                             acts.push(get$user(q))
-                            acts.push(getEntryUser(q1))
+                            //acts.push(getEntryUser(q1))
                             $q.all(acts)
                                 .then(function(res){
                                     if(res[0] && res[0].length){
@@ -18003,36 +18924,53 @@ angular.module('gmall.services')
                                             users.push(item)
                                         })
                                     }
-                                    if(res[1] && res[1].length){
+                                    /*if(res[1] && res[1].length){
                                         res[1].forEach(function(item){
                                             item.type='userEntry'
                                             users.push(item)
                                         })
-                                    }
+                                    }*/
                                     self.users=users;
+                                    //console.log(self.users)
                                 })
 
 
                         }
                         function get$user(q){
+                            return $user.query(q).$promise
                             return $user.getList(paginate,q)
                         }
                         function getEntryUser(q){
                             return  UserEntry.getList(paginate,q)
                         }
                         function addUser(){
-                           // console.log('add user')
+                           console.log('add user')
                             var user={name:self.userName,
                                 email:self.userEmail,
-                                phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),
-                                type:"userEntry"
+                                profile:{fio:self.userName,phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),}
+                                //phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),
+                                //type:"userEntry"
+                            }
+                            if(!self.userEmail){
+                               user.email=user.profile.phone+"@gmall.io"
                             }
                             return $q.when()
                                 .then(function(){
-                                    return UserEntry.save(user).$promise
+                                    return $user.checkEmailForExist(user.email)
                                 })
                                 .then(function(res){
-                                    user._id=(res._id)?res._id:res.id;
+                                    if(res && res.exist){throw 'email exist'}
+                                })
+                                .then(function(){
+                                    var uploadUrl='/api/createUser'
+                                    return $http.post(userHost+uploadUrl,user);
+                                })
+                                /*.then(function(){
+                                    return User.save(user).$promise
+                                })*/
+                                .then(function(res){
+                                    //console.log(res)
+                                    user._id=(res.data && res.data._id)?res.data._id:res.data.id;
                                     self.addingUser=false;
                                     self.userName='';
                                     self.user=user;
@@ -18069,14 +19007,16 @@ angular.module('gmall.services')
         function saveProfile(user){
             return Items.save({update:'profile'},{_id:user._id,profile:user.profile}).$promise;
         }
-        function login(){
+        function login(bookeep){
             return $q(function(resolve,reject){
                 if(global.get('user') && global.get('user').val && global.get('user').val._id){
                     return resolve()
                 }
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'components/user/modal/login-sign.html',
+                    templateUrl: function () {
+                        return ((bookeep)?'components/user/modal/login-only.html':'components/user/modal/login-sign.html')
+                    },
                     controller: loginCtrl2,
                     controllerAs:'$ctrl',
                     //size: 'lg',
@@ -18501,6 +19441,10 @@ angular.module('gmall.services')
             var self=this;
             self.global=global;
             //self.closeModal=closeModal;
+            if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.phone){
+                self.phone=true;
+            }
+            //console.log(global.get('store').val)
             $scope.$on('closeWitget',function () {
                 //console.log('ssss')
                 $uibModalInstance.close()
@@ -18905,7 +19849,7 @@ angular.module('gmall.directives')
 
 'use strict';
 angular.module('gmall.directives')
-.directive('paginatorMain', function (anchorSmoothScroll,$anchorScroll) {
+.directive('paginatorMain', function (anchorSmoothScroll,$anchorScroll,global) {
         return {
             restrict:'E',
             scope :{
@@ -18915,6 +19859,18 @@ angular.module('gmall.directives')
             },
             link: function (scope, element, attrs, controller) {
                //console.log('likn paginator',scope.paginate);
+                var store = global.get('store').val
+                var stuffListType = (global.get('sectionType'))?global.get('sectionType').val:'good';
+                //console.log(store.template.stuffListType)
+                var rows=(store.template.stuffListType[stuffListType] && store.template.stuffListType[stuffListType].rows)||3;
+                var filterBlock=store.template.stuffListType[stuffListType].parts.find(function(e){return e.name=='filters' && e.is && e.is!='false'})
+                var filtersInModal=store.template.stuffListType[stuffListType].filtersInModal;
+                if(filterBlock && !global.get('mobile').val && !filtersInModal){
+                    rows--
+                }
+
+                //console.log(rows,filterBlock,filtersInModal)
+
                if(!scope.paginate || typeof scope.paginate!='object'){
                    //console.log('exit')
                    return;
@@ -19015,7 +19971,20 @@ angular.module('gmall.directives')
                     return scope.paginate.page == scope.paginator.pageCount() - 1;
                 };
                 scope.paginator.pageCount = function () {
-                    var count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(scope.paginate.rows, 10)); if (count === 1) { scope.paginate.page = 0; }
+                    var perPage =scope.paginate.rows;
+                    var delta = perPage%rows;
+                    var midleRows=Math.round(rows/2);
+                    if(delta>=midleRows){
+                        perPage+=(rows-delta)
+                    }else{
+                        perPage-=delta
+                    }
+                    //console.log(perPage,delta)
+
+                    var count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(perPage, 10));
+                    /*count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(scope.paginate.rows, 10));*/
+                    //console.log(count)
+                    if (count === 1) { scope.paginate.page = 0; }
                     return count;
                 };
 
@@ -20081,10 +21050,12 @@ angular.module('gmall.controllers')
     };
 })
 // for filters brans collections edit
-.controller('bindCategoryToFilterCtrl', function ($scope, $uibModalInstance,Category,$resource,$q, sections,field,id,revers) {
+.controller('bindCategoryToFilterCtrl', function ($scope, $uibModalInstance,Category,Sections,$resource,$q, sections,field,id,revers) {
+    //console.log('bindCategoryToFilterCtrl')
     $scope.id=id;
     $scope.revers=revers;
     sections.forEach(function(s){
+        s.checked=false;
         if(s.categories && s.categories.length){
             s.categories.forEach(function (c) {
                 c.checked=false;
@@ -20092,6 +21063,7 @@ angular.module('gmall.controllers')
         }
         if(s.child && s.child.length){
             s.child.forEach(function (s) {
+                s.checked=false;
                 if(s.categories && s.categories.length){
                     s.categories.forEach(function (c) {
                         c.checked=false;
@@ -20102,6 +21074,13 @@ angular.module('gmall.controllers')
 
     })
     function checkField(section){
+        if(!$scope.revers){
+            if(section[field].indexOf($scope.id)>-1){
+                section.checked=true;
+            }
+        }
+
+
         section.showCheck=false;
         if(section.categories && section.categories.length){
             section.checkAll=true;
@@ -20192,7 +21171,34 @@ angular.module('gmall.controllers')
         }
     }
     $scope.bindFilterForSection=function(section,checkAll){
-        section.checkAll=checkAll;
+        //console.log(section.checked)
+
+        if(!$scope.revers){
+            if(section.checked){
+                if(section[field].indexOf($scope.id)<0){
+                    section[field].push($scope.id)
+                }
+            }else{
+                var pos = section[field].indexOf($scope.id);
+                section[field].splice(pos,1)
+            }
+            //console.log(section[field])
+            var o={_id:section._id};
+            o[field]=section[field]
+            Sections.save({update:field},o);
+
+        }
+
+
+
+        /*if(!$scope.revers){
+            if(section[field].indexOf($scope.id)<0){
+                section.checked=false;
+                break;
+            }
+        }*/
+
+        /*section.checkAll=checkAll;
         if(section.categories && section.categories.length){
             section.categories.forEach(function(category){
                 category.checked=checkAll;
@@ -20204,7 +21210,7 @@ angular.module('gmall.controllers')
             section.child.forEach(function(s){
                 $scope.bindFilterForSection(s,checkAll)
             })
-        }
+        }*/
     }
     function foo(s){
         if (s.child && s.child.length){
@@ -21131,7 +22137,7 @@ angular.module('gmall.services')
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: function () {
-                return (field && field=='video')?'components/loadImage/loadVideoModal.html':'components/loadImage/loadImageModal.html';
+                return ((field && (field=='video') || field=='video.link' ||  field=='video1.link'))?'components/loadImage/loadVideoModal.html':'components/loadImage/loadImageModal.html';
                 if(field=='video'){'components/loadImage/loadVideoModal.html'}else{return 'components/loadImage/loadImageModal.html'}
             },
             controller: function(uploadUrl,field,itemUrl,itemId,index,$uibModalInstance,$scope,$timeout,exception){
@@ -21143,7 +22149,7 @@ angular.module('gmall.services')
                 self.suffix=(self.urlArr[1])?self.urlArr[1]:'';
                 self.dimen= self.urlArr[0].split('/');
                 self.fileDimension=''
-                if(field!='video'){
+                if(field!='video' &&  field=='video.link' &&  field=='video1.link'){
                     self.fileDimension=self.dimen[self.dimen.length-1].slice(10);
                 }
                 self.uploadFiles=uploadFiles;
@@ -22816,6 +23822,55 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     var Items = $resource('/api/collections/SortsOfStuff/:id',{id:'@_id'});
     var self = this;
     var $ctrl=self;
+    self.setDescForSort=setDescForSort;
+    self.lang=global.get('store').val.lang;
+
+    function setDescForSort(stuff,tag) {
+        //console.log(stuff)
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'components/sortsOfStuff/descForSort.html',
+            controller: function($uibModalInstance,desc){
+                var self=this;
+                self.tinymceOption = {
+                    plugins: 'code print preview fullpage searchreplace autolink directionality  visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount  imagetools  contextmenu colorpicker textpattern help',
+                    // toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+                    toolbar: 'code | formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | code '
+                    //id:'editingText'
+
+                    /*plugins: 'link image code',
+                     toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'*/
+                };
+                self.desc=desc
+                self.ok=function(){
+                    $uibModalInstance.close(self.desc);
+                }
+                self.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            },
+            controllerAs:'$ctrl',
+            resolve: {
+                desc: function () {
+                    //console.log(stuff.descLSort)
+                    return (stuff.descLSort && stuff.descLSort[tag]&& stuff.descLSort[tag][self.lang])?stuff.descLSort[tag][self.lang]:''
+                },
+
+            }
+        });
+        modalInstance.result.then(function (desc) {
+            console.log(desc);
+            if(!stuff.descLSort){
+                stuff.descLSort={};
+            }
+            if(!stuff.descLSort[tag]){
+                stuff.descLSort[tag]={};
+            }
+            stuff.descLSort[tag][self.lang]=desc;
+            self.saveField(stuff,'descLSort')
+        }, function () {
+        });
+    }
     //console.log($scope.stuff)
 
     //console.log(self.stuff)
@@ -22981,40 +24036,62 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     }
     // создание таблицы наличия для товара*****************
     self.setStockTableForSort  = function(stuff,stockTemplate){
+        /*console.log(stuff.name,stuff.artikul)
+        console.log(stuff.price)
+        console.log(JSON.stringify(stuff.stock))*/
         return $q(function(resolve,reject){
             getStuffPromise(stuff).then(
                 function(stuff){
+                    //console.log('stuff',stuff,JSON.stringify(stuff.stock));
                     var fields='stock';
                     if(stuff.sortsOfStuff && self.stuff.sortsOfStuff._id!=stuff.sortsOfStuff._id){
                         // если надо обновить группу у товара
                         stuff.sortsOfStuff=self.stuff.sortsOfStuff._id;
                         fields+=' sortsOfStuff'
                     }
-                    if(stockTemplate){
-                        var stock=angular.copy(stockTemplate);
-                        for(var key in stock){
-                            if(stuff.stock && stuff.stock[key]){
-                                stock[key].quantity=stuff.stock[key].quantity;
-                            }
-                            //if(key=='notag'){delete stock[key];continue;}
-                            stock[key].price=stuff.price;
-                            stock[key].priceSale=stuff.priceSale;
-                            stock[key].retail=stuff.retail;
-                            if(key!='notag'){
-                                var i= stuff.tags.indexOf(key);
-                                if(i<0){ // add tag
-                                    stuff.tags.push(key);
+                    try{
+                        if(stockTemplate){
+                            //console.log(stockTemplate)
+                            var stock=angular.copy(stockTemplate);
+                            for(var key in stock){
+                                if(stuff.stock && stuff.stock[key]){
+                                    stock[key].quantity=stuff.stock[key].quantity;
+                                }
+                                //if(key=='notag'){delete stock[key];continue;}
+                                if(stuff.stock && stuff.stock[key] && stuff.stock[key].price){
+                                    stock[key].price=stuff.stock[key].price;
+                                }
+                                if(stuff.stock && stuff.stock[key] && stuff.stock[key].priceSale){
+                                    stock[key].priceSale=stuff.stock[key].priceSale;
+                                }
+                                if(stuff.stock && stuff.stock[key] && stuff.stock[key].retail){
+                                    stock[key].retail=stuff.stock[key].retail;
+                                }
+
+                                if(key!='notag'){
+                                    var i= stuff.tags.indexOf(key);
+                                    if(i<0){ // add tag
+                                        stuff.tags.push(key);
+                                    }
+                                }
+                                if(!stock[key].price){
+                                    stock[key].price=stuff.price;
                                 }
                             }
+                            stuff.stock=stock;
+                            //console.log('stuff.stock',JSON.stringify(stuff.stock));
+                            if(stuff.setTagsValue){
+                                stuff.setTagsValue();
+                            }
+                            fields +=' tags';
+                        }else{
+                            stock={notag:{quantity:1}};
                         }
-                        stuff.stock=stock;
-                        if(stuff.setTagsValue){
-                            stuff.setTagsValue();
-                        }
-                        fields +=' tags';
-                    }else{
-                        stock={notag:{quantity:1}};
+                    }catch(err){
+                        console.log(err)
                     }
+
+                    console.log(stuff)
                     Stuff.saveField(stuff,fields).then(function(){resolve()},function(err){reject(err)});
                 },function(err){reject(err)}
             )
@@ -23040,6 +24117,7 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
         var stock;
         //global.get('store').val.settingContent.admin.sortsDisable
         var qty = (global.get('store').val.settingContent&& global.get('store').val.settingContent.admin && global.get('store').val.settingContent.admin.sortsDisable)?0:1;
+
         if(filter){
             filter.tags.forEach(function(tag){
                 if(!stock){stock={}}
@@ -29428,7 +30506,6 @@ angular.module('gmall.services')
                         paginate.items=0;
                     }
                 }
-                //console.log(response)
                 return response;
             }
 
@@ -29462,13 +30539,14 @@ angular.module('gmall.services')
                 return $q.reject(error);
             }
         }
-        function create(){
+        function create(clone){
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'components/CONTENT/master/createMaster.html',
-                    controller: function($uibModalInstance){
+                    controller: function($uibModalInstance,clone){
                         var self=this;
+                        self.header=(clone)?'Клонирование объекта':'Создание объекта';
                         self.name=''
                         self.ok=function(){
                             $uibModalInstance.close(self.name);
@@ -29476,6 +30554,11 @@ angular.module('gmall.services')
                         self.cancel = function () {
                             $uibModalInstance.dismiss();
                         };
+                    },
+                    resolve:{
+                        clone:function () {
+                            return clone;
+                        }
                     },
                     controllerAs:'$ctrl',
                 });
@@ -29639,7 +30722,7 @@ angular.module('gmall.services')
         }
         function cloneItem(item){
             var name;
-            self.Items.create()
+            self.Items.create('clone')
                 .then(function (res) {
                     name=res;
                     return self.Items.getItem(item._id)
@@ -30420,6 +31503,8 @@ angular.module('gmall.services')
             save:Items.save,
             delete:Items.delete,
             create:create,
+            select:selectItem,
+            search:search
         }
         function getList(paginate,query){
            if(!paginate){
@@ -30493,6 +31578,71 @@ angular.module('gmall.services')
 
                 }, function (err) {
                     reject(err)
+                });
+            })
+
+        }
+
+        function search(search,setData){
+            // setData - если ищем товар в админке для дальнейшего использования необходимо получить с сервера все данные
+            var data ={search:search,setData:setData};
+            return Items.query(data).$promise
+                .then(getListComplete)
+                .catch(getListFailed);
+            function getListComplete(response) {
+                //response.shift()
+
+                return response;
+            }
+
+            function getListFailed(error) {
+                console.log('XHR Failed for getNews.' + error);
+                return $q.reject(error);
+            }
+        }
+        function selectItem(){
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/CONTENT/groupStuffs/selectItem.html',
+                    controller: function(GroupStuffs,$uibModalInstance,$q){
+                        var self=this;
+                        self.stuffs=[];
+                        self.name='';
+                        var query;
+                        var paginate={page:0,rows:30,items:0}
+                        self.search = function(name){
+                            if (name.length<3){return}
+                            query={name:name}
+
+
+
+                            GroupStuffs.search(name,true)
+                                .then(function(res){
+                                    self.items=res;
+                                    //console.log(self.items)
+                                })
+
+
+                            /*News.getList(paginate,query).then(function(res){
+                             self.items=res;
+                             })*/
+                        }
+                        self.selectItem=function(item){
+                            $uibModalInstance.close(item);
+                        }
+                        self.cancel = function () {
+                            $uibModalInstance.dismiss('cancel');
+                        };
+                    },
+                    controllerAs:'$ctrl',
+                    size: 'lg',
+                });
+
+                modalInstance.result.then(function (stuff) {
+                    resolve(stuff)
+                },function(){
+                    reject()
                 });
             })
 
@@ -30680,8 +31830,8 @@ angular.module('gmall.services')
             templateUrl: 'components/CONTENT/groupStuffs/groupStuffsItem.html',
         }
     }
-    groupStuffsItemCtrl.$inject=['GroupStuffs','$stateParams','$q','$uibModal','global','exception','Stuff','Photo','$scope','$timeout','Confirm','Category'];
-    function groupStuffsItemCtrl(GroupStuffs,$stateParams,$q,$uibModal,global,exception,Stuff,Photo,$scope,$timeout,Confirm,Category){
+    groupStuffsItemCtrl.$inject=['GroupStuffs','$stateParams','$q','$uibModal','global','exception','Stuff','Photo','$scope','$timeout','Confirm','Category','Master','$fileUpload'];
+    function groupStuffsItemCtrl(GroupStuffs,$stateParams,$q,$uibModal,global,exception,Stuff,Photo,$scope,$timeout,Confirm,Category,Master,$fileUpload){
         var self = this;
         self.Items=GroupStuffs;
         self.type='GroupStuffs'
@@ -30689,6 +31839,8 @@ angular.module('gmall.services')
         self.mobile=global.get('mobile' ).val;
         self.global=global;
         self.moment=moment;
+        self.block='desc';
+        self.filters=[];
         self.saveField=saveField;
 
 
@@ -30698,30 +31850,77 @@ angular.module('gmall.services')
         self.changeItem=changeItem;
         self.changeCategory=changeCategory;
         self.deleteCategory=deleteCategory;
+        self.changeBlock=function (block) {
+            console.log(block)
+            self.block=block;
+        }
+        self.selectFilter=selectFilter;
+        self.loadVideo=loadVideo;
+        self.deleteVideo=deleteVideo;
 
 
         //********************activate***************************
         activate();
         //*******************************************************
         function activate() {
-            //console.log(id)
-            return getItem($stateParams.id).then(function() {
-            }).catch(function(err){
-                err = err.data||err
-                exception.catcher('получение объекта')(err)
-            });
+            $q.when()
+                .then(function () {
+                    return Master.getList()
+                })
+                .then(function (ms) {
+                    self.masters=ms
+                    //console.log(self.masters)
+                })
+                .then(function() {
+                    return getItem($stateParams.id)
+                })
+                .catch(function(err){
+                    err = err.data||err
+                    exception.catcher('получение объекта')(err)
+                });
         }
         $scope.$on('changeLang',function(){
             activate();
         })
+
+        function clearTagsInFilters(){
+            global.get('filters').val.forEach(function (f) {
+                f.tags.forEach(function (t) {
+                    t.set=false;
+                })
+            })
+        }
         function getItem(id) {
             //console.log(id)
             return self.Items.getItem(id)
                 //console.log(id)
                 .then(function(data) {
+                    if(data.tags && data.tags.length){
+                        data.tags=data.tags.map(function (t) {
+                            return t._id;
+                        })
+                    }
                     if(data.category && global.get('categoriesO').val[data.category]){
                         data.category=global.get('categoriesO').val[data.category];
                     }
+                    //console.log(data.category)
+                    clearTagsInFilters();
+                    if(data.category && data.category.filters && data.category.filters.length){
+                        data.category.filters.forEach(function (f) {
+                            var _f = global.get('filters').val.getOFA('_id',f)
+                            if(_f){
+                                _f.tags.forEach(function (t) {
+                                    if(data.tags.indexOf(t._id)>-1){
+                                        t.set=true;
+                                    }
+                                })
+                                self.filters.push(_f)
+                            }
+                        })
+
+                    }
+
+                    //console.log(self.filters)
                     self.item=data;
                     return self.item;
                 } ).catch(function(err){
@@ -30748,7 +31947,8 @@ angular.module('gmall.services')
                     var value =  self.item[field]
                 }
                 o[field]=value;
-                var query={update:field}
+                var query={update:field};
+
                 self.Items.save(query,o,function () {
                     global.set('saving',true)
                     $timeout(function () {
@@ -30756,6 +31956,20 @@ angular.module('gmall.services')
                     },1500)
                 });
             },defer)
+        };
+        function saveFieldStuff(stuff,field){
+            setTimeout(function(){
+                var o={_id:stuff._id};
+                var value =  stuff[field]
+                o[field]=value;
+                var query={update:field};
+                Stuff.save(query,o,function () {
+                    global.set('saving',true)
+                    $timeout(function () {
+                        global.set('saving',false);
+                    },1500)
+                });
+            },100)
         };
 
 
@@ -30766,18 +31980,31 @@ angular.module('gmall.services')
                     return model.select()
                 })
                 .then(function (item) {
+                    /*if(item.groupStuffs){
+                        throw ('товар уже входит в группу '+item.groupStuffs)
+                    }*/
                     item.img=(item.gallery[0] && item.gallery[0].thumb)?item.gallery[0].thumb:null;
                     if(!self.item.stuffs){
                         self.item.stuffs=[];
                     }
+
                     if(typeof index=='undefined'){
                         self.item.stuffs.push(item)
                     }else{
+                        self.item.stuffs[index].groupStuffs=null;
+                        saveFieldStuff(self.item.stuffs[index],'groupStuffs');
                         self.item.stuffs[index]=item
                     }
 
-                    saveField('stuffs')
+                    item.groupStuffs=self.item._id;
+                    saveFieldStuff(item,'groupStuffs');
 
+                    saveField('stuffs')
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('выбор товара')(err)
+                    }
                 })
         }
         function movedItem(item) {
@@ -30788,6 +32015,8 @@ angular.module('gmall.services')
         }
         function deleteItemFromBlock($index) {
             Confirm('удалить?').then(function () {
+                self.item.stuffs[$index].groupStuffs=null;
+                saveFieldStuff(self.item.stuffs[$index],'groupStuffs');
                 self.item.stuffs.splice($index,1);
                 saveField('stuffs')
             })
@@ -30803,8 +32032,25 @@ angular.module('gmall.services')
                     return Category.select(categoryId,null,null,'groupStuffs');
                 })
                 .then(function(selectedCategory){
+                    console.log(selectedCategory)
+                    self.item.link=selectedCategory.linkData.groupUrl+'/'+selectedCategory.linkData.categoryUrl+'/'+self.item.url;
+                    saveField('link')
                     self.item.category=selectedCategory;
                     saveField('category')
+                    self.item.tags=[];
+                    self.filters=[];
+                    saveField('tags')
+                    clearTagsInFilters();
+                    if(self.item.category.filters && self.item.category.filters.length){
+                        self.item.category.filters.forEach(function (f) {
+                            var _f = global.get('filters').val.getOFA('_id',f)
+                            if(_f){
+                                self.filters.push(_f)
+                            }
+                        })
+
+                    }
+
                 })
                 .catch(function(err){
                     if(err){
@@ -30815,6 +32061,95 @@ angular.module('gmall.services')
         function deleteCategory() {
             self.item.category=null;
             saveField('category')
+            self.item.tags=[];
+            self.filters=[];
+            saveField('tags')
+            clearTagsInFilters();
+        }
+        function selectFilter(filter) {
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'components/selectCategoryModal/selectFilterModal.html',
+                controller: function ($scope, $uibModalInstance,filter) {
+                    $scope.filter=filter;
+                    $scope.allTags=false;
+                    $scope.changeAllTags=function(criteria){
+                        filter.tags.forEach(function(tag){
+                            tag.set=criteria;
+                        })
+                    }
+                    $scope.cancel = function () {
+                        $uibModalInstance.dismiss();
+                    };
+                },
+                size: 'sm',
+                //appendTo:editBody,
+                resolve: {
+                    filter: function () {
+                        return filter;
+                    },
+                }
+            });
+            modalInstance.result.then(function (selectedTags) {
+                //console.log(selectedTags)
+
+
+            }, function () {
+                self.item.tags=[];
+                if (self.filters.length){
+                    self.filters.forEach(function(filter){
+                        filter.tags.forEach(function(tag){
+                            if(tag.set){
+                                self.item.tags.push(tag._id)
+                            }
+                        })
+                    })
+                }
+                saveField('tags');
+            });
+        }
+        function loadVideo(field){
+            if(!self.item[field]){
+                self.item[field]={link:''}
+            }
+            $q.when()
+                .then(function () {
+                    self.uploadVideoUrl="/api/collections/GroupStuffs/uploadVideoFile?collectionName=GroupStuffs"
+                    return $fileUpload.fileUpload(self.uploadVideoUrl,field+'.link',self.item.url)
+                })
+                .then(function (res) {
+                    console.log(res)
+                    if(res && res.length){
+                        var a=[];
+                        if((field=='video1' || field=='video') && res[0].data && res[0].data.img){
+                            if(self.item[field] && self.item[field].link){
+                                a.push(self.item[field].link)
+                            }
+                            self.item[field].link=res[0].data.img;
+                            //console.log(field)
+                            saveField(field)
+                        }
+                        if(a.length){
+                            Photo.deleteFiles(self.type,a)
+                        }
+
+                    }
+
+                    //console.log(res)
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        }
+        function deleteVideo(field) {
+            Confirm('Удалить?')
+                .then(function () {
+                    return Photo.deleteFiles(self.type,[self.item[field].link])
+                })
+                .then(function(response) {
+                    self.item[field]=null;
+                    saveField(filed)
+                },function(err) {console.log(err)});
         }
     }
 })()
@@ -31636,7 +32971,7 @@ angular.module('gmall.services')
                 template: '',
                 link: function($scope, element, attributes) {
                     var s = (attributes.directive)?attributes.directive.toLowerCase():'undefined';
-                    if(s=='categories' || s=='campaign' ||s=='info'||s=='news'||s=='brands'||s=='brandtags'||s=='filtertags'||s=='filters'||s=='stuffs' || s=='scheduleplace'){
+                    if(s=='categories' || s=='campaign' ||s=='info'||s=='news'||s=='brands'||s=='brandtags'||s=='filtertags'||s=='filters'||s=='stuffs'||s=='groupstuffs' || s=='scheduleplace'){
                         element.append($compile('<div items-block></div>')($scope));
                     }else{
                         element.append($compile('<div block-media1-edit></div>')($scope));
@@ -31930,8 +33265,8 @@ angular.module('gmall.services')
             templateUrl: 'components/blocks/blocksEdit.html',
         }
     }
-    blocksEditCtrl.$inject=['$http','$uibModal','HomePage','$q','global','Photo','$fileUpload','SetCSS','Blocks','Confirm','EditModelData','Filters','Brands','Category','FilterTags','BrandTags','Stuff','News','Campaign','Info','exception','$timeout','Master','Stat','Additional','$scope','$rootScope']
-    function blocksEditCtrl($http,$uibModal,HomePage,$q,global,Photo,$fileUpload,SetCSS,Blocks,Confirm,EditModelData,Filters,Brands,Category,FilterTags,BrandTags,Stuff,News,Campaign,Info,exception,$timeout,Master,Stat,Additional,$scope,$rootScope) {
+    blocksEditCtrl.$inject=['$http','$uibModal','HomePage','$q','global','Photo','$fileUpload','SetCSS','Blocks','Confirm','EditModelData','Filters','Brands','Category','FilterTags','BrandTags','Stuff','News','Campaign','Info','GroupStuffs','exception','$timeout','Master','Stat','Additional','$scope','$rootScope','Workplace']
+    function blocksEditCtrl($http,$uibModal,HomePage,$q,global,Photo,$fileUpload,SetCSS,Blocks,Confirm,EditModelData,Filters,Brands,Category,FilterTags,BrandTags,Stuff,News,Campaign,Info,GroupStuffs,exception,$timeout,Master,Stat,Additional,$scope,$rootScope,Workplace) {
         var self=this;
 
         if(self.item.blocks && self.item.blocks.forEach){
@@ -31960,6 +33295,10 @@ angular.module('gmall.services')
             self.Items=Stuff;
             self.uploadUrl="/api/collections/Photo/fileUpload?collectionName=Stuff";
             self.uploadVideoUrl="/api/collections/Photo/uploadVideoFile?collectionName=Stuff"
+        }else if(self.type=='GroupStuffs'){
+            self.Items=GroupStuffs;
+            self.uploadUrl="/api/collections/GroupStuffs/fileUpload?collectionName=GroupStuffs";
+            self.uploadVideoUrl="/api/collections/GroupStuffs/uploadVideoFile?collectionName=GroupStuffs"
         }else if(self.type=='Master'){
             self.Items=Master;
             self.uploadUrl="/api/collections/Photo/fileUpload?collectionName=Master";
@@ -32031,8 +33370,12 @@ angular.module('gmall.services')
         self.changeSlidePhoto=changeSlidePhoto;
         self.movedItemInSlider=movedItemInSlider;
         self.movedItemInCollection=movedItemInCollection;
+        
+        active()
 
-
+        function active() {
+            
+        }
 
         /*console.log(self.Items)
         console.log(self.type)
@@ -32331,7 +33674,7 @@ angular.module('gmall.services')
             console.log(update)
             console.log(o)
             return;*/
-
+            //console.log(o)
 
             $q.when()
                 .then(function () {
@@ -32367,6 +33710,8 @@ angular.module('gmall.services')
                 controller: function(slide,$uibModalInstance,global){
                     var self=this;
                     self.item=slide;
+                    self.animationTypes=animationTypes;
+                    //console.log(self.animationTypes)
                     self.lang=global.get('store').val.lang
                     self.ok=function(){
                         //console.log(self.item)
@@ -32489,6 +33834,8 @@ angular.module('gmall.services')
                 Items=BrandTags;
             }else if(field=='stuffs'){
                 Items=Stuff;
+            }else if(field=='groupStuffs'){
+                Items=GroupStuffs;
             }else if(field=='news'){
                 Items=News;
             }else if(field=='campaign'){
@@ -32534,6 +33881,8 @@ angular.module('gmall.services')
                     model='BrandTags';
                 }else if(field=='stuffs'){
                     model='Stuff';
+                }else if(field=='groupStuffs'){
+                    model='GroupStuffs';
                 }else if(field=='news'){
                     model='News';
                 }else if(field=='campaign'){
@@ -32868,7 +34217,7 @@ angular.module('gmall.services')
                         self.element=null;
                     }
                     function deleteElement(element,type) {
-                        Confirm('delete?').then(function () {
+                        Confirm('Удалить?').then(function () {
                             if(type){
                                 delete self.block[type].elements[element]
                             }else{
@@ -32918,7 +34267,7 @@ angular.module('gmall.services')
                         self.selector=''
                     }
                     function copyStyle(from,to) {
-                        Confirm('выполнить?').then(function () {
+                        Confirm('Выполнить?').then(function () {
                             var els,blSt;
                             if(from == 'desktop'){
                                 els=angular.copy(block.elements);
@@ -33620,6 +34969,7 @@ var listOfBlocksForAll={
     slider:'слайдер',
     sn:'кнопки социальных сетей',
     stuffs:'товары',
+    groupStuffs:'группы товаров',
     subscription:'подписка',
     subscriptionAdd:'подписка с доп полями',
     text:'текстовый блок',
@@ -33809,6 +35159,12 @@ var listOfBlocksForStuffDetail={
     tags:'характеристики',
     blocks:'медиа блоки',
     back:'кнопка назад в список',
+    master:'блок специалистов',
+    stuffs:'блок товаров',
+    video:'первое видео',
+    videoOne:'второе видео',
+    media:'внешнее видео',
+    mediaOne:'второе внешнее видео'
 }
 
 var listOfBlocksForStuffDetailBlocks={
@@ -33823,7 +35179,7 @@ var listOfBlocksForStuffDetailBlocks={
     map:'карта',
     mapOne:'карта + текстовый блок',
     mapTwo:'текстовый блок + карта',
-    masters:'блок мастеров',
+    masters:'блок специалистов',
     name:'имя',
     position:'должность',
     slider:'слайдер',
@@ -33855,7 +35211,7 @@ var listOfBlocksForStuffList={
 var tableOfColorsForButton={0:'black-white',1:'pink-white',2:'turquoise-white',3:'yellow-white',4:'bordo-white',5:'braun-white',6:'powder-white',7:'pinklight-white',8:'white-black',9:'black-white'}
 var tableOfButtonsFile={0:'standart',1:'border-radius',2:'no border',3:'inverse',4:'border',5:'transparent'}
 
-var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','menu','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','vk','vkwhite','see','enter','zoom','yt','ytwhite']
+var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','lock','lockwhite','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','vk','vkwhite','see','enter','zoom','yt','ytwhite']
 
 var notificationsTypeLang={
     //клиенту
@@ -33863,6 +35219,12 @@ var notificationsTypeLang={
         'ru':'счет',
         'ua':'рахунок',
         'en':'invoice',
+        'de':'',
+    },
+    dateTime:{
+        'ru':'запись онлайн',
+        'ua':'запис онлайн',
+        'en':'booking',
         'de':'',
     },
     accepted:{

@@ -147,9 +147,12 @@
                     return user;
                 })
         }
-        function newUserByPhone(name,phone) {
+        function newUserByPhone(name,phone,confirmCondition) {
             var email= phone+'@gmall.io'
             var user = {email:email,name:name,profile:{phone:phone,fio:name}};
+            if(confirmCondition){
+                user.confirmCondition=confirmCondition;
+            }
             return $auth.signup(user)
                 .then(function(response) {
                     console.log(response)
@@ -261,11 +264,12 @@
         }
 
         function selectOrCreat(){
+            //console.log('lddl')
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
                     templateUrl: 'components/user/modal/selectOrCreate.html',
-                    controller: function($user,UserEntry,global,$uibModalInstance){
+                    controller: function($user,UserEntry,$http,global,$uibModalInstance){
                         var self=this;
                         self.items=[];
                         self.user='';
@@ -293,13 +297,13 @@
                             if(isNumeric(str)){
                                 if(str.length>10){
                                     self.oldPhone=str.substring(0,10);
-                                }else{
+                                }/*else{
                                     var d = 10-str.length;
                                     for(var i=0;i<d;i++){
                                         str+='0';
                                     }
                                     self.oldPhone=str
-                                }
+                                }*/
 
                                 self.userName=''
                             }else{
@@ -313,8 +317,9 @@
                             var q1= {$or:[{'phone':str},{name:str},{email:str}]}
 
                             var acts=[];
+                            q={search:str}
                             acts.push(get$user(q))
-                            acts.push(getEntryUser(q1))
+                            //acts.push(getEntryUser(q1))
                             $q.all(acts)
                                 .then(function(res){
                                     if(res[0] && res[0].length){
@@ -323,36 +328,53 @@
                                             users.push(item)
                                         })
                                     }
-                                    if(res[1] && res[1].length){
+                                    /*if(res[1] && res[1].length){
                                         res[1].forEach(function(item){
                                             item.type='userEntry'
                                             users.push(item)
                                         })
-                                    }
+                                    }*/
                                     self.users=users;
+                                    //console.log(self.users)
                                 })
 
 
                         }
                         function get$user(q){
+                            return $user.query(q).$promise
                             return $user.getList(paginate,q)
                         }
                         function getEntryUser(q){
                             return  UserEntry.getList(paginate,q)
                         }
                         function addUser(){
-                           // console.log('add user')
+                           console.log('add user')
                             var user={name:self.userName,
                                 email:self.userEmail,
-                                phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),
-                                type:"userEntry"
+                                profile:{fio:self.userName,phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),}
+                                //phone:self.phoneCode.substring(1)+self.oldPhone.substring(0,10),
+                                //type:"userEntry"
+                            }
+                            if(!self.userEmail){
+                               user.email=user.profile.phone+"@gmall.io"
                             }
                             return $q.when()
                                 .then(function(){
-                                    return UserEntry.save(user).$promise
+                                    return $user.checkEmailForExist(user.email)
                                 })
                                 .then(function(res){
-                                    user._id=(res._id)?res._id:res.id;
+                                    if(res && res.exist){throw 'email exist'}
+                                })
+                                .then(function(){
+                                    var uploadUrl='/api/createUser'
+                                    return $http.post(userHost+uploadUrl,user);
+                                })
+                                /*.then(function(){
+                                    return User.save(user).$promise
+                                })*/
+                                .then(function(res){
+                                    //console.log(res)
+                                    user._id=(res.data && res.data._id)?res.data._id:res.data.id;
                                     self.addingUser=false;
                                     self.userName='';
                                     self.user=user;
@@ -389,14 +411,16 @@
         function saveProfile(user){
             return Items.save({update:'profile'},{_id:user._id,profile:user.profile}).$promise;
         }
-        function login(){
+        function login(bookeep){
             return $q(function(resolve,reject){
                 if(global.get('user') && global.get('user').val && global.get('user').val._id){
                     return resolve()
                 }
                 var modalInstance = $uibModal.open({
                     animation: true,
-                    templateUrl: 'components/user/modal/login-sign.html',
+                    templateUrl: function () {
+                        return ((bookeep)?'components/user/modal/login-only.html':'components/user/modal/login-sign.html')
+                    },
                     controller: loginCtrl2,
                     controllerAs:'$ctrl',
                     //size: 'lg',
@@ -821,6 +845,10 @@
             var self=this;
             self.global=global;
             //self.closeModal=closeModal;
+            if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.phone){
+                self.phone=true;
+            }
+            //console.log(global.get('store').val)
             $scope.$on('closeWitget',function () {
                 //console.log('ssss')
                 $uibModalInstance.close()

@@ -13,7 +13,8 @@ function confirmFactory($q,$uibModal) {
                 template : [
                     '<div class="modal-header">',
                         '<h3 class="modal-title text-center" ng-bind="$ctrl.question"></h3>',
-                        "<span class='icon-cancel-img' ng-click='$ctrl.cancel()'></span>",
+                        '<span class="cancel-confirm"><span class="icon-cancel-img" ng-click=""$ctrl.cancel()"></span></span>',
+
                     '</div>',
                     '<div class="modal-body confirm">',
                     '<form ng-submit="$ctrl.ok()">'+

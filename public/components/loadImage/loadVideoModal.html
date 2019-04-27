@@ -1,7 +1,7 @@
 <div class="col-lg-12 col-md-12 col=sm-12 col-xs-12 text-center  loadImageModal">
     <form id="uploadImgForm" name="$ctrl.uploadForm" class="img-upload-box box" role="form" enctype="multipart/form-data" ng-disabled="$ctrl.isBusy">
         <div class="form-group img-list" ng-show="$ctrl.hasFiles">
-            <h4>Файл для загрузки</h4>
+            <p class="label-menu">Файл для загрузки</p>
             <ul class="list-unstyled">
                 <li ng-repeat="file in $ctrl.files">
                     <p ng-bind="file.name"></p>
@@ -10,23 +10,23 @@
             </ul>
             <div class="clearfix"></div>
             <div class="form-group" ng-show="$ctrl.hasFiles && !$ctrl.isUploading">
-                <a class="btn btn-fab"  ng-click="$ctrl.uploadFiles()" title="загрузить видео">
-                    <i class="material-icons link-primary md-36">archive</i>
+                <a class="btn btn-fab btn-primary"  ng-click="$ctrl.uploadFiles()" title="загрузить видео">
+                    <i class="material-icons">vertical_align_bottom</i>
                 </a>
-                <button class="btn btn-fab" title="отменить выбор" type="reset" value="Cancel">
-                    <i class="material-icons link-warning md-36">cancel</i>
+                <button class="btn btn-fab btn-warning" title="отменить выбор" type="reset" value="Cancel">
+                    <i class="material-icons">delete</i>
                 </button>
                 <!--<input class="btn btn-primary" type="button" ng-click="$ctrl.uploadFiles()" value="Upload">
                 <input class="btn btn-warning" type="reset" value="Cancel">-->
             </div>
-            <div class="form-group" ng-show="$ctrl.isUploading">
-                <img class="img-responsive" src="../../img/spinner.gif">
+            <div class="img-upload text-center" ng-show="$ctrl.isUploading">
+                <img class="img-responsive spinner1" src="../../img/spinner.gif">
             </div>
             <div class="clearfix" style="margin-bottom: 50px"></div>
         </div>
         <span class="add-photo-bg">
-            <a class="btn btn-fab add">
-                <i class="material-icons link-success md-36">add_circle</i>
+            <a class="btn btn-fab btn-success add">
+                <i class="material-icons">add</i>
             </a>
 
         </span>

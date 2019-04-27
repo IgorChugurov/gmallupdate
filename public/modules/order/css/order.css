@@ -46,6 +46,7 @@
     top:45%;
     left: 45%;
 }
+
 .cancel {
     position: absolute;
     right: 20px;
@@ -56,8 +57,7 @@
     background-size: 15px;
 }
 hr {
-    border-top-color: #aaaaaa;
-    background-color: #eee;
+    border-top-color: #ccc;
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -373,7 +373,7 @@ a:focus {
     margin-top: 16px;
 }
 .form-control {
-    font-size: 18px;
+    font-size: 16px;
 }
 .form-group  label,
 .form-group .checkbox label,
@@ -1244,7 +1244,7 @@ textarea:focus,
 
 
 /*phoneForm*/
-.phoneForm {
+/*.phoneForm {
     width: 100%;
 }
 .phoneForm .add-phone {
@@ -1264,7 +1264,9 @@ textarea:focus,
 }
 .phoneForm .add-phone .ui-select-match .btn-default {
     height: 40px;
-}
+}*/
+
+
 .content  {
     padding-top: 120px;
     padding-bottom: 70px;
@@ -1308,11 +1310,11 @@ textarea:focus,
 }
 .content .content-box {
     font-size: 18px;
-    min-height: 160px;
+    min-height: 200px;
 }
 .content-box {
     background-color: #fff;
-    padding: 50px 40px;
+    padding: 40px;
     text-align: center;
     border: 15px solid #ccc;
     box-shadow: 2px 2px 10px 0 #666;
@@ -1522,7 +1524,11 @@ a.content-box-link:hover {
     height: 12px;
     background: url("../../../img/icon/clear.png");
     background-size: 12px;
+    display: inline-block;
     cursor: pointer;
+}
+.icon-cancel-img.change {
+    display: none;
 }
 /*chat*/
 .img-messageme-admin {

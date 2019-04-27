@@ -200,6 +200,10 @@ var __filterTags=_filterTags
         function getSticker(tags){
             if(tags && tags.length && filterTags && filterTags.length){
                 for(var i =0;i<tags.length;i++){
+                    /*if(tags[i]=='5c07f407a43847154c0e5d03'){
+                        console.log(__filterTagsO)
+                        console.log(__filterTagsO[tags[i]])
+                    }*/
                     if(__filterTagsO[tags[i]] && __filterTagsO[tags[i]].sticker){
                         //console.log(angular.copy(__filterTagsO[tags[i]].sticker))
                         return __filterTagsO[tags[i]].sticker

@@ -623,6 +623,16 @@ exports.get = function(req, res, next) {
                     result.artikulL=artikulL;
                 }
 
+                if(req.collectionName=='Stuff' && result.groupStuffs){
+                    myUtil.setLangField(result.groupStuffs,lang)
+                    if(result.groupStuffs.masters && result.groupStuffs.masters.length){
+                        /*result.groupStuffs.masters.forEach(m=>{
+                            console.log('req.collectionName',m.img)
+                        })*/
+                        result.groupStuffs.masters.forEach(m=>myUtil.setLangField(m,req.store.lang))
+                    }
+                }
+
                 if(req.collectionName=='Group'){
                     if(result.categories){
                         result.categories =result.categories.filter(function(el){return el && el._id} )
@@ -632,6 +642,33 @@ exports.get = function(req, res, next) {
                                 return el;
                             })
                     }
+                }
+                if(req.collectionName=='GroupStuffs'){
+                    //console.log('GroupStuffs')
+                    try{
+                        if(result.masters && result.masters.length){
+                            //myUtil.setLangField(result.masters,req.store.lang)
+                            result.masters.forEach(m=>myUtil.setLangField(m,req.store.lang))
+                        }
+                        if(result.stuffs && result.stuffs.length){
+                            //myUtil.setLangField(result.stuffs,req.store.lang)
+                            result.stuffs.forEach(s=>myUtil.setLangField(s,req.store.lang))
+
+                        }
+                        if(result.tags && result.tags.length){
+                            //myUtil.setLangField(result.stuffs,req.store.lang)
+                            result.tags.forEach(s=>{
+                                myUtil.setLangField(s,req.store.lang)
+                                if(s.filter){
+                                    myUtil.setLangField(s.filter,req.store.lang)
+                                }
+                            })
+
+                        }
+                    }catch(err){
+                        console.log(err)
+                    }
+
                 }
 
 

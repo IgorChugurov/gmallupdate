@@ -51,7 +51,7 @@ div(class="stuffs")
                                 span(class="icon icon-categories-img")
                     else if(stuff.orderType == '3')
                         div
-                            a(class="btn  btn-project btn-noborder",ui-sref="stuffs.stuff(stuff.linkData)")
+                            a(class="btn  btn-project btn-noborder",href=stuff.link)
                                 span(ng-bind="$ctrl.global.get('lang').val.more")
                                 span(class="icon icon-categories-img")
                     else if(stuff.orderType == '4')

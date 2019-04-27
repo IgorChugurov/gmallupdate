@@ -121,8 +121,8 @@
             }
         }
     };
-    listCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','socket','$timeout','Label'];
-    function listCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,socket,$timeout,Label){
+    listCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','socket','$timeout','Label','Workplace'];
+    function listCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,socket,$timeout,Label,Workplace){
         //console.log('????')
         var self = this;
         self.moment=moment;
@@ -299,6 +299,9 @@
             $q.when()
                 .then(function () {
                     return getMasters()
+                })
+                .then(function () {
+                    return getWorkplaces()
                 })
                 .then(function () {
                     return Label.getList({},{})
@@ -515,9 +518,9 @@
                     //console.log(global.get('store').val)
                     if(week){
                         var dd = Booking.getDateFromStrDateEntry(part.date)
-                        return Booking.newBooking(master,val,self.selectedStuff,dd,part.date,start)
+                        return Booking.newBooking(master,val,self.selectedStuff,dd,part.date,start,self.workplaces)
                     }else{
-                        return Booking.newBooking(master,val,self.selectedStuff,self.date,self.query.date,start)
+                        return Booking.newBooking(master,val,self.selectedStuff,self.date,self.query.date,start,self.workplaces)
                     }
 
                 })
@@ -565,6 +568,9 @@
                         if(i==0&& entry.remind && entry.timeRemind){
                             o.remind=entry.remind;
                             o.timeRemind=entry.timeRemind;
+                        }
+                        if(entry.workplace){
+                            o.workplace=entry.workplace;
                         }
                         //console.log(o)
                         entries.push(o)
@@ -620,10 +626,10 @@
             return;
         }
         function editBooking(entry,val){
-            //console.log(entry)
+            console.log(entry)
             return $q.when()
                 .then(function(){
-                    return Booking.editBooking(entry,masters)
+                    return Booking.editBooking(entry,masters,self.workplaces)
                 })
                 .then(function(res){
                     console.log(res)
@@ -932,6 +938,19 @@
             )
 
         }
+        function getWorkplaces(){
+            return $q.when()
+                .then(function(){
+                    //return Master.getList()
+                    return Workplace.getList(null,{})
+                })
+                .then(function(data){
+                    self.workplaces=data
+                })
+                .catch(function(err){
+                    exception.catcher('получение списка рабочих мест')(err)
+                });
+        }
     }
     scheduleCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','socket','$state','Workplace','$timeout'];
     function scheduleCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,socket,$state,Workplace,$timeout){
@@ -1073,6 +1092,7 @@
 
 
         function activate() {
+            //console.log('scheduleCtrl')
             socket.on('newRecordOnSite',function(){
                 console.log('newRecordOnSite');
                 $timeout(function () {
@@ -1435,10 +1455,12 @@
             return;
         }
         function editBooking(entry,val){
-            //console.log(entry)
+            console.log(entry);
+            console.log(self.workplaces);
+
             return $q.when()
                 .then(function(){
-                    return Booking.editBooking(entry,masters)
+                    return Booking.editBooking(entry,masters,self.workplaces)
                 })
                 .then(function(res){
                     if(res && res.action=='delete'){
@@ -1474,21 +1496,37 @@
         self.recordAgreed=recordAgreed;
         self.saveField=saveField;
         self.deleteItem=deleteItem;
+        self.changeMaster=changeMaster;
+
+        function changeMaster() {
+            var m = self.masters.getOFA('_id',self.entry.master)
+            if(m){
+                saveField('master')
+                self.entry.masterNameL=m.nameL;
+                saveField('masterNameL');
+                self.entry.masterName=m.name;
+                saveField('masterName');
+                self.entry.masterUrl=m.url;
+                saveField('masterUrl');
+            }
+        }
 
 
         activate(entryId)
 
 
         function activate(id) {
-            self.Items.getItem(id).then(function(data){
-                if(data.user && data.user._id!='schedule'){
-                    data.user.pay=data.pay;
-                    data.user.confirm=data.confirm;
-                    data.users=[data.user];
-                }
-                console.log(data)
-                self.entry=data;
-            })
+            self.Items.getItem(id)
+                .then(function(data){
+                    if(data.user && data.user._id!='schedule'){
+                        data.user.pay=data.pay;
+                        data.user.confirm=data.confirm;
+                        data.users=[data.user];
+                    }
+                    //console.log(data)
+                    //data.master=null;
+                    self.entry=data;
+                })
                 .then(function(){
                 //return Master.getList()
                 return global.get('masters').val
@@ -1497,7 +1535,8 @@
                     console.log(data);
 
                     self.masters=data.filter(function (m) {
-                        return m._id!=self.entry.master
+                        //return m._id!=self.entry.master
+                        return m
                     })
 
                     console.log(self.masters)

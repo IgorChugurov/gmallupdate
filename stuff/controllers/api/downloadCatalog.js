@@ -1164,7 +1164,8 @@ function createFile(filePath,req) {
                 if(stuff.artikul){
                     offer.ele('vendorCode',stuff.artikul).up()
                 }
-                offer.ele('quantity',prices.quantity).up();
+                let qqq = (prices.quantity)?1:0;
+                offer.ele('quantity',qqq).up();
                 //offer.ele('url',url).up()
                 if(prices.price){
                     if(prices.priceSale){

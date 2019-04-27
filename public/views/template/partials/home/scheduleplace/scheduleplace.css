@@ -30,6 +30,9 @@
 .box-day {
     position: relative;
 }
+.master-name {
+    font-size: 11px;
+}
 .week-table-header {
     margin-bottom: 20px;
 }
@@ -49,14 +52,14 @@
 }
 .carousel,
 .carousel-inner {
-    width: 100%;
+    width: 300px;
 }
 .carousel {
     margin: 0 auto;
 }
 .carousel-indicators {
-    width: 90%;
-    margin-left: -45%;
+    width: 100%;
+    margin-left: -50%;
     margin-bottom: 10px;
 }
 li {
@@ -82,6 +85,22 @@ li {
 .carousel-control.left,
 .carousel-control.right {
     background-image: none;
+}
+.carousel-control.left span,
+.carousel-control.right span{
+    display: none;
+}
+.carousel-control.right {
+    background: url(/img/icon/nextgallery/right_b.png)!important;
+    background-position: center!important;
+    width: 30px!important;
+    background-repeat: no-repeat!important;
+}
+.carousel-control.left {
+    background: url(/img/icon/prevgallery/left_b.png)!important;
+    background-position: center!important;
+    width: 30px!important;
+    background-repeat: no-repeat!important;
 }
 .carousel-control.left.disabled,
 .carousel-control.right.disabled {
@@ -155,9 +174,27 @@ li {
 }
 
 .online-table-day.box-day {
-    padding: 5px 20px;
-    height: 45px;
+    height: 90px;
     border-top: 1px solid #ccc;
+}
+.box-day-item,
+.place-name {
+    padding: 5px 20px;
+}
+.box-day-item {
+    border-bottom: 1px solid #ccc;
+}
+.place-name {
+    border-left: 1px solid #ccc;
+    width:50%;
+    float:left
+}
+.box-place {
+    width:50%;
+    float:left
+}
+.month {
+    line-height: 90px;
 }
 .box-day {
     text-align: center;
@@ -306,6 +343,57 @@ li {
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);
     background-color: $color;
 }
+/*tooltip Semya*/
+/*.tooltipEntry {
+    position: relative;
+    display: inline-block;
+}
 
+.tooltipEntry .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    !* Position the tooltip *!
+    position: absolute;
+    z-index: 100000;
+}
+
+.tooltipEntry:hover .tooltiptext {
+    visibility: visible;
+}*/
+/*tooltip balance*/
+.entry {
+    position: relative;
+}
+.tooltipEntry {
+    position: absolute;
+    width: 210px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    color: #000;
+    text-align: center;
+    padding: 10px;
+    bottom: 0;
+    right: 0;
+    z-index: 100000;
+    display: none;
+    box-shadow: -1px 1px 6px #ccc;
+    font-size: 16px;
+}
+.entry:hover .tooltipEntry {
+    display: block;
+    z-index: 100000;
+}
+.tooltipEntry a {
+    color: $mainColor
+}
+.tooltipEntry .master-name {
+    font-size: 14px;
+}
 
 

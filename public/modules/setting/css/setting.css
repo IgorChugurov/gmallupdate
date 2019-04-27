@@ -55,6 +55,7 @@
     top:45%;
     left: 45%;
 }
+.icon-cancel-img,
 .cancel {
     position: absolute;
     right: 20px;
@@ -115,7 +116,7 @@ hr {
     -webkit-transition: all .5s;
     -moz-transition: all .5s;
     transition: all .5s;
-    color: #ff7148;
+    color: #4caf50;
     display: none;
 }
 .saving{
@@ -162,6 +163,7 @@ a {
     font-weight: 400;
     text-decoration: none;
     cursor: pointer;
+    transition: none !important;
 }
 a:hover,
 a:focus {
@@ -605,6 +607,24 @@ textarea:focus,
 .ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
     line-height: 0.9;
 }
+.ui-select-multiple .btn:not(.btn-raised).btn-primary {
+    background-color: #4caf50;
+    color: #fff
+}
+.ui-select-multiple .btn:not(.btn-raised).btn-primary:focus {
+    color: #4caf50;
+    background-color: #f5f5f5;
+
+}
+.ui-select-multiple.ui-select-container .btn.btn-xs span.close,
+.ui-select-multiple.ui-select-container .input-group-btn .btn.btn-xs  span.close,
+.ui-select-multiple.ui-select-container .btn-group-xs .btn, .btn-group-xs  span.close,
+.ui-select-multiple.ui-select-container .input-group-btn .btn  span.close {
+    margin-top: -2px;
+    margin-right: 5px;
+    color: #ff7148;
+    margin-left: 5px;
+}
 .selling .rzslider .rz-pointer {
     background-color: #6886b2;
 }
@@ -658,6 +678,13 @@ textarea:focus,
 /*select-modal*/
 .modal-dialog {
     width: 60%
+}
+.modal-dialog.modal-sm {
+    width: 300px;
+}
+.modal-dialog.modal-sm .modal-header {
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 .modal.modalProject {
     z-index: 1051 !important;
@@ -1179,9 +1206,9 @@ textarea:focus,
     width: 80%;
     float: left;
 }
-.phoneForm .form-control {
+/*.phoneForm .form-control {
     height: 40px;
-}
+}*/
 .phoneForm .add-phone .ui-select-choices {
     width: 200px;
 }

@@ -1,0 +1,24 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        if item.masters
+            div(class="col-lg-6 col-md-6 col-sm-12 col-xs-12 master-block")
+                each master in item.masters
+                    div(class="master-item")
+                        a(class="",href="/master/"+master.url)
+                            div(class="col-lg-3 col-md-3 col-sm-6 col-xs-12")
+                                img(class="img-responsive",src=photoHost + ((photoHost)?'/':'') +master.img)
+                            div(class="col-lg-9 col-md-9 col-sm-6 col-xs-12")
+                                h4(class="")=lang['profile']
+                                h3(class="name")
+                                    | !{master.name}
+                            div(class="col-lg-12 col-md-12 col-sm-12 col-xs-12")
+                                div(class="desc-box")
+                                    | !{master.desc}
+            div(class="col-lg-6 col-md-6 col-sm-12 col-xs-12 series-block")
+                if item.filters
+                    each f in item.filters
+                        div(class="item-box")
+                            h4=f.name
+                            each t in f.tags
+                                p=t.name
+        div(class="clearfix")

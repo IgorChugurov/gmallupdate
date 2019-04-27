@@ -79,19 +79,23 @@ angular.module('gmall.services')
                 }
 
             }
-                    s+='</span></td></tr>'+
-                        '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
-                            if(global.get('store').val.footer && global.get('store').val.footer.text){
-                                s+=global.get('store').val.footer.text;
-                            }
+            s+='</span></td></tr>'+
+                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
+            if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
+            }
 
-                        s+='</span></td>';
-                        s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-                            if(global.get('store').val.footer && global.get('store').val.footer.text1){
-                                s+=global.get('store').val.footer.text1;
-                            }
+            s+='</span></td>';
+            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
+             s+=global.get('store').val.footer.text1;
+             }*/
+            if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
+            }
 
-                    s+='</span></td></tr></table>';
+            s+='</span></td></tr></table>';
             return s
         }
         // ********************пустой контент
@@ -118,6 +122,8 @@ angular.module('gmall.services')
             }
         }
         function emailFromNews(item){
+            console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
+            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])
             var s=
                 '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></a></td></tr>'+
@@ -250,10 +256,10 @@ angular.module('gmall.services')
 
 
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            /*s+='<table width="900px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr><td border="0" colspan="2" style="border:none; border-top:#cccccc 5px solid;"></td></tr>'+
-                /*'<tr><td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td><td/><td/>'+*/
-                /*'<td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td></tr>'+*/
+                /!*'<tr><td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td><td/><td/>'+*!/
+                /!*'<td width="20" height="20"><img src="1450821408255127738039" width="20" height="20" /></td></tr>'+*!/
                 '<tr><td align="right" style="vertical-align: top"><span style="font-family:Tahoma; font-size:12px; color:#404040;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
@@ -272,7 +278,41 @@ angular.module('gmall.services')
                 s+=global.get('store').val.footer.text;
             }
             s+='</span></td></tr>'+
-                '</table>'
+                '</table>'*/
+            s +='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
+                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            if(global.get('store').val.sn){
+                for(var key in global.get('store').val.sn){
+                    if(global.get('store').val.sn[key].is){
+                        if(global.get('store').val.template.index && global.get('store').val.template.index.icons
+                            &&global.get('store').val.template.index.icons[key+'white']){
+                            s+='<a href="'+global.get('store').val.sn[key].link+'">'+
+                                '<img style="width: 24px; height: 24px;margin: 0 10px" src="'+global.get('store').val.link+global.get('store').val.template.index.icons[key+'white'].img+'">'
+                                +'</a>'
+                        }
+
+                    }
+                }
+
+            }
+            s+='</span></td></tr>'+
+                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
+            if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
+            }
+
+            s+='</span></td>';
+            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
+            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
+             s+=global.get('store').val.footer.text1;
+             }*/
+            if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
+                s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
+            }
+
+            s+='</span></td></tr></table>';
+
             return s;
             return '<!DOCTYPE html><html><head>' +
                 '<link rel="stylesheet" type="text/css" href="http://gmall.io/bower_components/bootstrap/dist/css/bootstrap.css" />' +
@@ -353,12 +393,17 @@ angular.module('gmall.services')
             s+='<p>'+global.get('langOrder').val.sum+' '+(order.paySum).toFixed(2)+' '+order.currency+'</p>';
             return s;
         }
-        function dateTimeNote(entry){
+        function dateTimeNote(entry,user){
+            //console.log(user)
             //console.log(order)
             var s='';
             s +='<h3 class="order-name">'+global.get('langOrder').val.dateTime+'</h3> '+global.get('langOrder').val.onn+' '+entry.dateForNote;
             s+='<p>'+global.get('store').val.texts.masterName[global.get('store').val.lang]+' - '+entry.masterName+'</p>';
             s+='<p>'+entry.service.name+'</p>';
+            if(user){
+                s+='<p>'+user.name+' '+user.phone+'</p>';
+            }
+
             return s;
         }
         function dateTimeCancelNote(entry){
@@ -668,13 +713,14 @@ angular.module('gmall.services')
             }*/
             return s;
         }
-        function call(number){
+        function call(number,name){
             //console.log(number)
             //number=number.substring(0,20)
             var s='';
-            s+='<h3>'+number+'</h3>'
-            s+='<p>'+global.get('langOrder').val.requestacallback+'</p>'
+            s+='<h3>'+global.get('langOrder').val.requestacallback+'</h3>'
+            s+='<p>'+number+((name)?' '+name:'')+'</p>'
             s+='<p>'+moment().format('LLLL')+'</p>'
+            console.log(s)
             return s;
         }
 

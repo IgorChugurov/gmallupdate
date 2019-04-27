@@ -30,6 +30,7 @@ angular.module('gmall.controllers')
         if(form.$valid) {
             $scope.callCtrl.blockButton=true;
             o.content=global.get('langOrder').val.requestacallback+' '+self.user.val.profile.phone+((self.user.val.fio)?' '+self.user.val.fio:'')+' '+moment().format('LLLL');
+            o.content=CreateContent.call(self.user.val.profile.phone,((self.user.val.fio)?' '+self.user.val.fio:''))
 
             if(self.stuff){
                 o.content +=','+self.stuff

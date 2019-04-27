@@ -69,12 +69,15 @@ var blockSchema = new Schema({
     duration:Number,// время смены слайда в секундах
     template:Boolean,// если шаблон то доступен для загрузки
     nameTemplate:String,
+    qwslide:Number,// количество слайдов для оwl slider
+    autoPlaySlider:Boolean,
     link:String,
     link1:String,
     position:String,// left,right,top
     useImg:Boolean,
     useDesc:Boolean,
     videoControl:Boolean,
+    dontScrollBlock:Boolean,
 })
 var CategorySchema = new Schema({
     store:{type : Schema.ObjectId, ref : 'Store'},
@@ -241,6 +244,8 @@ var GroupSchema = new Schema({
     store:{type : Schema.ObjectId, ref : 'Store'},
     name: {type : String, default : '', trim : true},
     nameL: {},
+    desc :{type : String, default : ''},
+    descL :{},
     idForXML:Number,
     url:{type : String},
     index:{type:Number,default:1},
@@ -256,7 +261,13 @@ var GroupSchema = new Schema({
     groupStuffs:Boolean,// раздел для групп товароа
     hideSection:Boolean,// прятать в каталоге
     mask:[], // маска для титлов товаров
+    charsQty:{type:Number,default:250},
+    img:String,
+    banner:String,
 
+    filters: [{type : Schema.ObjectId, ref : 'Filter'}],
+    blocks:[blockSchema],
+    viewsFilters:Boolean,
 })
 
 

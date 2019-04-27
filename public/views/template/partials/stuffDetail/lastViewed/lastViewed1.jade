@@ -1,0 +1,5 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        div(class="container")
+            div(ng-if1="$ctrl.item",class="viewed-box")
+                div(last-viewed,templ=dj[key].templ,current="$ctrl.item",mobile=mobile,block-element=dj[key],header="{{$ctrl.global.get('lang').val.lastViewed}}")

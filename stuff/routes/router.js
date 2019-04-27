@@ -1,6 +1,7 @@
 'use strict';
 var api = require('../controllers/api');
 var apiStore = require('../controllers/apiStore');
+var apiAccount = require('../controllers/apiAccount');
 var apiTranslate = require('../controllers/apiTranslate');
 var recalcApi = require('../controllers/api/recalculatePrice');
 var middleware = require('../middleware')
@@ -33,6 +34,15 @@ module.exports = function(router) {
     router.post('/api/alignmentIndex',middleware.getStore,api.alignmentIndex)
     router.post('/api/changeTaskSchedule',middleware.getStore,api.changeTaskSchedule)
     router.post('/api/stuffs/changeMPCategory',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,api.changeMPCategory)
+    router.post('/api/stuffs/changeStock',checkIP,apiAccount.changeStock)
 
 };
 
+function checkIP(req,res,next) {
+    if(req.connection.remoteAddress && (req.connection.remoteAddress.indexOf('37.57.5.247')>-1  || req.connection.remoteAddress.indexOf('127.0.0.1')>-1)){
+        next()
+    }else{
+        let err  = new Error('not permission')
+        next(err)
+    }
+}

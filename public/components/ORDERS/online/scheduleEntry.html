@@ -1,16 +1,24 @@
-<div class="edit-booking select-modal">
-    <div class="modal-header">
-        <h3 class="modal-title text-center">редактирование записи {{$ctrl.dateEntry}}</h3>
-        <a class="cancel" ng-click="$ctrl.cancel()"></a>
-        <div class="clearfix"></div>
-    </div>
+<style>
+    .shedule-entry {
+        margin-top: 80px;
+    }
+</style>
+<div class="shedule-entry col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <div class="cart-detail">
+    <h3 class="modal-title text-center">редактирование записи {{$ctrl.dateEntry}}</h3>
+
     <div class="modal-body">
         <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
             <h4><strong>услугa</strong></h4>
             <h4 ng-bind="$ctrl.entry.service.name"></h4>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <h4><strong>специалист </strong><span>{{$ctrl.entry.masterName}}</span></h4>
+            <h4><strong>специалист </strong></h4>
+            <h4><span>{{$ctrl.entry.masterName}}</span></h4>
+            <ui-select  search-enabled="false" ng-model="$ctrl.entry.master" skip-focusser="true" append-to-body ng-change="$ctrl.changeMaster()" allow-clear="true">
+                <ui-select-match>{{$item.name}}</ui-select-match>
+                <ui-select-choices repeat="opt._id as opt in $ctrl.masters">{{opt.name}}</ui-select-choices>
+            </ui-select>
 
             <h4><strong>другие специалисты</strong></h4>
             <ui-select  multiple search-enabled="false" ng-model="$ctrl.entry.masters" skip-focusser="true" append-to-body ng-change="$ctrl.saveField('masters')">
@@ -24,7 +32,7 @@
                 <label class="control-label">
                     комментарии к записи
                 </label>
-                <textarea rows="3" class="form-control" ng-model="$ctrl.entry.comment"
+                <textarea rows="4" class="form-control" ng-model="$ctrl.entry.comment"
                           ng-model-options="{'updateOn':'default blur','debounce':{'default':400,'blur':0}}"
                           ng-change="$ctrl.saveField('comment')"></textarea>
             </div>
@@ -50,12 +58,10 @@
                 </ui-select>
             </div>
         </div>
-        <div class="action col-lg-1 col-md-1 col-sm-4 col-xs-12">
-
-                <a class="btn  btn-fab btn-fab-mini" title="удалить запись" ng-click="$ctrl.delete()">
-                    <i class="material-icons link-warning md-42 ">delete</i>
+        <div class="col-lg-1 col-md-1 col-sm-4 col-xs-12">
+                <a class="btn  btn-fab btn-warning" title="удалить запись" ng-click="$ctrl.delete()">
+                    <i class="material-icons ">delete</i>
                 </a>
-
             <!--<div class="col-lg-4 col-md-4 col-sm-4 col-xs-8 text-center" style="padding-left: 0; padding-right: 0">
                 <a class="btn btn-lg" title="перенести запись на другой день" ng-click="$ctrl.moveEntry()">
                     <span class="link-success" ng-show="!$ctrl.entry.move">пренести запись</span>
@@ -66,8 +72,6 @@
                 <!--<a class="btn  btn-fab btn-fab-mini" title="сохранить запись" ng-click="$ctrl.ok()">
                     <i class="material-icons link-warning md-42 ">clear</i>
                 </a>-->
-
-
         </div>
         <div class="clearfix"></div>
 
@@ -118,7 +122,6 @@
                         <p><strong>изменение данных клиента</strong></p>
                     </a>
                 </h4>
-
                 <form name="form" ng-submit="$ctrl.updateUser()" uib-collapse="!$ctrl.editingUser">
                     <fieldset class="well the-fieldset">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -205,16 +208,10 @@
                                     <!--<i class="material-icons link-success md-42 ">notifications_active</i>-->
                                 </a>
                             </p>
-
-
-
                             <div class="clearfix"></div>
                         </h4>
                     </div>
                 </div>
-
-
-
             </div>
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                 <div class="form-group" style="margin-top: 0;">
@@ -272,4 +269,5 @@
 
     </div>
     <div class="clearfix"></div>
+    </div>
 </div>

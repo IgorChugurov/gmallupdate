@@ -175,6 +175,14 @@ StoreSchema = new Schema({
     ipstack:String,//access_key https://ipstack.com
     settingContent:{admin:{},site:{}},
     scrollblock:Boolean,// скроллирование глаыной страницы по блокам
+    typeOfReg:{
+        phone: Boolean,
+        email: Boolean,
+        emailPhone: Boolean,
+        first: Boolean,
+        oferta:Boolean,// наличие в регистрационной форме чекбокса с подтверждением правил испльзования сайта
+    },
+    bookkeep:Boolean,// использовать бухгалтерию на витрине
 });
 /*StoreSchema.add({sh:{
     fb:{is:Boolean,type:Number},

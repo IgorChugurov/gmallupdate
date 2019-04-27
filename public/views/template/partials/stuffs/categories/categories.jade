@@ -4,20 +4,20 @@ div(class=dj[key].wrapclass)
             div(class="categories-for-list")
                 if(dj[key].categories.length && dj[key].categories.length>1)
                     div(class="")
-                        a(class="categories-stuff",href=dj[key].allCategoriesLink)
+                        a(class="categories-stuff",href=dj[key].allCategoriesLink,set-animate=dj[key].animate,data-animation=dj[key].animate)
                             if(store.allCategories)
                                 img(class="img-responsive img-categories",src=photoHost+'/'+store.allCategories,ng-class="{'img-active':$ctrl.category=='category'}")
                             span(class="text-center",ng-class="{'category-active':$ctrl.category=='category'}")=store.langData.allCategories
                         if(dj[key].section && dj[key].section.saleLink && store.saleTag)
-                            a(class="categories-stuff",ng-click="$ctrl.changeCategory('category','sale')")
+                            a(class="categories-stuff",ng-click="$ctrl.changeCategory('category','sale')",set-animate=dj[key].animate,data-animation=dj[key].animate)
                                 img(class="img-responsive img-categories",ng-src="{{::$ctrl.getFilterTagsPhoto('"+store.saleTag+"').img}}",ng-class="{'img-active':$ctrl.queryTag=='sale'}")
                                 span(class="text-center",ng-class="{'category-active':$ctrl.queryTag=='sale'}")=store.langData.sale
                         if(dj[key].section && dj[key].section.newLink && store.newTag)
-                            a(class="categories-stuff",ng-click="$ctrl.changeCategory('category','new')")
+                            a(class="categories-stuff",ng-click="$ctrl.changeCategory('category','new')",set-animate=dj[key].animate,data-animation=dj[key].animate)
                                 img(class="img-responsive img-categories",ng-src="{{::$ctrl.getFilterTagsPhoto('"+store.newTag+"').img}}",ng-class="{'img-active':$ctrl.queryTag=='new'}")
                                 span(class="text-center",ng-class="{'category-active':$ctrl.queryTag=='new'}")=store.langData.new
                         each category in dj[key].categories
-                            a(class="categories-stuff",href=category.link)
+                            a(class="categories-stuff",href=category.link,set-animate=dj[key].animate,data-animation=dj[key].animate)
                                 if(category.smallimg)
                                     img(class="img-responsive img-categories",src=photoHost+'/'+category.smallimg,ng-class="{'img-active':$ctrl.category=='" + category.url + "'}")
                                 span(class="text-center",ng-class="{'category-active':$ctrl.category=='" + category.url + "'}")=category.name

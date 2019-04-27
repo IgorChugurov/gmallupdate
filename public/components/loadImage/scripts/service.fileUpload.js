@@ -58,7 +58,7 @@ angular.module('gmall.services')
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: function () {
-                return (field && field=='video')?'components/loadImage/loadVideoModal.html':'components/loadImage/loadImageModal.html';
+                return ((field && (field=='video') || field=='video.link' ||  field=='video1.link'))?'components/loadImage/loadVideoModal.html':'components/loadImage/loadImageModal.html';
                 if(field=='video'){'components/loadImage/loadVideoModal.html'}else{return 'components/loadImage/loadImageModal.html'}
             },
             controller: function(uploadUrl,field,itemUrl,itemId,index,$uibModalInstance,$scope,$timeout,exception){
@@ -70,7 +70,7 @@ angular.module('gmall.services')
                 self.suffix=(self.urlArr[1])?self.urlArr[1]:'';
                 self.dimen= self.urlArr[0].split('/');
                 self.fileDimension=''
-                if(field!='video'){
+                if(field!='video' &&  field=='video.link' &&  field=='video1.link'){
                     self.fileDimension=self.dimen[self.dimen.length-1].slice(10);
                 }
                 self.uploadFiles=uploadFiles;

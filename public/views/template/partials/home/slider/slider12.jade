@@ -19,7 +19,8 @@ div(class=dj[key].wrapclass)
                                         div(class="half-shadow")
                                             div(class="title-block")
                                                 if(dj[key].imgs[i].name)
-                                                    h1(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)=dj[key].imgs[i].name
+                                                    h1(set-animate=dj[key].nameAnimate,data-animation=dj[key].nameAnimate)
+                                                     | !{dj[key].imgs[i].name}
                                                 if(dj[key].imgs[i].desc)
                                                     div
                                                         | !{dj[key].imgs[i].desc}

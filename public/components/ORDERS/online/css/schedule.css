@@ -1,7 +1,10 @@
 .schedule {
     margin-top: 140px
 }
-
+.schedule .entry {
+    overflow: visible;
+    font-size: 10px;
+}
 .schedule .container {
      width: 100%;
 }
@@ -10,7 +13,7 @@
 }
 .schedule .online-box {
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     width: 100%;
     margin: 0 auto;
     white-space: nowrap;

@@ -8,6 +8,9 @@
     transition: all .1s ease-out;
     /*min-height: 130px;*/
 }
+.spinner1 {
+    width: auto;
+}
 .name-box {
     font-weight: bold;
     letter-spacing: 1px;
@@ -180,6 +183,10 @@ hr {
 .label-menu {
     font-size: 14px;
     font-weight: bold;
+}
+/*style-block*/
+.style-block {
+    background-color: #f5f5f5;
 }
 .name-block {
     font-size: 16px;
@@ -525,7 +532,7 @@ a:focus {
     margin-top: 16px;
 }
 .form-control {
-    font-size: 14px;
+    font-size: 16px;
 }
 .form-group.box-input {
     padding-bottom: 0;
@@ -756,6 +763,24 @@ textarea:focus,
 .ui-select-match .btn-default {
     padding-right: 20px;
 }
+.ui-select-multiple .btn:not(.btn-raised).btn-primary {
+    background-color: #4caf50;
+    color: #fff
+}
+.ui-select-multiple .btn:not(.btn-raised).btn-primary:focus {
+    color: #4caf50;
+    background-color: #f5f5f5;
+
+}
+.ui-select-multiple.ui-select-container .btn.btn-xs span.close,
+.ui-select-multiple.ui-select-container .input-group-btn .btn.btn-xs  span.close,
+.ui-select-multiple.ui-select-container .btn-group-xs .btn, .btn-group-xs  span.close,
+.ui-select-multiple.ui-select-container .input-group-btn .btn  span.close {
+    margin-top: -2px;
+    margin-right: 5px;
+    color: #ff7148;
+    margin-left: 5px;
+}
 .ui-select-bootstrap .form-group {
     padding-bottom: 0;
 }
@@ -853,15 +878,15 @@ textarea:focus,
 .desc-form {
     text-align: center;
 }
-.btn.btn-project {
+/*.btn-project {
     margin: 0;
     padding: 12px;
     min-height: 46px;
     font-size: 16px;
     letter-spacing: 2px;
     width: 100%;
-    text-transform: lowercase;
-}
+    text-transform: uppercase;
+}*/
 .enter-button-box {
     padding: 0 !important;
 }
@@ -954,6 +979,11 @@ textarea:focus,
 }
 .modal-dialog.modal-sm {
     max-width: 400px;
+}
+.select-info {
+    padding: 15px;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc
 }
 /*search-fluid*/
 /*new*/
@@ -1543,7 +1573,7 @@ textarea:focus,
 }
 
 /*phoneForm*/
-.phoneForm {
+/*.phoneForm {
     width: 100%;
 }
 .phoneForm .add-phone {
@@ -1567,7 +1597,7 @@ textarea:focus,
 .stuffs-admin .phoneForm .add-phone .ui-select-match .btn-default {
     height: 40px;
     border-bottom: none;
-}
+}*/
 .content  {
     padding-top: 120px;
     padding-bottom: 70px;
@@ -1760,10 +1790,12 @@ a.content-box-link:hover {
 
 .galleryTable .galleryRow .gallery-item-ul {
     padding-left: 0;
+    min-height: 0 !important;
+    margin-bottom:0;
 }
 
 .galleryTable .galleryRow .gallery-item-ul > li {
-    background-color: rgb(232, 232, 232);
+    background-color: #fff;
     color: rgb(255, 255, 255);
     float: left;
     min-height: 300px;
@@ -1776,7 +1808,9 @@ a.content-box-link:hover {
 }
 .galleryTable .galleryRow .gallery-item-ul img {
     width: 100%;
-    margin-top: -22px;
+    height: 300px;
+    object-fit: contain;
+    margin-top: -20px;
 }
 .galleryTable .helper {
     display: inline-block;

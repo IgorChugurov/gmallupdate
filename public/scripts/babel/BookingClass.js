@@ -158,7 +158,8 @@
                 moment.locale(this.lang)
                 var s =moment(date).format('dddd');
                 var d =moment(date).format('DD.MM.YY');
-                return capitalizeFirstLetter(s)+' ('+d+')';
+                //console.log(capitalizeFirstLetter(s)+' </br>'+d)
+                return capitalizeFirstLetter(s)+' </br>'+d;
             }catch(err){console.log(err);return 'error handle date'}
         }
         changeStartEndTimeParts (date) {
@@ -202,12 +203,22 @@
                 weeksRange[i].startDate=datesOfWeeks[0].d
                 weeksRange[i].endDate=datesOfWeeks[6].d
                 moment.locale(this.lang)
-                weeksRange[i].startDateString=moment(datesOfWeeks[0].d).format('DD MMM')
-                weeksRange[i].endDateString=moment(datesOfWeeks[6].d).format('DD MMM')
+                weeksRange[i].startDateString=moment(datesOfWeeks[0].d).format('DD.MM.YY')
+                weeksRange[i].endDateString=moment(datesOfWeeks[6].d).format('DD.MM.YY')
             }
             return weeksRange
         }
-        getBookingWeekScheldule(data,lang) {
+        getBookingWeekScheldule(data,lang,workplaces) {
+            var wplength=1;
+            let workplacesO={}
+            if(workplaces && workplaces.length && workplaces.length>1){
+                wplength=workplaces.length;
+
+                workplaces.forEach(function (w) {
+                    workplacesO[w._id]=w
+                })
+            }
+            //console.log('workplacesO',workplacesO)
             var datesOfWeeks=this.datesOfWeeks;
             var storeScheduleWeek=JSON.parse(JSON.stringify(this.store.timeTable));
             let selectedWorkplace={'week':{}}
@@ -228,6 +239,25 @@
                         }
                     }
                 })
+                if(wplength>1){
+                    selectedWorkplace['week'][d.date].entryTimeTableW ={};
+                    for(let ii=0;ii<wplength;ii++){
+                        selectedWorkplace['week'][d.date].entryTimeTableW[workplaces[ii]._id]=JSON.parse(JSON.stringify(this.timeParts))
+                        selectedWorkplace['week'][d.date].entryTimeTableW[workplaces[ii]._id].forEach(function (p,i) {
+                            p.date=d.date;
+                            if(storeScheduleWeek){
+                                // в self.storeSchedule 0 - это воскр у нас 0 - это понедельник
+                                var j = dayOfWeek+1;
+                                if(dayOfWeek==6){
+                                    j=0;
+                                }
+                                if(!storeScheduleWeek[j].is || p.i<storeScheduleWeek[j].start*4 || p.i>=storeScheduleWeek[j].end*4){
+                                    p.out=true;
+                                }
+                            }
+                        })
+                    }
+                }
             }
             //console.log(selectedWorkplace)
             var dowArr= datesOfWeeks.map(function (el) {
@@ -235,22 +265,85 @@
             })
             var workplace= selectedWorkplace;
             for(var j=0;j<data.length;j++){
-
                 var e = data[j];
-                //console.log('j',j,e.stuffName,e._id)
-                /*if(e.date=='date20180707'){
-                    console.log(e)
-                }*/
-
                 var serviseLink=null;
                 if(!workplace.week[e.date]){continue}
+                if(wplength>1 && e.workplace && workplace.week[e.date].entryTimeTableW[e.workplace]){
+                    for(var i=e.start;i<e.start+e.qty;i++){
+                        workplace.week[e.date].entryTimeTableW[e.workplace][i].busy=true;
+                        if(i==e.start){
+
+                            if(workplace.week[e.date].entryTimeTableW[e.workplace][i].usedTime){
+                                if(!workplace.week[e.date].entryTimeTableW[e.workplace][i].entries){
+                                    workplace.week[e.date].entryTimeTableW[e.workplace][i].entries=[]
+                                }
+                                let o={};
+                                o.usedTime=this.getUsedTime(e.start,e.qty);
+                                o.userId= e.user._id;
+                                o.service= (e.stuffNameL && e.stuffNameL[lang])?e.stuffNameL[lang]:e.stuffName;
+                                o.serviceLink= e.stuffLink;
+                                o.masterLink= '/master/'+e.masterUrl;
+                                o.masterName= (e.masterNameL && e.masterNameL[lang])?e.masterNameL[lang]:e.masterName;
+                                o.masters= (e.masters)?e.masters:null;
+                                o.new=true;
+                                o.qty=e.qty;
+                                o.used=e.used;
+                                o.confirm=e.confirm;
+                                o.comment=e.comment;
+                                o.zIndex=1;
+                                e.usedTime=workplace.week[e.date].entryTimeTableW[e.workplace][i].usedTime;
+                                o.closed=e.closed;
+                                //console.log(10,o.workplace)
+
+                                if(e.workplace){
+                                    o.workplace=e.workplace;
+                                    o.workplaceName=(workplacesO[e.workplace] && workplacesO[e.workplace].nameL[lang])?workplacesO[e.workplace].nameL[lang]:'???'
+                                    e.workplaceName=(workplacesO[e.workplace] && workplacesO[e.workplace].nameL[lang])?workplacesO[e.workplace].nameL[lang]:'???'
+                                    //console.log(1,o.workplaceName)
+                                }
+                                o.stringify=JSON.stringify(e);
+
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].entries.push(o)
+                            }else{
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].usedTime=this.getUsedTime(e.start,e.qty);
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].userId= e.user._id;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].service= (e.stuffNameL && e.stuffNameL[lang])?e.stuffNameL[lang]:e.stuffName;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].serviceLink= e.stuffLink;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].masterLink= '/master/'+e.masterUrl;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].masterName= (e.masterNameL && e.masterNameL[lang])?e.masterNameL[lang]:e.masterName;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].masters= (e.masters)?e.masters:null;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].new=true;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].qty=e.qty;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].used=e.used;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].confirm=e.confirm;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].comment=e.comment;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].zIndex=1;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].closed=e.closed;
+                                e.usedTime=workplace.week[e.date].entryTimeTableW[e.workplace][i].usedTime;
+                                workplace.week[e.date].entryTimeTableW[e.workplace][i].stringify=JSON.stringify(e)
+                                if(e.workplace){
+                                    workplace.week[e.date].entryTimeTableW[e.workplace][i].workplaceName=(workplacesO[e.workplace] && workplacesO[e.workplace].nameL[lang])?workplacesO[e.workplace].nameL[lang]:'???'
+                                    //console.log(2,e.workplaceName)
+                                }
+                                if(e.service.backgroundcolor){
+                                    workplace.week[e.date].entryTimeTableW[e.workplace][i].backgroundcolor=e.service.backgroundcolor;
+                                }
+                            }
+                        }
+                        if(e.service.backgroundcolor && !workplace.week[e.date].entryTimeTableW[e.workplace][i].backgroundcolor){
+                            workplace.week[e.date].entryTimeTableW[e.workplace][i].backgroundcolor=e.service.backgroundcolor;
+                        }
+                        if(i!=e.start){
+                            workplace.week[e.date].entryTimeTableW[e.workplace][i].noBorder=true
+                        }
+                        workplace.week[e.date].entryTimeTableW[e.workplace][i].entry=e;
+                    }
+                }
+
                 for(var i=e.start;i<e.start+e.qty;i++){
                     workplace.week[e.date].entryTimeTable[i].busy=true;
                     if(i==e.start){
                         if(workplace.week[e.date].entryTimeTable[i].usedTime){
-                            //console.log(workplace.week[e.date].entryTimeTable[i].service,workplace.week[e.date].entryTimeTable[i].masterName,e.date)
-                            /*console.log(workplace.week[e.date].entryTimeTable[i].service,workplace.week[e.date].entryTimeTable[i].masterName)
-                            console.log(e.service,e.masterName)*/
                             if(!workplace.week[e.date].entryTimeTable[i].entries){
                                 workplace.week[e.date].entryTimeTable[i].entries=[]
                             }
@@ -262,7 +355,6 @@
                             o.masterLink= '/master/'+e.masterUrl;
                             o.masterName= (e.masterNameL && e.masterNameL[lang])?e.masterNameL[lang]:e.masterName;
                             o.masters= (e.masters)?e.masters:null;
-
                             o.new=true;
                             o.qty=e.qty;
                             o.used=e.used;
@@ -273,7 +365,6 @@
                             o.closed=e.closed;
                             o.stringify=JSON.stringify(e);
                             workplace.week[e.date].entryTimeTable[i].entries.push(o)
-                            
                         }else{
                             workplace.week[e.date].entryTimeTable[i].usedTime=this.getUsedTime(e.start,e.qty);
                             workplace.week[e.date].entryTimeTable[i].userId= e.user._id;
@@ -294,13 +385,11 @@
                             if(e.service.backgroundcolor){
                                 workplace.week[e.date].entryTimeTable[i].backgroundcolor=e.service.backgroundcolor;
                             }
-
                         }
                     }
                     if(e.service.backgroundcolor && !workplace.week[e.date].entryTimeTable[i].backgroundcolor){
                         workplace.week[e.date].entryTimeTable[i].backgroundcolor=e.service.backgroundcolor;
                     }
-
                     if(i!=e.start){
                         workplace.week[e.date].entryTimeTable[i].noBorder=true
                     }
@@ -317,6 +406,18 @@
                     }
                     return part.i>=startTimeParts&&part.i<endTimeParts
                 })
+                if(wplength>1){
+                    for(let ii=0;ii<wplength;ii++){
+                        workplace.week[d].entryTimeTableW[workplaces[ii]._id]=workplace.week[d].entryTimeTableW[workplaces[ii]._id].filter(function (part) {
+                            if(timePartsI.indexOf(part.i)<0){
+                                return;
+                            }
+                            return part.i>=startTimeParts&&part.i<endTimeParts
+                        })
+
+                    }
+                }
+                //console.log(workplace.week[d].entryTimeTableW)
             }
 
             return workplace.week

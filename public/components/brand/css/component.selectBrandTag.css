@@ -52,3 +52,8 @@
     border-left: 1px solid #999;
     margin-left: 100px;
 }
+.select-brand-tag .no-collection {
+    border: 1px solid #666;
+    padding: 15px 50px;
+    display: inline-block;
+}

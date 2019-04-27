@@ -79,6 +79,11 @@
                                             перенести товары в новый ордер
                                         </a>
                                     </li>
+                                    <li>
+                                        <a ng-click="$ctrl.makeAccess()">
+                                            оформить подписку
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -147,10 +152,10 @@
                 <h3  ng-if="$index!=0 && $ctrl.order.cart.stuffs[$index].groupUrl!=$ctrl.order.cart.stuffs[$index-1].groupUrl"
                      ng-bind="good.groupName || good.groupUrl">
             </h3>-->
-            <div ng-repeat="(idx,good) in $ctrl.order.cart.stuffs track by $index" ng-init="extCatalog=$ctrl.getExtCatalog($index);good.filtertName=$ctrl.getFilterName(good.sort)">
-                <div class="mb-10 clearfix" ng-if="extCatalog">
+            <div ng-repeat="(idx,good) in $ctrl.order.cart.stuffs track by $index" ng-init2="extCatalog=$ctrl.getExtCatalog($index);good.filtertName=$ctrl.getFilterName(good.sort)">
+                <div class="mb-10 clearfix" ng-if="stuff.extCatalog">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-                        <h4 class="group-name" ng-bind="extCatalog.name"></h4>
+                        <h4 class="group-name" ng-bind="stuff.extCatalog.name"></h4>
                     </div>
                 </div>
                 <div class="thumbnail"   ng-class="{'font-mobile':$ctrl.mobile}"   id="cart-inner{{$index}}">

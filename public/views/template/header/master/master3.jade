@@ -1,0 +1,32 @@
+div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-animation=dj[key].blockAnimate,data-animation-delay=dj[key].animationDelay)
+    div(class=mobileWrapper)
+        menu-sections-pug
+            div(class="hover-top-menu")
+                div(class="text-center myMenu",id="wrapperForSections")
+                    ul(class="nav-center catalogDropDownMenu")
+                        li(id='masterListInMenu',class="mainli")
+                            a(class="section-name",set-animate=dj[key].animate,data-animation=dj[key].animate,href='/master')
+                                if(store.nameLists.masterList)
+                                    span(class="part")=store.nameLists.masterList
+                                else
+                                    span(class="part")=lang.master
+                                span(class="icon-caret-img")
+                            if(dj[key].masters)
+                                div(class="innerDiv text-center", id="masterListInMenuInnerDiv")
+                                    div(class="container-menu text-left", style="display:inline-block")
+                                        ul
+                                            li(class="category-in-section")
+                                                a(class="all",href='/master')
+                                                    span()=lang['allCategories']
+                                            each m in dj[key].masters
+                                                li(class="category-in-section")
+                                                    a(class="category-link",href="/master/"+m.url)
+                                                        span()
+                                                            !=m.name
+
+
+
+
+
+
+

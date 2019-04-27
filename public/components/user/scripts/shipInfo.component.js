@@ -2,9 +2,12 @@
 (function(){
     angular.module('gmall.directives')
         .directive('userShipInfo',userShipInfo)
+        .directive('userShipInfoShort',userShipInfoShort)
     function userShipInfo(){
         return {
-            scope: {},
+            scope: {
+                short:'@'
+            },
             bindToController: true,
             controller: shipInfoCtrl,
             controllerAs: '$ctrl',
@@ -12,9 +15,23 @@
             restrict:'AE'
         }
     }
-    shipInfoCtrl.$inject=['global','$order','exception','$window','$rootScope','$q','$user','$timeout'];
-    function shipInfoCtrl(global,$order,exception,$window,$rootScope,$q,$user,$timeout){
+
+    function userShipInfoShort(){
+        return {
+            scope: {
+                short:'@'
+            },
+            bindToController: true,
+            controller: shipInfoCtrl,
+            controllerAs: '$ctrl',
+            templateUrl: '/components/user/shipInfoShort.html',
+            restrict:'AE'
+        }
+    }
+    shipInfoCtrl.$inject=['global','$order','exception','$window','$rootScope','$q','$user','$timeout','$attrs'];
+    function shipInfoCtrl(global,$order,exception,$window,$rootScope,$q,$user,$timeout,$attrs){
         var self=this;
+        //console.log($attrs.short)
         self.order = $order.getOrder();
         self.global = global;
         self.user = global.get('user');

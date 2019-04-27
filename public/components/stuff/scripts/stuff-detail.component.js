@@ -49,6 +49,7 @@
         .directive('videolinkBlockStuff',videoLinkBlockStuff)
         .directive('snBlockStuff',snBlockStuff)
         .directive('calendarBlockStuff',calendarBlockStuff)
+        .directive('galleryCarouselControls',galleryСarouselControls)
         .directive('carouselControls', function() {
             return {
                 restrict: 'A',
@@ -155,7 +156,30 @@
 
                 }
             };
-        }]);
+        }])
+
+
+
+
+
+    function galleryСarouselControls(){
+        console.log("galleryСarouselgalleryСarousel ")
+        return {
+            restrict:'AC',
+            scope: {
+                /*homePageStuffOwl:'@',
+                zoomImg:"@",
+                stuffs:'@',
+                items:"@",
+                autoplay:'@',
+                duration:'@',
+                gallery:'='*/
+            },
+            bindToController: true,
+            controllerAs: '$ctrl',
+            controller: galleryСarouselCtrl
+        }
+    }
 
 
 
@@ -844,7 +868,6 @@
         //self.activeSlide=0
         var arrowUp = $element.find('.arrow-up-gallery-small')
         var arrowDown = $element.find('.arrow-down-gallery-small')
-        //console.log(arrowUp,arrowDown)
         $(arrowUp).css('display','none')
         $(arrowDown).css('display','none')
         $scope.arrowUp=function(display){
@@ -861,6 +884,37 @@
                 $(arrowDown).css('display','none')
             }
         }
+        var arrowPrev = $element.find('.arrow-prev-gallery-small')
+        var arrowNext = $element.find('.arrow-next-gallery-small')
+        $(arrowPrev).css('display','none')
+        $(arrowNext).css('display','none')
+        $scope.arrowPrev=function(display){
+            if(display){
+                $scope.arrowPrevDisabled=false;
+                $(arrowPrev).removeAttr("disabled");
+                //$(arrowPrev).css('display','inline-block')
+            }else{
+                $scope.arrowPrevDisabled=true
+                $(arrowPrev).attr("disabled", "disabled");
+                //$(arrowPrev).css('display','none')
+            }
+            //console.log(display,$scope.arrowPrevDisabled)
+        }
+        $scope.arrowNext=function(display){
+
+            if(display){
+                $scope.arrowNextDisabled=false
+                $(arrowNext).removeAttr("disabled");
+                //$(arrowNext).css('display','inline-block')
+            }else{
+                $(arrowNext).attr("disabled", "disabled");
+                $scope.arrowNextDisabled=true
+                //$(arrowNext).css('display','none')
+            }
+            //console.log(display,$scope.arrowNextDisabled)
+        }
+
+
         $timeout(function(){
 
             var images = $element.find('img');
@@ -871,37 +925,63 @@
                     listener()
 
                     //console.log('!!!!!!')
-                    top=$(child).offset().top;
-                    bottom =$(child).offset().top+$(child).height()
-                    left=$(child).offset().left;
-                    right =$(child).offset().top+$(child).width()
-                    //console.log(bottom,)
 
-                    if(!$attrs.orientation || $attrs.orientation!="horizontal"){
-                        child.style.right = child.clientWidth - child.offsetWidth + "px";
-                        var topFirstImg=$(images[0]).offset().top
-                        var bottomLastImg=$(images[images.length-1]).offset().top+$(images[images.length-1]).height()
-                        if(top>topFirstImg){
-                            $scope.arrowUp(true);
+                    $timeout(function(){
+                        top=$(child).offset().top;
+                        bottom =$(child).offset().top+$(child).height()
+                        left=$(child).offset().left;
+                        right =$(child).offset().top+$(child).width()
+                        //console.log(bottom,)
+
+                        if(!$attrs.orientation || $attrs.orientation!="horizontal"){
+                            child.style.right = child.clientWidth - child.offsetWidth + "px";
+                            var topFirstImg=$(images[0]).offset().top
+                            var bottomLastImg=$(images[images.length-1]).offset().top+$(images[images.length-1]).height()
+                            if(top>topFirstImg){
+                                $scope.arrowUp(true);
+                            }
+                            if(bottom<bottomLastImg){
+                                $scope.arrowDown(true);
+                            }
+                        }else if($attrs.orientation && $attrs.orientation=="horizontal"){
+                            paddingLeft=$(child).css('padding-left').replace(/[^-\d\.]/g, '');
+                            paddingRight=$(child).css('padding-right').replace(/[^-\d\.]/g, '');
+                            //console.log(paddingLeft,paddingRight)
+                            var leftFirstImg=$(images[0]).offset().left
+                            var rightLastImg=$(images[images.length-1]).offset().left+$(images[images.length-1]).width()
+                            //console.log(images)
+                            var www =0;
+                            images.each(function (i,img) {
+                                www+=$(img).width();
+                            })
+
+
+                            //console.log(left,leftFirstImg,left<leftFirstImg)
+                            /*if(left>leftFirstImg){
+                             $scope.arrowPrev(true);
+                             }*/
+                            //console.log(right,rightLastImg);
+
+                            if(www>$(child).width()){
+                                $(arrowPrev).css('display','inline-block')
+                                $(arrowNext).css('display','inline-block')
+                                $scope.arrowNext(true);
+                            }
+                            /*if(left<leftFirstImg){
+                             $scope.arrowNext(true);
+                             }else{
+                             $scope.arrowNext(false);
+                             }
+                             //console.log(right,rightLastImg)
+                             if(right>rightLastImg){
+                             $scope.arrowPrev(true);
+                             }else {
+                             $scope.arrowPrev(false);
+                             }*/
                         }
-                        if(bottom<bottomLastImg){
-                            $scope.arrowDown(true);
-                        }
-                    }else if($attrs.orientation && $attrs.orientation=="horizontal"){
-                        paddingLeft=$(child).css('padding-left').replace(/[^-\d\.]/g, '');
-                        paddingRight=$(child).css('padding-right').replace(/[^-\d\.]/g, '');
-                        //console.log(paddingLeft,paddingRight)
-                        var leftFirstImg=$(images[0]).offset().left
-                        var rightLastImg=$(images[images.length-1]).offset().left+$(images[images.length-1]).width()
-                        //console.log(left,leftFirstImg)
-                        if(left>leftFirstImg){
-                            $scope.arrowUp(true);
-                        }
-                        //console.log(right,rightLastImg)
-                        if(right<rightLastImg){
-                            $scope.arrowDown(true);
-                        }
-                    }
+                    },500)
+
+
 
 
                 }
@@ -936,8 +1016,8 @@
                                 wrapDiv.css('height',galleryBigH)
                             }else if($attrs.orientation && $attrs.orientation=="horizontal"){
                                 galleryBigH=imagesBig.width()
-                                //console.log(galleryBigH)
-                                wrapDiv.css('width',galleryBigH)
+
+                                wrapDiv.css('width',galleryBigH-40)
                             }
                             top=$(child).offset().top;
                             bottom =$(child).offset().top+$(child).height()
@@ -958,7 +1038,7 @@
 
                             galleryBigH=imagesBig.width()
                             //console.log(galleryBigH)
-                            wrapDiv.css('width',galleryBigH)
+                            wrapDiv.css('width',galleryBigH-40)
                         }
                         top=$(child).offset().top;
                         bottom =$(child).offset().top+$(child).height()
@@ -987,6 +1067,7 @@
             })
             //console.log(imagesQty)
             $(child).bind('scroll', scrollFoo);
+
             function scrollFoo(reload) {
                 console.log('scrollFoo')
                 //if(reload){self.activeSlide=0;console.log(self.activeSlide)}
@@ -1012,18 +1093,30 @@
                     var right =$(child).offset().left+$(child).width()
                     var leftFirstImg=$(images[0]).offset().left
                     var rightLastImg=$(images[imagesQty-1]).offset().left+$(images[imagesQty-1]).width()
-                    //console.log(left,leftFirstImg)
+                    /*console.log(left,leftFirstImg)
+                    console.log(left<leftFirstImg)*/
                     if(left>leftFirstImg){
-                        $scope.arrowUp(true);
+                        $scope.arrowPrev(true);
                     }else{
-                        $scope.arrowUp(false);
+                        $scope.arrowPrev(false);
                     }
-                    //console.log(right,rightLastImg)
-                    if(right<rightLastImg){
-                        $scope.arrowDown(true);
+                    if(right>=rightLastImg){
+                        $scope.arrowNext(false);
                     }else {
-                        $scope.arrowDown(false);
+                        $scope.arrowNext(true);
                     }
+
+                    /*if(left<leftFirstImg){
+                        $scope.arrowNext(true);
+                    }else{
+                        $scope.arrowNext(false);
+                    }
+
+                    if(right>rightLastImg){
+                        $scope.arrowPrev(true);
+                    }else {
+                        $scope.arrowPrev(false);
+                    }*/
                 }
             }
             function move_up() {
@@ -1192,6 +1285,7 @@
         }
     }
     function calendarBlockStuff(){
+        //console.log('sssdds')
         return {
             templateUrl: 'views/template/partials/stuffDetail/blocks/blocks/calendarBlock.html',
         }
@@ -1212,7 +1306,7 @@
     function stuffDetailFromServerCtrl($scope,$element,$compile,$http,$stateParams,$state,$anchorScroll,global,$q,$rootScope,$location,$timeout,$sce){
         var self=this;
         self.global=global;
-        //console.log(global.get('store').val)
+        self.lang = global.get('store').val.lang;
         $q.when()
             .then(function(){
                 if(global.get('tempContent').val){
@@ -1226,8 +1320,13 @@
                     }
                     return o;
                 }else{
-
-                    return $http.get('views/template/partials/stuffDetail/stuffDetailNew/'+global.get('sectionType').val+'/'+$stateParams.stuffUrl+'.html')
+                    //console.log($stateParams)
+                    /*var o={
+                        group:$stateParams.groupUrl,
+                        category:$stateParams.categoryUrl
+                    }*/
+                    var url ='views/template/partials/stuffDetail/stuffDetailNew/'+global.get('sectionType').val+'/'+$stateParams.stuffUrl+'.html?group='+$stateParams.groupUrl+'&category='+$stateParams.categoryUrl;
+                    return $http.get(url)
                 }
             })
             .then(function (response) {
@@ -1277,20 +1376,25 @@
             bindToController: true,
             controllerAs: '$ctrl',
             restrict:'A',
-            controller:function($scope,Stuff,global,$attrs,$stateParams,$q,seoContent,$timeout,$rootScope,$anchorScroll,$location,Comments,exception,$element){
+            controller:function($scope,Stuff,global,$attrs,$stateParams,$q,seoContent,$timeout,$rootScope,$anchorScroll,$location,Comments,exception,$element,localStorage,$animate,$uibModal){
+
+                /*
+                 ng-hide and ng-show showing at the same time for a short period of time
+                /https://github.com/angular/angular.js/issues/14015 */
                 var self=this;
                 self.global=global;
                 $scope.global=global;
                 $scope.stuff=JSON.parse($attrs.stuffFromServer)
+                var subDomain = global.get('store').val.subDomain;
                 //console.log(JSON.parse($attrs.stuffFromServer))
                 //$scope.stuff22=JSON.parse($attrs.stuffFromServer)
                 //console.log($scope.stuff22)
                 $scope.stuff = Stuff.setDataForStuff($scope.stuff,global.get('filterTags').val)
                 self.stuff=$scope.stuff;
-                //console.log(self.stuff)
+                console.log(self.stuff)
                 self.item=$scope.stuff
                 self.objShare=seoContent.setDataItem(self.item);
-                console.log(self.item)
+                //console.log(self.item)
                 var stuffsInList=[];
                 var currentStuffInList=null;
                 var maxNumInRow=0;
@@ -1321,7 +1425,44 @@
 
                 self.getAveragePrice=getAveragePrice;
                 self.goToSchedule=goToSchedule;
+                self.addToLikes=addToLikes;
+                self.getAddInfoInModal=getAddInfoInModal;
 
+                function getAddInfoInModal() {
+                    var options={
+                        animation: true,
+                        bindToController: true,
+                        controllerAs: '$ctrl',
+                        windowClass:  function(){
+                            return 'modalProject'
+                        },
+                        templateUrl:'views/template/partials/stuffDetail/addInfo/modal/addinfo.html',
+                        controller: function ($uibModalInstance,global,item){
+                            var self=this;
+                            self.item=item;
+                            self.modal=global.get('mobile').val
+                            self.lang=global.get('store').val.lang
+                            self.getTagName=getTagName;
+                            self.ok=function(){
+                                $uibModalInstance.close();
+                            }
+                            self.cancel = function () {
+                                $uibModalInstance.dismiss();
+                            };
+                            function getTagName(tag) {
+                                if(tag){
+                                    return global.get('filterTagsO').val[tag].name;
+                                }
+                            }
+                        },
+                        resolve:{
+                            item:function(){
+                                return self.item
+                            }
+                        }
+                    }
+                    $uibModal.open(options);
+                }
 
 
                 var currency=global.get('currency').val
@@ -1598,6 +1739,12 @@
                                 }
                                 return null
                             })
+                            var likes  = localStorage.get(subDomain+'-likes');
+                            if(likes && likes.length && likes.some(function(s){return s ===$scope.stuff._id})){
+                                $scope.stuff.inLikes=true
+                            }else {
+                                $scope.stuff.inLikes=false
+                            }
                         })
                         .then(function () {
                             //prepareStuffList()
@@ -1713,12 +1860,49 @@
                 }
 
 
+                var likes  = localStorage.get(subDomain+'-likes');
+                if(likes && likes.length && likes.some(function(s){return s ===$scope.stuff._id})){
+                    $scope.stuff.inLikes=true
+                }else {
+                    $scope.stuff.inLikes=false
+                }
+                function addToLikes($event) {
+                    $event.stopPropagation()
+                    console.log('addToLikes')
+                    likes  = localStorage.get(subDomain+'-likes');
+                    //console.log(likes)
+                    if(!likes){
+                        likes=[];
+                    }
+                    var i = likes.indexOf($scope.stuff._id);
+                    if(i>-1){
+                        $scope.stuff.inLikes=false;
+                        likes.splice(i,1);
+                    }else{
+                        $scope.stuff.inLikes=true;
+                        likes.push($scope.stuff._id);
+                    }
+                    localStorage.set(subDomain+'-likes', likes);
+                    $rootScope.likes.totalCount=likes.length;
+                }
 
 
 
                 getMastersName();
 
                 setComments()
+
+
+
+
+
+
+
+                //$animate.enabled(false);
+                $scope.$on('$destroy',
+                    function() {
+                        $animate.enabled(true);
+                    });
             },
             transclude: true,
             link: function(scope, element, attrs, ctrl, transclude) {
@@ -1728,15 +1912,203 @@
                             global.get('stuffsInList').val[element[0].parentElement.parentElement.id].push(scope.stuff)
                         }
                     }
+
+                    transclude(scope, function(clone) {
+                        element.append(clone);
+                        //console.log(scope.stuff)
+                        try{
+                            if(window.videojs){
+                                var vv = document.getElementsByClassName("mainVideo");
+                                if(vv[0]) {
+                                    videojs(vv[0], {
+                                        "fluid": true,
+                                        "techOrder": ["vimeo"],
+                                        "sources": [{ "type": "video/vimeo", "src": scope.stuff.videoLink}],
+                                        "vimeo": { "color": "#fbc51b"}
+                                    }, function () {
+                                    });
+                                }
+                                var videoTizer = document.getElementsByClassName("videoTeaser");
+                                if(videoTizer[0]){
+                                    videojs(videoTizer[0], {"fluid": true,controls: true}, function () {
+                                    });
+                                }
+                                var videoPreview = document.getElementsByClassName("videoPreview");
+                                if(videoPreview[0]){
+                                    videojs(videoPreview[0], {"fluid": true,controls: true}, function () {
+                                    });
+                                }
+                                /*videojs(scope.stuff._id+"video", {}, function(){
+                                });*/
+
+
+                                //console.log('window.videojs',window.videojs)
+                                //console.log(document.getElementsByClassName("video-js")[0])
+                                /*var vv = document.getElementsByClassName("video-js");
+                                if(vv[0]){
+                                    videojs(vv[0], {
+                                        controls: true,
+                                        plugins: {
+                                            videoJsResolutionSwitcher: {
+                                                default: 'high',
+                                                dynamicLabel: true
+                                            }
+                                        }
+                                    }, function(){
+                                        var player = this;
+                                        var arr = [];
+                                        if(scope.stuff.videoLink2){
+                                            arr.push({
+                                                src: scope.stuff.videoLink2,
+                                                type: 'video/mp4',
+                                                label: 'SD',
+                                                res: 360
+                                            })
+                                        }
+                                        if(scope.stuff.videoLink){
+                                            arr.push({
+                                                src: scope.stuff.videoLink,
+                                                type: 'video/mp4',
+                                                label: 'HD',
+                                                res: 720
+                                            })
+                                        }
+                                        player.updateSrc(arr)
+
+                                        console.log(arr)
+
+                                        player.on('resolutionchange', function(){
+                                            console.info('Source changed to %s', player.src())
+                                        })
+                                    })
+                                }*/
+
+
+                                //var videoTizer = document.getElementsByClassName("videoTeaser");
+                                /*var videoT = videojs("videoTeaser");
+                                if(videoT && videoT.src && scope.stuff.video.link){
+                                    videoT.src(scope.stuff.video.link);
+                                }*/
+                                //console.log(videoTizer)
+                                /*if(videoTizer[0]){
+                                    videojs(videoTizer[0], {
+                                        controls: true,
+                                        plugins: {
+                                            videoJsResolutionSwitcher: {
+                                                default: 'high',
+                                                dynamicLabel: true
+                                            }
+                                        }
+                                    }, function(){
+                                        var playerT = this;
+                                        window.playerT = playerT;
+                                        var arr = [];
+                                        //console.log(scope.stuff)
+                                        if(scope.stuff.video){
+                                            arr.push({
+                                                src: scope.stuff.video.link,
+                                                type: 'video/mp4',
+                                            })
+                                        }
+
+                                        playerT.updateSrc(arr)
+                                    })
+                                }
+
+
+*/
+
+                                /*var videoP = videojs("videoPreview");
+                                if(videoP && videoP.src && scope.stuff.video1.link){
+                                    videoP.src(scope.stuff.video1.link);
+                                }*/
+
+                                /*var videoPreview = document.getElementsByClassName("videoPreview");
+                                if(videoTizer[0]){
+                                    videojs(videoPreview[0], {
+                                        controls: true,
+                                        plugins: {
+                                            videoJsResolutionSwitcher: {
+                                                default: 'high',
+                                                //dynamicLabel: true
+                                            }
+                                        }
+                                    }, function(){
+                                        var playerP = this;
+                                        window.playerP = playerP;
+                                        var arr = [];
+                                        //console.log(scope.stuff)
+                                        if(scope.stuff.video1){
+                                            arr.push({
+                                                src: scope.stuff.video1.link,
+                                                type: 'video/mp4',
+                                            })
+                                        }
+
+                                        playerP.updateSrc(arr)
+                                    })
+                                }*/
+
+
+
+                                /* videojs(document.getElementsByClassName("video-js")[0], {}, function(){
+
+                                 });*/
+                                //afterglow.init()
+                            }
+                            if(window.afterglow){
+                                //console.log(afterglow)
+                                //http://afterglowplayer.com/
+                                //https://blog.bitsrc.io/5-open-source-html5-video-players-for-2018-38fa85932afb
+                               //afterglow.init()
+                                /*var play= $('.icon-videoplay-img');
+                                 console.log(play)
+                                 $(play).click(function () {
+                                 console.log(this)
+                                 })*/
+                            }
+                        }catch(err){
+                            console.log(err)
+                        }
+
+
+                    });
+
+
                 },200)
-                transclude(scope, function(clone) {
-                    element.append(clone);
-                });
+
+
+
+
             }
 
         }
     }
 
+
+    galleryСarouselCtrl.$inject=['$scope','$timeout','$element','$compile','global']
+    function galleryСarouselCtrl($scope,$timeout,$element,$compile,global){
+        console.log('galleryСarouselCtrl')
+        var self = this;
+        self.prev=prev;
+        self.next=next;
+        self.moment=moment;
+        self.global=global;
+        this.$onInit = function(){
+            $timeout(function () {
+                var navLeft=$element.find('.nav-left')
+                $(navLeft).click(function () {prev()})
+                var navRight=$element.find('.nav-right')
+                $(navRight).click(function () {next()})
+            },100)
+        }
+        function prev() {
+            console.log('prev')
+        }
+        function next() {
+            console.log('next')
+        }
+    }
 
 
 })()

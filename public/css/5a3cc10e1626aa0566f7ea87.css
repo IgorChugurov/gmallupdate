@@ -12,7 +12,7 @@ body {
   background-color: #ffffff; }
 
 .body-background {
-  background-image: url(http://gmall-photo.pw/images/auto/Store/5a2950f488e40728de179304/imgbmw5c.jpg); }
+  background-image: url(/images/auto/Store/5a2950f488e40728de179304/imgbmw5c.jpg); }
 
 .body-background {
   transition: all 0.5s ease-out 0s; }
@@ -262,10 +262,7 @@ ul.pagination {
   box-shadow: none;
   border-color: #f02222; }
 
-/*classic*/
-.btn {
-  transition: all .3s ease-out; }
-
+/*border*/
 .btn,
 .btn:active,
 .btn:focus,
@@ -274,9 +271,7 @@ ul.pagination {
 .btn-sm,
 .btn-xs {
   letter-spacing: 1px;
-  border-radius: 0;
-  outline: none;
-  margin-bottom: 20px; }
+  outline: none; }
 
 .btn:hover,
 .btn:active,
@@ -290,17 +285,18 @@ ul.pagination {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-right: 20px;
-  background-color: #0b62f6;
-  border: 1px solid #ffffff;
+  font-size: 16px;
   border-radius: 0;
   font-size: 16px;
-  color: #ffffff; }
+  text-shadow: none;
+  border: 1px solid #0b62f6;
+  background-color: #ffffff;
+  color: #0b62f6; }
 
 .btn-project:hover,
 .btn-project:focus,
 .btn-project:active {
   background-color: #0b62f6;
-  font-size: 16px;
   color: #ffffff;
   border: 1px solid #0b62f6; }
 
@@ -311,27 +307,28 @@ ul.pagination {
 .btn-project.active:focus,
 .open > .dropdown-toggle.btn-project:focus,
 .btn-project:active.focus,
-.btn-project.active.focus {
+.btn-project.active.focus,
+.open > .dropdown-toggle.btn-project.focus
+.btn.disabled, .btn[disabled]:hover,
+fieldset[disabled] .btn:hover {
   background-color: #0b62f6;
   color: #ffffff;
   border: 1px solid #0b62f6;
   opacity: 0.8; }
 
-.btn-project.btn-border {
+/*.btn-project.btn-border {
   background-color: transparent;
-  border: 1px solid #0b62f6;
-  color: #0b62f6; }
-
+  border: $border-width  solid $addColor1;
+  color: $addColor1;
+}
 .btn-project.btn-border:hover,
 .btn-project.btn-border:focus {
-  background-color: #ffffff;
-  border: 1px solid #0b62f6;
-  color: #0b62f6; }
-
+  background-color: $addColor1;
+  border: $border-width  solid $addColor1;
+  color: $addColor4;
+}*/
+.btn.disabled,
 .btn[disabled],
-.open > .dropdown-toggle.btn-project.focus.btn.disabled,
-.btn[disabled]:hover,
-fieldset[disabled] .btn:hover.btn.disabled,
 fieldset[disabled] .btn {
   cursor: not-allowed;
   background-color: #0b62f6;
@@ -350,18 +347,21 @@ fieldset[disabled] .btn:hover {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-right: 20px;
-  background-color: #ffffff;
-  border: 1px solid #0b62f6;
   font-size: 16px;
-  color: #0b62f6; }
+  border-radius: 0;
+  font-size: 16px;
+  text-shadow: none;
+  background-color: #0b62f6;
+  border: 1px solid #ffffff;
+  font-size: 16px;
+  color: #ffffff; }
 
 .btn-project-inv:hover,
 .btn-project-inv:focus,
 .btn-project-inv:active {
-  background-color: #0b62f6;
-  font-size: 16px;
-  color: #ffffff;
-  border: 1px solid #ffffff; }
+  background-color: #ffffff;
+  color: #0b62f6;
+  border: 1px solid #0b62f6; }
 
 .btn-project-inv:active:hover,
 .btn-project-inv.active:hover,
@@ -393,22 +393,30 @@ fieldset[disabled] .btn:hover {
 .btn-project.btn-noborder {
   background-color: transparent;
   border: none;
-  color: #0b62f6; }
+  color: #ffffff; }
 
 .btn-project.btn-noborder:active,
 .btn-project.btn-noborder:focus {
   border: none; }
 
 .btn-project.btn-noborder:hover {
-  color: #0b62f6;
-  opacity: 0.8; }
+  color: #0b62f6; }
 
 /*.mobile-wrapper .btn-project */
-.tablet-wrapper .btn-project {
-  min-width: 160px;
-  font-size: 12.8px;
-  letter-spacing: 0; }
-
+/*.tablet-wrapper .btn-project{
+  @if $width{
+    min-width: $width*0.8;
+  }
+  @if font-size{
+    font-size: $font-size*0.8;
+  }
+  letter-spacing: 0;
+}
+.mobile-wrapper .btn-project {
+  @if $width{
+    min-width: $width*0.7;
+  }
+}*/
 .nav-down {
   z-index: 1049;
   position: fixed;
@@ -448,10 +456,7 @@ fieldset[disabled] .btn:hover {
 
 .modalProject {
   /*modalProject*/
-  /*sign-login*/
-  /*.ui-select-bootstrap .ui-select-match-text {
-    padding-right: 0;
-}*/ }
+  /*sign-login*/ }
   .modalProject .modal-content {
     /*@if $height {
         max-height: $height;
@@ -499,37 +504,55 @@ fieldset[disabled] .btn:hover {
       .modalProject .modal-body-project {
         margin-left: 20px !important;
         margin-right: 20px !important; } }
-  @media (max-width: 400px) {
-    .modalProject .modal-header-project {
-      padding-top: 20px; }
-    .modalProject .modal-dialog {
-      width: 98% !important;
-      margin: 0 auto !important; }
-    .modalProject .modal-content {
-      padding: 10px !important;
-      margin-top: 20px !important; }
+  @media (max-width: 768px) and (min-width: 401px) {
+    .modalProject .login {
+      padding-left: 0;
+      padding-right: 0; }
     .modalProject .sign {
-      border-left: none  !important; }
-    .modalProject .login {
-      border-bottom: 1px solid #ccc; }
-    .modalProject .sign,
-    .modalProject .login {
-      padding-left: 20px !important;
-      padding-right: 20px !important;
-      padding-bottom: 20px; }
+      padding-left: 0;
+      padding-right: 0; }
     .modalProject .modal-body-project {
-      width: 100%;
-      margin-right: 0 !important;
-      margin-left: 0 !important;
-      margin-top: 40px !important;
-      padding-left: 5px;
-      padding-right: 5px; }
-    .modalProject .btn-project {
-      letter-spacing: 1px !important; }
-    .modalProject .witget {
-      width: 100% !important; }
-    .modalProject .shipinfo {
-      width: 100% !important; } }
+      padding-right: 0;
+      padding-left: 0; }
+    .modalProject .btn-project.btn-block {
+      font-size: 14px;
+      min-width: 1px; } }
+  @media (max-width: 400px) {
+    .modalProject {
+      /*.modal-header-project {
+        padding-top: 20px;
+    }*/ }
+      .modalProject .modal-dialog {
+        width: 98% !important;
+        margin: 0 auto !important; }
+      .modalProject .modal-content {
+        padding: 10px !important;
+        margin-top: 20px !important; }
+      .modalProject .sign {
+        border-left: none  !important; }
+      .modalProject .login {
+        border-bottom: 1px solid #ccc; }
+      .modalProject .sign,
+      .modalProject .login {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+        padding-bottom: 20px; }
+      .modalProject .modal-body-project {
+        width: 100%;
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+        margin-top: 40px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important; }
+      .modalProject .btn-project {
+        letter-spacing: 1px !important; }
+      .modalProject .witget {
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-bottom: 0 !important; }
+      .modalProject .shipinfo {
+        width: 100% !important; } }
   .modalProject .filters-first-box {
     min-height: 250px; }
   .modalProject .ui-select-bootstrap .ui-select-choices-row.active > span {
@@ -582,37 +605,40 @@ fieldset[disabled] .btn:hover {
 .ng-pageslide {
   overflow: -moz-scrollbars-none; }
 
+/*
 body.ng-pageslide-body-open::before {
-  content: '.';
-  display: block;
-  position: fixed;
-  top: 0;
-  background-color: #222222;
-  background-color: #999999;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1055;
-  opacity: 0.9;
-  transition: opacity 1s;
-  height: 100%; }
+    content: '.';
+    display: block;
+    position: fixed;
+    top: 0;
+    background-color: $background-color;
+    background-color: #999999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055;
+    opacity: 0.9;
+    transition: opacity 1s;
+    height: 100%;
+}
 
 body.ng-pageslide-body-closed::before {
-  transition: opacity 1s;
-  opacity: 0;
-  content: '.';
-  display: block;
-  position: fixed;
-  top: 0;
-  background-color: #222222;
-  background-color: #999999;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1055;
-  pointer-events: none;
-  height: 100%; }
-
+    transition: opacity 1s;
+    opacity: 0;
+    content: '.';
+    display: block;
+    position: fixed;
+    top: 0;
+    background-color: $background-color;
+    background-color: #999999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055;
+    pointer-events: none;
+    height: 100%;
+}
+*/
 .ng-pageslide .icon-cancelmenu-img {
   transition: transform 0.5s ease, -webkit-transform 0.5s ease; }
 
@@ -656,7 +682,7 @@ body.ng-pageslide-body-open::before {
   z-index: 1055;
   opacity: 0.9;
   transition: opacity 1s;
-  height: 100%; }
+  height: auto; }
 
 body.ng-pageslide-body-closed::before {
   transition: opacity 1s;
@@ -671,7 +697,7 @@ body.ng-pageslide-body-closed::before {
   bottom: 0;
   z-index: 1055;
   pointer-events: none;
-  height: 100%; }
+  height: auto; }
 
 #slideEntry .carousel-control,
 #slideEntry .carousel-indicators {

@@ -18,10 +18,12 @@ angular.module('gmall.controllers')
     };
 })
 // for filters brans collections edit
-.controller('bindCategoryToFilterCtrl', function ($scope, $uibModalInstance,Category,$resource,$q, sections,field,id,revers) {
+.controller('bindCategoryToFilterCtrl', function ($scope, $uibModalInstance,Category,Sections,$resource,$q, sections,field,id,revers) {
+    //console.log('bindCategoryToFilterCtrl')
     $scope.id=id;
     $scope.revers=revers;
     sections.forEach(function(s){
+        s.checked=false;
         if(s.categories && s.categories.length){
             s.categories.forEach(function (c) {
                 c.checked=false;
@@ -29,6 +31,7 @@ angular.module('gmall.controllers')
         }
         if(s.child && s.child.length){
             s.child.forEach(function (s) {
+                s.checked=false;
                 if(s.categories && s.categories.length){
                     s.categories.forEach(function (c) {
                         c.checked=false;
@@ -39,6 +42,13 @@ angular.module('gmall.controllers')
 
     })
     function checkField(section){
+        if(!$scope.revers){
+            if(section[field].indexOf($scope.id)>-1){
+                section.checked=true;
+            }
+        }
+
+
         section.showCheck=false;
         if(section.categories && section.categories.length){
             section.checkAll=true;
@@ -129,7 +139,34 @@ angular.module('gmall.controllers')
         }
     }
     $scope.bindFilterForSection=function(section,checkAll){
-        section.checkAll=checkAll;
+        //console.log(section.checked)
+
+        if(!$scope.revers){
+            if(section.checked){
+                if(section[field].indexOf($scope.id)<0){
+                    section[field].push($scope.id)
+                }
+            }else{
+                var pos = section[field].indexOf($scope.id);
+                section[field].splice(pos,1)
+            }
+            //console.log(section[field])
+            var o={_id:section._id};
+            o[field]=section[field]
+            Sections.save({update:field},o);
+
+        }
+
+
+
+        /*if(!$scope.revers){
+            if(section[field].indexOf($scope.id)<0){
+                section.checked=false;
+                break;
+            }
+        }*/
+
+        /*section.checkAll=checkAll;
         if(section.categories && section.categories.length){
             section.categories.forEach(function(category){
                 category.checked=checkAll;
@@ -141,7 +178,7 @@ angular.module('gmall.controllers')
             section.child.forEach(function(s){
                 $scope.bindFilterForSection(s,checkAll)
             })
-        }
+        }*/
     }
     function foo(s){
         if (s.child && s.child.length){

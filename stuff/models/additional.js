@@ -69,12 +69,15 @@ var blockSchema = new Schema({
     autoPlaySlider:Boolean,
     template:Boolean,// если шаблон то доступен для загрузки
     nameTemplate:String,
+    qwslide:Number,// количество слайдов для оwl slider
+    autoPlaySlider:Boolean,
     link:String,
     link1:String,
     position:String,// left,right,top
     useImg:Boolean,
     useDesc:Boolean,
     videoControl:Boolean,
+    dontScrollBlock:Boolean,
 })
 
 var AdditionalSchema = new Schema({

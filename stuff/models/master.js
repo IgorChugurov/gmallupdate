@@ -49,6 +49,7 @@ var blockSchema = new Schema({
     categories:[{type : Schema.ObjectId, ref : 'Category'}],
     brands:[{type : Schema.ObjectId, ref : 'Brand'}],
     stuffs:[{type : Schema.ObjectId, ref : 'Stuff'}],
+    groupStuffs:[{type : Schema.ObjectId, ref : 'GroupStuffs'}],
     news:[{type : Schema.ObjectId, ref : 'News'}],
     campaign:[{type : Schema.ObjectId, ref : 'Campaign'}],
     info:[{type : Schema.ObjectId, ref : 'Info'}],
@@ -69,12 +70,15 @@ var blockSchema = new Schema({
     autoPlaySlider:Boolean,
     template:Boolean,// если шаблон то доступен для загрузки
     nameTemplate:String,
+    qwslide:Number,// количество слайдов для оwl slider
+    autoPlaySlider:Boolean,
     link:String,
     link1:String,
     position:String,// left,right,top
     useImg:Boolean,
     useDesc:Boolean,
     videoControl:Boolean,
+    dontScrollBlock:Boolean,
 })
 
 var MasterSchema = new Schema({
@@ -129,11 +133,17 @@ MasterSchema.statics = {
         this.findOne(query)
             .populate('blocks.stuffs','name artikul nameL artikulL link gallery actived')
             .populate('blocks.categories','name nameL url link img actived')
+            .populate('blocks.groupStuffs','name nameL link desc descL img actived')
             .populate('workplaces','name nameL actived url')
+            .populate('blocks.info','name nameL')
             .exec(function(err,res){
                 if (err) return cb(err);
                 if(res.blocks && res.blocks.length){
                     res.blocks.forEach(function (el) {
+                        /*if(el.type=='groupStuffs'){
+                            console.log(el)
+                        }*/
+
                         if(el && el.type=='stuffs'){
                             el.stuffs.forEach(function (s,i) {
                                 if(s && s.gallery && s.gallery.length)  {

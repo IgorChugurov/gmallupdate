@@ -99,9 +99,9 @@ function save(req, res, next) {
 
 exports.get = function(req, res, next) {
     //console.log(req.store);
-    var stuffHost = 'http://'+ports.stuffHost;
-    var userHost = 'http://'+ports.userHost;
-    var storeHost = 'http://'+ports.storeHost;
+    var stuffHost = 'http://127.0.0.1:'+ports.stuffPort;
+    var userHost = 'http://127.0.0.1:'+ports.userPort;
+    var storeHost = 'http://127.0.0.1:'+ports.storePort;
 
     var d = domain.create();
     d.on('error', function(error) {
@@ -112,7 +112,7 @@ exports.get = function(req, res, next) {
         if (!req.params.id) return next();
         req.collection.load(req.params.id, function(e, result){
             if (e) return next(e)
-            //console.log(result)
+            //console.log('result',result)
             if (result){
                 if(req.collectionName=='Order'){
                     var order=result.toObject();
@@ -202,7 +202,9 @@ exports.get = function(req, res, next) {
                             }
                         }
                         return res.send(order);
-                    }).catch(function(err){next(err)})
+                    }).catch(function(err){
+                        console.log(err)
+                        next(err)})
                 } else{
                     return res.send(result);
                 }

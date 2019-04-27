@@ -1,0 +1,36 @@
+<div class="edit-slide modalProject" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">
+            <span ng-bind="$ctrl.global.get('lang').val.sizeTable"></span>
+        </h3>
+        <a class="cancel" ng-click="$ctrl.cancel()">
+            <span class="icon-cancel-img"></span>
+        </a>
+    </div>
+
+    <div class="modal-body">
+        <h4 ng-bind="$ctrl.item.addInfo.name"></h4>
+        <table class="table table-bordered">
+            <tr>
+                <th class="col-lg-2">
+                    #
+                </th>
+                <th  class="col-lg-2" ng-repeat="head in $ctrl.item.addInfo.headerTable[$ctrl.lang]">
+                    <span ng-bind="head"></span>
+                </th>
+            </tr>
+
+            <tr ng-repeat="(key,tr) in $ctrl.item.addInfo.table">
+                <td>
+                    <span ng-bind="$ctrl.getTagName(key)"></span>
+                </td>
+                <td ng-repeat="td in tr[$ctrl.lang] track by $index">
+                    <span ng-bind="td"></span>
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="clearfix"></div>
+    </div>
+</div>

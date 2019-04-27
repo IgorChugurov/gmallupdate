@@ -1,13 +1,18 @@
 <div class="filters-first-box">
     <div class="filter-box">
-        <div ng-if="$ctrl.brands.length">
-            <a class="reset" ng-click="$ctrl.changeAllBrands()">
-            <span  class="cancelall">
-                {{$ctrl.global.get('lang').val.cancelAll}}
-            </span>
+        <!--<div ng-if="$ctrl.brands.length">
+            <a class="reset" ng-click="$ctrl.changeAllBrands()" >
+                <span  class="cancelall">
+                    {{$ctrl.global.get('lang').val.cancelAll}}
+                </span>
             </a>
-        </div>
+        </div>-->
         <uib-accordion close-others="false" >
+            <a class="reset" ng-click="$ctrl.changeAllBrands()"  ng-show="$ctrl.showResetAllBrand()">
+                    <span style="display:inline-block; margin-top: 15px; padding-left: 5px; padding-bottom: 5px">
+                        {{$ctrl.global.get('lang').val.cancelAll}}
+                    </span>
+            </a>
             <div uib-accordion-group  class="brand-box" ng-repeat="brand in $ctrl.brands" ng-if="brand.inList" is-open="brand.showCollections">
                 <uib-accordion-heading>
                     <div class="pull-left">
@@ -40,14 +45,14 @@
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" ng-model="tag.set"  ng-change="$ctrl.changeTag()">
-                                &nbsp {{tag.name}}
+                                <div class="checkbox__text" ng-class="{'active':tag.set}">&nbsp {{tag.name}}</div>
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
             <uib-accordion>
-                <a class="reset" ng-click="$ctrl.clearAll()" >
+                <a class="reset" ng-click="$ctrl.clearAll()"  ng-show="$ctrl.showResetAll()">
                     <span style="display:inline-block; margin-top: 15px; padding-left: 5px; padding-bottom: 5px">
                         {{$ctrl.global.get('lang').val.cancelAll}}
                     </span>
@@ -67,7 +72,7 @@
                             </span>
                             <span class="clearfix"></span>
                         </uib-accordion-heading>
-                        <a class="reset link-warning" ng-click="$ctrl.changeAllTags(filter)">
+                        <a class="reset link-warning" ng-click="$ctrl.changeAllTags(filter)" ng-show="$ctrl.showReset(filter)">
                             {{$ctrl.global.get('lang').val.tagsReset}}
                         </a>
                         <div class="clearfix"></div>
@@ -86,11 +91,18 @@
                         </div>
 
                         <div class="tag-row" ng-if="!filter.count" class="form-group tag" ng-repeat="tag in filter.tags">
-                            <div class="checkbox">
+                            <div class="checkbox" ng-if="!filter.photo">
                                 <label>
                                     <input type="checkbox" ng-model="tag.set"
-                                           ng-change="$ctrl.changeTag()">&nbsp{{tag.name}}
+                                           ng-change="$ctrl.changeTag()">
+                                    <div class="checkbox__text" ng-class="{'active':tag.set}">&nbsp{{tag.name}}</div>
                                 </label>
+                            </div>
+                            <div ng-if="filter.photo">
+                                <a ng-class="{'active':tag.set}" ng-click="tag.set=!tag.set;$ctrl.changeTag()">
+                                    <img class="tag-img" ng-class="{'active':tag.set}" ng-src="{{tag.img}}" title="{{tag.name}}">
+                                    <span class="tag-name" ng-bind="tag.name" ng-class="{'active':tag.set}"></span>
+                                </a>
                             </div>
                         </div>
                     </div>

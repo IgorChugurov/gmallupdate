@@ -1,0 +1,15 @@
+<h3 ng-bind="header"></h3>
+<div id="lastViewedWrapper" class="owl-carousel owl-theme">
+    <div ng-repeat="s in stuffs track by $index" class="item">
+        <a ui-sref="stuffs.stuff(s.linkData)">
+            <img style="max-width: 200px; border-color: transparent" ng-src="{{s.img}}" >
+            <div class="box-overlay"></div>
+            <div class="half-shadow">
+                <h1>
+                    <span ng-bind="s.name"></span>
+                    <span ng-bind="s.artikul"></span>
+                </h1>
+            </div>
+        </a>
+    </div>
+</div>

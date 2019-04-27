@@ -3,12 +3,12 @@
         <h3 class="modal-title text-center">выберите информационный раздел</h3>
         <a class="cancel" ng-click="$ctrl.cancel()"></a>
     </div>
-    <div class="modal-body">
+    <div class="modal-body padding-body">
         <div>
             <ul>
                 <li ng-repeat="item in $ctrl.items" style="cursor: pointer; margin-bottom: 30px">
                     <div ng-click="$ctrl.ok(item)">
-                        <h4  ng-bind="item.name" ></h4>
+                        <h4 class="select-info" ng-bind="item.name" ></h4>
                     </div>
                 </li>
             </ul>

@@ -1,5 +1,5 @@
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <div class="cart-detail">
+    <div class="">
         <div class="brands-home">
             <div class="clearfix"></div>
             <div class="galleryWrapper">
@@ -15,17 +15,17 @@
                                 dnd-moved="block[block.type].splice($index,1)">
                                 <span class="helper"></span>
                                 <img  ng-src="{{image.img|| 'img/upload/no.png'}}">
-                                <a class="btn  btn-fab edit" ng-click="$ctrl.setCollection(block,$index)">
-                                    <i class="material-icons link-success">edit</i>
+                                <a class="btn  btn-fab edit btn-success" ng-click="$ctrl.setCollection(block,$index)">
+                                    <i class="material-icons">edit</i>
                                 </a>
-                                <a class="btn  btn-fab delete" ng-click="$ctrl.deleteCollection(block,$index)">
-                                    <i class="material-icons link-danger">delete</i>
+                                <a class="btn  btn-fab btn-warning delete" ng-click="$ctrl.deleteCollection(block,$index)">
+                                    <i class="material-icons">delete</i>
                                 </a>
                                 <p>{{image.name||'выберите объект'}}</p>
                             </li>
                             <li  class="gallery-item">
-                                <a class="btn btn-fab add-goods" ng-click="$ctrl.setCollection(block)">
-                                    <i class="material-icons link-success md-36">add</i>
+                                <a class="btn btn-fab add-goods btn-success" ng-click="$ctrl.setCollection(block)">
+                                    <i class="material-icons">add</i>
                                 </a>
                             </li>
                         </ul>

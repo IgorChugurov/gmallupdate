@@ -5,6 +5,10 @@
     </div>
     <div class="modal-body padding-body">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center" ng-if1="$ctrl.sections.length">
+            <a class="no-collection" ng-click="$ctrl.ok(null)">
+                <span><strong>Без бренда</strong></span>
+            </a>
+
             <h4 class="name-box" ng-bind="$ctrl.global.get('lang').val.section"></h4>
             <div class="section-all">
                 <div class="section-name pull-left" ng-repeat="section in $ctrl.sections">

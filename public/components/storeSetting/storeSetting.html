@@ -83,6 +83,84 @@
                         <p class="info-text">укажите адрес электронной почты, на которую будут приходить письма из формы обратной связи</p>
                     </div>
                     <div class="cart-detail">
+                        <h4 class="name-box text-center">
+                            <div class=" header-panel">
+                                <a ng-click="item.showDetai1222=!item.showDetai1222" ng-show="!item.showDetai1222">
+                                    <span>тип регистрации</span>
+                                    <i class="material-icons link-success more">
+                                        keyboard_arrow_down
+                                    </i>
+                                </a>
+                                <a ng-click="item.showDetai1222=!item.showDetai1222" ng-show="item.showDetai1222">
+                                    <span>тип регистрации</span>
+                                    <i class="material-icons link-success more">
+                                        keyboard_arrow_up
+                                    </i>
+                                </a>
+                            </div>
+                            <div class="clearfix"></div>
+                        </h4>
+                        <div class="clearfix"></div>
+                        <div  uib-collapse="!item.showDetai1222" class="collapse-item">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <p class="label-menu">тип регистрации для сайта</p>
+                                <p class="info-text">выберите только один тип из списка</p>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="$ctrl.item.typeOfReg.emailPhone" type="checkbox" ng-change="$ctrl.saveField('typeOfReg')"/>
+                                            телефон и email
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="$ctrl.item.typeOfReg.phone" type="checkbox" ng-change="$ctrl.saveField('typeOfReg')"/>
+                                            только телефон
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="$ctrl.item.typeOfReg.email" type="checkbox" ng-change="$ctrl.saveField('typeOfReg')"/>
+                                            только email
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <p class="label-menu">приоритет регистрации</p>
+                                <div class="togglebutton">
+                                    <label for="first">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.typeOfReg.first}">email</span>
+                                        <input type="checkbox"
+                                               id="first"
+                                               ng-model="$ctrl.item.typeOfReg.first"
+                                               ng-change="$ctrl.saveField('typeOfReg')">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.typeOfReg.first}">телефон</span>
+                                    </label>
+                                </div>
+
+                                <p class="label-menu">использовать подтверждение оферты при регистрации</p>
+                                <div class="togglebutton">
+                                    <label for="hp2">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.typeOfReg.oferta}">не использовать</span>
+                                        <input type="checkbox"
+                                               id="hp2"
+                                               ng-model="$ctrl.item.typeOfReg.oferta"
+                                               ng-change="$ctrl.saveField('typeOfReg')">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.typeOfReg.oferta}">использовать</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+                    </div>
+                    <div class="cart-detail">
                         <!--<h4 class="text-center name-box">
                             <div class=" header-panel">
                                 <a ng-click="item.showDetai12=!item.showDetai12" ng-show="!item.showDetai12">
@@ -641,58 +719,57 @@
                             <div class="clearfix"></div>
                         </h4>
                         <div class="clearfix"></div>
-                        <div class="clearfix"></div>
-                        <div  uib-collapse="!item.showDetai156" class="collapse-item">
-                            <div class="togglebutton">
-                                <label for="preload">
-                                    <span class="ll" ng-class="{'active':!$ctrl.item.preload.use}">preload нет</span>
-                                    <input type="checkbox"
-                                           id="preload"
-                                           ng-model="$ctrl.item.preload.use"
-                                           ng-change="$ctrl.saveField('preload')">
-                                    <span class="lr" ng-class="{'active':$ctrl.item.preload.use}">preload есть</span>
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input ng-model="$ctrl.item.preload.desctop" type="checkbox" ng-change="$ctrl.saveField('preload')"/>
-                                        десктоп
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input ng-model="$ctrl.item.preload.tablet" type="checkbox" ng-change="$ctrl.saveField('preload')"/>
-                                        таблетка
-                                    </label>
-                                </div>
-                                <div class="checkbox">
-                                    <label>
-                                        <input ng-model="$ctrl.item.preload.mobile" type="checkbox" ng-change="$ctrl.saveField('preload')"/>
-                                        мобайл
-                                    </label>
-                                </div>
 
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <div  class="form-group">
-                                    <label  class="control-label">время показа</label>
-                                    <ui-select  ng-model="$ctrl.item.preload.duration" skip-focusser="true"
-                                                ng-change="$ctrl.saveField('preload')">
-                                        <ui-select-match placeholder="секунд">{{$select.selected}}</ui-select-match>
-                                        <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9]">{{ opt}}</ui-select-choices>
-                                    </ui-select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <div  class="form-group">
-                                    <label  class="control-label">анимация</label>
-                                    <ui-select ng-model="$ctrl.item.preload.animate" append-to-body="true" skip-focusser="true" search-enabled="false"
+                        <div  uib-collapse="!item.showDetai156" class="collapse-item">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="togglebutton">
+                                    <label for="preload">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.preload.use}">preload нет</span>
+                                        <input type="checkbox"
+                                               id="preload"
+                                               ng-model="$ctrl.item.preload.use"
                                                ng-change="$ctrl.saveField('preload')">
-                                        <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
-                                        <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
-                                    </ui-select>
+                                        <span class="lr" ng-class="{'active':$ctrl.item.preload.use}">preload есть</span>
+                                    </label>
                                 </div>
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="$ctrl.item.preload.desctop" type="checkbox" ng-change="$ctrl.saveField('preload')"/>
+                                            десктоп
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="$ctrl.item.preload.tablet" type="checkbox" ng-change="$ctrl.saveField('preload')"/>
+                                            таблетка
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input ng-model="$ctrl.item.preload.mobile" type="checkbox" ng-change="$ctrl.saveField('preload')"/>
+                                            мобайл
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <label  class="control-label">время показа</label>
+                                <ui-select  ng-model="$ctrl.item.preload.duration" skip-focusser="true"
+                                            ng-change="$ctrl.saveField('preload')">
+                                    <ui-select-match placeholder="секунд">{{$select.selected}}</ui-select-match>
+                                    <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9]">{{ opt}}</ui-select-choices>
+                                </ui-select>
+
+                                <label  class="control-label">анимация</label>
+                                <ui-select ng-model="$ctrl.item.preload.animate" append-to-body="true" skip-focusser="true" search-enabled="false"
+                                           ng-change="$ctrl.saveField('preload')">
+                                    <ui-select-match placeholder="анимация">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="opt.type as opt in $ctrl.animationTypes">{{ opt.name }}</ui-select-choices>
+                                </ui-select>
+
+
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -1098,6 +1175,42 @@
                 </div>
             </div>
 
+            <div class="cart-detail">
+                <h4 class="name-box text-center">
+                    <div class=" header-panel">
+                        <a ng-click="item.showDetai1643=!item.showDetai1643" ng-show="!item.showDetai1643">
+                            <span>текст для условий использования сайта со ссылкой на страницу оферты</span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_down
+                            </i>
+                        </a>
+                        <a ng-click="item.showDetai1643=!item.showDetai1643" ng-show="item.showDetai1643">
+                            <span>текст для условий использования сайта со ссылкой на страницу оферты</span>
+                            <i class="material-icons link-success more">
+                                keyboard_arrow_up
+                            </i>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </h4>
+                <div class="clearfix"></div>
+                <div  uib-collapse="!item.showDetai1643" class="collapse-item">
+                    <div class="editor editor-mini">
+                        <div class="block-edit">
+                            <div text-angular ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                 ng-change="$ctrl.saveFieldTemplate('texts.oferta',$ctrl.item.texts.oferta)"
+                                 ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
+                                 ng-model="$ctrl.item.texts.oferta[$ctrl.lang]"
+                                 ta-paste="global.get('functions').val.taPaste($html)"
+                                 ta-text-editor-class="border-around"
+                                 ta-html-editor-class="border-around">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
             <div class="cart-detail">
@@ -1326,9 +1439,9 @@
                                  ta-paste="global.get('functions').val.taPaste($html)"
                                  ta-text-editor-class="border-around"
                                  ta-html-editor-class="border-around"
-                                 ng-model="$ctrl.item.texts.mailText[$ctrl.lang]"
+                                 ng-model="$ctrl.item.texts.mailTextFooter[$ctrl.lang]"
                                  ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
-                                 ng-change="$ctrl.saveFieldTemplate('texts.mailText',$ctrl.item.texts.mailText)">
+                                 ng-change="$ctrl.saveFieldTemplate('texts.mailTextFooter',$ctrl.item.texts.mailTextFooter)">
                             </div>
                         </div>
                     </div>
@@ -1340,9 +1453,9 @@
                                  ta-paste="global.get('functions').val.taPaste($html)"
                                  ta-text-editor-class="border-around"
                                  ta-html-editor-class="border-around"
-                                 ng-model="$ctrl.item.texts.mailText1[$ctrl.lang]"
+                                 ng-model="$ctrl.item.texts.mailTextFooter1[$ctrl.lang]"
                                  ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
-                                 ng-change="$ctrl.saveFieldTemplate('texts.mailText1',$ctrl.item.texts.mailText1)">
+                                 ng-change="$ctrl.saveFieldTemplate('texts.mailTextFooter1',$ctrl.item.texts.mailTextFooter1)">
                             </div>
                         </div>
                     </div>

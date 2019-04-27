@@ -129,7 +129,7 @@
         }
         function cloneItem(item){
             var name;
-            self.Items.create()
+            self.Items.create('clone')
                 .then(function (res) {
                     name=res;
                     return self.Items.getItem(item._id)

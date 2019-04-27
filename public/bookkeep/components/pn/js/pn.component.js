@@ -322,6 +322,9 @@
                 .then(function(data) {
                     //console.log(data)
                     data.date= new Date(data.date)
+                    data.materials=data.materials.filter(function (m) {
+                        return m.item;
+                    })
                     data.materials=data.materials.map(function (m) {
                         if(m.item && m.item.sku2 && m.item.sku2.length){m.item.sku2=m.item.sku2[0]}else{if(typeof m.item!='object'){m.item={}};m.item.sku2=''}
                         return m

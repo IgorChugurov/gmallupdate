@@ -1,34 +1,46 @@
-<div class="login-box">
-    <div>
-        <form method="post" ng-submit="$ctrl.sendCodeToPhone()" name="loginFormPhone">
+<div class="phone-login login-box">
+    <div class="">
+        <form novalidate method="post" ng-submit="$ctrl.sendCodeToPhone(loginFormPhone)" name="loginFormPhone">
             <div class="form-group has-feedback">
-                <input ng-class="{ 'has-error' : loginFormPhone.displayName.$invalid}" class="form-control input-lg"
+                <input ng-class="{ 'has-error' : loginFormPhone.displayName.$invalid && loginFormPhone.$submitted}" class="form-control input-lg"
                        type="text"
                        name="displayName"
                        required
                        ng-model="$ctrl.name"
                        placeholder="{{$ctrl.global.get('langForm').val['name']}}"
                        ng-maxlength="50"
+                       ng-minlength="4"
                        ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}">
                 <span class="ion-person form-control-feedback"></span>
             </div>
-            <span class="help-block text-danger" ng-show="loginFormPhone.displayName.$invalid" ng-messages="loginFormPhone.displayName.$error">
-            <span ng-message="maxlength">{{$ctrl.global.get('langError').val.namelong}}</span>
-            <span ng-message="required">{{$ctrl.global.get('langError').val.nameshot}}</span>
-        </span>
-
-
+            <span class="help-block text-danger"
+                  ng-show="loginFormPhone.displayName.$invalid && loginFormPhone.$submitted "
+                  ng-messages="loginFormPhone.displayName.$error">
+                <span ng-message="maxlength">{{$ctrl.global.get('langError').val.namelong}}</span>
+                <span ng-message="required">{{$ctrl.global.get('langError').val.nameshot}}</span>
+                <span ng-message="minlength">{{$ctrl.global.get('langError').val.nameshot}}</span>
+            </span>
             <div enter-phone-numder="$ctrl.phone"></div>
-            <button type="submit" ng-disabled="loginFormPhone.$invalid || $ctrl.sendCodeDisable" class="btn btn-block btn-project">
+            <span class="help-block text-danger" ng-show="!$ctrl.phone && loginFormPhone.$submitted">
+                <span>{{$ctrl.global.get('langError').val.namelong}}</span><!--введите номер телефона-->
+            </span>
+            <div class="checkbox sub-box" ng-if="$ctrl.oferta">
+                <label>
+                    <input name="oferta" type="checkbox" ng-model="$ctrl.confirmCondition" required>
+                    <span class="oferta-text" ng-bind-html="$ctrl.ofertaText|unsafe"></span>
+                </label>
+                <span class="help-block text-danger" ng-show="!$ctrl.confirmCondition && loginFormPhone.$submitted">
+                    <span>{{$ctrl.global.get('langError').val.namelong}}</span><!--поддтвердите правила использования-->
+                </span>
+            </div>
+            <button type="submit" ng-disabled22="loginFormPhone.$invalid || $ctrl.sendCodeDisable" class="btn btn-block btn-project">
                 <span ng-bind="$ctrl.global.get('langForm').val.sendCode"></span>
-
             </button>
             <p class="text-help" ng-show="$ctrl.codeSent"><a ng-click="$ctrl.sendCodeToPhone()">{{$ctrl.global.get('langForm').val.notCode}}</a></p>
         </form>
-        <hr>
-
+        <!--<hr>-->
         <form novalidate name="smscode" ng-submit="$ctrl.verifyCode(smscode)">
-            <h4 class="text-center">{{$ctrl.global.get('langForm').val.enterCode}}</h4>
+            <h4 class="text-center enter-code">{{$ctrl.global.get('langForm').val.enterCode}}</h4>
             <div class="form-group text-center">
                 <input  ng-class="{'has-error': smscode.smscode.$invalid && smscode.smscode.$dirty}" class="form-control input-code"
                         type="text"
@@ -40,14 +52,13 @@
                         name="smscode"
                         placeholder="{{$ctrl.global.get('langForm').val.code}}"
                         required/>
-
             </div>
             <span class="help-block" ng-show="smscode.smscode.$invalid && smscode.smscode.$dirty" ng-messages="smscode.smscode.$error">
-                    <span ng-message="required">{{$ctrl.global.get('langError').val.enterCode}}</span>
-                </span>
+                <span ng-message="required">{{$ctrl.global.get('langError').val.enterCode}}</span>
+            </span>
             <span class="help-block" ng-show="$ctrl.wrongCode && smscode.smscode.$dirty">
-                    <span>{{$ctrl.global.get('langError').val.errorCode}}</span>
-                </span>
+                <span>{{$ctrl.global.get('langError').val.errorCode}}</span>
+            </span>
             <button class="btn btn-block  btn-project" type="submit" ng-disabled="$ctrl.sendVerifyCodeDisable">{{$ctrl.global.get('langForm').val.logIn}}</button>
         </form>
     </div>

@@ -24,7 +24,9 @@ var cripto=require('../../md5')
 var xmlbuilder = require('xmlbuilder');
 var http=require('http')
 var request = require('request')
-
+const ports = require('../../modules/ports')
+//console.log(ports)
+var zlib = require('zlib');
 
 function getPromiseForSaveInDB(arr) {
     return new Promise(function (rs,rj) {
@@ -100,7 +102,7 @@ function actUser(newUser,store){
                         user.provider = 'local';
                         user.store=store;
                         user.save(function(err){
-                            if(err){reject(err)}else{resolve()}
+                            if(err){reject(err)}else{resolve(user)}
                         })
                     }
                 }
@@ -423,7 +425,7 @@ exports.createUser=function(req,res,next){
     }
     actUser(req.body,req.store._id)
         .then(function(result){
-            res.json({})
+            res.json({id:result._id,_id:result._id})
         })
         .catch(function(err){
             next(err)
@@ -1389,6 +1391,113 @@ exports.sendMessageAboutDealFromServer=function(req,res,next){
         let err = new Error('there are no api for send sms')
         return  next(err)
     }
+
+
+}
+
+exports.makeaccess= async function (req,res,next) {
+    var orderHost = 'http://127.0.0.1:'+ports.orderPort;
+
+    var urll= orderHost+'/api/collections/Order/'+req.body.order;
+
+
+    let options = {
+        url:urll,
+        method: 'GET',
+        //headers: getHeaders(req),
+        json: true,
+        qs: {store:req.store._id},
+    }
+    
+    try{
+        let requestForServer = request(options);
+        requestForServer.on('response', function(response) {
+            var chunks = [];
+            response.on('data', function(chunk) {
+                chunks.push(chunk);
+            });
+
+            response.on('end',async function() {
+                var buffer = Buffer.concat(chunks);
+                try{
+                    let orderStr = buffer.toString();
+                    let order = JSON.parse(orderStr)
+                    if(order.status!=3){
+                        let error = new Error('статус заказа не оплачен')
+                        return next(error)
+                        //console.log('????????')
+                    }
+                    //console.log('????????!!!!!!!!!!!')
+                    if(!order.cart || !order.cart.stuffs){
+                        let error = new Error('нет товаров в заказе')
+                        return next(error)
+                    }
+                    if(order.user._id!=req.body.user){
+                        let error = new Error('пользователи не совпадают')
+                        return next(error)
+                    }
+                    let stuff = order.cart.stuffs.find(s=>s.access)
+                    if(!stuff){
+                        let error = new Error('нет товаров в заказе c условиями доступа к контенту')
+                        return next(error)
+                    }
+                    if(!stuff.access.d){
+                        let error = new Error('нет срока доступа')
+                        return next(error)
+                    }
+                    var now = new Date();
+                    now.setDate(now.getDate() + stuff.access.d);
+                    let o = {
+                        dateBefor:now,
+                        level:stuff.access.t
+                    }
+                    let saveRes = await User.update({_id:req.body.user},{$set:{accessPermision:o}}).exec();
+                    //let user = await User.findOne({_id:req.body.user}).exec();
+                    //console.log('????',user)
+                    return res.json({msg:'OK'})
+
+                }catch(err){
+                    return next(err)
+                }
+
+                return;
+
+
+                if(response.statusCode!==200){
+                    let error = (buffer.toString)? new Error(buffer.toString()):response.statusCode;
+                    return next(error)
+                }
+                try{
+                    zlib.unzip(buffer, function(err, unzipbuffer) {
+
+                       if(err){
+                           return next(err)
+                       }
+                        try{
+                            let results =JSON.parse(unzipbuffer.toString('utf8'));
+
+                            return res.json({msg:'OK'})
+                        }catch(err){
+
+                            return next(err)
+                        }
+                    });
+                }catch(err){return next(err)}
+
+
+
+
+            });
+            response.on('error', function(err) {
+
+                next(err)
+            })
+        });
+    }catch(err){
+        next(err)
+    }
+
+
 
 
 }

@@ -296,7 +296,9 @@ angular.module('gmall.directives')
                             item.timeTable=angular.copy(self.yearTable)
                         }
                     })
-                    self.masters=items;
+                    self.masters=items.filter(function (m) {
+                        return m.actived
+                    });
                 })
                 .then(function(){
                     return Config.getList();

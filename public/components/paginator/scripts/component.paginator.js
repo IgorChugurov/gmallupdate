@@ -1,6 +1,6 @@
 'use strict';
 angular.module('gmall.directives')
-.directive('paginatorMain', function (anchorSmoothScroll,$anchorScroll) {
+.directive('paginatorMain', function (anchorSmoothScroll,$anchorScroll,global) {
         return {
             restrict:'E',
             scope :{
@@ -10,6 +10,18 @@ angular.module('gmall.directives')
             },
             link: function (scope, element, attrs, controller) {
                //console.log('likn paginator',scope.paginate);
+                var store = global.get('store').val
+                var stuffListType = (global.get('sectionType'))?global.get('sectionType').val:'good';
+                //console.log(store.template.stuffListType)
+                var rows=(store.template.stuffListType[stuffListType] && store.template.stuffListType[stuffListType].rows)||3;
+                var filterBlock=store.template.stuffListType[stuffListType].parts.find(function(e){return e.name=='filters' && e.is && e.is!='false'})
+                var filtersInModal=store.template.stuffListType[stuffListType].filtersInModal;
+                if(filterBlock && !global.get('mobile').val && !filtersInModal){
+                    rows--
+                }
+
+                //console.log(rows,filterBlock,filtersInModal)
+
                if(!scope.paginate || typeof scope.paginate!='object'){
                    //console.log('exit')
                    return;
@@ -110,7 +122,20 @@ angular.module('gmall.directives')
                     return scope.paginate.page == scope.paginator.pageCount() - 1;
                 };
                 scope.paginator.pageCount = function () {
-                    var count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(scope.paginate.rows, 10)); if (count === 1) { scope.paginate.page = 0; }
+                    var perPage =scope.paginate.rows;
+                    var delta = perPage%rows;
+                    var midleRows=Math.round(rows/2);
+                    if(delta>=midleRows){
+                        perPage+=(rows-delta)
+                    }else{
+                        perPage-=delta
+                    }
+                    //console.log(perPage,delta)
+
+                    var count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(perPage, 10));
+                    /*count = Math.ceil(parseInt(scope.paginate.items, 10) / parseInt(scope.paginate.rows, 10));*/
+                    //console.log(count)
+                    if (count === 1) { scope.paginate.page = 0; }
                     return count;
                 };
 

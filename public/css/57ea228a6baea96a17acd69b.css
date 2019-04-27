@@ -8,23 +8,21 @@
   src: url("/fonts/OpenSansRegular/OpenSansRegular.ttf") format("truetype"); }
 
 @font-face {
-  font-family: "ComfortaaBold";
-  src: url("/fonts/ComfortaaBold/ComfortaaBold.ttf") format("truetype"); }
+  font-family: "CormorantBold";
+  src: url("/fonts/CormorantBold/CormorantBold.ttf") format("truetype"); }
 
 @font-face {
-  font-family: "BaronBold";
-  src: url("/fonts/BaronBold/BaronBold.eot?") format("eot"), url("/fonts/BaronBold/BaronBold.woff") format("woff"), url("/fonts/BaronBold/BaronBold.ttf") format("truetype"); }
+  font-family: "MontserratBold";
+  src: url("/fonts/MontserratBold/MontserratBold.ttf") format("truetype"); }
 
 @font-face {
-  font-family: "geometric";
-  src: url("/fonts/geometric/geometric.otf") format("opentype"); }
-
-@font-face {
-  font-family: "ImpactRegular";
-  src: url("/fonts/ImpactRegular/ImpactRegular.eot?") format("eot"), url("/fonts/ImpactRegular/ImpactRegular.woff") format("woff"), url("/fonts/ImpactRegular/ImpactRegular.ttf") format("truetype"); }
+  font-family: "NotoSansRegular";
+  src: url("/fonts/NotoSansRegular/NotoSansRegular.ttf") format("truetype"); }
 
 body {
-  color: #333333; }
+  color: #333333;
+  font-family: NotoSansRegular;
+  font-size: 14px; }
 
 .modal-backdrop {
   z-index: 1049 !important; }
@@ -308,8 +306,7 @@ ul.pagination {
   border-radius: 0;
   font-size: 16px;
   color: #000000;
-  font-family: OpenSansLight;
-  text-transform: uppercase; }
+  font-family: OpenSansLight; }
 
 .btn-project:hover,
 .btn-project:focus,
@@ -568,37 +565,40 @@ fieldset[disabled] .btn:hover {
 .ng-pageslide {
   overflow: -moz-scrollbars-none; }
 
+/*
 body.ng-pageslide-body-open::before {
-  content: '.';
-  display: block;
-  position: fixed;
-  top: 0;
-  background-color: #333333;
-  background-color: #999999;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1055;
-  opacity: 0.9;
-  transition: opacity 1s;
-  height: 100%; }
+    content: '.';
+    display: block;
+    position: fixed;
+    top: 0;
+    background-color: $background-color;
+    background-color: #999999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055;
+    opacity: 0.9;
+    transition: opacity 1s;
+    height: 100%;
+}
 
 body.ng-pageslide-body-closed::before {
-  transition: opacity 1s;
-  opacity: 0;
-  content: '.';
-  display: block;
-  position: fixed;
-  top: 0;
-  background-color: #333333;
-  background-color: #999999;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1055;
-  pointer-events: none;
-  height: 100%; }
-
+    transition: opacity 1s;
+    opacity: 0;
+    content: '.';
+    display: block;
+    position: fixed;
+    top: 0;
+    background-color: $background-color;
+    background-color: #999999;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055;
+    pointer-events: none;
+    height: 100%;
+}
+*/
 .ng-pageslide .icon-cancelmenu-img {
   transition: transform 0.5s ease, -webkit-transform 0.5s ease; }
 
@@ -630,35 +630,46 @@ body.ng-pageslide-body-closed::before {
 .ng-pageslide {
   overflow: -moz-scrollbars-none; }
 
-body.ng-pageslide-body-open::before {
-  content: '.';
-  display: block;
-  position: fixed;
-  top: 0;
-  background-color: #999999;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1055;
-  opacity: 0.9;
-  transition: opacity 1s;
-  height: 100%; }
+/*body.ng-pageslide-body-open::before {
+    content: '.';
+    display: block;
+    position: fixed;
+    top: 0;
+    @if $color {
+        background-color: $color;
+    }
+    @else {
+        background-color: #999999;
+    }
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055 ;
+    opacity: 0.9;
+    transition: opacity 1s;
+    height: 100%;
+}
 
 body.ng-pageslide-body-closed::before {
-  transition: opacity 1s;
-  opacity: 0;
-  content: '.';
-  display: block;
-  position: fixed;
-  top: 0;
-  background-color: #999999;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1055;
-  pointer-events: none;
-  height: 100%; }
-
+    transition: opacity 1s;
+    opacity: 0;
+    content: '.';
+    display: block;
+    position: fixed;
+    top: 0;
+    @if $color {
+        background-color: $color;
+    }
+    @else {
+        background-color: #999999;
+    }
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1055 ;
+    pointer-events: none;
+    height: 100%;
+}*/
 #demo-left {
   padding: 40px 10px;
   font-family: Helvetica Neue, Arial, sans-serif; }
@@ -940,7 +951,7 @@ body.ng-pageslide-body-open::before {
   z-index: 1055;
   opacity: 0.9;
   transition: opacity 1s;
-  height: 100%; }
+  height: auto; }
 
 body.ng-pageslide-body-closed::before {
   transition: opacity 1s;
@@ -955,7 +966,7 @@ body.ng-pageslide-body-closed::before {
   bottom: 0;
   z-index: 1055;
   pointer-events: none;
-  height: 100%; }
+  height: auto; }
 
 #slideEntry .carousel-control,
 #slideEntry .carousel-indicators {

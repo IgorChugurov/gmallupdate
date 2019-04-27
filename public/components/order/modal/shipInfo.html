@@ -4,5 +4,6 @@
     </a>
 </div>
 <div class="modal-body-project">
-<user-ship-info></user-ship-info>
+<user-ship-info-short ng-if="$ctrl.short" short="true"></user-ship-info-short>
+<user-ship-info ng-if="!$ctrl.short"></user-ship-info>
 </div>

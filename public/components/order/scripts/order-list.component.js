@@ -381,6 +381,8 @@
                         order.user=user._id;
                     }else if(user.type=='userEntry'){
                         order.userEntry=user._id;
+                    }else{
+                        order.user=user._id;
                     }
                     //throw 'test'
                     return Orders.save(order).$promise;

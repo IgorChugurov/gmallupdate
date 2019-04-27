@@ -142,6 +142,8 @@ angular.module('gmall.services')
                 order.user=res.user;
                 order.shipDetail=res.shipDetail;
                 order.domain=global.get('store').val.domain||global.get('store').val.subDomain;
+                order.pn=res.pn;
+                order.rn=res.rn;
                 //order=res;
                 q.resolve(order)
             },function(err){
@@ -273,7 +275,7 @@ angular.module('gmall.services')
                 try{
                     if(user){
                         if(!user._id){
-                            conosole.log(user)
+                            //console.log(user)
                             throw  'не авторизирован!';
                         }
                     } else{
@@ -489,7 +491,7 @@ angular.module('gmall.services')
         order.seller=global.get('store').val.seller._id;
         return this.sendOrder(user)
     }
-    this.getShipInfo=function(){
+    this.getShipInfo=function(short){
         return $q(function(resolve,reject){
             var modalInstance = $uibModal.open({
                 animation: true,
@@ -501,15 +503,22 @@ angular.module('gmall.services')
                 //windowTopClass:'modalTopProject',
                 backdropClass:'modalBackdropClass',
                 //openedClass:'modalOpenedClass'
+                resolve: {
+                    short :function () {
+                        return short;
+                    }
+                }
             });
             $rootScope.$emit('modalOpened')
             modalInstance.result.then(function(item){$rootScope.$emit('modalClosed');resolve(item)},function(){$rootScope.$emit('modalClosed');reject()});
         })
     }
-    shipInfoCtrl.$inject=['$uibModalInstance','$rootScope']
-    function shipInfoCtrl($uibModalInstance,$rootScope) {
+    shipInfoCtrl.$inject=['$uibModalInstance','$rootScope','short']
+    function shipInfoCtrl($uibModalInstance,$rootScope,short) {
 
         var self = this;
+        self.short=short;
+        //console.log(self.short)
         $rootScope.$on('closeShipModal',function(){
             $uibModalInstance.close();
         })
@@ -562,6 +571,237 @@ angular.module('gmall.services')
          }).on("liqpay.close", function(data){
          // close
          });*/
+    }
+
+
+    this.checkWarehouse=function () {
+        //console.log(order)
+        var virtualAccount;
+        return $q.when()
+            .then(function () {
+                if(!global.get('store').val.virtualAccount){
+                    return $http.get('/api/collections/VirtualAccount')
+                }
+            })
+            .then(function (r) {
+                //console.log(r)
+                if(r && r.data && r.data.length){
+                    global.get('store').val.virtualAccount=r.data[1]._id
+                }
+                virtualAccount=global.get('store').val.virtualAccount;
+                if(!virtualAccount){
+                    throw 'невозможно установить подразделение'
+                }
+
+            })
+            .then(function () {
+                var acts = order.cart.stuffs.map(function (s) {
+                    var q = {stuff:s._id,sort:s.sort}
+                    var url = '/api/collections/Material?query='+JSON.stringify(q)
+                    return $http.get(url)
+                })
+                return $q.all(acts)
+            })
+            .then(function (checkResult) {
+                //console.log(checkResult)
+                if(checkResult){
+                    var r = checkResult.map(function (rr,index) {
+                        if(rr.data && rr.data.length && rr.data[1]){
+                            var material =  rr.data[1];
+                            for(var i =0;i<material.data.length;i++){
+                                if(((material.data[i].virtualAccount && material.data[i].virtualAccount._id)?material.data[i].virtualAccount._id:material.data[i].virtualAccount)==virtualAccount && material.data[i].qty>=order.cart.stuffs[index].quantity){
+                                    order.cart.stuffs[index].priceUchet=material.data[i].price;
+                                    order.cart.stuffs[index].supplierType=material.data[i].supplierType;
+                                    order.cart.stuffs[index].supplier=((material.data[i].supplier && material.data[i].supplier._id)?material.data[i].supplier._id:material.data[i].supplier);
+                                    order.cart.stuffs[index].virtualAccount=virtualAccount;
+                                    //console.log(order.cart.stuffs[index])
+                                    return;
+                                }
+                            }
+                        }
+                        return order.cart.stuffs[index]
+                    })
+                    return r;
+                }else{
+                    throw 'не возможно проверить наличие на складе'
+                }
+            })
+            .then(function (stuffs) {
+                //console.log(stuffs)
+                stuffs = stuffs.filter(function (s) {
+                    return s
+                })
+                if(stuffs.length){
+                    var error='';
+                    stuffs.forEach(function (s) {
+                        var n = s.name;
+                        if(s.artikul){
+                            n+=' '+s.artikul;
+                        }
+                        if(s.sortName){
+                            n+=' '+s.sortName;
+                        }
+                        error +="Необходимое количество "+n+" отсутствует. Перейдите на страницу товара и уточните наличие."
+                    })
+                    throw {status : "checkWarehouse", message : error};
+                    //throw {status:''checkWarehouse,message:error};
+                }
+
+            })
+    }
+    this.makeRn = function (){
+        console.log('makeRn')
+        //console.log(global.get('store'))
+        var o ={
+            currency: order.currency,
+            name:'Расходная накладная на заказ '+order.num,
+            materials:[],
+            typeOfZakaz: "order",
+            virtualAccount: global.get('store').val.virtualAccount,
+            store: global.get('store')._id,
+            worker: 'any',
+            zakaz: order._id,
+            invoice:order._id,
+            makeReserve:true,
+            customer:{
+                name : order.profile.fio, email : order.user.email
+            }
+        };
+
+
+        if(order.profile.phone){
+            o.customer.phone=order.profile.phone;
+        }
+        if(order.profile.city){
+            o.customer.field1=order.profile.city;
+        }
+
+        if(order.shipCost){
+            o.delivery = Math.round((Number(order.shipCost))*100)/100;
+        }
+
+
+        order.cart.stuffs.forEach(function (s) {
+            //console.log(s)
+            var m = {}
+            /*m.name=s.name;
+            if(s.brand){
+                var b = global.get('brands').val.getOFA('_id',s.brand)
+                if(b){
+                    m.producer=b.name;
+                }
+            }
+            if(s.artikul){
+                m.sku = s.artikul
+            }
+            if(s.sortName){
+                m.sku+=' '+s.sortName;
+            }*/
+            m.stuff = s._id;
+            m.sort = s.sort;
+            m.qty = s.quantity;
+            m.priceForSale = Math.round((s.sum/s.quantity)*100)/100;
+            m.price = Math.round((s.priceUchet)*100)/100;
+            m.supplier = s.supplier;
+            m.supplierType = s.supplierType;
+            m.virtualAccount=global.get('store').val.virtualAccount;
+            //m.supplier = m.supplier.charAt(0).toUpperCase() + m.supplier.slice(1);
+            o.materials.push(m)
+
+        })
+        console.log(o)
+
+
+        if(!o.materials.length){
+            return exception.catcher('создание накладной','не выбраны товары');
+        }
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/createByAPIFromSite',o);
+            })
+            .then(function (res) {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная в резерве');
+                return res
+            })
+
+
+
+    }
+    this.cancelRn = function (){
+        console.log('cancelRn',order)
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        if(order.pn){
+            o.pn=order.pn;
+        }
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/cancelByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
+            })
+            /*.catch(function (err) {
+                console.log(err);
+                if(err){
+                    exception.catcher('обработка данных в бухгалтерии')(err);
+                }
+            });*/
+
+
+    }
+    this.holdZakaz = function (){
+        console.log('holdZakaz')
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/holdByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная проведена');
+            })
+            /*.catch(function (err) {
+                console.log(err);
+                if(err){
+                    exception.catcher('обработка данных в бухгалтерии')(err);
+                }
+            });*/
+
+
+    }
+    this.cancelZakaz = function (){
+        console.log('cancelZakaz')
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        if(order.pn){
+            o.pn=order.pn;
+        }
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/cancelZakazByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
+            })
     }
 
 

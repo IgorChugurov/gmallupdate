@@ -169,10 +169,16 @@
         }
 
         this._isStuffInCampaign=function(stuff,campaign){
+
             //console.log(stuff)
             var stuffCategory = (typeof stuff.category=='object' && stuff.category.length)?stuff.category[0]:stuff.category;
             var stuffBrand=(stuff.brand && stuff.brand._id)?stuff.brand._id:stuff.brand
+            var stuffBrandTag=(stuff.brandTag && stuff.brandTag._id)?stuff.brandTag._id:stuff.brandTag
             function check(__campaign){
+                /*if(stuff._id=="5c0a3606092d863b3e9197a3"){
+                    console.log(stuff)
+                    console.log(__campaign)
+                }*/
                 //console.log(stuffCategory,__campaign.categories)
                 //console.log(__campaign,stuff.name)
                 if (__campaign.stuffs && __campaign.stuffs.length && __campaign.stuffs.indexOf(stuff._id)>-1){
@@ -181,7 +187,7 @@
                 if (__campaign.tags && __campaign.tags.length && stuff.tags && __campaign.tags.some(function(tag){return stuff.tags.indexOf(tag)>-1})){
                     return true;
                 }
-                if (__campaign.brandTags && __campaign.brandTags.length && __campaign.brandTags.indexOf(stuff.brandTag)>-1){
+                if (__campaign.brandTags && __campaign.brandTags.length && __campaign.brandTags.indexOf(stuffBrandTag)>-1){
                     return true
                 }
                 if (__campaign.brands && __campaign.brands.length && __campaign.brands.indexOf(stuffBrand)>-1){
@@ -217,7 +223,10 @@
             if (!campaign) {
                 for (var j=0,ll=self.campaign.length;j<ll;j++){
                     var is=check(self.campaign[j]);
-                    //console.log(is,(is && !self.campaign[j].revers),(!is && self.campaign[j].revers))
+                    /*if(stuff._id=="5c0a3606092d863b3e9197a3"){
+                        console.log(is,(is && !self.campaign[j].revers),(!is && self.campaign[j].revers))
+                    }*/
+
                     if ((is && !self.campaign[j].revers)||(!is && self.campaign[j].revers)){
                         setCampaignPrice(self.campaign[j])
                         return self.campaign[j];

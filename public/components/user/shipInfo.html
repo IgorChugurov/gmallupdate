@@ -3,6 +3,21 @@
     .pac-container {
         z-index: 100000;
     }
+    .modal-content .change.btn-project {
+        float: right;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: 40px;
+        padding-right: 10px;
+        padding-left: 10px;
+
+    }
+    .shipinfo input.mail {
+        width: 60%;
+        float: left;
+    }
     @media (max-width: 380px){
         .modalProject .modal-content .cart-inner{
             padding: 0;
@@ -18,19 +33,23 @@
         <div class="col-sm-12 col-lg-12 col-md-12 col-xs-12 cart-inner">
             <form class="form" name="formProfile" id="formProfile" ng-submit="$ctrl.ok(formProfile)" novalidate>
                 <div class="form-group ">
-                    <input style="width: 80%; float: left" ng-class="{'has-error': formProfile.email.$invalid && formProfile.$submitted}"
+                    <input ng-class="{'has-error': formProfile.email.$invalid && formProfile.$submitted}"
                            name="email"
                            type="email"
-                           class="form-control mb-10 cart"
+                           class="form-control mb-10 mail"
                            required
                            ng-model="$ctrl.user.val.email"
                            ng-disabled="$ctrl.user.val._id"
                            placeholder="e-mail"
                            ng-model-options="{'updateOn':'default blur','debounce':{'default':1000,'blur':0}}"/>
-                    <a class="change btn btn-project"
+                    <!--<a class="change btn btn-project"
                        style="min-width: 50px; float: right; margin-top: 0; margin-bottom: 0;padding-top: 5px; padding-bottom: 5px; height: 40px; padding-right: 10px; padding-left: 10px"
                        ng-click="$ctrl.changeEmail()" title="{{$ctrl.global.get('langForm').val.changeEmail}}">
                         <span class="icon-change-img"></span>
+                    </a>-->
+                    <a class="change btn btn-project"
+                       ng-click="$ctrl.changeEmail()" title="{{$ctrl.global.get('langForm').val.changeEmail}}">
+                        {{$ctrl.global.get('langForm').val.changeEmail}}
                     </a>
                     <div class="clearfix"></div>
                 </div>

@@ -56,6 +56,7 @@ var userSchema = new mongoose.Schema({
     data:{},//key - store, :{ subscribe:true,visits:1,list: _id of list}
     list:[],// списки рассылок
     confirmEmail :Boolean,
+    confirmCondition :Boolean, // подтверждение условий использования
     img:String,
     /*for sms check*/
     sms:{
@@ -63,6 +64,10 @@ var userSchema = new mongoose.Schema({
         exp:Number
     },
     master:String,// ref to _id master
+    accessPermision : {
+        dateBefor:Date,
+        level:Number,
+    }
 });
 //userSchema.add({list:[]})
 
@@ -193,7 +198,7 @@ userSchema.statics={
         //var criteria = options.criteria || {}
         //console.log(options.criteria['$and']);
         //options.criteria={};
-        console.log("options.criteria",options.criteria)
+        //console.log("options.criteria",options.criteria)
         Promise.resolve()
             .then(function(){
 
@@ -218,6 +223,26 @@ userSchema.statics={
                 cb(error)
             });
 
+    },
+
+    searchList: function (options, cb) {
+        let criteria = {$and:[options.criteria,{$or:[]}]}
+        let searchStr=RegExp( options.searchStr, "i" )
+        let o={['name']:searchStr};
+        criteria.$and[1].$or.push(o)
+        o={['email']:searchStr};
+        criteria.$and[1].$or.push(o)
+        o={['profile.fio']:searchStr};
+        criteria.$and[1].$or.push(o)
+        o={['profile.phone']:searchStr};
+        criteria.$and[1].$or.push(o)
+        //console.log(o)
+        this.find(criteria)
+            .sort({'date': -1}) // sort by date
+            .limit(options.perPage)
+            .select('name email profile date store visits list subscription confirmEmail addInfo order')
+            .skip(options.perPage * options.page)
+            .exec(cb)
     },
     load: function (id, cb) {
         this.findById(id)

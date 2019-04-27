@@ -1,6 +1,9 @@
 @if $font-size {
     font-size: $font-size;
 }
+@if $z-index {
+    z-index: $z-index;
+}
 /*modalProject*/
 .modal-content{
     @if $background-color {
@@ -44,10 +47,66 @@ input[type="search"]::-moz-placeholder {
 .modal-content{
     border-radius:$border-radius;
 }
+
 /*sign-login*/
+.sign-login .sign,
+.sign-login .login {
+    padding: 15px 0;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+}
+.sign-login .modal-body-project {
+    padding: 40px 100px;
+}
+
+.sign-login .active-tabl{
+    background-color: #f5f5f5;
+}
+/*.modal-content {
+    padding: 0px !important;
+}*/
+.sign-login .cancel-login {
+    position: static !important;
+    padding: 17px 0 13px 0;
+    border-bottom: 1px solid #ccc;
+}
+.sign-login .icon-cancel-img {
+    position: static !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-size: 18px !important;
+}
+.box-sn {
+    display: inline-block;
+    vertical-align: bottom;
+}
+.icon-fbwhite-img {
+    margin-right: 10px;
+}
 .modal-content .tab-head {
     margin-bottom: 20px;
+    cursor: pointer;
 }
+.enter-button-box {
+    padding-top: 40px;
+}
+.forgot {
+    display: block;
+    padding-bottom: 20px;
+}
+.text-help {
+    text-align: justify;
+}
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+.sign-box .sub-text,
+.oferta-text {
+    display: inline-block;
+    padding-left: 10px;
+}
+
 .modal-content .tab-head a {
     font-size: 14px;
     color: $mainColor;
@@ -79,8 +138,12 @@ input[type="search"]::-moz-placeholder {
     width: auto;
     display: inline-block;
 }
-
-@media (max-width: 1450px) {
+.btn-facebook {
+    padding: 5px 10px;
+    width: auto;
+    outline: none !important;
+}
+/*@media (max-width: 1450px) {
     .modal-content {
         @if $padding-left {
             padding-left: $padding-left*0.5 !important;
@@ -90,9 +153,9 @@ input[type="search"]::-moz-placeholder {
         }
 
     }
-}
+}*/
 
-@media  (max-width: 1100px)  {
+/*@media  (max-width: 1100px)  {
     .modal-content {
         padding: 20px !important;
     }
@@ -102,28 +165,21 @@ input[type="search"]::-moz-placeholder {
     .witget {
         width: 90% !important;
     }
-}
-@media  (max-width: 992px)  {
+}*/
+/*@media  (max-width: 992px)  {
     .modal-body-project{
         margin-left: 20px !important;
         margin-right: 20px !important;
     }
-    /*.modal-content {
+    !*.modal-content {
         padding: 10px !important;
-    }*/
-}
+    }*!
+}*/
 @media (max-width: 768px) and (min-width: 401px){
-    .login {
-        padding-left: 0;
-        padding-right: 0;
-    }
-    .sign {
-        padding-left: 0;
-        padding-right: 0;
-    }
+
     .modal-body-project {
-        padding-right: 0;
-        padding-left: 0;
+        padding: 40px !important;
+
     }
     .btn-project.btn-block {
         font-size: 14px;
@@ -131,36 +187,16 @@ input[type="search"]::-moz-placeholder {
     }
 }
 @media  (max-width: 400px)  {
-    /*.modal-header-project {
-        padding-top: 20px;
-    }*/
     .modal-dialog {
         width: 98% !important;
-        margin: 0 auto !important;
-    }
-    .modal-content {
-        padding: 10px !important;
-        margin-top: 20px !important;
-    }
-    .sign {
-        border-left:none  !important;
-    }
-    .login {
-        border-bottom: 1px solid #ccc;
-    }
-    .sign,
-    .login {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-        padding-bottom: 20px;
+        margin: 20px auto !important;
     }
     .modal-body-project {
+        padding: 40px 20px !important;
         width: 100%;
         margin-right: 0 !important;
         margin-left: 0 !important;
         margin-top: 40px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
     }
     .btn-project {
         @if $font-size {
@@ -176,6 +212,13 @@ input[type="search"]::-moz-placeholder {
     }
     .shipinfo {
         width: 100% !important;
+    }
+    .cancel {
+        position: static !important;;
+    }
+    .icon-cancel-img {
+        top:35px !important;
+        right: 35px !important;
     }
 }
 .filters-first-box {

@@ -13,6 +13,8 @@
             save:Items.save,
             delete:Items.delete,
             create:create,
+            select:selectItem,
+            search:search
         }
         function getList(paginate,query){
            if(!paginate){
@@ -86,6 +88,71 @@
 
                 }, function (err) {
                     reject(err)
+                });
+            })
+
+        }
+
+        function search(search,setData){
+            // setData - если ищем товар в админке для дальнейшего использования необходимо получить с сервера все данные
+            var data ={search:search,setData:setData};
+            return Items.query(data).$promise
+                .then(getListComplete)
+                .catch(getListFailed);
+            function getListComplete(response) {
+                //response.shift()
+
+                return response;
+            }
+
+            function getListFailed(error) {
+                console.log('XHR Failed for getNews.' + error);
+                return $q.reject(error);
+            }
+        }
+        function selectItem(){
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/CONTENT/groupStuffs/selectItem.html',
+                    controller: function(GroupStuffs,$uibModalInstance,$q){
+                        var self=this;
+                        self.stuffs=[];
+                        self.name='';
+                        var query;
+                        var paginate={page:0,rows:30,items:0}
+                        self.search = function(name){
+                            if (name.length<3){return}
+                            query={name:name}
+
+
+
+                            GroupStuffs.search(name,true)
+                                .then(function(res){
+                                    self.items=res;
+                                    //console.log(self.items)
+                                })
+
+
+                            /*News.getList(paginate,query).then(function(res){
+                             self.items=res;
+                             })*/
+                        }
+                        self.selectItem=function(item){
+                            $uibModalInstance.close(item);
+                        }
+                        self.cancel = function () {
+                            $uibModalInstance.dismiss('cancel');
+                        };
+                    },
+                    controllerAs:'$ctrl',
+                    size: 'lg',
+                });
+
+                modalInstance.result.then(function (stuff) {
+                    resolve(stuff)
+                },function(){
+                    reject()
                 });
             })
 

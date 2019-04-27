@@ -99,8 +99,11 @@ input:-webkit-autofill {
     padding: 0px 20px 20px;
 }
 .login {
+    padding: 20px;
     border-right: 1px solid #ccc;
-    min-height: 440px;
+}
+.sign {
+    padding: 20px;
 }
 .sign-box {
     padding: 0px 20px 20px;
@@ -115,4 +118,79 @@ input:-webkit-autofill {
     margin-bottom: 20px;
     text-align: center;
 }
+.modal-header-project {
+    border: 1px solid #ccc;
+}
+.modal-body-project {
+    padding-top: 40px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+.sign,
+.login {
+    text-transform: uppercase;
+}
+.cancel-login .icon-cancel-img{
+    width: 12px;
+    height: 12px;
+    background: url("../../../img/icon/clear.png");
+    background-size: 12px;
+    display: inline-block;
+    cursor: pointer;
+    top:auto;
+    right: auto;
+    position: static;
+    /*margin-top: 22px;
+    margin-bottom: 21px;*/
+}
+.sign-login .cancel-login {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-left: 1px solid #ccc;
+}
+.sign-login .active-tabl {
+    background-color: #f5f5f5;
+}
+.sign-login .active-tab {
+    border-bottom: 1px solid #ccc;
+}
+.sign-login .head-box {
+    padding: 10px;
+}
+.sign-login .phoneForm .add-phone .ui-select-match .btn-default {
+    border: none;
+    height: 48px;
+    padding-top: 20px;
+}
+.sign-login button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #999;
+    background-color: #f5f5f5;
+    font-weight: 500;
+}
+.sign-login .btn-facebook {
+    border: 1px solid #ccc;
+    text-align: center;
+    padding: 10px 10px 0 10px;
+    width: auto;
+    margin-top: 0px;
+}
+.sign-login .box-sn {
+    display: inline-block;
+
+}
+
+.sign-login h4 {
+    text-transform: uppercase;
+}
+.input-code {
+    display: inline-block;
+    width: auto;
+}
+.phone-login .form-control {
+    font-size: 16px;
+}
+
 

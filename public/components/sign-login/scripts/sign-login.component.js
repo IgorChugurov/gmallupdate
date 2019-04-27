@@ -109,8 +109,8 @@
             restrict:'AE'
         }
     }
-    signupCtrl.$inject=['$scope','$auth', 'toaster','$q','global','Account','$state','Stuff','CreateContent','$email','exception'];
-    function signupCtrl($scope,$auth, toaster,$q,global,Account,$state,Stuff,CreateContent,$email,exception){
+    signupCtrl.$inject=['$scope','$auth', 'toaster','$q','global','Account','$state','Stuff','CreateContent','$email','exception','$user','$http','$timeout','sendPhoneFactory'];
+    function signupCtrl($scope,$auth, toaster,$q,global,Account,$state,Stuff,CreateContent,$email,exception,$user,$http,$timeout,sendPhoneFactory){
         var self=this;
         self.global=global;
         self.formData=(global.get('store').val.bonusForm)?global.get('store').val.bonusForm:{phone:true,fields:[]}
@@ -118,12 +118,224 @@
         if(!self.buttonName){self.buttonName=='подписаться!!'}
         //console.log(self.buttonName)
 
+        self.block='email';
+        console.log(global.get('store').val.typeOfReg)
+        if(global.get('store').val.typeOfReg){
+            if(global.get('store').val.typeOfReg.phone){
+                self.typeOfReg='phone';
+                self.block='phone'
+            }else if(global.get('store').val.typeOfReg.email){
+                self.typeOfReg='email'
+            }
+        }
+
+
         self.signup=signup;
         self.authenticate=authenticate;
+        self.sendCodeToPhone=sendCodeToPhone;
+        self.verifyCode=verifyCode;
+
+
+
+        $scope.$watch(function () {
+            return self.user.profile.phone
+        },function(n,o){
+            console.log(n,o)
+            self.phoneExist=false;
+            /*if(n){
+                regitration(n)
+            }*/
+        });
+
+
+        function checkUserEntry(phone) {
+            var query = {phone:phone};
+            return $q.when()
+                .then(function () {
+                    //return $user.checkPhoneForExist(phone)
+                    return $user.getItem(phone,'profile.phone')
+                })
+                .then(function(res){
+                    //console.log(res)
+                    if(res){return res}else{return null}
+                })
+        }
+
+
+
+        function createUser(name,phone) {
+            var email= phone+'@gmall.io'
+            var user = {email:email,name:name,profile:{phone:phone,fio:name}};
+            return $auth.signup(user)
+                .then(function(response) {
+                    console.log(response)
+                    if(response && response.data &&  response.data.token){
+                        if(response.data.token=='update'){
+                            throw null;
+                        }else{
+                            $auth.setToken(response);
+                            return Account.getProfile()
+                        }
+                    } else{
+                        throw response;
+                    }
+
+                })
+                .then(function(response){
+                    console.log(response)
+                    if(response){
+                        global.set('user',response.data);
+                        global.get('functions').val.logged();
+                    }
+
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('new client')(err)
+                    }
+                })
+
+        }
+        function sendCodeToPhone(phone) {
+            var o = {phone:phone}
+            self.sendCodeDisable=true;
+            $q.when()
+                .then(function () {
+                    return $http.post('/api/users/sendSMS',o)
+                })
+                .then(function () {
+                    exception.showToaster('info','send code','success')
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('send code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+
+        }
+
+
+        function sendCodeToPhone__(phone) {
+            if(self.sendCodeDisable){return}
+            self.sendCodeDisable=true;
+            //console.log(self.phone)
+            if(!phone){
+                return;
+            }
+            $q.when()
+                .then(function(){
+                    return sendPhoneFactory.checkPhone(phone)
+                })
+                .then(function (res) {
+                    //console.log(res)
+                    if(!res || !res._id){
+                        return $user.newUserByPhone(self.name,self.phone)
+                    }
+                })
+                .then(function () {
+                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    return sendPhoneFactory.sendCodeToPhone(self.phone)
+                })
+                .then(function () {
+                    self.codeSent=true;
+                    exception.showToaster('info','send code','success')
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('send code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendCodeDisable=false
+                    },10000)
+                })
+        }
+        function verifyCode(form) {
+            if(self.sendVerifyCodeDisable){return}
+            if(form.$invalid){return}
+            if(!self.code || !self.user.profile.phone){
+                return;
+            }
+            self.sendVerifyCodeDisable=true;
+            $q.when()
+                .then(function () {
+                    return sendPhoneFactory.verifyCode(self.code,self.phone)
+                })
+                .then(function (response) {
+                    //console.log(response)
+                    exception.showToaster('info','verify code','success')
+                    $timeout(function () {
+                        self.sendVerifyCodeDisable=false
+                    },5000);
+                    if(response && response.data &&  response.data.token){
+                        $auth.setToken(response);
+                        return Account.getProfile()
+                    }else{throw 'wrong response'}
+                })
+                .then(function(response){
+                    $scope.$emit('closeWitget')
+                    toaster.info(global.get('langNote').val.authComplite);
+                    if(response){
+                        global.set('user',response.data);
+                        global.get('functions').val.logged();
+                        $scope.$emit('cartslide',{event:'signLogin'})
+                    }
+
+                })
+                .catch(function (err) {
+                    self.wrongCode=true;
+                    global.set('user',null);
+                    if(err){
+                        exception.catcher('verify code')(err)
+                    }
+                    $timeout(function () {
+                        self.sendVerifyCodeDisable=false
+                    },5000)
+                })
+        }
+
+
+        function regitration(phone) {
+            $q.when()
+                .then(function () {
+                    return checkUserEntry(phone)
+                })
+                .then(function (res) {
+                    if(res && res._id){
+                        self.phoneExist=true;
+                        sendCodeToPhone()
+                        //self.currentBlock=5;
+                        return null
+                    }else{
+                        return createUser(self.user.name,phone)
+                    }
+
+                })
+                .catch(function (err) {
+                    exception.catcher(global.get('lang').val.error)(err)
+                    //console.log(err)
+                })
+        }
 
 
         function signup(form) {
+
+            console.log(form)
             if(!form.$valid){return}
+
+            if(self.typeOfReg=='phone' && self.user.profile.phone){
+                return regitration(self.user.profile.phone)
+            }
+
+
             self.user.store=global.get('store').val._id;
             $auth.signup(self.user)
                 .then(function(response) {
@@ -252,7 +464,17 @@
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
         }
-
+        //console.log(global.get('store').val)
+        self.block='email';
+        if(global.get('store').val.typeOfReg){
+           if(global.get('store').val.typeOfReg.phone){
+                self.typeOfReg='phone';
+               self.block='online'
+           }else if(global.get('store').val.typeOfReg.email){
+               self.typeOfReg='email'
+           }
+        }
+        //console.log(self.typeOfReg)
         self.login=login;
         self.authenticate=authenticate;
         self.sendCodeToPhone=sendCodeToPhone;
@@ -464,6 +686,15 @@
         var self=this;
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
+
+        }
+        //console.log(global.get('store').val)
+        if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.oferta){
+            self.oferta=true;
+
+        }
+        if(global.get('store').val.texts && global.get('store').val.texts.oferta){
+            self.ofertaText=global.get('store').val.texts.oferta[global.get('store').val.lang];
         }
 
         self.sendCodeToPhone=sendCodeToPhone;
@@ -478,7 +709,11 @@
 
 
 
-        function sendCodeToPhone() {
+        function sendCodeToPhone(form) {
+            if(form.$invalid){
+                return
+            }
+
             if(self.sendCodeDisable){return}
             self.sendCodeDisable=true;
             //console.log(self.phone)
@@ -492,7 +727,7 @@
                 .then(function (res) {
                     //console.log(res)
                     if(!res || !res._id){
-                        return $user.newUserByPhone(self.name,self.phone)
+                        return $user.newUserByPhone(self.name,self.phone,self.confirmCondition)
                     }
                 })
                 .then(function () {

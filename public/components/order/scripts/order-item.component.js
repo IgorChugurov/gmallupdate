@@ -70,74 +70,9 @@
         self.updateDiscount=updateDiscount;
 
         self.createByAPI=createByAPI;
-
-        function createByAPI() {
-
-
-            $q.when()
-                .then(function () {
-                    console.log(self.order)
-                    console.log(global.get('brands').val)
-                    var zakaz={
-                        customer:{
-                            name : self.order.profile.fio,
-                            email : self.order.user.email
-                        }
-                    }
-                    if(self.order.profile.phone){
-                        zakaz.customer.phone=self.order.profile.phone;
-                    }
-                    if(self.order.profile.city){
-                        zakaz.customer.field1=self.order.profile.city;
-                    }
-
-                    zakaz.materials=[]
-                    self.order.cart.stuffs.forEach(function (s) {
-                            var m = {}
-                            m.name=s.name;
-                            if(s.brand){
-                                var b = global.get('brands').val.getOFA('_id',s.brand)
-                                if(b){
-                                    m.producer=b.name;
-                                }
-                            }
-                            if(s.artikul){
-                                m.sku = s.artikul
-                            }
-                            if(s.sortName){
-                                m.sku+=' '+s.sortName;
-                            }
-                            m.qty = s.quantity;
-                            m.priceForSale = Math.round((s.sum/s.quantity)*100)/100;
-                            m.price = Math.round((m.priceForSale*0.7)*100)/100;
-                            m.supplier = global.get('store').val.name
-                        zakaz.materials.push(m)
-
-                    })
-                    zakaz.virtualAccount=global.get('store').val.name;
-                    zakaz.currency=self.order.currency;
-                    zakaz.currencyRn=self.order.currency;
-                    if(self.order.createByAPI){
-                        zakaz.createByAPI=self.order.createByAPI
-                    }
-                    zakaz.comment='Заказ № '+self.order.num+' от '+moment(self.order.date).format('LLL')
-                    console.log(zakaz)
-                    return $http.post('/api/bookkeep/Zakaz/createByAPI',zakaz)
-
-                })
-                .then(function (res) {
-                    console.log(res)
-                    if(res.data && res.data.createByAPI){
-                        self.order.createByAPI=res.data.createByAPI;
-                        updateOrderField('createByAPI')
-                    }
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
+        self.makeAccess=makeAccess;
 
 
-        }
 
         //**********************************************************************************************
         //*********************************************************************************************
@@ -175,9 +110,24 @@
                     //console.log(extCatalogs)
                     self.extCatalogs=extCatalogs;
                     $order.init('order',$stateParams.id).then(function(order){
-                        //console.log(order.cart.stuffs)
-                        order.sortCart();
+
+                        order.cart.stuffs.sort(function (a,b) {
+                            var textA = (a.brand)?a.brand.toUpperCase():'';
+                            var textB = (b.brand)?b.brand.toUpperCase():'';
+                            console.log((textA < textB) ? -1 : (textA > textB) ? 1 : 0)
+                            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                        })
+                        /*order.cart.stuffs.forEach(function (s,i) {
+                            if(i && order.cart.stuffs[i-1].brand!=s.brand[i]){
+                                order.cart.stuffs.extCatalog=
+                            }
+                        })*/
+                        //order.sortCart();
                         self.order=order;
+                        if(global.get('store').val.bookkeep){
+                            self.currentStatus=order.status;
+                        }
+
                         self.orderForChat={_id:order._id,num:order.num}
                         self.status=self.statusArray.getObjectFromArray('value',order.status);
                         // список для выбора товаров для доставки
@@ -813,6 +763,18 @@
             },300)
             return deferred.promise;
         }
+        function saveField(field) {
+            var o={ _id:self.order._id}
+            o[field]=self.order[field]
+            Orders.save({update:field},o,function(){
+                global.set('saving',true);
+                $timeout(function(){
+                    global.set('saving',false);
+                },1500)
+            },function(err){
+                showToaster('error','Ошибка','не удалось сохранить')
+            });
+        }
         function updateDiscount(){
             self.order.priceSaleHandle=self.order.cart.stuffs.some(function(s){return s.priceSaleHandle})
             self.order.maxDiscountOver=self.order.cart.stuffs.some(function(s){return s.maxDiscountOver})
@@ -1102,8 +1064,187 @@
             })
         }
 
+        function createByAPI() {
+
+
+            return $q.when()
+                .then(function () {
+                    console.log(self.order)
+                    console.log(global.get('brands').val)
+                    var zakaz={
+                        customer:{
+                            name : self.order.profile.fio,
+                            email : self.order.user.email
+                        }
+                    }
+                    if(self.order.profile.phone){
+                        zakaz.customer.phone=self.order.profile.phone;
+                    }
+                    if(self.order.profile.city){
+                        zakaz.customer.field1=self.order.profile.city;
+                    }
+
+                    zakaz.materials=[]
+                    self.order.cart.stuffs.forEach(function (s) {
+                        var m = {}
+                        m.name=s.name;
+                        if(s.brand){
+                            var b = global.get('brands').val.getOFA('_id',s.brand)
+                            if(b){
+                                m.producer=b.name;
+                            }
+                        }
+                        if(s.artikul){
+                            m.sku = s.artikul
+                        }
+                        if(s.sortName){
+                            m.sku+=' '+s.sortName;
+                        }
+                        m.qty = s.quantity;
+                        m.priceForSale = Math.round((s.sum/s.quantity)*100)/100;
+                        m.price = Math.round((m.priceForSale*0.7)*100)/100;
+                        m.supplier = global.get('store').val.name
+                        zakaz.materials.push(m)
+
+                    })
+                    zakaz.virtualAccount=global.get('store').val.name;
+                    zakaz.currency=self.order.currency;
+                    zakaz.currencyRn=self.order.currency;
+                    if(self.order.createByAPI){
+                        zakaz.createByAPI=self.order.createByAPI
+                    }
+                    zakaz.comment='Заказ № '+self.order.num+' от '+moment(self.order.date).format('LLL')
+                    console.log(zakaz)
+                    //return $http.post('/api/bookkeep/Zakaz/createByAPI',zakaz)
+
+                })
+                .then(function (res) {
+                    console.log(res)
+                    if(res.data && res.data.createByAPI){
+                        self.order.createByAPI=res.data.createByAPI;
+                        updateOrderField('createByAPI')
+                    }
+                })
+
+
+
+        }
+
+        function reserve() {
+            return   $q.when()
+                .then(function () {
+                    return $order.checkWarehouse()
+                })
+                .then(function () {
+                    return $order.checkWarehouse()
+                })
+                .then(function () {
+                    return $order.makeRn()
+                })
+                .then(function (res) {
+                    console.log(res)
+                    if(res && res.data && res.data.rn){
+                        self.order.status=2;
+                        saveField('status');
+                        self.order.rn=res.data.rn;
+                        saveField('rn');
+                        if(res.data.pn){
+                            self.order.pn=res.data.pn;
+                        }else{
+                            self.order.pn=null;
+                        }
+                        saveField('pn')
+                    }
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('обработка данных в бухгалтерии')(err)
+                    }
+                })
+        }
+        function cancelReserve() {
+            return   $q.when()
+                .then(function () {
+                    return $order.cancelRn()
+                })
+                .then(function (res) {
+                    self.order.status=1;
+                    saveField('status');
+                    self.order.rn=null;
+                    saveField('rn');
+                    self.order.pn=null;
+                    saveField('pn');
+                    showToaster('note','Сохренено','информация обновлена')
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('изменение статуса')(err)
+                    }
+                })
+        }
+
+        function holdZakaz() {
+            return   $q.when()
+                .then(function () {
+                    return $order.holdZakaz()
+                })
+                .then(function (res) {
+                    self.order.status=4;
+                    saveField('status');
+                    showToaster('note','Сохренено','информация обновлена')
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('изменение статуса')(err)
+                    }
+                })
+        }
+        function cancelZakaz() {
+            return   $q.when()
+                .then(function () {
+                    return $order.cancelZakaz()
+                })
+                .then(function (res) {
+                    console.log('res',res)
+                    self.order.status=1;
+                    saveField('status');
+                    self.order.rn=null
+                    saveField('rn');
+                    self.order.pn=null;
+                    saveField('pn');
+                    showToaster('note','Сохренено','информация обновлена')
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('изменение статуса')(err)
+                    }
+                })
+        }
 
         function changeStatus(status){
+            console.log(status,self.order.status)
+            if(global.get('store').val.bookkeep){
+                if(self.order.status==status.value){return}
+                if(self.order.status==1 && status.value!=2){
+                    console.log(self.order.status)
+                    self.status=self.statusArray[Number(self.order.status)-1]
+                    exception.catcher('изменение статуса')('только на принят')
+                }else if(status.value==2 && self.order.status==1){
+                    return reserve()
+                }else if(status.value==1 && (self.order.status==2 || self.order.status==3)){
+                    cancelReserve()
+                }else if(status.value==4 && (self.order.status==2 || self.order.status==3)){
+                    holdZakaz()
+                }else if(status.value==1 && self.order.status==4){
+                    cancelZakaz()
+                }else if(self.order.status==4 && status.value!=1){
+                    console.log(self.order.status)
+                    self.status=self.statusArray[Number(self.order.status)-1]
+                    exception.catcher('изменение статуса')('только на поступил')
+                }
+
+                return;
+            }
 
 
             self.order.status=status.value;
@@ -1166,6 +1307,42 @@
             }catch(err){
                 throw err
             }
+        }
+
+        function makeAccess() {
+            console.log(self.order);
+
+            $q.when()
+                .then(function () {
+                    var access;
+                    self.order.cart.stuffs.forEach(function (s) {
+                        if(access){return}
+                        if(s.access){
+                            access=s.access;
+                        }
+                    })
+                    if(access){
+                        var o={
+                            user:self.order.user._id,
+                            access:access,
+                            order:self.order._id
+                        }
+                        return $http.post('/api/users/makeaccess',o)
+                    }else{
+                        throw 'нет товара с доступом к контенту'
+                    }
+
+                })
+                .then(function (res) {
+                    console.log(res)
+                    showToaster('note','Сохренено','информация обновлена')
+                })
+                .catch(function (err) {
+                    if(err){
+                        exception.catcher('обновление данных')(err)
+                    }
+                })
+
         }
 
 

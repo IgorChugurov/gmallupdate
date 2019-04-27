@@ -1,13 +1,10 @@
 div(class="stuffs")
     div(id="list"+stuff._id,class="goods-container-img")
             div(class="stuff-box")
-                span(class="icon-likes-img",style="z-index:3000",ng-if="!stuff.inLikes",ng-click="$ctrl.addToLikes($event)",ng-cloak)
-                span(class="icon-likes-inverse",style="z-index:3000",ng-if="stuff.inLikes",ng-click="$ctrl.addToLikes($event)",ng-cloak)
                 a(href=stuff.link)
                     div(class="img-box")
-                        div(class="box-overlay1")
+                        div(class="box-overlay")
                         img(class="sticker",ng-src="{{stuff.sticker}}")
-
                         img(class="img-responsive img-goods",image-lazy-src=stuff.gallery[0].img,src=($index<2)?stuff.gallery[0].img:null,alt=stuff.name+' '+((stuff.artikul)?stuff.artikul:'')+' '+((stuff.brand && stuff.brand.name)?stuff.brand.name:''))
                         div(class="half-shadow")
                             div(class="title-block text-center",style="width:100%")
@@ -16,6 +13,12 @@ div(class="stuffs")
                                     | &nbsp;
                                     span(class="artikul")=stuff.artikul
                                 span(class="brand-name")=(stuff.brand && stuff.brand.name)?stuff.brand.name:''
+                                | &nbsp;
+                                span(class="collection-box", ng-if="stuff.brandTag.name")
+                                    span(ng-bind="$ctrl.global.get('lang').val.collection")
+                                    | &nbsp;
+                                    span(class="collection")=(stuff.brandTag && stuff.brandTag.name) ? stuff.brandTag.name : ''
+                                    | &nbsp;
                                 div(class="clearfix")
                 div(class="action-block")
                     div(class="action-box")
@@ -33,7 +36,7 @@ div(class="stuffs")
                                 a(class="btn  btn-project", ng-click="$ctrl.global.get('functions').val.witget('dateTime',{stuff:stuff})",ng-bind="$ctrl.global.get('lang').val.enroll")
                         else if(stuff.orderType == '3')
                             div
-                                a(class="btn  btn-project",ui-sref="stuffs.stuff(stuff.linkData)",ng-bind="$ctrl.global.get('lang').val.more")
+                                a(class="btn  btn-project",href=stuff.link,ng-bind="$ctrl.global.get('lang').val.more")
                         else if(stuff.orderType == '4')
                             div
                                 a(class="btn  btn-project",ng-click="stuff.getBonus()",ng-bind="$ctrl.global.get('store').val.bonusButtonText")

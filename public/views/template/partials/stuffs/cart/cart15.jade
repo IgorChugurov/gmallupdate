@@ -3,11 +3,13 @@ div(class="stuffs")
         div(class="half-shadow col-lg-5 col-md-5 col-sm-12 col-xs-12")
             a(href=stuff.link)
                 h3(class="stuff-name")
-                    span(class="name")=stuff.name
+                    span(class="name")
+                        | !{stuff.name}
         div(class="title-block col-lg-7 col-md-7 col-sm-12 col-xs-12")
             if(stuff.desc)
-                - var desc=stuff.desc.clearTag().substring(0,250);
-                p=desc
+                //- var desc=stuff.desc.clearTag().substring(0,250);
+                div
+                    | !{stuff.desc}
             div(class="btn-box",ng-if="stuff.sort")
                 if(stuff.orderType == '1')
                     div

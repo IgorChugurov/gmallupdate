@@ -1,5 +1,5 @@
 <div class="login-box">
-    <div class="tab-head"  ng-show="!$ctrl.global.get('store').val.onlineis" ng-init="$ctrl.block='email'">
+    <div class="tab-head"  ng-show="$ctrl.typeOfReg!='email' && $ctrl.typeOfReg!='phone'">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 head-box  text-center" ng-class="{'active-tab':$ctrl.block=='email'}"><a ng-click="$ctrl.block='email'">{{$ctrl.global.get('langForm').val.fromEmail}}</a></div>
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 head-box text-center" ng-class="{'active-tab':$ctrl.block=='online'}"><a ng-click="$ctrl.block='online'">{{$ctrl.global.get('langForm').val.fromPhone}}</a></div>
         <div class="clearfix"></div>
@@ -38,43 +38,50 @@
                 <span ng-message="minlength">{{$ctrl.global.get('langError').val.passshort}}</span>
                 <span ng-message="maxlength">{{$ctrl.global.get('langError').val.passlong}}</span>
             </span>
-            <button type="submit"  class="btn btn-lg btn-block btn-project">{{$ctrl.global.get('langForm').val.enter}}</button>
+            <button type="submit"  class="btn btn-block btn-project">{{$ctrl.global.get('langForm').val.enter}}</button>
         </form>
-        <div class="sn-button">
-            <h4  class="text-center" ng-if="$ctrl.global.get('store').val.fb.id||$ctrl.global.get('store').val.gl.id||$ctrl.global.get('store').val.vk.id">{{$ctrl.global.get('langForm').val.enterThrough}}</h4>
-            <div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.fb.id">
-                <button class="btn  btn-facebook" ng-click="$ctrl.authenticate('facebook')" style="padding-left: 5px;padding-right: 5px; vertical-align: middle">
-                    <span class="icon-fbwhite-img"></span>
-                    <span>Facebook</span>
+        <div class="sn-button" ng-if="$ctrl.global.get('store').val.fb.id||$ctrl.global.get('store').val.gl.id||$ctrl.global.get('store').val.vk.id">
+            <h4  class="text-center"></h4>
+            <div class="sn-login" ng-if="$ctrl.global.get('store').val.fb.id">
+                <button class="btn btn-facebook text-center" ng-click="$ctrl.authenticate('facebook')">
+                    <span class="box-sn">
+                        <span class="icon-fbwhite-img pull-left"></span>
+                        <span class="pull-left">
+                            <span>{{$ctrl.global.get('langForm').val.enterThrough}}</span>
+                            <span>Facebook</span>
+                        </span>
+                        <div class="clearfix"></div>
+                    </span>
+
                 </button>
             </div>
-            <div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.gl.id">
-                <button class="btn  btn-google-plus" ng-click="$ctrl.authenticate('google')" style="padding-left: 5px;padding-right: 5px; vertical-align: middle">
-                    <span class="icon-googlewhite-img"></span>
-                    <span>Google</span>
-                </button>
-            </div>
-                <!--<div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.tw.id">
+            <!--<div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.gl.id">
+                    <button class="btn  btn-google-plus" ng-click="$ctrl.authenticate('google')" style="padding-left: 5px;padding-right: 5px; vertical-align: middle">
+                        <span class="icon-googlewhite-img"></span>
+                        <span>Google</span>
+                    </button>
+                </div>
+                <div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.tw.id">
                     <button class="btn btn-twitter" ng-click="$ctrl.authenticate('twitter')">
                         <i class="icon-twwhite-img"></i>
                         <span>Twitter</span>
                     </button>
-                </div>-->
+                </div>
             <div class="sn-login pull-left" ng-if="$ctrl.global.get('store').val.vk.id">
                 <button class="btn btn-twitter" ng-click="$ctrl.authenticate('vkontakte')" style="padding-left: 5px;padding-right: 5px; vertical-align: middle">
                     <span class="icon-vkwhite-img"></span>
                     <span>Vkontakte</span>
-                </button>
+                </button>-->
             </div>
-            <div class="clearfix"></div>
-        </div>
+        <div class="clearfix"></div>
+
         <div class="clearfix"></div>
         <div class="enter-button ">
             <enter-button  toaster="true"></enter-button>
         </div>
     </div>
 
-    <div  ng-show="$ctrl.block=='online'">
+    <div class="phone-login login-box"  ng-show="$ctrl.block=='online'">
         <form method="post" ng-submit="$ctrl.sendCodeToPhone()" name="loginFormPhone">
             <div enter-phone-numder="$ctrl.phone"></div>
             <button type="submit" ng-disabled="loginFormPhone.$invalid || $ctrl.sendCodeDisable" class="btn btn-block btn-project">
@@ -83,10 +90,10 @@
             </button>
             <p class="text-help" ng-show="$ctrl.codeSent"><a ng-click="$ctrl.sendCodeToPhone()">{{$ctrl.global.get('langForm').val.notCode}}</a></p>
         </form>
-        <hr>
+        <!--<hr>-->
 
         <form novalidate name="smscode" ng-submit="$ctrl.verifyCode(smscode)">
-            <h4 class="text-center">{{$ctrl.global.get('langForm').val.enterCode}}</h4>
+            <h4 class="text-center enter-code">{{$ctrl.global.get('langForm').val.enterCode}}</h4>
             <div class="form-group text-center">
                 <input  ng-class="{'has-error': smscode.smscode.$invalid && smscode.smscode.$dirty}" class="form-control input-code"
                         type="text"

@@ -1,13 +1,63 @@
 <div class="col-lg-6  col-md-6 col-sm-6 col-xs-12 box-section-left">
     <div class="col-lg-11  col-md-11 col-sm-11 col-xs-11 padding0 form-group filter-box">
-        <div class="col-lg-10  col-md-10 col-sm-10 col-xs-10   label-floating">
-            <label class="control-label"><a ui-sref="frame.filterEdit.item({id:filter._id})">характеристика</a></label>
+        <div class="col-lg-11  col-md-11 col-sm-11 col-xs-10   label-floating">
+            <label class="control-label">характеристика</label>
             <input ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
                    ng-change="$ctrl.saveFilter(filter,'name')"
                    class="form-control"
                    dnd-nodrag ng-model="filter.name">
+            <div class="box-control">
+                <div class="border-right col-lg-5  col-md-5 col-sm-5 col-xs-5" style="padding-left: 0">
+                    <div class="label-floating">
+                        <label class="control-label">комментарий</label>
+                        <input ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                               ng-change="$ctrl.saveFilter(filter,'comment')"
+                               class="form-control"
+                               dnd-nodrag ng-model="filter.comment">
+                    </div>
+                    <div class="form-group">
+                        <a>
+                            <span class="label-menu link-success" ng-click="$ctrl.setCountData(filter)">количественная характеристика</span>
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <a class="label-menu" ng-click="$ctrl.selectCategory(filter._id)">
+                            <span class="link-success">привязать к категории</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-7  col-md-7 col-sm-7 col-xs-7 text-center">
+                    <div class="togglebutton form-group">
+                        <label for="categoryact{{filter._id}}">
+                            <span ng-class="{'active':!filter.actived}">не опубликован</span>
+                            <input type="checkbox"
+                                   id="categoryact{{filter._id}}"
+                                   ng-model="filter.actived"
+                                   ng-change="$ctrl.saveField(filter,'actived')">
+                            <span ng-class="{'active':filter.actived}">опубликован</span>
+                        </label>
+                    </div>
+                    <p class="label-menu">использование фото в фильтрах</p>
+                    <div class="togglebutton form-group">
+                        <label for="photo{{filter._id}}">
+                            <span ng-class="{'active':!filter.photo}">не использовать</span>
+                            <input type="checkbox"
+                                   id="photo{{filter._id}}"
+                                   ng-model="filter.photo"
+                                   ng-change="$ctrl.saveField(filter,'photo')">
+                            <span ng-class="{'active':filter.photo}">использовать</span>
+                        </label>
+                    </div>
+
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
         </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-right padding0">
+        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 text-right padding0">
+            <a  class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.filterEdit.item({id:filter._id})" >
+                <i class="material-icons">text_format</i>
+            </a>
             <a class="btn btn-fab btn-fab-mini btn-info down-up border-left"  ng-click="filter.showTags=!filter.showTags">
                 <i class="material-icons" ng-show="!filter.showTags">expand_more</i>
                 <i class="material-icons" ng-show="filter.showTags">expand_less</i>
@@ -18,38 +68,7 @@
             </a>
         </div>
         <div class="clearfix"></div>
-        <div class="box-control">
-            <div class="border-right col-lg-6  col-md-6 col-sm-6 col-xs-6">
-                <div class="label-floating">
-                    <label class="control-label">комментарий</label>
-                    <input ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
-                           ng-change="$ctrl.saveFilter(filter,'comment')"
-                           class="form-control"
-                           dnd-nodrag ng-model="filter.comment">
-                </div>
-                <a>
-                    <span class="label-menu link-success" ng-click="$ctrl.setCountData(filter)">количественная характеристика</span>
-                </a>
-            </div>
-            <div class="col-lg-6  col-md-6 col-sm-6 col-xs-6 text-center">
-                <div class="togglebutton form-group">
-                    <label for="categoryact{{filter._id}}">
-                        <span ng-class="{'active':!filter.actived}">не опубликован</span>
-                        <input type="checkbox"
-                               id="categoryact{{filter._id}}"
-                               ng-model="filter.actived"
-                               ng-change="$ctrl.saveField(filter,'actived')">
-                        <span ng-class="{'active':filter.actived}">опубликован</span>
-                    </label>
-                </div>
-                <a class="label-menu" ng-click="$ctrl.selectCategory(filter._id)">
-                    <span class="link-success">привязать к категории</span>
-                </a>
 
-
-            </div>
-            <div class="clearfix"></div>
-        </div>
     </div>
     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1  box-border-top" ng-show="filter.showTags"></div>
     <div class="clearfix"></div>

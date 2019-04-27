@@ -55,6 +55,10 @@ hr {
   font-size: 12px;
   max-width: 150px;
 }
+.ui-select-bootstrap .ui-select-choices-row.active>span {
+  background-color: $mainColor;
+  padding: 7px 20px;
+}
 @media (max-width:1200px) {
   .container {
     width: 100%;

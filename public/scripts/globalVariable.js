@@ -428,6 +428,7 @@ var listOfBlocksForAll={
     slider:'слайдер',
     sn:'кнопки социальных сетей',
     stuffs:'товары',
+    groupStuffs:'группы товаров',
     subscription:'подписка',
     subscriptionAdd:'подписка с доп полями',
     text:'текстовый блок',
@@ -617,6 +618,12 @@ var listOfBlocksForStuffDetail={
     tags:'характеристики',
     blocks:'медиа блоки',
     back:'кнопка назад в список',
+    master:'блок специалистов',
+    stuffs:'блок товаров',
+    video:'первое видео',
+    videoOne:'второе видео',
+    media:'внешнее видео',
+    mediaOne:'второе внешнее видео'
 }
 
 var listOfBlocksForStuffDetailBlocks={
@@ -631,7 +638,7 @@ var listOfBlocksForStuffDetailBlocks={
     map:'карта',
     mapOne:'карта + текстовый блок',
     mapTwo:'текстовый блок + карта',
-    masters:'блок мастеров',
+    masters:'блок специалистов',
     name:'имя',
     position:'должность',
     slider:'слайдер',
@@ -663,7 +670,7 @@ var listOfBlocksForStuffList={
 var tableOfColorsForButton={0:'black-white',1:'pink-white',2:'turquoise-white',3:'yellow-white',4:'bordo-white',5:'braun-white',6:'powder-white',7:'pinklight-white',8:'white-black',9:'black-white'}
 var tableOfButtonsFile={0:'standart',1:'border-radius',2:'no border',3:'inverse',4:'border',5:'transparent'}
 
-var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','menu','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','vk','vkwhite','see','enter','zoom','yt','ytwhite']
+var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','lock','lockwhite','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','vk','vkwhite','see','enter','zoom','yt','ytwhite']
 
 var notificationsTypeLang={
     //клиенту
@@ -671,6 +678,12 @@ var notificationsTypeLang={
         'ru':'счет',
         'ua':'рахунок',
         'en':'invoice',
+        'de':'',
+    },
+    dateTime:{
+        'ru':'запись онлайн',
+        'ua':'запис онлайн',
+        'en':'booking',
         'de':'',
     },
     accepted:{

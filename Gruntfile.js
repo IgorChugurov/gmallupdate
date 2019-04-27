@@ -405,6 +405,9 @@ module.exports = function(grunt) {
                     'public/assets/google-places/google-places.js',
                     'public/assets/nivoslider/jquery.nivo.slider.js',
                     'public/assets/bg-video/backgroundVideo.js',
+                    'public/assets/videojs/video.min.js',
+                    'public/assets/videojs/videojs-vimeo.js',
+                    //'public/assets/videojs/videojs-resolution-switcher.js',
                     //'public/bower_components/jszip/dist/jszip.min.js',
                 ],
                 dest: 'public/dev_scripts.js'
@@ -527,6 +530,8 @@ module.exports = function(grunt) {
             end: {
                 src: [
                     'public/crawler.scripts164.min.js','public/dev_scripts.min.js','public/scripts.min.js',
+                    //'public/assets/videojs/video.min.js'
+                    //, 'public/assets/videojs/videojs-resolution-switcher.js'
 
                     //'js/mylibs/**/*.js'  // Все JS-файлы в папке
                 ],
@@ -645,7 +650,9 @@ module.exports = function(grunt) {
                      'public/assets/ui-select-master/dist/selectize.default.css',
                      'public/bower_components/angularjs-slider/dist/rzslider.css',
                      'public/assets/google-places/google-places.css',
-                     'public/assets/nivoslider/nivo-slider.css'
+                     'public/assets/nivoslider/nivo-slider.css',
+                     'public/assets/videojs/video-js.css',
+                     'public/assets/videojs/videojs-resolution-switcher.css',
                  ]}
             },
             bildComponents:{
@@ -798,6 +805,11 @@ module.exports = function(grunt) {
         'scripts',
         'Compiles the JavaScript files.',
         ['concat:build','concat:bower','concat:bowerCrawler164','uglify:build','concat:end','compress:bild','stylesheets']//
+    );
+    grunt.registerTask(
+        'scripts164',
+        'Compiles the JavaScript files.',
+        ['concat:bowerCrawler164']//
     );
 
     grunt.registerTask(

@@ -11,3 +11,30 @@
     /*border: 2px solid transparent;*/
     transform: scale(1.1);
 }
+.box-overlay {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    transition: opacity 0.5s ease-out 0s;
+    width: 100%;
+    z-index: 1020;
+}
+.item:hover .box-overlay{
+    opacity: 0.7;
+}
+.item:hover .half-shadow {
+    display: block;
+}
+/*
+.half-shadow{
+    position: absolute;
+    width: 100%;
+    z-index: 1027;
+    bottom: 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-size: 20px;
+    height: 45%;
+}*/

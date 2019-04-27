@@ -18,6 +18,25 @@ font-family:$font-family;
     margin-top: 5px;
     margin-bottom: 5px;
 }
+.reminder {
+    font-size: 12px;
+}
+.reminder .togglebutton {
+    margin-top: 20px;
+}
+.reminder label {
+    font-weight: normal;
+}
+.reminder input {
+    margin-right: 10px;
+}
+.reminder label span {
+    display: none;
+}
+.reminder label .active {
+    display: inline-block;
+    float: right;
+}
 .logo {
   text-align: center;
 }
@@ -154,7 +173,15 @@ font-family:$font-family;
 .select-block-master {
   margin: 20px;
 }
+.ui-select-bootstrap .ui-select-choices-row.active>span {
+    background-color: #999;
+    padding: 10px 20px;
+    color: #fff;
+}
 
+.ui-select-bootstrap .ui-select-choices-row>span {
+    padding: 10px 20px;
+}
 .value-choice {
     font-size: 14px;
 }
@@ -482,7 +509,7 @@ font-family:$font-family;
     font-size: 14px;
 }
 .timing {
-    width: 170px;
+    /*width: 170px;*/
     margin-top: 5px;
 }
 .timing .ui-select-toggle {

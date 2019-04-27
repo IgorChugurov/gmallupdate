@@ -88,8 +88,8 @@
             template: '<div ng-transclude></div>'*/
         }
     };
-    schedulePlaceFromServerCtrl.$inject=['$scope','$http','global','$q','$compile','$attrs']
-    function schedulePlaceFromServerCtrl($scope,$http,global,$q,$compile,$attrs) {
+    schedulePlaceFromServerCtrl.$inject=['$rootScope','Booking','$scope','$http','global','$q','$compile','$attrs','$uibModal','$state','$timeout']
+    function schedulePlaceFromServerCtrl($rootScope,Booking,$scope,$http,global,$q,$compile,$attrs,$uibModal,$state,$timeout) {
         var self = this;
         self.moment=moment;
         self.mobile=global.get('mobile' ).val;
@@ -97,6 +97,9 @@
         self.changeWeek=changeWeek;
         self.chancheActiveSlide=chancheActiveSlide;
         self.changeService=changeService;
+        self.setDataForEntry=setDataForEntry;
+
+
 
         self.week=0;
         var delay;
@@ -124,6 +127,7 @@
             }
         })
         function changeWeek(week,service) {
+            //console.log(week)
             self.week=week
             if(!service){service=$attrs.stuff}
             //console.log(week)
@@ -184,6 +188,93 @@
             changeWeek(self.week,s).then(function () {
                 delay=false;
             })
+        }
+        function setDataForEntry(entry) {
+            //console.log(global.get('seller').val)
+            if(!global.get('seller').val){return}
+            console.log(entry)
+            //console.log('setDataForEntry')
+
+
+
+
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/ORDERS/online/classInfo.html',
+                    controller: classInfoCtrl,
+                    controllerAs:'$ctrl',
+                    //size: 'lg',
+                    windowClass:'modalProject',
+                    //windowTopClass:'modalTopProject',
+                    backdropClass:'modalBackdropClass',
+                    //openedClass:'modalOpenedClass'
+                    resolve: {
+                        entry :function () {
+                            return entry;
+                        }
+                    }
+                });
+                $rootScope.$emit('modalOpened')
+                modalInstance.result.then(function(entry){
+                    $rootScope.$emit('modalClosed');
+                    //console.log(item)
+                    var o ={_id:entry._id}
+                    var field ='masterReplace pays members'
+                    o['masterReplace']=entry['masterReplace']
+                    o['pays']=entry['pays']
+                    o['members']=entry['members']
+                    //console.logmembers
+                    Booking.save({update:field},o,function(err){
+                        global.set('saving',true);
+                        $timeout(function(){
+                            global.set('saving',false);
+                            $state.reload();
+                        },1500)
+
+
+                    })
+                    resolve(entry)
+                },function(){$rootScope.$emit('modalClosed');reject()});
+            })
+
+        }
+        classInfoCtrl.$inject=['$scope','$uibModalInstance','$rootScope','global','exception','Booking','entry']
+        function classInfoCtrl($scope,$uibModalInstance,$rootScope,global,exception,Booking,entry) {
+
+            var self = this;
+            self.entry=entry;
+            self.ok = function ok() {
+                $uibModalInstance.close($scope.entry);
+            }
+            self.cancel = function cancel() {
+                $uibModalInstance.dismiss();
+            };
+            $scope.entry=entry;
+            var currentDate=Booking.getDateStringFromEntry(entry,true)
+            self.dateEntry=moment(currentDate).format('LL')+','+moment(currentDate).format('dddd');
+            $scope.dateEntry=self.dateEntry;
+            $q.when()
+                .then(function(){
+                    return global.get('masters').val;
+                })
+                .then(function(data){
+                    //console.log(data)
+                    $scope.masters=data.map(function(m){
+                        //m.stuffs=m.stuffs.map(function(s){return s._id})
+                        return m
+                    })
+                    //.filter(function(m){return (m.stuffs && m.stuffs.length)});
+
+
+                })
+                .catch(function(err){
+                    exception.catcher('получение списка мастеров')(err)
+                });
+
+
+
+
         }
     }
 })()

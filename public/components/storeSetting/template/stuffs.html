@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="../../../css/59df225e6cde3d5b2d80dfc3.css">
 <div class="template-list" ng-class="{'template-list-mobile':$ctrl.global.get('mobile').val}">
     <div class="block-tab">
         <div class="btn-group btn-group-justified btn-group-raised">
@@ -114,63 +115,89 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="form-group text-center">
-                            <h4 class="text-center label-menu">положение блока фильтров</h4>
-                            <div class="togglebutton">
-                                <label for="filtersPosition">
-                                    <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].filtersInModal}">фильтры в списке товаров</span>
-                                    <input type="checkbox"
-                                           id="filtersPosition"
-                                           ng-model="$ctrl.item.stuffListType[$ctrl.type].filtersInModal"
-                                           ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.filtersInModal',$ctrl.item.stuffListType[$ctrl.type].filtersInModal)">
-                                    <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].filtersInModal}">фильтры в модальном окне</span>
-                                </label>
-                            </div>
-                            <h4 class="text-center label-menu">наличие фильтров в списках</h4>
-                            <div class="togglebutton">
-                                <label for="filtersPosition2">
-                                    <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].filtersForAll}">фильтры в списке категорий</span>
-                                    <input type="checkbox"
-                                           id="filtersPosition2"
-                                           ng-model="$ctrl.item.stuffListType[$ctrl.type].filtersForAll"
-                                           ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.filtersForAll',$ctrl.item.stuffListType[$ctrl.type].filtersForAll)">
-                                    <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].filtersForAll}">фильтры в любых списках</span>
-                                </label>
-                            </div>
-                            <h4 class="text-center label-menu">наличие списка товаров на странице товара</h4>
-                            <div class="togglebutton">
-                                <label for="filtersPosition22">
-                                    <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].hideList}">список есть</span>
-                                    <input type="checkbox"
-                                           id="filtersPosition22"
-                                           ng-model="$ctrl.item.stuffListType[$ctrl.type].hideList"
-                                           ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.hideList',$ctrl.item.stuffListType[$ctrl.type].hideList)">
-                                    <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].hideList}">списка нет</span>
-                                </label>
-                            </div>
-                            <h4 class="text-center label-menu">установка начальной разновидности товара</h4>
-                            <div class="togglebutton">
-                                <label for="filtersPosition22w">
-                                    <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].unsetSort}">устанавливать</span>
-                                    <input type="checkbox"
-                                           id="filtersPosition22w"
-                                           ng-model="$ctrl.item.stuffListType[$ctrl.type].unsetSort"
-                                           ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.unsetSort',$ctrl.item.stuffListType[$ctrl.type].unsetSort)">
-                                    <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].unsetSort}">не устанавливать</span>
-                                </label>
-                            </div>
-
-                            <div class="form-group head-box text-center" ng-init="$ctrl.setRowsForStuffList($ctrl.item.stuffListType[$ctrl.type])">
-                                <h4 class="text-center label-menu">количество товаров на одной странице</h4>
-                                <div  class="text-center mb-20">
-                                    <ui-select style="width: 200px; display:inline-block" ng-model="$ctrl.item.stuffListType[$ctrl.type].perPage" skip-focusser="true" search-enabled="false"
-                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.perPage',$ctrl.item.stuffListType[$ctrl.type].perPage)">
-                                        <ui-select-match placeholder="выберите количество">{{$select.selected}}</ui-select-match>
-                                        <ui-select-choices repeat="opt in [10,20,30,40,50,100,200]">{{ opt }}</ui-select-choices>
-                                    </ui-select>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <h4 class="text-center label-menu">наличие списка товаров на странице товара</h4>
+                                <div class="togglebutton">
+                                    <label for="filtersPosition22">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].hideList}">список есть</span>
+                                        <input type="checkbox"
+                                               id="filtersPosition22"
+                                               ng-model="$ctrl.item.stuffListType[$ctrl.type].hideList"
+                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.hideList',$ctrl.item.stuffListType[$ctrl.type].hideList)">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].hideList}">списка нет</span>
+                                    </label>
                                 </div>
+                                <h4 class="text-center label-menu">установка начальной разновидности товара в списке</h4>
+                                <div class="togglebutton">
+                                    <label for="filtersPosition22wList">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].unsetSortList}">устанавливать</span>
+                                        <input type="checkbox"
+                                               id="filtersPosition22wList"
+                                               ng-model="$ctrl.item.stuffListType[$ctrl.type].unsetSortList"
+                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.unsetSortList',$ctrl.item.stuffListType[$ctrl.type].unsetSortList)">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].unsetSortList}">не устанавливать</span>
+                                    </label>
+                                </div>
+                                <h4 class="text-center label-menu">установка начальной разновидности товара для страницы товара</h4>
+                                <div class="togglebutton">
+                                    <label for="filtersPosition22w">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].unsetSort}">устанавливать</span>
+                                        <input type="checkbox"
+                                               id="filtersPosition22w"
+                                               ng-model="$ctrl.item.stuffListType[$ctrl.type].unsetSort"
+                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.unsetSort',$ctrl.item.stuffListType[$ctrl.type].unsetSort)">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].unsetSort}">не устанавливать</span>
+                                    </label>
+                                </div>
+                                <div class="form-group head-box text-center" ng-init="$ctrl.setRowsForStuffList($ctrl.item.stuffListType[$ctrl.type])">
+                                    <h4 class="text-center label-menu">количество товаров<br> на странице</h4>
+                                    <div  class="text-center mb-20">
+                                        <ui-select style="width: 200px; display:inline-block" ng-model="$ctrl.item.stuffListType[$ctrl.type].perPage" skip-focusser="true" search-enabled="false"
+                                                   ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.perPage',$ctrl.item.stuffListType[$ctrl.type].perPage)">
+                                            <ui-select-match placeholder="выберите количество">{{$select.selected}}</ui-select-match>
+                                            <ui-select-choices repeat="opt in [10,20,30,40,50,100,200]">{{ opt }}</ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 
+                                <h4 class="text-center label-menu">положение блока фильтров</h4>
+                                <div class="togglebutton">
+                                    <label for="filtersPosition">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].filtersInModal}">в списке товаров</span>
+                                        <input type="checkbox"
+                                               id="filtersPosition"
+                                               ng-model="$ctrl.item.stuffListType[$ctrl.type].filtersInModal"
+                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.filtersInModal',$ctrl.item.stuffListType[$ctrl.type].filtersInModal)">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].filtersInModal}">в модальном окне</span>
+                                    </label>
+                                </div>
+                                <h4 class="text-center label-menu">категории в фильтрах</h4>
+                                <div class="togglebutton">
+                                    <label for="filtersCategories">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].filtersCategories}">не показывать</span>
+                                        <input type="checkbox"
+                                               id="filtersCategories"
+                                               ng-model="$ctrl.item.stuffListType[$ctrl.type].filtersCategories"
+                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.filtersCategories',$ctrl.item.stuffListType[$ctrl.type].filtersCategories)">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].filtersCategories}">показывать</span>
+                                    </label>
+                                </div>
+                                <h4 class="text-center label-menu">наличие бредкрамса в фильтрах</h4>
+                                <div class="togglebutton">
+                                    <label for="filtersBtad">
+                                        <span class="ll" ng-class="{'active':!$ctrl.item.stuffListType[$ctrl.type].filtersBtad}">показывать</span>
+                                        <input type="checkbox"
+                                               id="filtersBtad"
+                                               ng-model="$ctrl.item.stuffListType[$ctrl.type].filtersBtad"
+                                               ng-change="$ctrl.saveFieldTemplate('stuffListType.'+$ctrl.type+'.filtersBtad',$ctrl.item.stuffListType[$ctrl.type].filtersBtad)">
+                                        <span class="lr" ng-class="{'active':$ctrl.item.stuffListType[$ctrl.type].filtersBtad}">не показывать</span>
+                                    </label>
+                                </div>
                             </div>
 
+                            <div class="clearfix"></div>
                         </div>
                     </div>
 

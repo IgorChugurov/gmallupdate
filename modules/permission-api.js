@@ -17,6 +17,9 @@ module.exports = {
                 if(!user){throw 'нет прав'}
                 if (req.user.email=='igorchugurov@gmail.com'||
                     req.user.email=='vikachugurova@gmail.com' ||
+                    req.user.email=='380667487083@gmall.io' ||
+                    req.user.email=='380959077588@gmall.io' ||
+                    req.user.email=='380660042593@gmall.io' ||
                     req.user.email=='ihorchugurov@gmail.com'){
                     //console.log('req.store.seller ',req.store.seller)
 

@@ -942,13 +942,15 @@
             }
 
             function checkOut(userEntry) {
+                //console.log(userEntry);return
                 //console.log(self.selectedStuff)
                 /*console.log(userEntry);
                 return;*/
                 /*console.log(self.remind,self.timeRemind)
                 return;*/
                 prepareMessage(self.selectedStuff,userEntry,self.timePart.date,self.timePart.i)
-                //return;
+                /*console.log(self.dataForSend);
+                return;*/
                 var entry={
                     services:self.selectedStuff,
                     user:userEntry,
@@ -1055,8 +1057,8 @@
                             var mm = self.masters.getOFA('_id',entry.master);
                             entry.masterName=(mm)?mm.name:'?????'
                             entry.dateForNote = self.dataForSend.date;
-                            var content=CreateContent.dateTimeNote(entry)
-                            //console.log(content)
+                            var content=CreateContent.dateTimeNote(entry,userEntry)
+                            //console.log(userEntry,content)
                             var o={addressee:'seller',
                                 type:'dateTime',
                                 content:content,
@@ -1363,7 +1365,8 @@
                 self.dataForSend.name=user.name
                 self.dataForSend.userId=user._id
                 self.dataForSend.phone=user.phone
-                self.dataForSend.text=global.get('langOrder').val.recordedOn+' '+stuffs[0].name.toUpperCase()+' '+global.get('langOrder').val.onn+' '+date;
+                self.dataForSend.text=global.get('langOrder').val.recordedOn+' '+stuffs[0].name.toUpperCase()+' '+global.get('langOrder').val.onn+' '+date+' '+self.dataForSend.phone+
+                    ((self.dataForSend.name)?' '+self.dataForSend.name:'');
                 self.dataForSend.date=date//.toString()
                 //self.dataForSend.date2=date.toISOString()
                 //self.dataForSend.date3=date.toUTCString()

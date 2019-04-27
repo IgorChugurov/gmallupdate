@@ -80,3 +80,9 @@ a {
 .tablet-wrapper .block-right {
     width: 10%;
 }
+.rz-pointer {
+    outline: none !important ;
+}
+.rzslider .rz-pointer.active:after {
+    background-color: #fff !important; ;
+}

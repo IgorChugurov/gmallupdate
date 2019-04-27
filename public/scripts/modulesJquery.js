@@ -41,19 +41,14 @@ angular.module('gmall.directives')
             mobile:'@',
             blockElement:'@'
         },
-        template:'<h3 class="text-center" ng-bind="header"></h3>'+
-            '<div id="lastViewedWrapper" class="owl-carousel owl-theme">' +
-            '<div ng-repeat="s in stuffs track by $index" class="item">' +
-            '<a ui-sref="stuffs.stuff(s.linkData)">'+
-        '<img style="max-width: 200px; border-color: transparent" ng-src="{{s.img}}" >' +
-        '</a>'+
-        '</div>'+
-        '</div>',
-                    /*'<ul id="carouse{{localId}}"  class="elastislide-list">'+
-                    '<li ng-repeat="s in stuffs track by $index"><a ui-sref="stuffs.stuff(s.getUrlParams())">'+
-                    '<img style="max-width: 100px; border-color: transparent" ng-src="{{s.img}}" />'+
-                    '</a></li>'+
-                    '</ul>',*/
+        templateUrl: function(element,attrs){
+            var s=(attrs && attrs.templ && attrs.templ!='0')?attrs.templ:'';
+            //var sM=(attrs && attrs.mobile)?'Mobile':'';
+            var sM='';
+            var url = 'views/template/partials/stuffDetail/lastViewed/directive/lastViewed'+s+sM+'.html'
+            //console.log(url)
+            return url
+        },
         link: function(scope, element, attrs) {
             var subDomain = global.get('store').val.subDomain
             
@@ -138,8 +133,11 @@ angular.module('gmall.directives')
 
                 var linkData=global.get('categories').val.getOFA('_id',stuff.category).linkData;
                 linkData.stuffUrl=stuff.url;
-                viewedStuffs.unshift({_id:stuff._id,linkData:linkData,url:stuff.url,
-                    img:img})
+                var o={_id:stuff._id,linkData:linkData,url:stuff.url, img:img,name:stuff.name}
+                    if(stuff.artikul){
+                        o.artikul = stuff.artikul;
+                    }
+                viewedStuffs.unshift(o)
                 // ограничиваем список
                 if (viewedStuffs.length>15){
                     viewedStuffs.splice(15,1);

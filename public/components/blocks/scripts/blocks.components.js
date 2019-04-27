@@ -11,7 +11,7 @@
                 template: '',
                 link: function($scope, element, attributes) {
                     var s = (attributes.directive)?attributes.directive.toLowerCase():'undefined';
-                    if(s=='categories' || s=='campaign' ||s=='info'||s=='news'||s=='brands'||s=='brandtags'||s=='filtertags'||s=='filters'||s=='stuffs' || s=='scheduleplace'){
+                    if(s=='categories' || s=='campaign' ||s=='info'||s=='news'||s=='brands'||s=='brandtags'||s=='filtertags'||s=='filters'||s=='stuffs'||s=='groupstuffs' || s=='scheduleplace'){
                         element.append($compile('<div items-block></div>')($scope));
                     }else{
                         element.append($compile('<div block-media1-edit></div>')($scope));
@@ -305,8 +305,8 @@
             templateUrl: 'components/blocks/blocksEdit.html',
         }
     }
-    blocksEditCtrl.$inject=['$http','$uibModal','HomePage','$q','global','Photo','$fileUpload','SetCSS','Blocks','Confirm','EditModelData','Filters','Brands','Category','FilterTags','BrandTags','Stuff','News','Campaign','Info','exception','$timeout','Master','Stat','Additional','$scope','$rootScope']
-    function blocksEditCtrl($http,$uibModal,HomePage,$q,global,Photo,$fileUpload,SetCSS,Blocks,Confirm,EditModelData,Filters,Brands,Category,FilterTags,BrandTags,Stuff,News,Campaign,Info,exception,$timeout,Master,Stat,Additional,$scope,$rootScope) {
+    blocksEditCtrl.$inject=['$http','$uibModal','HomePage','$q','global','Photo','$fileUpload','SetCSS','Blocks','Confirm','EditModelData','Filters','Brands','Category','FilterTags','BrandTags','Stuff','News','Campaign','Info','GroupStuffs','exception','$timeout','Master','Stat','Additional','$scope','$rootScope','Workplace']
+    function blocksEditCtrl($http,$uibModal,HomePage,$q,global,Photo,$fileUpload,SetCSS,Blocks,Confirm,EditModelData,Filters,Brands,Category,FilterTags,BrandTags,Stuff,News,Campaign,Info,GroupStuffs,exception,$timeout,Master,Stat,Additional,$scope,$rootScope,Workplace) {
         var self=this;
 
         if(self.item.blocks && self.item.blocks.forEach){
@@ -335,6 +335,10 @@
             self.Items=Stuff;
             self.uploadUrl="/api/collections/Photo/fileUpload?collectionName=Stuff";
             self.uploadVideoUrl="/api/collections/Photo/uploadVideoFile?collectionName=Stuff"
+        }else if(self.type=='GroupStuffs'){
+            self.Items=GroupStuffs;
+            self.uploadUrl="/api/collections/GroupStuffs/fileUpload?collectionName=GroupStuffs";
+            self.uploadVideoUrl="/api/collections/GroupStuffs/uploadVideoFile?collectionName=GroupStuffs"
         }else if(self.type=='Master'){
             self.Items=Master;
             self.uploadUrl="/api/collections/Photo/fileUpload?collectionName=Master";
@@ -406,8 +410,12 @@
         self.changeSlidePhoto=changeSlidePhoto;
         self.movedItemInSlider=movedItemInSlider;
         self.movedItemInCollection=movedItemInCollection;
+        
+        active()
 
-
+        function active() {
+            
+        }
 
         /*console.log(self.Items)
         console.log(self.type)
@@ -706,7 +714,7 @@
             console.log(update)
             console.log(o)
             return;*/
-
+            //console.log(o)
 
             $q.when()
                 .then(function () {
@@ -742,6 +750,8 @@
                 controller: function(slide,$uibModalInstance,global){
                     var self=this;
                     self.item=slide;
+                    self.animationTypes=animationTypes;
+                    //console.log(self.animationTypes)
                     self.lang=global.get('store').val.lang
                     self.ok=function(){
                         //console.log(self.item)
@@ -864,6 +874,8 @@
                 Items=BrandTags;
             }else if(field=='stuffs'){
                 Items=Stuff;
+            }else if(field=='groupStuffs'){
+                Items=GroupStuffs;
             }else if(field=='news'){
                 Items=News;
             }else if(field=='campaign'){
@@ -909,6 +921,8 @@
                     model='BrandTags';
                 }else if(field=='stuffs'){
                     model='Stuff';
+                }else if(field=='groupStuffs'){
+                    model='GroupStuffs';
                 }else if(field=='news'){
                     model='News';
                 }else if(field=='campaign'){

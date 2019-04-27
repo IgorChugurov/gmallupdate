@@ -32,6 +32,7 @@ var blockSchema = new Schema({
     videoLink:String,
     videoCover:String,
     audio:Boolean,
+    videoAutoplay:Boolean,
     button:{is:Boolean,text:String,link:String,textL:{},animate:String},
     button1:{is:Boolean,text:String,link:String,textL:{},animate:String},
     imgs:[{
@@ -54,6 +55,7 @@ var blockSchema = new Schema({
     news:[{type : Schema.ObjectId, ref : 'News'}],
     campaign:[{type : Schema.ObjectId, ref : 'Campaign'}],
     info:[{type : Schema.ObjectId, ref : 'Info'}],
+    groupStuffs:[{type:Schema.ObjectId,ref:'GroupStuffs'}],
 
     templ:Number,
     style:Number,
@@ -141,6 +143,12 @@ HomePageSchema.statics = {
             .populate('blocks.news','name img url videoLink video desc descL date blocks nameL img_tr')
             .populate('blocks.campaign','name img url dateEnd nameL')
             .populate('blocks.info','name nameL')
+            .populate({
+                path: 'blocks.groupStuffs',
+                select:'name nameL desc descL url img video video1 link masters',
+                // Get friends of friends - populate the 'friends' array for every friend
+                populate: { path: 'masters' ,select:'name nameL url desc descL blocks'}
+            })
             .lean({ virtuals: true })
 
             /*.populate('right.stuffs','name artikul url gallery orderType nameL category artikulL orderType price stock sale timePart currency driveSalePrice desc descL')

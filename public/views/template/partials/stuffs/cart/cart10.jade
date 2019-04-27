@@ -32,7 +32,7 @@ div(class="stuffs")
                     a(class="btn  btn-project btn-border", ng-click="$ctrl.global.get('functions').val.witget('call',{stuff:stuff})",ng-bind="$ctrl.global.get('lang').val.enroll")
             else if(stuff.orderType == '3')
                 div
-                    a(class="btn  btn-project btn-border",ui-sref="stuffs.stuff(stuff.linkData)",ng-bind="$ctrl.global.get('lang').val.more")
+                    a(class="btn  btn-project btn-border",href=stuff.link,ng-bind="$ctrl.global.get('lang').val.more")
             else if(stuff.orderType == '4')
                 div
                     a(class="btn  btn-project btn-border",ng-click="stuff.getBonus()",ng-bind="$ctrl.global.get('store').val.bonusButtonText")

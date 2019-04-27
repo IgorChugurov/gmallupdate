@@ -364,6 +364,38 @@ angular.module('gmall.directives', [])
             }
         }
     }])
+    .directive('playVideoByHover',[function(){
+        return{
+            restrict : 'A',
+            scope:{
+            },
+            link:function(scope,element){
+                //console.log(element)
+                $(element).mouseenter( handlerIn ).mouseleave( handlerOut );
+                function handlerIn() {
+                    //console.log('in ')
+                    $(element).get(0).play()
+                }
+                function handlerOut() {
+
+                    //console.log('out' )
+                    $(element).get(0).pause()
+                }
+                //$(window).scroll(scrollHandler)
+                /*var done = false
+                function scrollHandler() {
+                    console.log('scroll')
+                    if(!done){
+                        element.removeClass(scope.className)
+                        done = true;
+                    } else{
+                        $(window).off("scroll", scrollHandler);
+                    }
+                }*/
+
+            }
+        }
+    }])
     .directive('addRemoveClassByScroll',['$rootScope',function($rootScope){
         return{
             restrict : 'A',
@@ -493,7 +525,8 @@ angular.module('gmall.directives', [])
         return {
             restrict:'E',
             link:function(scope,element){
-
+                scope.$ctrl={};
+                scope.$ctrl.global=global;
                 var m1 =global.get('store').val.template.menu1
                 var m2 =global.get('store').val.template.menu2
                 var menu1Section1=$("#menu1-section");
@@ -686,6 +719,17 @@ angular.module('gmall.directives', [])
                                 $(d).attr("id",id)
                             }
                         })
+                    }
+                    var vs=$('.videoStuff')
+                    vs.each(function (i,v) {
+                        $(v).hover( hoverVideo, hideVideo );
+                    })
+                    function hoverVideo(e) {
+                        $('video', this).get(0).play();
+                    }
+
+                    function hideVideo(e) {
+                        $('video', this).get(0).pause();
                     }
                 })
             }

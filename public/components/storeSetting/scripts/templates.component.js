@@ -221,15 +221,23 @@ function setFieldsTemplate(item,field){
 
     var keySD=Object.keys(listOfBlocksForStuffDetail)
     listOfStuffDetailKind.forEach(function (kind) {
+        var keys=item.stuffDetailType[kind].parts.map(function(b){return b.name})
+        var ff = keys.indexOf('video1');
+        if(ff>-1){
+            item.stuffDetailType[kind].parts.splice(ff,1)
+        }
         if(!item.stuffDetailType[kind].parts.length || item.stuffDetailType[kind].parts.length!=keySD.length){
-            var keys=item.stuffDetailType[kind].parts.map(function(b){return b.name})
+
             for(var k in listOfBlocksForStuffDetail){
                 if(keys.indexOf(k)<0){
                     item.stuffDetailType[kind].parts.push({name:k,is:false,templ:null})
                 }
             }
         }
+
     })
+
+
 
 
 
@@ -641,6 +649,7 @@ angular.module('gmall.directives')
             self.Items=Store;
             self.type='good';
             self.global=global;
+            self.lang=global.get('store').val.lang
             //self.lang=global.get('store').val.lang
             self.item={}
             self.block=($stateParams.block)?$stateParams.block:'';

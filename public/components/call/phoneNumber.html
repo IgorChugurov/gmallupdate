@@ -34,6 +34,7 @@
     .phoneForm .phone-mask input {
         margin-bottom: 0;
     }
+
     .help-block {
         color: #f02222;
         margin-top: -13px;
@@ -43,6 +44,15 @@
         font-size: 10px;
         height: 13px;
     }
+    /**/
+    /*.phoneForm .add-phone .ui-select-choices {
+        width: 200px;
+    }*/
+    .phoneForm .add-phone .ui-select-match .btn-default {
+        height: 40px;
+        border-radius: 0;
+    }
+    /**/
     @media (max-width: 380px){
         .modalProject .modal-content .phoneForm input{
             font-size: 14px;
@@ -57,7 +67,7 @@
 <form class="select-modal" name="phoneForm">
     <div class="phoneForm">
         <div class="add-phone">
-            <ui-select search-enabled="false" ng-model="$ctrl.phoneCode" skip-focusser="true"  ng-change="$ctrl.changePhone()">
+            <ui-select search-enabled="false" ng-model="$ctrl.phoneCode" skip-focusser="true"  ng-change="$ctrl.changePhone()" ng-autocomplete="off">
                 <ui-select-match>{{$select.selected.code}}</ui-select-match>
                 <ui-select-choices repeat="opt.code as opt in $ctrl.phoneCodes">{{opt.code}}({{opt.country}})</ui-select-choices>
             </ui-select>

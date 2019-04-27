@@ -140,6 +140,9 @@ div(class=dj[key].wrapclass)
                                         | &nbsp; - &nbsp;
                                         span(ng-bind="$ctrl.opt")
                                             span(ng-bind="$ctrl.global.get('lang').val.unitsadd")
+
+                                div(class=" col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center",ng-show="$ctrl.textCheckWarehouse")
+                                    p(ng-bind="$ctrl.textCheckWarehouse")
                                 div(class=" col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center",ng-if="$ctrl.enableCheckOut()", ng-disabled="$ctrl.disabledCheckOut()")
                                     a(class="btn btn-lg btn-project",ng-class="{'pull-right':!$ctrl.mobile}",ng-click="$ctrl.checkOut()")
                                         span(ng-bind="$ctrl.global.get('lang').val.checkout")

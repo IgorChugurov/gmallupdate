@@ -30,6 +30,11 @@ module.exports = function(router) {
     router.post('/api/bookkeep/Rn/createByAPI',middleware.getStore,apiRN.createByAPI)
     router.post('/api/bookkeep/Rn/deleteByAPI',middleware.getStore,apiRN.deleteByAPI)
 
+    router.post('/api/bookkeep/Rn/createByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.createByAPIFromSite)
+    router.post('/api/bookkeep/Rn/cancelByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.cancelByAPIFromSite)
+    router.post('/api/bookkeep/Rn/holdByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.holdByAPIFromSite)
+    router.post('/api/bookkeep/Rn/cancelZakazByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.cancelZakazByAPIFromSite)
+
 
     router.get('/api/bookkeep/act/hold/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiAct.hold)
     router.get('/api/bookkeep/act/cancel/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiAct.cancel)
@@ -38,6 +43,7 @@ module.exports = function(router) {
     router.get('/api/bookkeep/sa/cancel/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiSA.cancel)
     router.get('/api/bookkeep/sa/diff/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiSA.diff)
     router.get('/api/bookkeep/sa/makeBalances/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiSA.makeBalances)
+    router.get('/api/bookkeep/sa/makeBalancesForExcel/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiSA.makeBalancesForExcel)
     router.get('/api/bookkeep/sa/setEmpty/:id',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiSA.setEmpty)
     router.get('/api/bookkeep/warehouse/:start/:end',middleware.getStore,apiSA.warehouseSaldo)
 

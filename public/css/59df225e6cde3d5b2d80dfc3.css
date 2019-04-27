@@ -298,7 +298,8 @@ ul.pagination {
 .btn-sm,
 .btn-xs {
   letter-spacing: 1px;
-  outline: none; }
+  outline: none;
+  border-radius: 0; }
 
 .btn:hover,
 .btn:active,
@@ -1115,9 +1116,8 @@ body.ng-pageslide-body-closed::before {
   height: 100%;
   min-height: 100vh; }
 
-.datetime {
-  min-height: 100vh;
-  position: relative; }
+.ui-select-bootstrap .ui-select-choices-row.active > span {
+  color: #000000; }
 
 /*slideMenuhumburger*/
 .humburger {
@@ -2690,6 +2690,19 @@ body.ng-pageslide-body-closed::before {
   .datetime .datetime hr {
     margin-top: 5px;
     margin-bottom: 5px; }
+  .datetime .reminder {
+    font-size: 12px; }
+  .datetime .reminder .togglebutton {
+    margin-top: 20px; }
+  .datetime .reminder label {
+    font-weight: normal; }
+  .datetime .reminder input {
+    margin-right: 10px; }
+  .datetime .reminder label span {
+    display: none; }
+  .datetime .reminder label .active {
+    display: inline-block;
+    float: right; }
   .datetime .logo {
     text-align: center; }
   .datetime .img-logo {
@@ -2789,6 +2802,12 @@ body.ng-pageslide-body-closed::before {
   .datetime .select-block,
   .datetime .select-block-master {
     margin: 20px; }
+  .datetime .ui-select-bootstrap .ui-select-choices-row.active > span {
+    background-color: #999;
+    padding: 10px 20px;
+    color: #fff; }
+  .datetime .ui-select-bootstrap .ui-select-choices-row > span {
+    padding: 10px 20px; }
   .datetime .value-choice {
     font-size: 14px; }
   .datetime .order-service .service-box {
@@ -3020,7 +3039,7 @@ body.ng-pageslide-body-closed::before {
     bottom: 0;
     font-size: 14px; }
   .datetime .timing {
-    width: 170px;
+    /*width: 170px;*/
     margin-top: 5px; }
   .datetime .timing .ui-select-toggle {
     border-top: none;
@@ -3133,8 +3152,15 @@ body.ng-pageslide-body-closed::before {
       padding-right: 15px; }
     .datetime .clock-box1 {
       min-height: 400px; } }
+  .datetime .img-logo {
+    width: 60px; }
+  .datetime .modal-title {
+    padding: 10px; }
+  .datetime .active {
+    color: #6fc46d; }
   .datetime .back {
-    top: 15px; }
+    top: 25px;
+    left: 20px; }
   .datetime .from {
     display: none; }
 
@@ -3187,6 +3213,10 @@ body.ng-pageslide-body-closed::before {
   font-size: 12px;
   max-width: 150px; }
 
+.cabinet .ui-select-bootstrap .ui-select-choices-row.active > span {
+  background-color: #000000;
+  padding: 7px 20px; }
+
 @media (max-width: 1200px) {
   .cabinet .container {
     width: 100%; } }
@@ -3228,21 +3258,30 @@ body.ng-pageslide-body-closed::before {
   .cabinet .date-label {
     padding-right: 0; } }
 
-.cabinet li {
-  list-style: none; }
+.cabinet .cabinet-list {
+  padding-left: 0;
+  font-size: 14px; }
+
+.cabinet .btn-default {
+  height: 40px !important;
+  border-radius: 0; }
 
 .cabinet h1 {
   margin-top: 30px;
   margin-bottom: 40px;
   font-family: MontserratBold; }
 
-.cabinet .btn-default {
-  height: 40px !important;
-  border-radius: 0; }
+.cabinet li {
+  list-style: none; }
 
-.cabinet .cabinet-list {
-  padding-left: 0;
-  font-size: 14px; }
+.cabinet .you-sub-box {
+  text-align: center; }
+
+.cabinet .you-sub {
+  display: inline-block; }
+
+.cabinet .cabinet {
+  padding-bottom: 60px; }
 
 #addbutton {
   color: #000000;
@@ -3438,24 +3477,24 @@ fieldset[disabled] .btn:hover {
 
 .icon-cancelmenu-img {
   background: url("/img/icon/cancelmenu/01_X.png") center center no-repeat;
-  width: 25px;
-  height: 25px;
-  background-size: 25px;
+  width: 15px;
+  height: 15px;
+  background-size: 15px;
   display: inline-block;
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 30px;
+  right: 20px;
   z-index: 100; }
 
 .icon-cancelmenu-inverse {
   background: url("/img/icon/cancelmenu/01_X.png") center center no-repeat;
-  width: 25px;
-  height: 25px;
-  background-size: 25px;
+  width: 15px;
+  height: 15px;
+  background-size: 15px;
   display: inline-block;
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 30px;
+  right: 20px;
   z-index: 100; }
 
 .icon-right-img {
@@ -3467,9 +3506,9 @@ fieldset[disabled] .btn:hover {
 
 .icon-left-img {
   background: url("/img/icon/left/left-arrow2.png") center center no-repeat;
-  width: 25px;
-  height: 25px;
-  background-size: 25px;
+  width: 20px;
+  height: 20px;
+  background-size: 20px;
   display: inline-block; }
 
 .icon-nextgallery-img {
@@ -3494,7 +3533,7 @@ fieldset[disabled] .btn:hover {
   display: inline-block; }
 
 .icon-prev-img {
-  background: url("/img/icon/prev/left_b (1).png") center center no-repeat;
+  background: url("/img/icon/prev/left_b(1).png") center center no-repeat;
   width: 30px;
   height: 30px;
   background-size: 30px;

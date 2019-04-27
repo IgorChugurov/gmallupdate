@@ -1,0 +1,29 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        if(dj[key].nameBlock)
+            h1
+                span=dj[key].nameBlock
+        if item.stuffs
+            each stuff,index in item.stuffs
+                div(class="col-lg-6 col-md-6 col-sm-6 col-xs-12")
+                    span(class="index")
+                        span(class="number")=index+1
+                    //if(stuff.videoLink)
+                        video(width="1280",height="720",class="afterglow",poster=photoHost + ((photoHost) ? '/' : '') + stuff.img)
+                            source(src=stuff.videoLink,type="video/mp4")
+                    stuff.img
+                        div
+                            a(class="",href=stuff.link)
+                                img(class="img-responsive",src=photoHost + ((photoHost) ? '/' : '') + stuff.img)
+                    a(class="name-stuffs",href=stuff.link)
+                        h3
+                            if(!stuff.videoLink)
+                                span(class="locked")
+                                    span(class="icon-lock-img")
+                                    | &nbsp;
+                            span=stuff.name
+                            | &nbsp;
+                            span(class="duration")=stuff.duration
+                        div
+                            | !{stuff.desc}
+        div(class="clearfix")

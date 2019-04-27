@@ -3,8 +3,9 @@ div(class=dj[key].wrapclass)
         div
             div(class="desc",itemprop="description", class="description",ng-bind-html="$ctrl.item.desc|unsafe")
                 | !{item.desc}
-            div(class="all-goods",ng-if="!$ctrl.item.service")
-                a(ui-sref="stuffs({'groupUrl':$ctrl.item.groupUrl,'categoryUrl':$ctrl.item.categoryUrl,brand:$ctrl.item.brandUrl,brandTag:null,queryTag:null,serachStr:null})")
+            div(class="desc",itemprop="description", class="description",ng-bind-html="$ctrl.item.descLSort[$ctrl.item.sort][$ctrl.lang]|unsafe")
+            div(ng-if="!$ctrl.item.service")
+                a(class="all-goods",ui-sref="stuffs({'groupUrl':$ctrl.item.groupUrl,'categoryUrl':$ctrl.item.categoryUrl,brand:$ctrl.item.brandUrl,brandTag:null,queryTag:null,serachStr:null})")
                     span(ng-bind="$ctrl.global.get('lang').val.all")
                     | &nbsp;
                     span(ng-bind="$ctrl.item.categoryName")

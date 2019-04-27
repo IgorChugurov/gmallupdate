@@ -132,7 +132,7 @@ exports.list = function(req, res, next) {
 
             }
         }
-
+        //console.log(options)
         if(req.query.populate){
             options.populate=req.query.populate;
         }
@@ -146,6 +146,7 @@ exports.list = function(req, res, next) {
                 return res.json(results)
             })
         } else {
+
             req.collection.list(options,function(e, results){
                 if (e) return next(e)
                 if (page==0){

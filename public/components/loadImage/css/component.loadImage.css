@@ -20,6 +20,7 @@
     float: none;
     display: block;
 }
+.loadImageModal .spinner1,
 .loadImage .img-responsive {
     width: auto;
 }

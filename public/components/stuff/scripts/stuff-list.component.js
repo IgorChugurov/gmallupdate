@@ -509,11 +509,24 @@
                 }*/
 
                 $scope.stuff = Stuff.setDataForStuff($scope.stuff,global.get('filterTags').val,'stuffs')
-                //console.log($scope.stuff.name)
+                //console.log($scope.stuff)
+                if($scope.stuff.sortsOfStuff && $scope.stuff.sortsOfStuff.filterGroup && global.get('filtersO').val[$scope.stuff.sortsOfStuff.filterGroup]){
+                    //console.log(global.get('filtersO').val[$scope.stuff.sortsOfStuff.filter])
+
+                    var ttt;
+                    for(var i=0;i<$scope.stuff.tags.length;i++){
+                        ttt = global.get('filtersO').val[$scope.stuff.sortsOfStuff.filterGroup].tags.getOFA('_id',$scope.stuff.tags[i]);
+                        if(ttt){
+                            $scope.stuff.tagFromFilterFromSortOfStuffs=ttt;
+                            break;
+                        }
+                    }
+
+                }
+                //console.log($scope.stuff.tagFromFilterFromSortOfStuffs)
                 $scope.stuff.stateObj=angular.copy($stateParams);
                 //console.log($scope.stuff.stateObj)
                 $scope.stuff.stateObj.stuffUrl=$scope.stuff.url;
-
                 self.stuff=$scope.stuff;
                 self.getMastersName=getMastersName
                 self.getAveragePrice=getAveragePrice;
@@ -685,6 +698,11 @@
         global.set('stuffsInList',stuffsInList)
         var self = this;
         $scope.global=global;
+        if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
+            self.displayableFilters=true;
+        }else if(global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+            self.displayableFilters=true;
+        }
         self.stuffs={}
         self.Items=Stuff;
         self.mobile=global.get('mobile').val;
@@ -780,7 +798,7 @@
                     var linkFn = $compile(response.data.html);
                     var content = linkFn($scope);
                 }else{
-                    console.log('ldldldl')
+                    //console.log('ldldldl')
                     var linkFn = $compile(response.data.html);
                     var content = linkFn($scope);
                 }
@@ -1034,7 +1052,7 @@
         }
 
     }
-    function stuffListTemplateDirectiveCampaignList(){
+    function stuffListTemplateDirectiveCampaignList($state,global){
         return {
             scope: {
                 campaignCondition:'@',
@@ -1042,7 +1060,17 @@
             bindToController: true,
             controller: campaignStuffListCtrl,
             controllerAs: '$ctrl',
-            template:"<div></div>",
+            template:function () {
+                //console.log($state.current)
+                if($state.current.name==='likes'){
+                    var s =  "<div>" +
+                            "<h1 class='wishlist-header'>"+global.get("lang").val.wishlist+"</h1>"+
+                        "</div>"
+                }else{
+                    var s =  "<div></div>"
+                }
+                return s;
+            },
             /*templateUrl: function (el,attr) {
                 var campaign = attr.campaign;
                 var url = 'views/template/partials/'+campaign+'/stuffs';
@@ -1788,7 +1816,7 @@
                 } )
                 .then(function (item) {
                     var o={}
-                    o.brand=item._id;
+                    o.brand=(item)?item._id:null;
                     o.brandTag=null;
                     massSaveField(o)
                 })
@@ -1802,8 +1830,13 @@
                 .then(function (item) {
                     //console.log(item)
                     var o={}
-                    o.brand=item.brand._id;
-                    o.brandTag=item._id;
+                    if(item){
+                        o.brand=item.brand._id;
+                        o.brandTag=item._id;
+                    }else{
+                        o.brandTag=null;
+                    }
+
                     massSaveField(o)
                 })
         }
@@ -2109,51 +2142,53 @@
         }
 
         function changeAction(){
+            if(!self.action){return}
+            var a=angular.copy(self.action);
+            self.action=null;
+            self.mark=false;
+            switch (a) {
+                case 'category':
+                    return selectCategory()
+                    break;
+                case 'brand':
+                    return selectBrand()
+                    break;
+                case 'brandTag':
+                    return selectBrandTag()
+                    break;
+                case 'filterTag':
+                    return selectFilterTag()
+                    break;
+                case 'unfilterTag':
+                    return unSelectFilterTag()
+                    break;
+                case 'addInfo':
+                    return selectAddInfo()
+                    break;
+                case 'actived':
+                    return selectActived()
+                    break;
+                case 'index':
+                    return selectPosition()
+                    break;
+                case 'order':
+                    return changeOrderType()
+                    break;
+                case 'changePrice':
+                    return changePrice()
+                    break;
+                case 'changeMinMax':
+                    return changeMinMax()
+                    break;
+                case 'deleteStuffs':
+                    return deleteStuffs()
+                    break;
+
+            }
+            return;
             Confirm('подтвердите действие')
                 .then(function () {
-                    if(!self.action){return}
-                    var a=angular.copy(self.action);
-                    self.action=null;
-                    self.mark=false;
-                    switch (a) {
-                        case 'category':
-                            return selectCategory()
-                            break;
-                        case 'brand':
-                            return selectBrand()
-                            break;
-                        case 'brandTag':
-                            return selectBrandTag()
-                            break;
-                        case 'filterTag':
-                            return selectFilterTag()
-                            break;
-                        case 'unfilterTag':
-                            return unSelectFilterTag()
-                            break;
-                        case 'addInfo':
-                            return selectAddInfo()
-                            break;
-                        case 'actived':
-                            return selectActived()
-                            break;
-                        case 'index':
-                            return selectPosition()
-                            break;
-                        case 'order':
-                            return changeOrderType()
-                            break;
-                        case 'changePrice':
-                            return changePrice()
-                            break;
-                        case 'changeMinMax':
-                            return changeMinMax()
-                            break;
-                        case 'deleteStuffs':
-                            return deleteStuffs()
-                            break;
 
-                    }
                 })
 
         }
@@ -2309,12 +2344,32 @@
         self.global=global;
 
 
+        if($stateParams.categoryUrl!='category'){
+            self.sectionName=global.get('category').val.name;
+        }else{
+            self.sectionName=(global.get('section') && global.get('section').val)?global.get('section').val.name:'раздел';
+        }
+        self.breadcrumbs=global.get('breadcrumbs').val;
         //console.log('set filers')
 
         //console.log(self.filters)
 
-        self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+        self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
         self.char=self.chars[0]
+        var sT = (global.get('sectionType') && global.get('sectionType').val)?global.get('sectionType').val:'good';
+        if(global.get('store').val.template.stuffListType[sT].filtersCategories){
+            if(global.get('sections') && global.get('sections').val){
+                self.sections = global.get('sections').val.filter(function (s) {
+
+                    return s.viewsFilters;
+                });
+            }
+
+        }else{
+            self.sections = [];
+        }
+        //console.log(self.sections)
+
         self.changeAllBrands=changeAllBrands;
         self.changeAllTags=changeAllTags;
         self.clearAll=clearAll;
@@ -2324,6 +2379,33 @@
 
         self.filterBrands = filterBrands;
         self.setCharForBrands=setCharForBrands;
+        self.changeCategory=changeCategory;
+        self.changeAllCategories=changeAllCategories;
+        self.deleteCrumb=deleteCrumb;
+        self.showReset=showReset;
+        self.showResetAll=AllshowReset;
+        self.showResetAllBrand=showResetAllBrand;
+
+        function showReset(filter) {
+            //console.log(filter)
+            return filter.tags.some(function (t) {
+                return t.set
+            })
+        }
+        function AllshowReset() {
+            return self.filters.some(function (f) {
+                return f.tags.some(function (t) {
+                    return t.set
+                })
+            })
+        }
+        function showResetAllBrand() {
+            return self.brands.some(function (f) {
+                return f.tags.some(function (t) {
+                    return t.set
+                })
+            })
+        }
 
         $rootScope.$on('changeCurrency',function () {
             console.log('changeCurrency',global.get('rate').val)
@@ -2345,8 +2427,19 @@
         })
 
         activate()
+        //console.log(global.get('categories').val)
+        /*console.log(global.get('sections').val)
+        console.log(global.get('store').val.template.stuffListType[global.get('sectionType').val].filtersCategories)*/
 
         function activate(){
+            /*console.log(global.get('section').val)
+            console.log(global.get('category').val)*/
+            if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
+                self.displayable=true;
+            }else if(global.get('section') && global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+                self.displayable=true;
+            }
+            //if(global.get('section').val)
             $q.when()
                 .then(function(){
                     return Brands.getBrands()
@@ -2364,24 +2457,63 @@
                     return Filters.getFilters()
                 })
                 .then(function(filters){
+
+                    //console.log(global.get('rate').val)
                     filters.forEach(function (f) {
-                        if(f.count && f.price){
+                        //console.log(f)
+                        var rate =(global.get('rate') && global.get('rate').val)?global.get('rate').val:1;
+                        if(f.count){
                             if(!f.maxSave){
                                 f.maxSave =f.max
                             }
                             if(!f.mixSave){
                                 f.mixSave =f.min
                             }
+
                             /*f.maxValue =f.maxValue*global.get('rate').val
                             f.minValue =f.minValue*global.get('rate').val*/
-                            f.min =Math.ceil10(f.mixSave*global.get('rate').val,0)
-                            f.max =Math.ceil10(f.maxSave*global.get('rate').val,0)
+                            if(f.price){
+                                f.min =Math.ceil10(f.mixSave*rate,0)
+                                f.max =Math.ceil10(f.maxSave*rate,0)
+                            }
+
+                            if(!f.set){
+                                f.minValue=f.min;
+                                f.maxValue=f.max;
+                            }
+
+
+
+
                             //console.log(f)
+                            $scope.$watch(function () {
+                                return f.open
+                            },function (n,o) {
+                                if(n){
+                                    $timeout(function () {
+                                        $scope.$broadcast('reCalcViewDimensions');
+                                    },300)
+                                }
+                            })
                         }
                     })
-                    self.filters=filters
+                    self.filters=filters.filter(function (f) {
+                        if(self.displayable){
+                            if(global.get('category').val){
+                                return global.get('category').val.filters.indexOf(f._id)>-1
+                            }else{
+                                return global.get('section').val.filters.indexOf(f._id)>-1
+                            }
+                        }
+                    })
+                    //console.log(self.filters)
 
                 })
+                /*.then(function () {
+                    $timeout(function () {
+                        $scope.$broadcast('reCalcViewDimensions');
+                    },1500)
+                })*/
         }
 
         self.changeTag=changeTag;
@@ -2581,7 +2713,8 @@
 
 
 
-        function changeTag(){
+        function changeTag(_filter,_tag){
+            //console.log(_filter,_tag)
             var queryTag='',brandTag='',brand='',filterTag='';
             //console.log(self.filters)
             self.filters.forEach(function(filter){
@@ -2593,6 +2726,16 @@
                     }
                 }else{
                     filter.tags.forEach(function(tag){
+                        if(_filter && _tag && _filter._id===filter._id){
+                            if(_tag._id===tag._id){
+                                //console.log(tag.set)
+                                //tag.set=!tag.set;
+                                //console.log(tag.set)
+                            }else{
+                                tag.set=false;
+                            }
+
+                        }
                         if (tag.set){
                             //console.log(filter.tags)
                             if(queryTag){queryTag+='__'}
@@ -2696,6 +2839,8 @@
         }
         function clearCountFilter(filter) {
             filter.set=null;
+            filter.minValue=filter.min;
+            filter.maxValue=filter.max;
             changeTag();
 
         }
@@ -2710,6 +2855,59 @@
         function filterBrands(item) {
             //console.log(item)
             return item.name.toUpperCase()[0]==self.char
+        }
+        function changeCategory(category) {
+            var o={
+                groupUrl:category.linkData.groupUrl,
+                categoryUrl:category.linkData.categoryUrl,
+                queryTag:null,
+                brand:null,
+                brandTag:null,
+                categoryList:null
+
+            };
+            $state.go('stuffs',o)
+        }
+        function changeAllCategories(s) {
+            self.sections.forEach(function (s) {
+                s.categories.forEach(function (c) {
+                    c.set=false;
+                })
+                s.child.forEach(function (child) {
+                    if(child.categories && child.categories.length){
+                        child.categories.forEach(function (c) {
+                            c.set=false;
+                        })
+                    }
+
+                })
+            })
+            var o={
+                groupUrl:s.url,
+                categoryUrl:'category',
+                queryTag:null,
+                brand:null,
+                brandTag:null,
+                categoryList:null
+
+            };
+            $state.go('stuffs',o)
+        }
+        function deleteCrumb(index){
+            change(self.breadcrumbs.splice(index,1)[0].type)
+            function change(type){
+                var query = self.breadcrumbs.reduce(function(q,item){
+                    if(item.type==type){
+                        if(q){q+='__'}
+                        q+=item.url;
+                    }
+                    return q;
+                },'')
+                if(!query){
+                    query=null;
+                }
+                $location.search(type,query)
+            }
         }
 
 

@@ -3,7 +3,7 @@ div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-anim
         div(class="enter-block")
             span(class="part",ng-hide="global.get('user').val && global.get('user').val._id")
                 a(class="enter-login",ng-click="global.get('functions').val.enter()")
-                    span(class="icon-user-inverse")
+                    span(class="icon-user-img")
                 div(class="clearfix")
             span(class="part",ng-show="global.get('user').val && global.get('user').val._id",ng-cloak)
                 a(class="enter-first",ng-click="global.get('functions').val.changeLocation('/manage')")

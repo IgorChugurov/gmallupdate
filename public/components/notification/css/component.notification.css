@@ -1,5 +1,5 @@
 .notification  {
-    padding-top: 160px;
+    padding-top: 220px;
     padding-bottom: 40px;
 }
 /*.notification.notification-mobile {
@@ -18,7 +18,7 @@
 }
 .notification .note-type,
 .notification .note-desc {
-    height: 60px;
+    height: 120px;
     font-size: 16px;
     border-right: 1px solid #999;
 }
@@ -30,13 +30,16 @@
 }
 .notification .note-desc {
     font-size: 14px;
-    overflow: hidden;
+    /*overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: nowrap;*/
 }
 .notification .note-desc h3 {
-    font-size: 16px;
+    font-size: 18px;
     margin-top: 5px;
+    margin-bottom: 0;
+}
+.notification .note-desc p {
     margin-bottom: 0;
 }
 .notification h4 {

@@ -23,48 +23,68 @@
         padding-top: 10px;
     }
     .name-info {
-        margin-top: 10px;
+        font-size: 18px;
     }
-    .user-profile i {
-        font-size: 40px;
+    .user-profile i.material-icons {
+        font-size: 28px;
+    }
+    .user-profile a {
+        font-size: 18px;
     }
     .user-profile .name-page {
         text-transform: uppercase;
+    }
+
+    .phone-form-box .help-block {
+        margin-top: 0 !important;
+    }
+    .phone-form-box .ui-select-match .ui-select-search {
+        height: 0 !important;
+        margin-bottom: 0;
     }
 </style>
 <div class="user-profile">
     <div class="my-switch-container cart-detail col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12" >
         <h3 class="name-page text-center">{{$ctrl.global.get('langForm').val.profileData}}</h3>
         <div class="cart-inner" ng-if="$ctrl.user.val">
-            <div class="control-label col-lg-1 col-sm-1">
-                <i class="material-icons link-success" ng-click="$ctrl.changeEmail()">account_box</i>
+            <div class="col-lg-1 col-sm-1">
+                <i class="material-icons" ng-click="$ctrl.changeEmail()">account_box</i>
             </div>
             <div class="col-lg-11 col-sm-11">
-                <h3 class="name-info">login - <span ng-bind="$ctrl.user.val.name"></span></h3>
+                <p class="name-info">Login - <span ng-bind="$ctrl.user.val.name"></span></p>
             </div>
             <div class="clearfix"></div>
-            <div class="control-label col-lg-1 col-sm-1">
-                <i class="material-icons link-warning"ng-click="$ctrl.changeEmail()" title="{{$ctrl.global.get('langForm').val.changeEmail}}" style="cursor: pointer">email</i>
+            <div class="col-lg-1 col-sm-1">
+                <i class="material-icons" title="{{$ctrl.global.get('langForm').val.changeEmail}}" style="cursor: pointer">email</i>
             </div>
-            <div class="col-lg-11 col-sm-11">
-                <h3 class="name-info">email - <span ng-bind="$ctrl.user.val.email"></span></h3>
+            <div class="col-lg-6 col-sm-6">
+                <p class="name-info">Email - <span ng-bind="$ctrl.user.val.email"></span></p>
+            </div>
+            <div class="col-lg-5 col-sm-5">
+                <a class="link-success pull-right" ng-click="$ctrl.changeEmail()">Изменить Email</a>
+                <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
-            <div class="control-label col-lg-1 col-sm-1">
-                <i class="material-icons link-warning" ng-click="$ctrl.changePswd(item._id)" title="{{$ctrl.global.get('langForm').val.changePassword}}" style="cursor: pointer">cached</i>
+            <div class="col-lg-1 col-sm-1">
+                <i class="material-icons" title="{{$ctrl.global.get('langForm').val.changePassword}}" style="cursor: pointer">cached</i>
+
             </div>
-            <div class="col-lg-11 col-sm-11">
-                <h3 class="name-info">password - <span>************</span></h3>
+            <div class="col-lg-6 col-sm-6">
+                <p class="name-info">Пароль - <span>************</span></p>
+            </div>
+            <div class="col-lg-5 col-sm-5">
+                <a class="link-success pull-right" ng-click="$ctrl.changePswd(item._id)">Изменить пароль</a>
+                <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
             <form class="form" name="formProfile" id="formProfile" ng-submit="$ctrl.saveProfile(formProfile)" novalidate>
-                <div class="form-group control-group mb-10 " ng-class="{ 'has-success': formProfile.fio.$valid,'has-error': formProfile.fio.$invalid}">
-                    <div class="control-label col-lg-1 col-sm-1">
+                <div class="form-group control-group">
+                    <div class="col-lg-1 col-sm-1">
                         <!--<i class="material-icons link-success" style="font-size: 40px">account_box</i>-->
-                        <i class="material-icons link-success">font_download</i>
+                        <i class="material-icons" style="margin-top: 5px">font_download</i>
                     </div>
                     <div class="col-lg-11 col-sm-11">
-                        <input  name="fio" type="text" class=" form-control cart"
+                        <input  name="fio" type="text" class=" form-control cart" ng-class="{'has-error': formProfile.displayName.$invalid && formProfile.$submitted}"
                                 pattern="[A-Za-zА-Яа-я0-9ЁёЇїІіЄє'\s-]{3,100}"
                                 ng-minlength="3"
                                 ng-maxlength="70"
@@ -72,44 +92,42 @@
                                 ng-model="$ctrl.user.val.profile.fio"
                                 ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
                                 ng-change="$ctrl.saveField('fio')"
-                                placeholder="ФИО"/>
-                        <!--<span class="help-block"  ng-show="formProfile.fio.$error.required">
-                                                необходимо указать ФИО
-                                            </span>-->
+                                placeholder="ФИО"
+                                style="margin-bottom: 0"/>
+                        <!--<span class="help-block text-danger" ng-show="formProfile.displayName.$invalid && formProfile.$submitted" ng-messages="signupForm.displayName.$error">
+                            <span ng-message="maxlength">{{$ctrl.global.get('langError').val.namelong}}</span>
+                        </span>-->
+
                         <span class="help-block"  ng-show="formProfile.fio.$error.minlength">
                             {{$ctrl.global.get('langError').val.nameshort}}
                         </span>
-                            <span class="help-block"  ng-show="formProfile.fio.$error.maxlength">
+                        <span class="help-block"  ng-show="formProfile.fio.$error.maxlength">
                             {{$ctrl.global.get('langError').val.namelong}}
                         </span>
-                        <!--<span class="help-block"  ng-show="formProfile.fio.$error.minlength">
-                                                не менее 3-ти символов
-                                            </span>
-                        <span class="help-block"  ng-show="formProfile.fio.$error.maxlength">
-                                                не более 70-ти символов
-                                            </span>-->
+
                     </div>
                     <div class="clearfix"></div>
                 </div>
-
-                <div class="form-group mb-10 ">
-                    <div class="control-label col-lg-1 col-sm-1">
-                        <i class="material-icons link-success">ring_volume</i>
+                <div class="clearfix"></div>
+                <div class="form-group phone-form-box">
+                    <div class="col-lg-1 col-sm-1">
+                        <i class="material-icons" style="margin-top: 5px">ring_volume</i>
                     </div>
                     <div class="col-lg-11 col-sm-11">
                         <div enter-phone-numder="$ctrl.user.val.profile.phone"></div>
-                        <span class="help-block"  ng-show="formProfile.phoneForm.$error.required">
+                        <span class="help-block"  ng-show="formProfile.phoneForm.$error.required" style="margin-top: 0px !important;">
                         {{$ctrl.global.get('langError').val.enterphone}}
                         </span>
-                        <span class="help-block"  ng-show="$ctrl.phoneExist">
+                        <span class="help-block"  ng-show="$ctrl.phoneExist"  style="margin-top: 0px !important;">
                             {{$ctrl.global.get('langError').val.dublePhone}}
                         </span>
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="form-group mb-10 ">
-                    <div class="control-label col-lg-1 col-sm-1">
-                        <i class="material-icons link-success" >store_mall_directory</i>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <div class="col-lg-1 col-sm-1">
+                        <i class="material-icons" >store_mall_directory</i>
                     </div>
                     <div class="col-lg-11 col-sm-11">
                         <input name="cityId" required data-ng-model="$ctrl.user.val.profile.cityId"
@@ -122,9 +140,10 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="control-group form-group mb-10 ">
-                    <div class="control-label col-lg-1 col-sm-1">
-                        <i class="material-icons link-success" >local_shipping</i>
+                <div class="clearfix"></div>
+                <div class="control-group form-group">
+                    <div class="col-lg-1 col-sm-1">
+                        <i class="material-icons" >local_shipping</i>
                     </div>
                     <div class="col-lg-11 col-sm-11">
                         <input  ng-maxlength="100"
@@ -138,22 +157,29 @@
                             не более 100 символов
                         </span>
                     </div>
-
+                    <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
             </form>
+            <div class="you-sub-box text-center">
+                <a class="you-sub btn btn-project" ng-click="$ctrl.global.get('functions').val.logout()">
+                    <span class="link-success" ng-bind="$ctrl.global.get('lang').val.logout"></span>
+                </a>
+            </div>
+            <div class="form-group text-center cancel-sub">
+                <div class="checkbox">
+                    <label style="font-size: 18px">
+                        <input type="checkbox" ng-model="$ctrl.user.val.subscription"
+                               ng-change="$ctrl.changeSubscription()">
+                        <span ng-show="$ctrl.user.val.subscription">{{$ctrl.global.get('langForm').val.cancelSubscription}}</span>
+                        <span ng-show="!$ctrl.user.val.subscription">{{$ctrl.global.get('langForm').val.subscribe}}</span>
+                    </label>
+                </div>
+            </div>
 
-
-           <!-- <a class="btn btn-fab btn-success" title="изменить пароль" ng-click="$ctrl.changePswd(item._id)">
-                <i class="link-white material-icons">replay</i>
-            </a>смена пароля-->
         </div>
 
-        <!--<div class="btn btn-block btn-raised" ng-click="$ctrl.changePswd(item._id)">
-            <i class="link-success material-icons">replay</i> изменить пароль
-        </div>-->
-        <div class="clearfix"></div>
     </div>
-
+    <div class="clearfix"></div>
 </div>
 

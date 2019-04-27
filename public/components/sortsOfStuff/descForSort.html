@@ -1,0 +1,17 @@
+<div class="desc-sort select-modal">
+    <div class="modal-header">
+        <h3 class="modal-title text-center">Описание для разновидности</h3>
+        <a class="cancel"  ng-click="$ctrl.cancel()"></a>
+    </div>
+    <div class="modal-body">
+        <div class="editor col-lg-12">
+            <div class="form-group" ng-if="$ctrl.tinymceOption">
+                <textarea rows="12" ui-tinymce="$ctrl.tinymceOption" ng-model="$ctrl.desc"></textarea>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" type="button" ng-click="$ctrl.ok()">сохранить</button>
+    </div>
+</div>

@@ -29,6 +29,7 @@ module.exports = function(router) {
     router.get('/api/users/useCoupon/:id',middleware.ensureAuthenticated,middleware.getStore,api.useCoupon);
     router.get('/api/users/cancelCoupon/:id',middleware.ensureAuthenticated,middleware.getStore,api.cancelCoupon);
     router.get('/api/users/repeatMailForConfirm',middleware.ensureAuthenticated,middleware.getStore,authCtrl.repeatMailForConfirm);
+    router.post('/api/users/makeaccess',middleware.ensureAuthenticated,middleware.getStore,middleware.checkPermissionForSeller,api.makeaccess);
 
     router.post('/api/sendEmail',middleware.getStore,api.sendEmail);
     router.post('/api/sendEmails',middleware.getStore,api.sendEmails);

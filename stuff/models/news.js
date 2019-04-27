@@ -69,12 +69,15 @@ var blockSchema = new Schema({
     autoPlaySlider:Boolean,
     template:Boolean,// если шаблон то доступен для загрузки
     nameTemplate:String,
+    qwslide:Number,// количество слайдов для оwl slider
+    autoPlaySlider:Boolean,
     link:String,
     link1:String,
     position:String,// left,right,top
     useImg:Boolean,
     useDesc:Boolean,
     videoControl:Boolean,
+    dontScrollBlock:Boolean,
 
 
 })
@@ -188,6 +191,7 @@ NewsSchema.methods.setDataForList=function () {
     img_transform(this)
 }
 function img_transform(item){
+    //console.log(item)
     let o ={
         img:null,
         desc:null,
@@ -218,17 +222,24 @@ function img_transform(item){
                     }
                 }
                 if(item.blocks[i].useDesc && ((item.blocks[i].desc && typeof item.blocks[i].desc=='string') || (item.blocks[i].descL && typeof item.blocks[i].descL=='object'))){
+
                     o.desc=null;
                     o.descL=null;
                     if(item.blocks[i].descL){
                         for(let key in item.blocks[i].descL){
-
                             if(item.blocks[i].descL[key]){
+                                /*if(key=='ru'){
+                                    console.log(1,item.blocks[i].descL[key].clearTag().myTrim().substring(0,150))
+                                }*/
                                 let s  = item.blocks[i].descL[key].clearTag().myTrim().substring(0,150);
                                 if(s){
                                     if(!o.descL){o.descL={}}
                                     o.descL[key]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
                                 }
+                                /*if(key=='ru'){
+                                    console.log(2,s)
+                                    console.log(3,s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...')
+                                }*/
 
                             }
                         }
@@ -239,8 +250,7 @@ function img_transform(item){
                         }
 
                     }
-                }
-                if((!o.desc && !o.descL) && ((item.blocks[i].desc && typeof item.blocks[i].desc=='string') || (item.blocks[i].descL && typeof item.blocks[i].descL=='object'))){
+                }else if((!o.desc && !o.descL) && ((item.blocks[i].desc && typeof item.blocks[i].desc=='string') || (item.blocks[i].descL && typeof item.blocks[i].descL=='object'))){
                     if(item.blocks[i].descL){
                         for(let key in item.blocks[i].descL){
                             if(item.blocks[i].descL[key]){
@@ -282,11 +292,12 @@ function img_transform(item){
         }catch(error){
             console.log(error)
         }
+        //console.log(o.descL)
         try{
             if(o.descL){
                 item.descL=o.descL;
                 for(let k in o.descL){
-                    if(o.descL && o.descL[k] && o.descL[k].clearTag){
+                    if(o.descL && o.descL[k] && o.descL[k].clearTag &&  o.descL[k].length>155 && o.descL[k].substring(e.desc.length - 3)!=='...'){
                         let s = o.descL[k].clearTag().substring(0,150)
                         o.descL[k]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
                     }
@@ -344,8 +355,6 @@ NewsSchema.statics = {
                 cb(null,news)
             })
     },
-
-
     searchList: function (options, cb) {
         let criteria = {$and:[options.criteria,{$or:[]}]}
         let searchStr=RegExp( options.searchStr, "i" )
@@ -424,6 +433,7 @@ NewsSchema.statics = {
                         for(let k in res[iii].img_tr){
                             res[iii][k]=res[iii].img_tr[k]
                         }
+                        //console.log(res[iii].img_tr)
                         return;
                     })
 

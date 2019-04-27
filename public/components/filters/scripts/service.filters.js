@@ -77,6 +77,7 @@ angular.module('gmall.services')
     }
     this.getFilters=function(){
         return $q(function(resolve,reject){
+            //console.log(global.get('filters'))
             if(global.get('filters') && global.get('filters').val){
                 if(!filters){filters=global.get('filters').val}
                 return resolve(global.get('filters').val);

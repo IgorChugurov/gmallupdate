@@ -1,0 +1,53 @@
+div(class=dj[key].wrapclass,ng-hide="$ctrl.hideList&&$ctrl.$state.current.name!='news'&&$ctrl.$state.current.name!='stat'&&$ctrl.$state.current.name!='additional'&&$ctrl.$state.current.name!='campaign'&&$ctrl.$state.current.name!='master'&&$ctrl.$state.current.name!='info'&&$ctrl.$state.current.name!='lookbook'")
+    div(class=mobileWrapper)
+        div(class="stuff-list-wrapper",id="items-list-wrapper")
+            if(dj[key].img)
+                div(class="box-img-list")
+                    img(class="img-list img-responsive",src=photoHost + '/' + dj[key].img)
+            div(class="container",style="position:relative")
+                div()
+                    if(!dj[key].hideNameList)
+                        h1=dj[key].listName
+                    if(dj[key].labels)
+                        div(class="label-box")
+                            div(class="label-block")
+                                each label in dj[key].labels
+                                    a(class="label-link "+label.class,ng-click="$ctrl.setLabel('" + label.name + "')")
+                                        span(class="label-name")=label.name
+                                        span
+                        div(class="clearfix")
+                    div(id='td-list-1-items',class="td-list list-left",style="width:20%;float:left")
+                        div(class="td-wrapper")
+                            each item,$index in dj[key].itemsArr5[0]
+                                div(class="td-inner")
+                                    div
+                    div(id='td-list-2-items',class="td-list list-center1",style="width:20%;float:left")
+                        div(class="td-wrapper")
+                            each item,$index in dj[key].itemsArr5[1]
+                                div(class="td-inner")
+                                    div
+                    div(id='td-list-3-items',class="td-list list-center2",style="width:20%;float:left")
+                        div(class="td-wrapper")
+                            each item,$index in dj[key].itemsArr5[2]
+                                div(class="td-inner")
+                                    div
+                    div(id='td-list-3-items',class="td-list list-right",style="width:20%;float:left")
+                        div(class="td-wrapper")
+                            each item,$index in dj[key].itemsArr5[3]
+                                div(class="td-inner")
+                                    div
+                    div(id='td-list-3-items',class="td-list list-right",style="width:20%;float:left")
+                        div(class="td-wrapper")
+                            each item,$index in dj[key].itemsArr5[4]
+                                div(class="td-inner")
+                                    div
+                    div(class="clearfix")
+        div(class="clearfix")
+
+        div(id="paginateData"+dj[key].page,data-total=dj[key].total,data-qty=dj[key].qty,data-page=dj[key].page,data-last-item-id=dj[key].lastItemId)
+    if(titles.desc)
+        div(class="seo-desc col-lg-12 col-md-12 col-sm-12 col-xs-12 ")
+            |!{titles.desc}
+div(class="clearfix")
+
+        //

@@ -310,6 +310,7 @@ async function cancel(id,store) {
 
             //console.log(pnCurrency)
             let material = materialsFromDB.find(mat=>mat._id.toString()==m.item)
+            if(!material){return}
             //console.log(currency)
             let materialCurrency = (material.currency)?material.currency:mainCurrency;
             //console.log(materialCurrency)

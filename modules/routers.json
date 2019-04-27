@@ -83,6 +83,10 @@
     "/api/bookkeep/ActSpisanie/",
     "/api/bookkeep/ActRabot/",
     "/api/bookkeep/act/",
-    "/api/bookkeep/turnover/"
+    "/api/bookkeep/turnover/",
+    "/api/bookkeep/Rn/createByAPIFromSite",
+    "/api/bookkeep/Rn/cancelByAPIFromSite",
+    "/api/bookkeep/Rn/holdByAPIFromSite",
+    "/api/bookkeep/Rn/cancelZakazByAPIFromSite"
   ]
 }

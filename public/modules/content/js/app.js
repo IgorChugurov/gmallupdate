@@ -536,6 +536,45 @@ var myApp= angular.module('gmall', [
             url: "/labels",
             template: '<labels></labels>',
         })
+
+
+
+        .state('frame.sections', {
+            url: "/sections",
+            template :'<sections-list></sections-list>'
+        })
+        .state('frame.sections.editCategory', {
+            abstract: true,
+            url: '/editCategory',
+            template: '<ui-view/>'
+        })
+        .state("frame.sections.editCategory.category", {
+            url: "/:id",
+            template:'<category-edit></category-edit>',
+        })
+        .state('frame.sections.editSection', {
+            abstract: true,
+            url: '/editSection',
+            template: '<ui-view/>'
+        })
+        .state("frame.sections.editSection.section", {
+            url: "/:id",
+            template:'<section-edit></section-edit>',
+        })
+
+
+        /*.state('frame.contacts.list', {
+            // url will become '/contacts/list'
+            url: '/list'
+            //...more
+        })
+        .state('frame.contacts.detail', {
+            // url will become '/contacts/detail'
+            url: '/detail',
+            //...more
+        })
+
+
         .state("frame.sections", {
             url: "/sections",
             template :'<sections-list></sections-list>'
@@ -543,7 +582,7 @@ var myApp= angular.module('gmall', [
         .state("frame.sections.category", {
             url: "/:id",
             template:'<category-edit></category-edit>',
-        })
+        })*/
         .state("frame.filterEdit", {
             url: "/filterEdit",
             template:'<div ui-view=""></div>',

@@ -1,9 +1,41 @@
 <div  class="sign-login">
-    <div class="modal-header-project">
-        <a class="cancel icon-cancel-img" ng-click="$ctrl.cancel()">
-        </a>
+    <div ng-if="!$ctrl.phone" ng-init="$ctrl.block='autorization'">
+        <div class="modal-header-project">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-10 login text-center" ng-class="{'active-tabl':$ctrl.block=='autorization'}">
+                <a ng-click="$ctrl.block='autorization'">
+                <span>
+                    {{$ctrl.global.get('langForm').val.autorization}}
+                </span>
+                </a>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-10 sign text-center" ng-class="{'active-tabl':$ctrl.block=='registration'}">
+                <a ng-click="$ctrl.block='registration'">
+                <span>
+                    {{$ctrl.global.get('langForm').val.registration}}
+                </span>
+                </a>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 cancel-login text-center">
+                <a class="icon-cancel-img" ng-click="$ctrl.cancel()"></a>
+            </div>
+            <div class="clearfix"></div>
+
+
+        </div>
+        <div class="modal-body-project">
+            <div  ng-show="$ctrl.block=='autorization'">
+                <user-login close-modal="$ctrl.closeModal()" toaster="true"></user-login>
+            </div>
+            <div  ng-show="$ctrl.block=='registration'">
+                <user-sign  close-modal="$ctrl.closeModal()" toaster="true"></user-sign>
+            </div>
+        </div>
     </div>
-    <div class="modal-body-project">
+
+
+
+
+    <!--<div class="modal-body-project" ng-if="!$ctrl.phone">
         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 login">
             <h3 class="text-center">
                 {{$ctrl.global.get('langForm').val.autorization}}
@@ -27,7 +59,28 @@
         </div>
         <a ng-if="!$ctrl.global.get('store').val.cartSetting.slide"class="cancel" ng-click="$ctrl.cancel()"></a>
         <div class="clearfix"></div>
+    </div>-->
+    <div ng-if="$ctrl.phone">
+        <div class="modal-header-project">
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-10 login text-center">
+                <a ng-click="$ctrl.block='autorization'">
+                <span>
+                    {{$ctrl.global.get('langForm').val.autorization}}
+                </span>
+                </a>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 cancel text-center">
+                <a class="icon-cancel-img" ng-click="$ctrl.cancel()"></a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="modal-body-project">
+            <user-login-phone close-modal="$ctrl.closeModal()" toaster="true"></user-login-phone>
+
+        </div>
     </div>
+
+
 </div>
 
 

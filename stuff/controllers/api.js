@@ -40,6 +40,7 @@ var Seopage=mongoose.model('Seopage');
 var HomePage=mongoose.model('HomePage');
 var Campaign=mongoose.model('Campaign');
 var Label=mongoose.model('Label');
+var Workplace=mongoose.model('Workplace');
 
 
 var Stuff=mongoose.model('Stuff');
@@ -105,6 +106,7 @@ function createArchImages(){
 
 
 exports.createSitemap=function(req,res,next){
+    //console.log('!!!!!!!!!!')
     var content='';
     var domain=req.store.link;
     var sections;
@@ -913,7 +915,7 @@ exports.getAllDataForIndex=function(req,res,next){
     //console.log(req.query)
 
     //res.json([[1,3],[2,4]])
-    let models= [Group,Brand,Stat,Filter,Paps,Seopage,Coupon,Witget,HomePage,Campaign,Master,Info,Label];
+    let models= [Group,Brand,Stat,Filter,Paps,Seopage,Coupon,Witget,HomePage,Campaign,Master,Info,Label,Workplace];
 
 
 

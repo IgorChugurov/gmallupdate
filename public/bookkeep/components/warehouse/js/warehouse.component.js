@@ -85,6 +85,27 @@
         self.changeVirtualAccount=changeVirtualAccount;
         self.refreshList=refreshList;
         self.saveField=saveField;
+        self.getExcel=getExcel;
+
+        self.excelLink= global.get('store').val.link+'/warehouse/'+global.get('store').val.subDomain+'.xlsx'
+
+        function getExcel() {
+            $q.when()
+                .then(function () {
+                    var va =(self.virtualAccount)?self.virtualAccount:'allVirtualAccounts';
+                    var url = '/api/bookkeep/sa/makeBalancesForExcel/'+va;
+                    return $http.get(url)
+                })
+                .then(function () {
+                    //console.log('$scope.$parent.getParentList',$scope.$parent.getParentList)
+                    exception.showToaster('info','формирование остатков в файл','обновлено')
+                    //getList()
+                })
+                .catch(function(err){
+                    err = err.data||err
+                    exception.catcher('формирование остатков в файл')(err)
+                });
+        }
 
         function saveField(item,field) {
             if(!item._id){return}

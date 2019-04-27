@@ -172,6 +172,9 @@ hr {
     font-size: 14px;
     font-weight: bold;
 }
+.style-block {
+    background-color: #f5f5f5;
+}
 .name-block {
     font-size: 16px;
     font-weight: bold;
@@ -466,6 +469,9 @@ a:focus {
 }
 .blocks-edit video {
     width: 100%;
+}
+.media-edit {
+    padding-bottom: 60px;
 }
 /*elements*/
 .dropdown-menu {
@@ -811,7 +817,7 @@ textarea:focus,
 .desc-form {
     text-align: center;
 }
-.btn.btn-project {
+/*.btn.btn-project {
     margin: 0;
     padding: 12px;
     min-height: 46px;
@@ -819,7 +825,7 @@ textarea:focus,
     letter-spacing: 2px;
     width: 100%;
     text-transform: lowercase;
-}
+}*/
 .enter-button-box {
     padding: 0 !important;
 }
@@ -1435,7 +1441,7 @@ textarea:focus,
 }
 
 /*phoneForm*/
-.phoneForm {
+/*.phoneForm {
     width: 100%;
 }
 .phoneForm .add-phone {
@@ -1456,15 +1462,15 @@ textarea:focus,
 .phoneForm .add-phone .ui-select-search {
     display: none;
 }
-/*.stuffs-admin .phoneForm .add-phone .ui-select-match .btn-default {
+!*.stuffs-admin .phoneForm .add-phone .ui-select-match .btn-default {
     height: 40px;
     border-bottom: none;
-}*/
+}*!
 .select-modal .phoneForm .add-phone .ui-select-match .btn-default {
     height: 40px;
     border: none;
     border-bottom: none;
-}
+}*/
 
 .content  {
     padding-top: 120px;
@@ -1641,9 +1647,11 @@ a.content-box-link:hover {
     width: 100%;
     cursor: move;
 }
-.galleryTable .gallery-item  img {
+.galleryTable .galleryRow .gallery-item-ul img {
     width: 100%;
-    margin-top: -22px;
+    height: 300px;
+    object-fit: contain;
+    margin-top: -20px;
 }
 .gallery-item .add,
 .gallery-item .edit,

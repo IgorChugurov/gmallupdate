@@ -1,7 +1,8 @@
 'use strict';
 angular.module('gmall.controllers')
 .controller('notificationCtrl',['$scope','$rootScope','global','$anchorScroll','Helper','$notification','$sce','exception','$location',function($scope,$rootScope,global,$anchorScroll,Helper,$notification,$sce,exception,$location){
-    var self= this;
+    var self={};
+    $scope.$ctrl=self;
     // установка диапазона дат для получения списка
     self.dt  = new Date();
     self.today = function(t) {
@@ -111,6 +112,8 @@ angular.module('gmall.controllers')
         $scope.notificationCtrl.checkAll=false;
         var user=(global.get('seller').val)?'seller':global.get('user').val._id;
         query={$and:[{type:$scope.notificationCtrl.type},{addressee:user}]}
+
+        query.$and.push({date :{$gte:new Date(self.datePicker.date.startDate),$lte: new Date(self.datePicker.date.endDate)}})
         if(global.get('seller').val){
             query.$and.push({seller:global.get('seller').val})
         }
@@ -206,6 +209,12 @@ angular.module('gmall.controllers')
     }
     function activate(){
         $scope.notificationCtrl.getList($scope.notificationCtrl.paginate.page,$scope.notificationCtrl.paginate.rows);
+    }
+
+    self.reloadOrders=reloadOrders;
+    function reloadOrders(){
+        $scope.notificationCtrl.paginate.page=0;
+        $scope.notificationCtrl.getList()
     }
 
 

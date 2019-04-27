@@ -191,7 +191,7 @@
             }else{
                 self.order=$order.getOrder();
             }
-            console.log(self.order)
+            //console.log(self.order)
             //console.log(self.order.cart.stuffs)
             $anchorScroll();
             // купон
@@ -251,11 +251,8 @@
             $order.increaseQty(i)
         }
         function checkOut(){
-
+            self.textCheckWarehouse=null;
             $rootScope.$emit('InitiateCheckout')
-
-
-
             //console.log('checkOut')
             if(!self.order.cart.stuffs.length){return}
             //console.log(global.get('user').val)
@@ -276,17 +273,30 @@
                             return
                         }
                     })
+                    .then(function () {
+                        if(global.get('store').val.bookkeep){
+                            return $order.checkWarehouse()
+                        }
+                    })
+
                     .then(function(){
                         return $order.getShipInfo()
                     })
                     .then(function(){
                         return sendOrder()
                     })
+                    .catch(function(err){
 
+                        //console.log(err)
+                        if(err){
+                            if(err.status=='checkWarehouse'){
+                                self.textCheckWarehouse=err.message;
+                            }
+                            exception.catcher('заказ')(err)
+                        }
+                        //return sendOrder()
+                    })
             }
-
-
-
         }
 
         function sendOrder(){

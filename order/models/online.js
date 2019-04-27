@@ -80,7 +80,9 @@ var BookingSchema = new Schema({
     backgroundcolor:String,
     //schedule:Boolean,// запись в расписание
     closed:Boolean,
-    setColor:Boolean
+    setColor:Boolean,
+    masterReplace:String,// замена
+    members:Number
 });
 
 BookingSchema.pre("save", function(next) {

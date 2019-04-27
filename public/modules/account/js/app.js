@@ -22,6 +22,7 @@ var myApp= angular.module('gmall', [
     'gmall.controllers',
     'gmall.services',
     'gmall.directives',
+    'gmall.filters',
     'ui.select',
     'dndLists',
     'daterangepicker',
@@ -57,13 +58,90 @@ myApp.run(['$rootScope', '$state', '$stateParams','globalSrv','global','$timeout
     if( typeof unitOfMeasure !='undefined'){
         global.set('unitOfMeasure', unitOfMeasure);
     }
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
+        console.log(global.get('user').val)
+        if(!global.get('user').val){
+            console.log(global.get('user').val)
+            event.preventDefault();
+            $state.go('frame')
+            return;
+        }
+    })
+
     moment.locale('ru')
     $rootScope.moment=moment;
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
     $rootScope.global=global;
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState) {
-        console.log(toState,toParams)
+
+
+    var lang,langError,langOrder,langForm,langNote;
+    globalSrv.getData('lang').then(function(response){
+        var d = {}
+        //console.log(response.data[1].tags)
+        if(response.data && response.data.length && response.data[1].tags){
+            lang=response.data[1].tags;
+            for(var k in response.data[1].tags){
+                d[k]=response.data[1].tags[k][global.get('store').val.lang]
+            }
+        }
+        global.set('lang',d);
+        //console.log(global.get('lang').val);
+        //console.log(global.get('langError'))
+        //console.log(global.get('store').val,global.get('langError'))
+        //return response.data
+    })
+    globalSrv.getData('langError').then(function(response){
+        var d = {}
+        //console.log(response.data[1].tags)
+        if(response.data && response.data.length && response.data[1].tags){
+            langError=response.data[1].tags;
+            for(var k in response.data[1].tags){
+                d[k]=response.data[1].tags[k][global.get('store').val.lang]
+            }
+        }
+        global.set('langError',d);
+        //console.log(global.get('langError'))
+        //console.log(global.get('store').val,global.get('langError'))
+        //return response.data
+    })
+    globalSrv.getData('langNote').then(function(response){
+        var d = {}
+        //console.log(response.data[1].tags)
+        if(response.data && response.data.length && response.data[1].tags){
+            langNote=response.data[1].tags;
+            for(var k in response.data[1].tags){
+                d[k]=response.data[1].tags[k][global.get('store').val.lang]
+            }
+        }
+        global.set('langNote',d);
+        //console.log(global.get('langNote'))
+        //console.log(global.get('store').val,global.get('langNote'))
+        //return response.data
+    })
+    globalSrv.getData('langOrder').then(function(response){
+        var d = {}
+        //console.log(response.data[1].tags)
+        if(response.data && response.data.length && response.data[1].tags){
+            langOrder=response.data[1].tags;
+            for(var k in response.data[1].tags){
+                d[k]=response.data[1].tags[k][global.get('store').val.lang]
+            }
+        }
+        global.set('langOrder',d);
+        //console.log(global.get('langOrder'))
+    })
+    globalSrv.getData('langForm').then(function(response){
+        var d = {}
+        //console.log(response.data[1].tags)
+        if(response.data && response.data.length && response.data[1].tags){
+            langForm=response.data[1].tags;
+            for(var k in response.data[1].tags){
+                d[k]=response.data[1].tags[k][global.get('store').val.lang]
+            }
+        }
+        global.set('langForm',d);
+        //console.log(global.get('langForm'))
     })
 
 }])

@@ -1,14 +1,15 @@
 <script type="text/ng-template" id="mainSection.html">
     <div  class="col-lg-11  col-md-11 col-sm-11 col-xs-11 form-group section-box padding0" >
+
         <div class="col-lg-10  col-md-10 col-sm-10 col-xs-10">
             <div class="label-floating">
-                <label class="control-label">раздел</label>
-                <input ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                <label  for="kfkfk{{$index}}" class="control-label">раздел</label>
+                <input id="kfkfk{{$index}}" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
                        ng-change="$ctrl.saveSection(section,'name')"
                        dnd-nodrag class="form-control" ng-model="section.name">
             </div>
         </div>
-        <div class=" col-lg-2 col-md-2 col-sm-2 col-xs-2 control-box padding0 text-right">
+        <div class=" col-lg-2 col-md-2 col-sm-2 col-xs-2 control-box padding0 text-right" style="width: 40px; float: right;">
             <a class="down-up border-left btn btn-fab btn-fab-mini btn-info" ng-click="section.showList=!section.showList"
                ng-if="section.child.length || section.categories.length">
                 <i  class="material-icons" ng-if="!section.showList">expand_more</i>
@@ -17,63 +18,78 @@
             <a class="border-left btn btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteSection(null,section)"ng-if="!section.child.length && !section.categories.length">
                 <i class="material-icons">delete</i>
             </a>
+            <a class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.sections.editSection.section({id:section._id})">
+                <i class="material-icons">text_format</i>
+            </a>
         </div>
         <div class="clearfix"></div>
-            <div  dnd-nodrag ng-if="$ctrl.setTimeout()">
-                <div  class="form-inline text-center" >
-                    <div class="radio" >
-                        <label>
-                            <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="good" >
-                            <p>товар</p>
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="service" >
-                            <p>услуга</p>
-                        </label>
-                    </div>
-                    <div class="radio" >
-                        <label>
-                            <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="info" >
-                            <p>инфо</p>
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="media" >
-                            <p>медиа</p>
-                        </label>
-                    </div>
-                    <div class="clearfix"></div>
+        <div  dnd-nodrag ng-if="$ctrl.setTimeout()">
+            <div  class="form-inline text-center" >
+                <div class="radio" >
+                    <label>
+                        <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="good" >
+                        <p>товар</p>
+                    </label>
                 </div>
-                <div class="form-inline text-center" >
-                    <div class="form-group">
-                        <div class="checkbox" style="margin-top: 0">
-                            <label class="form-check-inline">
-                                <span>sale link</span>
-                                <input type="checkbox" ng-model="section.saleLink" ng-change="$ctrl.saveSection(section,'saleLink')">
-                            </label>
-                        </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="service" >
+                        <p>услуга</p>
+                    </label>
+                </div>
+                <div class="radio" >
+                    <label>
+                        <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="info" >
+                        <p>инфо</p>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" ng-change="$ctrl.saveSection(section,'type')"ng-model="section.type"value="media" >
+                        <p>медиа</p>
+                    </label>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-6  col-md-6 col-sm-6 col-xs-12">
+                    <div class="label-floating">
+                        <label  for="charsQty{{$index}}" class="control-label">количество символов описания в списке товаров</label>
+                        <input id="charsQty{{$index}}" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                               ng-change="$ctrl.saveSection(section,'charsQty')"
+                               dnd-nodrag class="form-control" ng-model="section.charsQty">
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox" style="margin-top: 0">
-                            <label class="form-check-inline">
-                                <span>new link</span>
-                                <input type="checkbox" ng-model="section.newLink" ng-change="$ctrl.saveSection(section,'newLink')">
-                            </label>
+                </div>
+                <div class="col-lg-6  col-md-6 col-sm-6 col-xs-12">
+                    <div class="form-inline" >
+                        <div class="">
+                            <div class="checkbox" style="margin-top: 0">
+                                <label  for="saleLink{{$index}}"  class="form-check-inline">
+                                    <input  id="saleLink{{$index}}"  type="checkbox" ng-model="section.saleLink" ng-change="$ctrl.saveSection(section,'saleLink')">
+                                    <span>sale link</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox" style="margin-top: 0">
-                            <label class="form-check-inline">
-                                <span>group stuffs</span>
-                                <input type="checkbox" ng-model="section.groupStuffs" ng-change="$ctrl.saveSection(section,'groupStuffs')">
-                            </label>
+                        <div class="form-group">
+                            <div class="checkbox" style="margin-top: 0">
+                                <label for="newLink{{$index}}" class="form-check-inline">
+                                    <input id="newLink{{$index}}" type="checkbox" ng-model="section.newLink" ng-change="$ctrl.saveSection(section,'newLink')">
+                                    <span>new link</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox" style="margin-top: 0">
+                                <label for="groupStuffs{{$index}}" class="form-check-inline">
+                                    <input id="groupStuffs{{$index}}" type="checkbox" ng-model="section.groupStuffs" ng-change="$ctrl.saveSection(section,'groupStuffs')">
+                                    <span>group stuffs</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="clearfix"></div>
+                <br>
                 <div class="form-group text-center">
                     <div class="togglebutton">
                         <label for="open{{$index}}">
@@ -95,6 +111,18 @@
                                    ng-model="section.hideSection"
                                    ng-change="$ctrl.saveSection(section,'hideSection')">
                             <span ng-class="{'active':section.hideSection}">не показывать в меню</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="togglebutton">
+                        <label for="viewsFilters{{$index}}">
+                            <span ng-class="{'active':!section.viewsFilters}">не показывать в фильтрах</span>
+                            <input type="checkbox"
+                                   id="viewsFilters{{$index}}"
+                                   ng-model="section.viewsFilters"
+                                   ng-change="$ctrl.saveSection(section,'viewsFilters')">
+                            <span ng-class="{'active':section.viewsFilters}">показывать в фильтрах</span>
                         </label>
                     </div>
                 </div>
@@ -142,6 +170,9 @@
                                 <a class="down-up control border-left  btn btn-fab btn-fab-mini btn-info" ng-if="section.child.length || section.categories.length" ng-click="section.showList=!section.showList">
                                     <i  class="material-icons" ng-if="!section.showList">expand_more</i>
                                     <i  class="material-icons" ng-if="section.showList">expand_less</i>
+                                </a>
+                                <a class="btn btn-fab btn-fab-mini btn-success" ui-sref="frame.sections.editSection.section({id:section._id})">
+                                    <i class="material-icons">text_format</i>
                                 </a>
                                 <a class=" border-left btn btn-fab btn-fab-mini btn-warning" ng-click="$ctrl.deleteSection(parentSection,section)" ng-if="!section.child.length && !section.categories.length" >
                                     <i class="material-icons">delete</i>

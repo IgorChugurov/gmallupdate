@@ -1,11 +1,4 @@
 /*nautilus*/
-/*.searchresults {
-    width: 300px;
-    position: absolute;
-    background-color: #fdfdfd;
-    max-height: 350px;
-    overflow: auto;
-}*/
 .name-resalt {
     font-size: 14px;
     line-height: 14px;
@@ -59,11 +52,11 @@ input[type="search"]::-moz-placeholder {
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
-    -webkit-transition: all 0s ease-in-out 0.5s;
-    -moz-transition: all 0s ease-in-out 0.5s;
-    -ms-transition: all 0s ease-in-out 0.5s;
-    -o-transition: all 0s  ease-in-out 0.5s;
-    transition: all 0s ease-in-out 0.5s;
+    -webkit-transition: all 0s ease-in-out 0.3s;
+    -moz-transition: all 0s ease-in-out 0.3s;
+    -ms-transition: all 0s ease-in-out 0.3s;
+    -o-transition: all 0s  ease-in-out 0.3s;
+    transition: all 0s ease-in-out 0.3s;
 }
 .form-control {
     font-size: $font-size;

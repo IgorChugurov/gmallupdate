@@ -12,11 +12,12 @@
             <img class="img-responsive" ng-src="{{block.img}}">
         </div>
     </div>
-    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-box" ng-if="block.video">
+   <!-- <pre>{{block|json}}</pre>-->
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-box" ng-if="block.type=='video'">
         <a  class="btn btn-raised btn-success btn-block" ng-click="$ctrl.loadPhoto(block,'video')">
             <span>добавить<br>редактировать видео</span>
         </a>
-        <div class="text-center upload-video">
+        <div class="text-center upload-video" ng-show="block.video">
             <div class="delete">
                 <a type="button" class="btn btn-fab btn-fab-mini btn-warning"  ng-click="$ctrl.deleteImg(block,'video')" title="удалить видео">
                     <i class="material-icons">delete</i>
@@ -40,6 +41,13 @@
                 <span ng-class="{'active':!block.videoControl}">отключить управление проигрывателем</span>
                 <input type="checkbox" ng-model="block.videoControl" ng-change="$ctrl.saveField('blocks.'+block.i+'.videoControl',block.videoControl)">
                 <span ng-class="{'active':block.videoControl}">включить управление проигрывателем</span>
+            </label>
+        </div>
+        <div class="togglebutton">
+            <label>
+                <span ng-class="{'active':!block.videoAutoplay}">отключить автозапуск</span>
+                <input type="checkbox" ng-model="block.videoAutoplay" ng-change="$ctrl.saveField('blocks.'+block.i+'.videoAutoplay',block.videoAutoplay)">
+                <span ng-class="{'active':block.videoAutoplay}">включить автозапуск</span>
             </label>
         </div>
     </div>

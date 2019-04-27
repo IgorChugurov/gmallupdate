@@ -83,9 +83,10 @@
             bindToController: true,
             controller: listCtrl,
             controllerAs: '$ctrl',
-            templateUrl: function () {
-                var s=(global.get('mobile') && global.get('mobile').val)?'Mobile':'';
-               return 'views/template/partials/home/schedule/directive/schedule'+s+'.html'
+            templateUrl: function (element,attrs) {
+                var s=(attrs && attrs.templ && attrs.templ!='0')?attrs.templ:'';
+                var sM=(attrs && attrs.mobile)?'Mobile':'';
+               return 'views/template/partials/home/schedule/directive/schedule'+s+sM+'.html'
             }
         }
     };
@@ -121,8 +122,8 @@
             template: '<div ng-transclude></div>'*/
         }
     };
-    listCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','$state'];
-    function listCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,$state){
+    listCtrl.$inject=['$scope','Booking','Master','Stuff','$rootScope','global','Confirm','$q','exception','$state','Workplace'];
+    function listCtrl($scope,Booking,Master,Stuff,$rootScope,global,Confirm,$q,exception,$state,Workplace){
         var self = this;
         //console.log('listCtrl!!')
         self.moment=moment;
@@ -234,6 +235,7 @@
         self.filterTimePartForMaster=filterTimePartForMaster;
         self.booking=booking;
         self.getDateObj=getDateObj;
+        self.getDateObj2=getDateObj2;
         self.changeWeek=changeWeek;
         self.disabledTimePart=disabledTimePart;
 
@@ -285,7 +287,19 @@
                 .then(function () {
                     return getMasters()
                 })
-                .then(function(){
+                .then(function () {
+                    if(!global.get('workplaces').val){
+                        return Workplace.getList()
+                    }
+
+                })
+                .then(function(wp){
+
+                    if(wp){
+                        global.set('workplaces',wp);
+                        self.workplaces=global.get('workplaces').val
+                    }
+
                     /*console.log(self.masters)
                     console.log(self.masterId)*/
                     self.selectedMaster=angular.copy(self.masters.getOFA('_id',self.masterId))
@@ -376,9 +390,14 @@
 
 
         function getBooking() {
+            console.log(global.get('workplaces').val)
             //console.log(self.query,self.datesOfWeeks)
             Booking.getBookingWeek(self.query,self.selectedMaster,self.datesOfWeeks,ngClickOnEntry)
                 .then(function(data) {
+                    //console.log(self.selectedMaster.week)
+                    for(var date in self.selectedMaster.week){
+                        self.selectedMaster.week[date].dateStr=getDateObj2(date,self.selectedMaster.week[date].entryTimeTable);
+                    }
                     if(global.get('user').val){
                         setUserAtEntry()
                     }
@@ -507,6 +526,7 @@
         }
         function setUserAtEntry() {
             var user= global.get('user').val
+            if(!self.selectedMaster || !self.selectedMaster.week){return}
             for(var key in self.selectedMaster.week){
                 self.selectedMaster.week[key].entryTimeTable.forEach(function (part) {
                     if(part.userId && part.userId==user._id){
@@ -712,6 +732,51 @@
                 var s =moment(date).format('ddd');
                 return s+'/'+day;
             }catch(err){console.log(err);return 'error handle date'}
+        }
+        function getDateObj2(dateStr,data) {
+
+
+            //console.log(data)
+            if(!data || !data.length){return}
+            var arr = data.filter(function (el) {
+                if(el.busy && el.i && el.entry && el.entry.start==el.i){
+                    if(el.entry.workplace && self.workplaces && self.workplaces.length){
+                        //console.log(el.workplace)
+                        var wp = self.workplaces.getOFA('_id',el.entry.workplace);
+                        if(wp){
+                           el.workplaceName=wp.name;
+                        }
+                        el.comment=el.entry.comment;
+                        //console.log(wp)
+                    }
+                }
+                return !el.out && el.busy
+            })
+            //console.log(arr)
+            if(!arr.length){
+                return
+            }
+            var year = dateStr.substring(4,8)
+            var month = dateStr.substring(8,10)
+            var day = dateStr.substring(10)
+
+
+            try{
+                var date = new Date(year,month,day)
+                //console.log(date)
+                var s =moment(date).format('dddd');
+                var d =moment(date).format('DD.MM.YY');
+                //console.log(capitalizeFirstLetter(s)+' </br>'+d)
+                return capitalizeFirstLetter(s)+' '+d;
+
+
+               // var s =moment(date).format('ddd');
+                //return s+'/'+day;
+            }catch(err){console.log(err);return 'error handle date'}
+
+        }
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         }
         function getDateObjFromStr(dateStr) {
             var year = dateStr.substring(4,8)

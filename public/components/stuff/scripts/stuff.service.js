@@ -52,7 +52,7 @@
         }
 
         function _salePrice(doc,sale){
-            //console.log(doc.stack)
+            //console.log(doc.stock,doc.driveSalePrice)
             if(doc.driveSalePrice && doc.driveSalePrice.maxDiscount){
                 doc.maxDiscount=doc.driveSalePrice.maxDiscount;
             }
@@ -160,7 +160,13 @@
             return el;
         }
 
+
         function _changeSortOfStuff(sort){
+            if(this.stock[sort]){
+                this.filterActiveTagName=this.stock[sort].name;
+            }else{
+                this.filterActiveTagName='';
+            }
             /*console.log(this.stock && sort && this.stock[sort] && !this.stock[sort].quantity)
             console.log(this.stock,sort,this.stock[sort],this.stock[sort].quantity)*/
             if(this.stock && sort && this.stock[sort] && !this.stock[sort].quantity){
@@ -427,6 +433,7 @@
             if(item.category && item.category._id){
                 item.category=[item.category]
             }
+            //console.log(item)
             if(item.category && item.category.length){
                 //console.log(global.get('category').val)
                 var i=0;
@@ -475,20 +482,22 @@
                 if(b){
                     item.brandUrl= b.url;
                     item.brandName=b.name;
-                    if(item.brandTag){
+                    if(item.brandTag && !item.brandTag._id){
                         var bt = b.tags.getOFA('_id',item.brandTag)
                         if(bt){
                             item.brandTagUrl=bt.url;
                             item.brandTagName=bt.name;
                         }
-
-
+                    }else if(item.brandTag && item.brandTag._id){
+                        item.brandTagUrl=item.brandTag.url;
+                        item.brandTagName=item.brandTag.name;
                     }
                 }
             }
 
         }
         function _setDataForStuff(stuff,filterTags,stuffsState){
+            //console.log(stuff.name,stuff.stock,global.get('store').val.template.stuffListType[global.get('sectionType').val])
             //console.log(JSON.parse(JSON.stringify(stuff)));
             stuff.changeSortOfStuff=_changeSortOfStuff;
             stuff.addItemToOrder=_addItemToOrder;
@@ -583,19 +592,67 @@
                 /*console.log(stuff.stock)
                 console.log(stuff.stockKeysArray)*/
                 var sort_Id=null;
+                //console.log(stuff)
                 stuff.stockKeysArray.forEach(function (key) {
+                    //console.log(key,stuff.stock[key._id])
                     // устанавливаем  разновидноть
                     //if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort)) {
-                    if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort || $state.current.name!='stuffs.stuff' || stuffsState)) {
-                        //console.log('устанавливаем разновидность')
-                        if (!sort_Id && stuff.stock[key._id].quantity) {
-                            sort_Id = key._id;
-                            stuff.sort = sort_Id;
-                            //console.log(key.name)
+                    //console.log(stuff.name,key.name,'устанавливаем разновидность',$state.current.name!='stuffs.stuff' || stuffsState)
+                    if(!stuff.minPrice){
+                        stuff.minPrice=Number(stuff.stock[key._id].price);
+                    }
+                    if(!stuff.maxPrice){
+                        stuff.maxPrice=Number(stuff.stock[key._id].price);
+                    }
+                    /*console.log(stuff.stock[key._id].price,stuff.minPrice)
+                    console.log(stuff.stock[key._id].price<stuff.minPrice)
+                    console.log(typeof stuff.stock[key._id].price)*/
+                    if(Number(stuff.stock[key._id].price)<stuff.minPrice){
+                        stuff.minPrice=Number(stuff.stock[key._id].price);
+                    }
+                    if(Number(stuff.stock[key._id].price)>stuff.maxPrice){
+                        stuff.maxPrice=Number(stuff.stock[key._id].price);
+                    }
+
+
+                    if(stuff.stock[key._id].priceSale){
+                        if(!stuff.minPriceSale){
+                            stuff.minPriceSale=Number(stuff.stock[key._id].priceSale);
                         }
+                        if(!stuff.maxPriceSale){
+                            stuff.maxPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+                        if(Number(stuff.stock[key._id].priceSale)<stuff.minPriceSale){
+                            stuff.minPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+                        if(Number(stuff.stock[key._id].priceSale)>stuff.maxPriceSale){
+                            stuff.maxPriceSale=Number(stuff.stock[key._id].priceSale);
+                        }
+
+                    }
+
+                    if(!stuff.sort &&(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSort || $state.current.name!='stuffs.stuff' || stuffsState)) {
+                        //console.log($state.current.name)
+                        if($state.current.name==='stuffs' || $state.current.name==='likes'){
+                            if(!global.get('sectionType') || !global.get('sectionType').val || !global.get('store').val.template.stuffListType[global.get('sectionType').val].unsetSortList){
+                                if (!sort_Id && stuff.stock[key._id].quantity) {
+                                    sort_Id = key._id;
+                                    stuff.sort = sort_Id;
+                                    //console.log(key.name)
+                                }
+                            }
+                        }else{
+                            if (!sort_Id && stuff.stock[key._id].quantity) {
+                                sort_Id = key._id;
+                                stuff.sort = sort_Id;
+                                //console.log(key.name)
+                            }
+                        }
+
                     }else{
                         //console.log('не устанавливаем разновидность')
                     }
+
 
 
 
@@ -612,13 +669,18 @@
                         }
                     }
                     stuff.stock[key._id].name=key.name;
+
                     //console.log(stuff.stock[key._id])
+                    if(key._id==stuff.sort){
+                        stuff.filterActiveTagName=stuff.stock[key._id].name;
+                    }
                 })
 
                 if(stuff.stockKeysArray.length && sort_Id){
                     _changeSortOfStuff.call(stuff,sort_Id);
                 }
-                //console.log(stuff.sort)
+                /*console.log(stuff.minPrice,stuff.maxPrice)
+                console.log(stuff.minPriceSale,stuff.maxPriceSale)*/
 
             }else if(stuff.stock && typeof stuff.stock == 'object' && stuff.stock.notag){
                 if(stuff.stock['notag'].quantity){
@@ -657,8 +719,12 @@
                         for(var ii=0;ii<itemS.tags.length;ii++){
                             var idx=filterGroupTags.indexOf(itemS.tags[ii]);
                             if(idx>-1){
+                                if(itemS._id===stuff._id){
+                                    stuff.sortsOfStuff.filterActiveTagName=filterGroup.tags[idx].name;
+                                }
                                 if(filterGroup.tags[idx].img){
                                     stuff.sortsOfStuff.stuffs[i].gallery[0].thumbSmallTag=filterGroup.tags[idx].img
+                                    //stuff.sortsOfStuff.stuffs[i].tagName=filterGroup.tags[idx].name
                                 }
                                 break;
                             }
@@ -1137,7 +1203,7 @@
                         var sections=data[0],brands=data[1],filters=data[2];
                         //console.log(stateParams)
                         parentSection=Sections.getSection(sections,stateParams.groupUrl);
-                        //console.log(parentSection)
+                        //console.log('parentSection',parentSection)
 
                         global.set('parentSection',parentSection)
                         if(parentSection){
@@ -1173,12 +1239,15 @@
                                     sectionCategories.forEach(function (cat) {
                                         //console.log(cat)
                                         var c = global.get('categoriesO').val[cat];
-
-                                        c.filters.forEach(function(f){
+                                        if(parentSection && parentSection.filters){
+                                            categoryFilters=parentSection.filters;
+                                        }
+                                        /*c.filters.forEach(function(f){
                                             if(categoryFilters.indexOf(f)<0){
                                                 categoryFilters.push(f)
                                             }
-                                        })
+                                        })*/
+
                                         c.brands.forEach(function(b){
                                             if(categoryBrands.indexOf(b)<0){
                                                 categoryBrands.push(b)
@@ -1293,6 +1362,7 @@
 
 
                         query.queryTags={}
+                        //console.log(categoryFilters)
                         filters.forEach(function (f) {
                             f.inList=false;
                             if((to.name=='stuffs' || to.name=='stuffs.stuff')){
@@ -1304,12 +1374,14 @@
                                 f.inList=true;
                             }
 
+                            //console.log(f.name,f.inList)
                             if(categoryFilters && categoryFilters.length){
                                 if(categoryFilters.indexOf(f._id)>-1){
                                     f.inList=true;
                                     f.open=false;
                                 }
                             }
+
                             if(f.count){
                                 //console.log(query.filters[f._id])
                                 if(query.filters[f._id]){
@@ -1334,7 +1406,9 @@
                                     }
                                 })
                             }
+
                         })
+
                         _setQueryForTags(query,filters)
                         global.set('breadcrumbs',breadcrumbs);
                         // для клиенского запроса только опубликованные товары
@@ -1361,6 +1435,7 @@
 
 
         function setFilters(){
+            //console.log('stuff setFilters')
             return $q(function(resolve,reject){
                 var modalInstance = $uibModal.open({
                     animation: true,
@@ -1432,6 +1507,7 @@
                     delete stuff.sort;
                     delete stuff.sortsOfStuff;
                     delete stuff.keywords;
+                    delete stuff.groupStuffs;
                     if(stuff.blocks && stuff.blocks.length){
                        stuff.blocks.forEach(function (b) {
                            delete b._id
@@ -1439,11 +1515,12 @@
                            b.templateName=null;
                            if(b.img){b.img=null}
                            if(b.video){b.video=null}
-                           if(b.imgs && b.imgs.length){
+                           /*if(b.imgs && b.imgs.length){
                                b.imgs.forEach(function (slide) {
                                    if(slide.img){slide.img=null;}
                                })
-                           }
+                           }*/
+                           if(b.imgs){b.imgs=[]}
                        })
                     }
                     //console.log(stuff.blocks)

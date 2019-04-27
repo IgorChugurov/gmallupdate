@@ -163,7 +163,7 @@
                         self.element=null;
                     }
                     function deleteElement(element,type) {
-                        Confirm('delete?').then(function () {
+                        Confirm('Удалить?').then(function () {
                             if(type){
                                 delete self.block[type].elements[element]
                             }else{
@@ -213,7 +213,7 @@
                         self.selector=''
                     }
                     function copyStyle(from,to) {
-                        Confirm('выполнить?').then(function () {
+                        Confirm('Выполнить?').then(function () {
                             var els,blSt;
                             if(from == 'desktop'){
                                 els=angular.copy(block.elements);

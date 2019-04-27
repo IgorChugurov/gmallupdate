@@ -18,7 +18,7 @@ div(class=dj[key].wrapclass)
                             if(dj[key].mobile)
                                 img(class="img-responsive",src=photoHost+'/'+dj[key].videoCover)
                             else
-                                video(preload="true",poster=photoHost+'/'+dj[key].videoCover, ,controls=dj[key].videoControl,autoplay,style="width: 100%",audio-mute=audio,type='video/mp4')
+                                video(preload="true",poster=photoHost+'/'+dj[key].videoCover, ,controls=dj[key].videoControl,autoplay=dj[key].videoAutoplay,style="width: 100%",audio-mute=audio,type='video/mp4')
                                     if(dj[key].video)
                                         source(src=photoHost + '/' + dj[key].video,type="video/mp4")
                                     if(dj[key].videoOgg)

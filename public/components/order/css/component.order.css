@@ -451,10 +451,9 @@
     font-size: 18px;
     font-weight: bold;
 }
-.order-detail .cart-detail hr, hr {
+/*.order-detail .cart-detail hr, hr {
     border-top-color: #ccc;
-    background-color: #eee;
-}
+}*/
 .order-detail .cart-detail a:hover,
 .order-detail .cart-detail a:focus{
    text-decoration: none;

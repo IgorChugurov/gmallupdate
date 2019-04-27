@@ -16,6 +16,55 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     var Items = $resource('/api/collections/SortsOfStuff/:id',{id:'@_id'});
     var self = this;
     var $ctrl=self;
+    self.setDescForSort=setDescForSort;
+    self.lang=global.get('store').val.lang;
+
+    function setDescForSort(stuff,tag) {
+        //console.log(stuff)
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'components/sortsOfStuff/descForSort.html',
+            controller: function($uibModalInstance,desc){
+                var self=this;
+                self.tinymceOption = {
+                    plugins: 'code print preview fullpage searchreplace autolink directionality  visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount  imagetools  contextmenu colorpicker textpattern help',
+                    // toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+                    toolbar: 'code | formatselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat | code '
+                    //id:'editingText'
+
+                    /*plugins: 'link image code',
+                     toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'*/
+                };
+                self.desc=desc
+                self.ok=function(){
+                    $uibModalInstance.close(self.desc);
+                }
+                self.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+            },
+            controllerAs:'$ctrl',
+            resolve: {
+                desc: function () {
+                    //console.log(stuff.descLSort)
+                    return (stuff.descLSort && stuff.descLSort[tag]&& stuff.descLSort[tag][self.lang])?stuff.descLSort[tag][self.lang]:''
+                },
+
+            }
+        });
+        modalInstance.result.then(function (desc) {
+            console.log(desc);
+            if(!stuff.descLSort){
+                stuff.descLSort={};
+            }
+            if(!stuff.descLSort[tag]){
+                stuff.descLSort[tag]={};
+            }
+            stuff.descLSort[tag][self.lang]=desc;
+            self.saveField(stuff,'descLSort')
+        }, function () {
+        });
+    }
     //console.log($scope.stuff)
 
     //console.log(self.stuff)
@@ -181,40 +230,62 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     }
     // создание таблицы наличия для товара*****************
     self.setStockTableForSort  = function(stuff,stockTemplate){
+        /*console.log(stuff.name,stuff.artikul)
+        console.log(stuff.price)
+        console.log(JSON.stringify(stuff.stock))*/
         return $q(function(resolve,reject){
             getStuffPromise(stuff).then(
                 function(stuff){
+                    //console.log('stuff',stuff,JSON.stringify(stuff.stock));
                     var fields='stock';
                     if(stuff.sortsOfStuff && self.stuff.sortsOfStuff._id!=stuff.sortsOfStuff._id){
                         // если надо обновить группу у товара
                         stuff.sortsOfStuff=self.stuff.sortsOfStuff._id;
                         fields+=' sortsOfStuff'
                     }
-                    if(stockTemplate){
-                        var stock=angular.copy(stockTemplate);
-                        for(var key in stock){
-                            if(stuff.stock && stuff.stock[key]){
-                                stock[key].quantity=stuff.stock[key].quantity;
-                            }
-                            //if(key=='notag'){delete stock[key];continue;}
-                            stock[key].price=stuff.price;
-                            stock[key].priceSale=stuff.priceSale;
-                            stock[key].retail=stuff.retail;
-                            if(key!='notag'){
-                                var i= stuff.tags.indexOf(key);
-                                if(i<0){ // add tag
-                                    stuff.tags.push(key);
+                    try{
+                        if(stockTemplate){
+                            //console.log(stockTemplate)
+                            var stock=angular.copy(stockTemplate);
+                            for(var key in stock){
+                                if(stuff.stock && stuff.stock[key]){
+                                    stock[key].quantity=stuff.stock[key].quantity;
+                                }
+                                //if(key=='notag'){delete stock[key];continue;}
+                                if(stuff.stock && stuff.stock[key] && stuff.stock[key].price){
+                                    stock[key].price=stuff.stock[key].price;
+                                }
+                                if(stuff.stock && stuff.stock[key] && stuff.stock[key].priceSale){
+                                    stock[key].priceSale=stuff.stock[key].priceSale;
+                                }
+                                if(stuff.stock && stuff.stock[key] && stuff.stock[key].retail){
+                                    stock[key].retail=stuff.stock[key].retail;
+                                }
+
+                                if(key!='notag'){
+                                    var i= stuff.tags.indexOf(key);
+                                    if(i<0){ // add tag
+                                        stuff.tags.push(key);
+                                    }
+                                }
+                                if(!stock[key].price){
+                                    stock[key].price=stuff.price;
                                 }
                             }
+                            stuff.stock=stock;
+                            //console.log('stuff.stock',JSON.stringify(stuff.stock));
+                            if(stuff.setTagsValue){
+                                stuff.setTagsValue();
+                            }
+                            fields +=' tags';
+                        }else{
+                            stock={notag:{quantity:1}};
                         }
-                        stuff.stock=stock;
-                        if(stuff.setTagsValue){
-                            stuff.setTagsValue();
-                        }
-                        fields +=' tags';
-                    }else{
-                        stock={notag:{quantity:1}};
+                    }catch(err){
+                        console.log(err)
                     }
+
+                    console.log(stuff)
                     Stuff.saveField(stuff,fields).then(function(){resolve()},function(err){reject(err)});
                 },function(err){reject(err)}
             )
@@ -240,6 +311,7 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
         var stock;
         //global.get('store').val.settingContent.admin.sortsDisable
         var qty = (global.get('store').val.settingContent&& global.get('store').val.settingContent.admin && global.get('store').val.settingContent.admin.sortsDisable)?0:1;
+
         if(filter){
             filter.tags.forEach(function(tag){
                 if(!stock){stock={}}

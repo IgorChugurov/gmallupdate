@@ -1,10 +1,31 @@
-<div  class="master-item" ng-class="{'master-item-mobile':$ctrl.global.get('mobile').val}">
+<div  class="stuffEdit" ng-class="{'master-item-mobile':$ctrl.global.get('mobile').val}">
     <div class="nav-box-stuff">
         <div class="tab-nav-stuff">
             <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame.groupStuffs">
                 <i class="material-icons">reply</i>
             </a>
         </div>
+        <div class="tab-nav-stuff text-center" title="ОПИСАНИЕ">
+            <a  class="btn btn-fab btn-fab-mini" ng-click="$ctrl.changeBlock('desc')" ng-class="{'active':$ctrl.block=='desc'}">
+                <i class="material-icons link-success">description</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center" title="ТОВАРЫ" >
+            <a  class="btn btn-fab btn-fab-mini" ng-click="$ctrl.changeBlock('stuffs')" ng-class="{'active':$ctrl.block=='stuffs'}">
+                <i class="material-icons link-success">photo_library</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center" title="ХАРАКТЕРИСТИКИ">
+            <a  class="btn btn-fab btn-fab-mini" ng-click="$ctrl.changeBlock('filters')" ng-class="{'active':$ctrl.block=='filters'}">
+                <i class="material-icons link-success">filter_list</i>
+            </a>
+        </div>
+        <div class="tab-nav-stuff text-center" title="МАСТЕРА" >
+            <a  class="btn btn-fab btn-fab-mini" ng-click="$ctrl.changeBlock('masters')" ng-class="{'active':$ctrl.block=='masters'}">
+                <i class="material-icons link-success">account_circle</i>
+            </a>
+        </div>
+
         <div class="tab-nav-stuff">
             <h4 class="name-box">группа товаров
                 <span class="category-name">{{$ctrl.item.name}}</span>
@@ -12,105 +33,242 @@
         </div>
     </div>
     <div class="clearfix"></div>
-
-    <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
-        <div class="cart-detail">
-            <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="form-group label-static ">
-                    <label for="name" class="control-label">наименование группы</label>
-                    <input type="text" id="name" class="form-control name"
-                           ng-model="$ctrl.item.name" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
-                           ng-change="$ctrl.saveField('name')"/>
+    <div class="content-tab-box" ng-show="$ctrl.block=='desc'">
+        <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="cart-detail">
+                <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group label-static ">
+                        <label for="name" class="control-label">наименование группы</label>
+                        <input type="text" id="name" class="form-control name"
+                               ng-model="$ctrl.item.name" ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                               ng-change="$ctrl.saveField('name')"/>
+                    </div>
                 </div>
+                <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="togglebutton form-group">
+                        <label for="brand{{$ctrl.item._id}}">
+                            <span ng-class="{'active':!$ctrl.item.actived}">не активная</span>
+                            <input type="checkbox"
+                                   id="brand{{$ctrl.item._id}}"
+                                   ng-model="$ctrl.item.actived"
+                                   ng-change="$ctrl.saveField('actived')">
+                            <span ng-class="{'active':$ctrl.item.actived}">активная</span>
+                        </label>
+                    </div>
+                </div>
+                <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <a class="btn btn-raised btn-info btn-block" ng-hide="$ctrl.item.category">
+                        <span ng-click="$ctrl.changeCategory()">связать с категорией</span>
+                    </a>
+                    <h4 ng-show="$ctrl.item.category" class="text-center name-box">категория</h4>
+                    <p ng-show="$ctrl.item.category">
+                        <a>
+                            <span ng-bind="$ctrl.item.category.name" ng-click="$ctrl.changeCategory()"></span>
+                        </a>
+                        <span ng-click="$ctrl.deleteCategory()"><i class="material-icons link-warning" style="font-size: 15px">clear</i></span>
+                    </p>
+                </div>
+                <div class="clearfix"></div>
+                <h4 class="text-center name-box">описание</h4>
+                <div class="form-group editor">
+                    <div text-angular ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                         ng-change="$ctrl.saveField('desc',200)"
+                         ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
+                         ng-model="$ctrl.item.desc"
+                         ta-paste="$ctrl.global.get('functions').val.taPaste($html)"
+                         ta-html-editor-class="border-around">
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+
             </div>
-            <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <div class="togglebutton form-group">
-                    <label for="brand{{$ctrl.item._id}}">
-                        <span ng-class="{'active':!$ctrl.item.actived}">не активная</span>
-                        <input type="checkbox"
-                               id="brand{{$ctrl.item._id}}"
-                               ng-model="$ctrl.item.actived"
-                               ng-change="$ctrl.saveField('actived')">
-                        <span ng-class="{'active':$ctrl.item.actived}">активная</span>
+        </div>
+        <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <div class="cart-detail text-center">
+                <h4 class="name-box">фото группы</h4>
+                <load-image
+                        upload-url="/api/collections/Photo/fileUpload?collectionName=GroupStuffs"
+                        item-id="{{$ctrl.item._id}}"
+                        item-resourse="$ctrl.Items"
+                        file-src="$ctrl.item.img"
+                        name-img="img">
+                </load-image>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-box">
+            <div class="cart-detail">
+                <a  class="btn btn-raised btn-success btn-block" ng-click="$ctrl.loadVideo('video')">
+                    <span>добавить<br>редактировать видео</span>
+                </a>
+                <div class="text-center upload-video" ng-show="$ctrl.item.video.link">
+                    <div class="delete">
+                        <a type="button" class="btn btn-fab btn-fab-mini btn-warning"  ng-click="$ctrl.deleteVideo('video')" title="удалить видео">
+                            <i class="material-icons">delete</i>
+                        </a>
+                    </div>
+                    <div class="form-group text-center">
+                        <video    class="fillHeigh" controls="controls">
+                            <source ng-src="{{$ctrl.item.video.link| trustUrl}}" type="video/webm">
+                        </video>
+                    </div>
+                </div>
+                <div class="togglebutton">
+                    <label>
+                        <span ng-class="{'active':!$ctrl.item.video.audio}">отключить звук</span>
+                        <input type="checkbox" ng-model="$ctrl.item.video.audio" ng-change="$ctrl.saveField('video')">
+                        <span ng-class="{'active':$ctrl.item.video.audio}">включить звук</span>
+                    </label>
+                </div>
+                <div class="togglebutton">
+                    <label>
+                        <span ng-class="{'active':!$ctrl.item.video.videoControl}">отключить управление проигрывателем</span>
+                        <input type="checkbox" ng-model="$ctrl.item.video.videoControl" ng-change="$ctrl.saveField('video')">
+                        <span ng-class="{'active':$ctrl.item.video.videoControl}">включить управление проигрывателем</span>
                     </label>
                 </div>
             </div>
-            <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                <a class="btn btn-raised btn-info btn-block" ng-hide="$ctrl.item.category">
-                    <span ng-click="$ctrl.changeCategory()">связать с категорией</span>
-                </a>
-                <h4 ng-show="$ctrl.item.category" class="text-center name-box">категория</h4>
-                <p ng-show="$ctrl.item.category">
-                    <a>
-                        <span ng-bind="$ctrl.item.category.name" ng-click="$ctrl.changeCategory()"></span>
-                    </a>
-                    <span ng-click="$ctrl.deleteCategory()"><i class="material-icons link-warning" style="font-size: 15px">clear</i></span>
-                </p>
-            </div>
-            <div class="clearfix"></div>
-            <h4 class="text-center name-box">описание</h4>
-            <div class="form-group editor">
-                <div text-angular ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
-                     ng-change="$ctrl.saveField('desc',200)"
-                     ta-toolbar="[['h1','h2','h3','h4','h5','h6','p','underline','italics','bold','ul','ol','outdent','indent','justifyLeft','justifyCenter','justifyRight','justifyFull','insertLink','insertImage','html']]"
-                     ng-model="$ctrl.item.desc"
-                     ta-paste="$ctrl.global.get('functions').val.taPaste($html)"
-                     ta-html-editor-class="border-around">
+
+
+            <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="cart-detail text-center">
+                    <h4 class="name-box">постер</h4>
+                    <load-image
+                            upload-url="/api/collections/Photo/fileUpload?collectionName=GroupStuffs"
+                            item-id="{{$ctrl.item._id}}"
+                            item-resourse="$ctrl.Items"
+                            file-src="$ctrl.item.videoPoster"
+                            name-img="videoPoster">
+                    </load-image>
                 </div>
             </div>
-            <div class="clearfix"></div>
-
 
         </div>
-    </div>
-    <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12">
-        <div class="cart-detail text-center">
-            <h4 class="name-box">фото группы</h4>
-            <load-image
-                    upload-url="/api/collections/Photo/fileUpload?collectionName=GroupStuffs"
-                    item-id="{{$ctrl.item._id}}"
-                    item-resourse="$ctrl.Items"
-                    file-src="$ctrl.item.img"
-                    name-img="img">
-            </load-image>
-        </div>
-    </div>
-    <div class="clearfix"></div>
-    <div class="galleryWrapper">
-        <div class="galleryTable">
-            <div class="galleryRow">
-                <ul class="gallery-item-ul">
-                    <li  class="gallery-item">
-                        <span class="helper"></span>
-                        <a class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.addItemInBlock()" >
-                            <i class="material-icons">add</i>
-                        </a>
-                    </li>
-                </ul>
-                <!--dnd-dragend="$ctrl.movedItem($ctrl.item,item)"   dnd-dragend="$ctrl.movedItem(item)"-->
-                <ul dnd-list="$ctrl.item.stuffs"
-                    dnd-horizontal-list="true" class="gallery-item-ul">
-                    <li ng-repeat="item in $ctrl.item.stuffs" class="gallery-item"
-                        dnd-draggable="item"
-                        dnd-effect-allowed="move"
-                        dnd-dragend="$ctrl.movedItem(item)"
-                        dnd-moved="$ctrl.item.stuffs.splice($index,1)">
-                        <span class="helper"></span>
-                        <img  ng-src="{{item.img|| 'img/upload/no.png'}}">
-                        <a class="btn  btn-fab btn-fab-mini btn-warning delete" ng-click="$ctrl.deleteItemFromBlock($index)">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-box">
+            <div class="cart-detail">
+                <a  class="btn btn-raised btn-success btn-block" ng-click="$ctrl.loadVideo('video1')">
+                    <span>добавить<br>редактировать видео</span>
+                </a>
+                <div class="text-center upload-video" ng-show="$ctrl.item.video1.link">
+                    <div class="delete">
+                        <a type="button" class="btn btn-fab btn-fab-mini btn-warning"  ng-click="$ctrl.deleteVideo('video1')" title="удалить видео">
                             <i class="material-icons">delete</i>
                         </a>
-                        <p><a ng-click="$ctrl.changeItem($index)">{{item.name}}</a></p>
-                    </li>
-                </ul>
+                    </div>
+                    <div class="form-group text-center">
+                        <video    class="fillHeigh" controls="controls">
+                            <source ng-src="{{$ctrl.item.video1.link| trustUrl}}" type="video/webm">
+                        </video>
+                    </div>
+                </div>
+                <div class="togglebutton">
+                    <label>
+                        <span ng-class="{'active':!$ctrl.item.video1.audio}">отключить звук</span>
+                        <input type="checkbox" ng-model="$ctrl.item.video1.audio" ng-change="$ctrl.saveField('video1')">
+                        <span ng-class="{'active':$ctrl.item.video1.audio}">включить звук</span>
+                    </label>
+                </div>
+                <div class="togglebutton">
+                    <label>
+                        <span ng-class="{'active':!$ctrl.item.video1.videoControl}">отключить управление проигрывателем</span>
+                        <input type="checkbox" ng-model="$ctrl.item.video1.videoControl" ng-change="$ctrl.saveField('video1')">
+                        <span ng-class="{'active':$ctrl.item.video1.videoControl}">включить управление проигрывателем</span>
+                    </label>
+                </div>
+            </div>
+            <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="cart-detail text-center">
+                    <h4 class="name-box">постер</h4>
+                    <load-image
+                            upload-url="/api/collections/Photo/fileUpload?collectionName=GroupStuffs"
+                            item-id="{{$ctrl.item._id}}"
+                            item-resourse="$ctrl.Items"
+                            file-src="$ctrl.item.video1Poster"
+                            name-img="video1Poster">
+                    </load-image>
+                </div>
+            </div>
+        </div>
 
+
+
+    </div>
+    <div class="content-tab-box" ng-show="$ctrl.block=='filters' && $ctrl.item.category">
+        <div class=" col-lg-6 col-md-6 col-sm-6 col-xs-12" ng-repeat="filter in $ctrl.filters track by filter._id" ng-if="filter.tags.length">
+            <div class="cart-detail item-filter">
+                <h4 class="name-box text-center" for="filter{{filter._id}}" ng-bind="filter.name" ng-click="$ctrl.selectFilter(filter)"></h4>
+                <div class=" select-filter">
+                    <a class="btn btn-fab btn-fab-mini btn-success pull-left"  ng-click="$ctrl.selectFilter(filter)">
+                        <i class="material-icons" title="выбрать характеристику">cached</i>
+                    </a>
+                    <span class="pull-left" ng-show="tag.set" ng-repeat="tag in filter.tags track by $index">
+                            <span class="name-filtarTag" ng-bind="tag.name"></span>
+                        </span>
+                    <span ng-bind="itemfilter.name"></span>
+                    <div class="clearfix"></div>
+                    <div>
+                        <input class="form-control" ng-if="filter.count"
+                               ng-model="$ctrl.item.filters[filter._id]"
+                               ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                               ng-change="$ctrl.saveField('filters')" type="number"
+                               placeholder="введите значение">
+
+                    </div>
+                </div>
                 <div class="clearfix"></div>
             </div>
         </div>
     </div>
+    <div class="content-tab-box" ng-show="$ctrl.block=='masters'">
+        <div class=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="cart-detail">
+                <h4 class="text-center name-box">Специалисты</h4>
+                <p>Выберите специалистов, которые связаны с данной группой товаров.</p>
+                <ui-select  placeholder="добавить других специалистов" multiple search-enabled="false" ng-model="$ctrl.item.masters" skip-focusser="true" append-to-body ng-change="$ctrl.saveField('masters')">
+                    <ui-select-match>{{$item.name}}</ui-select-match>
+                    <ui-select-choices repeat="opt._id as opt in $ctrl.masters">{{opt.name}}</ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="content-tab-box" ng-show="$ctrl.block=='stuffs'">
+        <div class="galleryWrapper">
+            <div class="galleryTable">
+                <div class="galleryRow">
+                    <ul class="gallery-item-ul">
+                        <li  class="gallery-item">
+                            <span class="helper"></span>
+                            <a class="btn btn-fab btn-fab-mini btn-success" ng-click="$ctrl.addItemInBlock()" >
+                                <i class="material-icons">add</i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!--dnd-dragend="$ctrl.movedItem($ctrl.item,item)"   dnd-dragend="$ctrl.movedItem(item)"-->
+                    <ul dnd-list="$ctrl.item.stuffs"
+                        dnd-horizontal-list="true" class="gallery-item-ul">
+                        <li ng-repeat="item in $ctrl.item.stuffs" class="gallery-item"
+                            dnd-draggable="item"
+                            dnd-effect-allowed="move"
+                            dnd-dragend="$ctrl.movedItem(item)"
+                            dnd-moved="$ctrl.item.stuffs.splice($index,1)">
+                            <span class="helper"></span>
+                            <img  ng-src="{{item.img|| 'img/upload/no.png'}}">
+                            <a class="btn  btn-fab btn-fab-mini btn-warning delete" ng-click="$ctrl.deleteItemFromBlock($index)">
+                                <i class="material-icons">delete</i>
+                            </a>
+                            <p><a ng-click="$ctrl.changeItem($index)">{{item.name}}</a></p>
+                        </li>
+                    </ul>
 
-
-
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="clearfix"></div>
 </div>
 

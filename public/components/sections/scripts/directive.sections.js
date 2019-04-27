@@ -570,6 +570,167 @@ angular.module('gmall.directives')
         templateUrl:'components/sections/category.html',
     }
 }])
+    .directive('sectionEdit',[function(){
+
+        function sectionCtrl($scope,$q,$stateParams,Filters,global,$timeout,Sections,$http,Photo){
+            var self=this;
+            self.Items=Sections;
+            self.global=global;
+            self.block='desc';
+            self.listOfBlocks=angular.copy(listOfBlocksForAll);
+            self.addBlock=addBlock;
+            self.deleteBlock=deleteBlock;
+            self.refreshBlocks=refreshBlocks;
+            $q.when()
+                .then(function(){
+                    return Sections.get({id:$stateParams.id} ).$promise;
+                })
+                .then(function(res){
+                    if(!res.blocks){res.blocks=[];}
+                    res.blocks.forEach(function(b,i){
+                        b.i=i
+                    })
+                    //res.filters= res.filters.map(function(el){return el._id})
+                    self.item=res;
+                })
+                .then(function(){
+                    return Filters.getFilters()
+                })
+                .then(function(filters){
+                    self.filters=filters.filter(function (f) {
+                        return f.actived
+                    })
+                })
+
+                .catch(function(err){
+                    self.edit=false;
+                })
+
+
+
+
+
+            self.saveField = function(field,defer){
+                console.log('field')
+                defer =defer||0
+                $timeout(function(){
+                    var o={_id:self.item._id};
+                    o[field]=self.item[field]
+                    Sections.save({update:field},o,function(){
+                        global.set('saving',true)
+                        $timeout(function () {
+                            global.set('saving',false);
+                        },1500)
+                    });
+                },defer)
+            };
+            function saveField(field,data){
+                var o={_id:self.item._id};
+                o[field]=data
+                Sections.save({update:field},o,function(){
+                    global.set('saving',true)
+                    $timeout(function () {
+                        global.set('saving',false);
+                    },1500)
+                });
+            };
+            $scope.$on('changeLang',function(){
+                $q.when()
+                    .then(function(){
+                        return Sections.get({id:$stateParams.id} ).$promise;
+                    })
+                    .then(function(res){
+                        if(!res.blocks){res.blocks=[];}
+                        res.blocks.forEach(function(b,i){
+                            b.i=i
+                        })
+                        self.item=res;
+                    })
+            })
+
+            function refreshBlocks() {
+                // console.log('???????????????')
+                return Category.get({_id:$stateParams.id} ).$promise
+                //console.log(id)
+                    .then(function(data) {
+                        /*console.log(data)
+                         console.log(self.item.blocks.length)*/
+                        data.blocks.forEach(function (b,i) {
+                            b.i=i;
+                            if(!b.desc){b.desc=''}
+                            if(!b.descL){b.descL={}}
+                            if(!b.desc1){b.desc1=''}
+                            if(!b.desc1L){b.desc1L={}}
+                            if(!b.name){b.name=''}
+                            if(!b.nameL){b.nameL={}}
+                            if(!b.name1){b.name1=''}
+                            if(!b.name1L){b.name1L={}}
+                            if(!b.videoLink){b.videoLink=''}
+                        })
+                        self.item.blocks=data.blocks
+                        /*console.log(self.item.blocks.length)*/
+                    })
+            }
+            function addBlock(type){
+                if(!type){return}
+                $scope.$broadcast('addNewBlock',{type:type})
+                self.newBlock=null;
+                return;
+            }
+            function deleteBlock(block) {
+                console.log(block)
+                var o={_id:self.item._id};
+                o['id']=block.id;
+                var update={update:'id',embeddedName:'blocks'};
+                update.embeddedPull=true;
+
+                console.log(update,o)
+                //return;
+                Confirm('удалить?')
+                    .then(function () {
+                        return self.Items.save(update,o).$promise;
+                    })
+                    .then(function (res) {
+                        self.item.blocks.splice(block.i,1)
+                        self.item.blocks.forEach(function(b,i){
+                            b.i=i;
+                        })
+
+                        var images=[]
+                        if(block.img){
+                            images.push(block.img);
+                        }
+                        if(block.video){
+                            images.push(block.video);
+                        }
+                        if(block.videoCover){
+                            images.push(block.videoCover);
+                        }
+                        if(block.imgs && block.imgs.length){
+                            block.imgs.forEach(function(im){
+                                if(im.img){
+                                    images.push(im.img);
+                                }
+                            })
+
+                        }
+                        if(images.length){
+                            return Photo.deleteFiles('Stuff',images)
+                        }
+
+                    })
+
+            }
+
+        }
+        return {
+            scope: {},
+            bindToController: true,
+            controller: sectionCtrl,
+            controllerAs: '$ctrl',
+            templateUrl:'components/sections/section.html',
+        }
+    }])
 
 .directive('fixSection',[function(){
     return{

@@ -1604,6 +1604,13 @@ a.content-box-link {
     word-wrap: break-word;
     overflow: hidden;
 }
+.warehouse-nav .name-box {
+    padding: 0 10px;
+}
+.warehouse-nav .name {
+    font-weight: bold;
+    padding: 0 10px;
+}
 .warehouse .form-group {
     margin-top: 8px;
 }

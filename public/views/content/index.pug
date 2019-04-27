@@ -111,7 +111,7 @@ html(ng-app="gmall")
               a(ui-sref="frame",title="весь контент")
                 i(class="material-icons") home
             li
-              a(ng-click="slideMenu=true",title="открыть каталог")
+              a(ng-click="slideMenu=!slideMenu",title="открыть каталог")
                 i(class="material-icons") menu
             li
               a(ui-sref="frame.help",title="помощь")

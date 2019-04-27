@@ -7,13 +7,13 @@
     .zoom-modal-vertical .modal-content{
         height:93vh;
     }
-    .zoom-modal-square .modal-content {
-        height: 93vh;
+    .zoom-modal-squareH .modal-dialog {
+        /*width:50vw;*/
+        width: 60vw;
     }
-
     .zoom-modal-squareH .modal-content {
         height:93vh;
-        width:50vw;
+        width:60vw;
     }
     .zoom-modal-squareV .modal-content {
         height:93vh;
@@ -24,11 +24,19 @@
         .zoom-modal-horizontal .modal-dialog {
             width: 80vw;
         }
+        .zoom-modal-squareH .modal-dialog,
+        .zoom-modal-squareH .modal-content {
+            width:70vw;
+        }
     }
     @media (max-width: 1200px){
         .zoom-modal-horizontal .modal-content,
         .zoom-modal-horizontal .modal-dialog {
             width: 90vw;
+        }
+        .zoom-modal-squareH .modal-dialog,
+        .zoom-modal-squareH .modal-content {
+            width:80vw;
         }
     }
     @media (max-width: 700px){

@@ -26,13 +26,14 @@ div(class=dj[key].wrapclass)
                         div(class="online-box")
                             div(class="center-div")
                                 div(class="online-table")
-                                    if(mobile)
+                                    if(mobile || tablet)
                                         each d,index in dj[key].datesOfWeeks
-                                            if(dj[key].weekData[d.date] && dj[key].weekData[d.date].entryTimeTable)
-                                                h3(class="days")=d.dateField
-                                                each entry in dj[key].weekData[d.date].entryTimeTable
+                                            if(dj[key].weekData[d.date] && dj[key].weekData[d.date].entryTimeTableMobile)
+                                                h3(class="days")
+                                                    | !{d.dateField}
+                                                each entry in dj[key].weekData[d.date].entryTimeTableMobile
                                                     p
-                                                        span(class="time")=entry.usedTime
+                                                        span(class="time",ng-click="$ctrl.setDataForEntry("+entry.stringify+")")=entry.usedTime
                                                         | &nbsp;&nbsp;
                                                         a(class="service",href=entry.serviceLink)
                                                             span=entry.service
@@ -41,16 +42,56 @@ div(class=dj[key].wrapclass)
                                                         | &nbsp;&nbsp;
                                                         a(class="master",href=entry.masterLink)
                                                             span=entry.masterName
+                                                        span &nbsp; - &nbsp;
+                                                        span=entry.workplaceName
+
+                                                //if(dj[key].weekData[d.date] && dj[key].weekData[d.date].entryTimeTableW)
+                                                    h3(class="days")=d.dateField
+                                                    each entryTimeTable,workpace in dj[key].weekData[d.date].entryTimeTableW
+                                                        each entry in entryTimeTable
+                                                            p
+                                                                span(class="time")=entry.usedTime
+                                                                | &nbsp;&nbsp;
+                                                                a(class="service",href=entry.serviceLink)
+                                                                    span=entry.service
+                                                                | &nbsp;&nbsp;
+                                                                span=entry.comment
+                                                                | &nbsp;&nbsp;
+                                                                a(class="master",href=entry.masterLink)
+                                                                    span=entry.masterName
+                                                                a(class="master",href2=entry.workplaceLink)
+                                                                    span &nbsp(
+                                                                    span=entry.workplaceName
+                                                                    span )
+                                            else
+                                                if(dj[key].weekData[d.date] && dj[key].weekData[d.date].entryTimeTable)
+                                                    h3(class="days")=d.dateField
+                                                    each entry in dj[key].weekData[d.date].entryTimeTable
+                                                        p
+                                                            span(class="time")=entry.usedTime
+                                                            | &nbsp;&nbsp;
+                                                            a(class="service",href=entry.serviceLink)
+                                                                span=entry.service
+                                                            | &nbsp;&nbsp;
+                                                            span=entry.comment
+                                                            | &nbsp;&nbsp;
+                                                            a(class="master",href=entry.masterLink)
+                                                                span=entry.masterName
                                         if(dj[key].noSchedule)
                                             div(class="text-center")
                                                 p=lang['noentries']
                                     else
                                         div(class="online-table-header")
-                                            div(class="online-table-day box-day",style="border-left:1px solid #ccc")
-                                                span(ng-bind2="$ctrl.currentMonth")=dj[key].currentMonth
+                                            div(class="online-table-day box-day month",style="border-left:1px solid #ccc")
+                                                span=dj[key].currentMonth
                                             each d,index in dj[key].datesOfWeeks
                                                 div(class="online-table-day box-day")
-                                                    p(ng-bind2="$ctrl.datesOfWeeks["+index+"].dateField")=d.dateField
+                                                    div(class="box-day-item")
+                                                        | !{d.dateField}
+                                                    if dj[key].workplaces && dj[key].workplaces.length
+                                                        each workPlace in dj[key].workplaces
+                                                            div(class="place-name")
+                                                                span=workPlace.name
                                         div(class="online-table-body")
                                             div(class="online-table-day online-table-header-left")
                                                 each part,idx in dj[key].timePartsForTable
@@ -59,20 +100,39 @@ div(class=dj[key].wrapclass)
                                                 div(class="clearfix")
                                             each data,date in dj[key].weekDataFull
                                                 div(class="online-table-day")
-                                                    each item in data.entryTimeTable
-                                                        div(class="box-day",style=(item.zIndex)?"z-index:"+item.zIndex:'')
-                                                            div(class="servise-box "+((!item.noBorder)?'borderTop':'') style=(item.backgroundcolor)?"background-color:"+item.backgroundcolor:'')
-                                                                div(class="entry")
-                                                                    p=item.usedTime
-                                                                    p
-                                                                        a(class="master-name",href=item.masterLink)
-                                                                            span=item.masterName
-                                                                    p
-                                                                        a(class="service-name",href=item.serviceLink)
-                                                                            span=item.service
-                                                                    p
-                                                                        small
-                                                                            span(class="comment")=item.comment
+                                                    each entryTimeTable,workpace in data.entryTimeTableW
+                                                        div(class="box-place")
+                                                            each item in entryTimeTable
+                                                                div(class="box-day",style=(item.zIndex) ? "z-index:" + item.zIndex : '')
+                                                                    div(class="servise-box " + ((!item.noBorder) ? 'borderTop' : '') style=(item.backgroundcolor) ? "background-color:" + item.backgroundcolor : '')
+                                                                        div(class="entry")
+                                                                            //p=item.usedTime
+                                                                            p
+                                                                                a(class="service-name",href=item.serviceLink)
+                                                                                    span=item.service
+                                                                            p
+                                                                                a(class="master-name",href=item.masterLink)
+                                                                                    span=item.masterName
 
 
 
+                                                                            div(class="tooltipEntry")
+                                                                                p=item.usedTime
+                                                                                a(class="service-name",href=item.serviceLink)
+                                                                                    p
+                                                                                        span=item.service
+                                                                                p
+                                                                                    small
+                                                                                        span(class="comment")=item.comment
+
+                                                                                p
+                                                                                    a(class="master-name",href=item.masterLink)
+                                                                                        span=item.masterName
+
+                                                                                if(item.masters && item.masters.length)
+                                                                                    each m in item.masters
+                                                                                        p
+                                                                                            a(class="master-name",href='master/' + m.url)
+                                                                                                span=m.name
+
+                                                                                p=item.workplaceName

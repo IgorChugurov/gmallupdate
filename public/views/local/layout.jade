@@ -58,6 +58,7 @@ html(ng-app="gmall")
 
 
     //script(src='https://www.google.com/recaptcha/api.js?onload=vcRecaptchaApiLoaded&render=explicit')
+    //link(href="//vjs.zencdn.net/7.0/video-js.min.css", rel="stylesheet")
 
 
 
@@ -76,4 +77,6 @@ html(ng-app="gmall")
           #{counter.code}
 
   body(id="body",ng-class1="::{'mobile-wrapper':global.get('mobile').val}",ng-class="{'body-background':global.get('store').val.backgroundImgUse&&(!global.get('store').val.backgroundImgUseHome || (global.get('store').val.backgroundImgUseHome && $state.current.name=='home') )}")
+    video(class="afterglow",id="myvideo",width="1280",height="720")
+      source(type="video/mp4",src="http://139.162.161.36:3301/images/balance-yoga/Stuff/utro-dinamika-sila/video/360p.mp4")
     block content
