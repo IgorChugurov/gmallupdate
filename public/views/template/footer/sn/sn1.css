@@ -1,0 +1,21 @@
+.mobile-wrapper ul {
+    padding-left: 0;
+    width: auto;
+}
+.mobile-wrapper li {
+    padding-left: 0;
+}
+.sn,
+.sn-inv {
+    transition: all 0.3s ease-in-out 0.1s;
+}
+.sn-inv {
+    display: none;
+}
+li:hover .sn-inv {
+    display: block;
+}
+li:hover .sn {
+    display: none;
+}
+

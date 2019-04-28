@@ -1,0 +1,120 @@
+/*ideal*/
+.carousel-inner {
+    width: 100%;
+}
+.gallery {
+    position: relative;
+    margin-bottom: 20px;
+    width: 98%;
+    padding-left: 2%;
+}
+.gallery img{
+    width: 100%;
+    height: 100%;
+}
+.gallery-small {
+    height: 100%;
+    width: 100%;
+    padding-left: 1%;
+    padding-right: 1%;
+}
+.gallery-small img {
+    width: 100px;
+}
+#gallery-small-container {
+    overflow-x: hidden;
+}
+
+.gallery-wrap {
+    width: 1000px;
+}
+.gallery-small-box{
+    float: left;
+    padding: 3px;
+    margin: 5px;
+    border: 1px solid transparent;
+}
+.gallery-small-box:hover {
+    border: 1px solid $mainColor
+}
+.gallery-small .active {
+    border: 1px solid $mainColor
+}
+.gallery-small-container {
+    position: relative;
+}
+.nav-box {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+.arrow-prev-gallery-small {
+    position: absolute;
+    left: -50px;
+    bottom: 50px;
+}
+.arrow-next-gallery-small {
+    position: absolute;
+    right: 0;
+    bottom: 50px;
+}
+.gallery-big {
+    width: 100%;
+}
+/*.gallery-big img {
+    padding-left: 20px;
+    padding-right: 20px;
+}*/
+.gallery  .carousel-control.right,
+.gallery .carousel-control.left {
+    background-image: none;
+    transition: all 0.5s ease-in-out;
+}
+.gallery  .carousel-control.right {
+    background-position: center;
+    width: 30px;
+}
+.gallery  .carousel-control.left {
+    background-position: center;
+    width: 30px;
+}
+.gallery  .carousel-control.right:hover,
+.gallery  .carousel-control.left:hover {
+    background-size: 140%;
+}
+.gallery  .carousel-control.right span,
+.gallery .carousel-control.left span {
+    display: none;
+}
+.gallery  .carousel-control.right {
+    right: -20px;
+}
+.gallery .carousel-control.left {
+    left: -20px;
+}
+.gallery:hover .zoom-plus {
+    opacity: 1;
+}
+.carousel-inner a {
+    cursor: crosshair;
+}
+.tablet-wrapper .gallery,
+.mobile-wrapper .gallery {
+    padding-right: 0;
+    padding-left: 0;
+}
+button:active,
+button:focus {
+    outline: none;
+}
+button:disabled {
+    opacity: 0.4;
+}
+@media (max-width: 360px) {
+    .gallery  .carousel-control.right {
+        right: 0px;
+    }
+    .gallery .carousel-control.left {
+        left: 0px;
+    }
+}

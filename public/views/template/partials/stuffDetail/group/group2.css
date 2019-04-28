@@ -1,0 +1,9 @@
+.group-goods {
+    border-bottom:1px solid transparent;
+}
+.group-goods:hover {
+    border-bottom:1px solid $mainColor;
+}
+.active {
+    border-bottom:1px solid $mainColor;
+}

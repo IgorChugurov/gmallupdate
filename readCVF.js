@@ -52,7 +52,6 @@ async function run() {
                                 producers[line[2]]=pr._id.toString();
                             }
                         }
-
                         let m ={
                             store:"5867d1b3163808c33b590c12",
                             index:i,

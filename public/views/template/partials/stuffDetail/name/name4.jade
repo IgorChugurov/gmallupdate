@@ -1,0 +1,28 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        div(class="name-box")
+            p(class="name-goods" ng-bind="$ctrl.global.get('lang').val.individualLesson")
+            if(item.name)
+                h1(class="name",set-animate=dj[key].animate,data-animation=dj[key].animate,itemprop="name")
+                    span(class="goods-name")
+                        | !{item.name}
+                    span(class="artikul")
+                        | !{item.artikul}
+
+            if item.groupStuffs
+                h3(class="master-name")
+                    span(class="name-section" ng-bind="$ctrl.global.get('lang').val.fromOne")
+                    | &nbsp;
+                    a(class="name-series",href=item.groupStuffs.link)
+                        span=item.groupStuffs.name
+                    | &nbsp;
+                    span(class="name-section" ng-bind="$ctrl.global.get('lang').val.byy")
+                    | &nbsp;
+                    each master,index in item.groupStuffs.masters
+                        a(href="/master/" + master.url)
+                            span=master.name
+                        if index !== item.groupStuffs.masters.length - 1
+                            span
+                                | &nbsp;
+                                | &
+                                | &nbsp;

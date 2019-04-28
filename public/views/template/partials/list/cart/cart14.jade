@@ -1,0 +1,40 @@
+div(class="list-item",id='item-'+item._id,ng-hide="$ctrl.hideCart && $ctrl.$stateParams.id && $ctrl.$stateParams.id=='"+item.url+"'")
+    div(class="col-lg-1 col-md-1 col-sm-2 col-xs-3 date-box")
+        h4(class="news-date")=item.date
+    div(class="col-lg-6 col-md-6 col-sm-6 col-xs-9 news-stuff-img")
+        a(href=item.link)
+            if(item.imgs && item.imgs.length)
+                .page-slides
+                    div(gmall-slider-page=(item.url)?item.url:'/home')
+                        div(class="substrate")
+                            img(class="img-responsive",src=item.imgs[0].img)
+                        - for (var i = 0; i < item.imgs.length; ++i)
+                            div(class="mytoggle-page",id='mytoggle-page'+item._id+i)
+                                img(class="img-responsive",src=item.imgs[i].img)
+            if(item.img)
+                img(style="width:100%", image-lazy-src=item.img,src=($index<2)?item.img:null)
+            if(item.video)
+                div
+                    | !{item.video}
+    div(class="clearfix")
+    div(class="col-lg-1 col-md-1 col-sm-2 col-xs-3 date-box")
+    div(class="col-lg-11 col-md-11 col-sm-10 col-xs-9 news-stuff-desk")
+        a(href=item.link)
+            div(class="form-group")
+                if(item.name)
+                    h2(class="name")
+                        | !{item.name}
+                if(item.position)
+                    h4(class="position")
+                        | !{item.position}
+                if(item.desc)
+                    div(class="desc")
+                        | !{item.desc}
+            hr
+            div(class="col-lg-6 col-md-6 col-sm-6 col-xs-12 read-more")
+                a(class="read-more-list",href=item.link)
+                    span(ng-bind="$ctrl.global.get('lang').val.readMore")
+            div(class="social-hub-stuff col-lg-6 col-md-6 col-sm-6 col-xs-12")
+                social-hub(item=JSON.stringify(item),data-item=JSON.stringify(item))
+            div(class="clearfix")
+    div(class="clearfix")

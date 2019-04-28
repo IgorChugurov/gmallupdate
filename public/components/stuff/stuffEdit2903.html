@@ -1,4 +1,4 @@
-<div class="stuffEdit"  ng-class="{'stuffEdit-mobile':global.get('mobile').val}" id="filterBlock" style="margin-bottom: 60px">
+<div class="stuffEdit"  ng-class="{'stuffEdit-mobile':global.get('mobile').val}" id="filterBlock">
     <div class="nav-box-stuff">
         <div class="tab-nav-stuff text-center">
             <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame.stuffs($stateParams)">
@@ -120,9 +120,9 @@
             </div>
             <div class="cart-detail">
                 <h4 class="name-box text-center">блок цен</h4>
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" ng-if="global.get('store').val.currencyArr.length>1">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <p class="label-menu">валюта учета</p>
-                    <div class="currency-chois">
+                    <div class="currency-chois" ng-if="global.get('store').val.currencyArr.length>1">
                         <ui-select ng-model="item.currency"
                                    ng-change="saveField(item,'currency')"
                                    on-select="onSelected($item)"
@@ -139,7 +139,8 @@
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" ng-if="item.sortsOfStuff.filter">
-                    <p class="info-text">Внимание! Если в настройках списка выбрано устанавливать начальную разновидность для товара, то при отображении списка активным будет тот признак, который стоит первым в списке для данной характеристики</p>
+                    <p class="info-text">активный признак при выборе для заказа тот, который стоит первым для данной характеристики</p>
+
                 </div>
                 <div class="clearfix"></div>
                 <hr>
@@ -202,64 +203,46 @@
                         <span ng-bind="item.driveSalePrice.maxDiscount"></span><span> %</span>
                     </p>
                 </div>
-                <br>
-                <div class="form-group  text-center" ng-if="$ctrl.bookkeep">
-                    <p class="label-menu">создание карточки в бухгалтерии</p>
-                    <a class="btn btn-success" ng-click="$ctrl.makeMaterial()" ng-show="!$ctrl.materialIs">создать карточку</a>
-                    <a class="btn btn-success" ng-show="$ctrl.materialIs">карточка создана</a>
+            </div>
+            <div class="cart-detail">
+                <div class="editor">
+                    <h4 class="name-box">описание</h4>
+                    <div class="form-group" ng-if="$ctrl.tinymceOption">
+                        <textarea rows="12" ui-tinymce="$ctrl.tinymceOption" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                                  ng-change="saveField(item,'desc')"
+                                  ng-model="item.desc">
+
+                            </textarea>
+                    </div>
 
                 </div>
             </div>
             <div class="cart-detail">
-                <h4 class="text-center name-box"  ng-show="item.sortsOfStuff.differentPrice">наличие</h4>
-                <div style="overflow-x: auto" >
-                    <table class=" table table-striped table-hover different">
-                        <thead>
-                        <tr>
-                            <th>признак</th>
-                            <th class="text-center" >наличие</th>
-                            <th class="text-center"   ng-if="item.sortsOfStuff.differentPrice">цена</th>
-                            <th class="text-center"    ng-if="item.sale&&item.sortsOfStuff.differentPrice">sale</th>
-                            <th class="text-center"    ng-if="global.get('store').val.seller.retail&&item.sortsOfStuff.differentPrice">розница</th>
-                            <th class="text-center"    ng-if="item.priceCampaign&&item.sortsOfStuff.differentPrice">акция</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        <tr ng-repeat="tag in item.stockKeysArray">
-                            <td><span ng-show="tag!='notag'" ng-bind="tag.name"></span></td>
-                            <td class="text-center">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" ng-model="tag.quantity" ng-true-value=1 ng-false-value=0 ng-change="$ctrl.changeStock(item,tag)">
-                                    </label>
-                                </div>
-
-                            </td>
-
-                            <td  class="price-box text-center"  ng-show="item.sortsOfStuff.differentPrice">
-                                <input class="form-control"type="text" ng-model="item.stock[tag._id].price"  ng-change="saveField(item,'stock')">
-
-                            </td>
-                            <td class="price-box text-center" ng-if="item.sale&&item.sortsOfStuff.differentPrice">
-                                <input class="form-control"type="text" ng-model="item.stock[tag._id].priceSale" disabled>
-
-                            </td>
-                            <td class="price-box text-center" ng-if="global.get('store').val.seller.retail&&item.sortsOfStuff.differentPrice">
-
-                                <input class="form-control"type="text" ng-model="item.stock[tag._id].retail" disabled>
-
-                            </td>
-                            <td class="price-box text-center" ng-if="item.priceCampaign&&item.sortsOfStuff.differentPrice">
-
-                                <input class="form-control"type="text" ng-model="item.stock[tag._id].priceCampaign" disabled>
-
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div class="editor ">
+                    <h4 class="name-box">описание 2</h4>
+                    <div class="form-group" ng-if="$ctrl.tinymceOption">
+                        <textarea rows="12" ui-tinymce="$ctrl.tinymceOption"
+                                  ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                                  ng-change="saveField(item,'desc1')"
+                                  ng-model="item.desc1">
+                                </textarea>
+                    </div>
                 </div>
             </div>
+            <div class="cart-detail">
+                <div class="editor">
+                    <h4 class="name-box">описание 3</h4>
+                    <div class="form-group" ng-if="$ctrl.tinymceOption">
+                        <textarea rows="12" ui-tinymce="$ctrl.tinymceOption" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                                  ng-change="saveField(item,'desc2')"
+                                  ng-model="item.desc2">
+
+                                </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
             <div class="cart-detail">
                 <div class="form-group">
                     <h4 class="name-box text-center">тип товара</h4>
@@ -297,7 +280,6 @@
                 </div>
                 <div class="clearfix"></div>
             </div>
-
             <div class="cart-detail">
                 <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 ">
 
@@ -404,12 +386,14 @@
                             шаблон
                         </label>
                     </div>
-                    <!--<div class="radio ">
+                    <div class="radio ">
                         <label>
                             <input type="radio" ng-change="saveField(item,'orderType')"ng-model="item.orderType"name="optionsRadios" id="optionsRadios8" value="8">
                             скачивание видео
                         </label>
-                    </div>-->
+                    </div>
+
+
                 </div>
                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <div>
@@ -455,61 +439,12 @@
                             <input class="form-control" type="text" ng-change="saveField(item,'templateUrl')"ng-model="item.templateUrl">
                         </div>
                     </div>
-
-
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="cart-detail">
-                <h4 class="name-box text-center">для товаров, которые являются подпиской</h4>
-                <div class="form-group">
-                    <div class="togglebutton text-center">
-                        <label for="access">
-                            <span ng-class="{'active':!item.access}">обычный товар</span>
-                            <input type="checkbox"
-                                   id="access"
-                                   ng-model="item.access"
-                                   ng-change="saveField(item,'access')">
-                            <span ng-class="{'active':item.access}">товар в приоритете</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <h4 class="name-box text-center">тип доступа</h4>
-                    <ui-select ng-model="item.access.t"
-                               ng-change="saveField(item,'access')"
-                               append-to-body="true"
-                               search-enabled="false">
-                        <ui-select-match allow-clear="true" placeholder="тип доступа">
-                            <span ng-bind="$select.selected"></span>
-                        </ui-select-match>
-                        <ui-select-null-choice>без типа доступа</ui-select-null-choice>
-                        <ui-select-choices repeat="opt in [1]">
-                            <span ng-bind="opt"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <h4 class="name-box text-center">длительность подписки</h4>
-                    <ui-select ng-model="item.access.d"
-                               ng-change="saveField(item,'access')"
-                               append-to-body="true"
-                               search-enabled="false">
-                        <ui-select-match allow-clear="true" placeholder="длительность">
-                            <span ng-bind="$select.selected"></span>
-                        </ui-select-match>
-                        <ui-select-null-choice>бессросчаная</ui-select-null-choice>
-                        <ui-select-choices repeat="opt in [31,365]">
-                            <span ng-bind="opt"></span>
-                        </ui-select-choices>
-                    </ui-select>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="cart-detail">
-                <h4 class="name-box text-center">для товаров, которые продаются по подписке</h4>
-                <div class="form-group">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div  ng-if="item.orderType==8">
+                        <p class="name-box text-center">ссылка для скачивания</p>
+                        <div class="form-group label-floating">
+                            <label class="control-label">ссылка для видео</label>
+                            <input class="form-control" type="text" ng-change="saveField(item,'media')"ng-model="item.media">
+                        </div>
                         <p class="name-box text-center">уровень доступа</p>
                         <ui-select ng-model="item.levelMedia"
                                    ng-change="saveField(item,'levelMedia')"
@@ -524,165 +459,103 @@
                                 <span ng-bind="opt"></span>
                             </ui-select-choices>
                         </ui-select>
-                        <div class="form-group label-static">
-                            <p class="name-box text-center">длительность видео в минутах</p>
-                            <input class="form-control" type="number" ng-change="saveField(item,'videoTime')"ng-model="item.videoTime">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p class="name-box text-center">ссылка для скачивания</p>
-                        <div class="form-group label-floating">
-                            <label class="control-label">ссылка для контента (HD)</label>
-                            <input class="form-control" type="text" ng-change="saveField(item,'media')"ng-model="item.media">
-                        </div>
-                        <div class="form-group label-floating">
-                            <label class="control-label">ссылка для контента 2 (SD)</label>
-                            <input class="form-control" type="text" ng-change="saveField(item,'media2')"ng-model="item.media2">
-                        </div>
-
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-6">
-                        <a class="btn btn-raised btn-info btn-block"  ng-click="isCollapsed2 = !isCollapsed2">ссылка для перехода когда контент не доступен</a>
-                        <create-link title='false' uib-collapse="!isCollapsed2"  link="item.hrefInsteadVideo" change="saveField(item,'hrefInsteadVideo')" edit-seo-page="true"></create-link>
-
                     </div>
 
-                    <div class="clearfix"></div>
                 </div>
-                <!--<div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                            <span ng-if="!item.access.p">в приоритет</span>
-                            <span ng-if="item.access.p">в приоритете</span>
-                            <input type="checkbox" ng-model="item.access.p" ng-change="saveField(item,'access')">
-                        </label>
-                    </div>
-                </div>-->
                 <div class="clearfix"></div>
-            </div>
-
-
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-            <div class="cart-detail">
-                <div class="form-inline text-center">
-                    <h4 class="name-box text-center">структура страницы (разделение на столбцы шириной в %)</h4>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="0" >
-                            50/50
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="1">
-                            40/60
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="2">
-                            30/70
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="3">
-                            60/40
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="4">
-                            70/30
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="5">
-                            100/0
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="cart-detail">
-                <div class="editor">
-                    <h4 class="name-box">описание</h4>
-                    <div class="form-group" ng-if="$ctrl.tinymceOption">
-                        <textarea rows="12" ui-tinymce="$ctrl.tinymceOption" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
-                                  ng-change="saveField(item,'desc')"
-                                  ng-model="item.desc">
-
-                            </textarea>
-                    </div>
-
-                </div>
-            </div>
-            <div class="cart-detail">
-                <div class="editor ">
-                    <h4 class="name-box">описание 2</h4>
-                    <div class="form-group" ng-if="$ctrl.tinymceOption">
-                        <textarea rows="12" ui-tinymce="$ctrl.tinymceOption"
-                                  ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
-                                  ng-change="saveField(item,'desc1')"
-                                  ng-model="item.desc1">
-                                </textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="cart-detail">
-                <div class="editor">
-                    <h4 class="name-box">описание 3</h4>
-                    <div class="form-group" ng-if="$ctrl.tinymceOption">
-                        <textarea rows="12" ui-tinymce="$ctrl.tinymceOption" ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
-                                  ng-change="saveField(item,'desc2')"
-                                  ng-model="item.desc2">
-
-                                </textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="cart-detail">
-                <div class="form-group text-center">
-                    <h4 class="name-box">дополнительная таблица</h4>
-                    <ui-select ng-model="item.addInfo"
-                               ng-change="saveField(item,'addInfo')"
-                               on-select="onSelected($item)"
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <h4 class="name-box text-center">тип доступа</h4>
+                    <ui-select ng-model="item.access.t"
+                               ng-change="saveField(item,'access')"
                                append-to-body="true"
                                search-enabled="false">
-                        <ui-select-match allow-clear="true" placeholder="без таблицы">
-                            <span ng-bind="$select.selected.name"></span>
+                        <ui-select-match allow-clear="true" placeholder="тип доступа">
+                            <span ng-bind="$select.selected"></span>
                         </ui-select-match>
-                        <ui-select-null-choice>без доп таблицы</ui-select-null-choice>
-                        <ui-select-choices repeat="opt._id as opt in item.addInfos">
-                            <span ng-bind="opt.name"></span>
+                        <ui-select-null-choice>без типа доступа</ui-select-null-choice>
+                        <ui-select-choices repeat="opt in [1]">
+                            <span ng-bind="opt"></span>
                         </ui-select-choices>
                     </ui-select>
-
                 </div>
-                <hr>
-
-                <div class=" item-filter" ng-if="item.category.filters.length">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <h4 class="name-box text-center">длительность</h4>
+                    <ui-select ng-model="item.access.d"
+                               ng-change="saveField(item,'access')"
+                               append-to-body="true"
+                               search-enabled="false">
+                        <ui-select-match allow-clear="true" placeholder="длительность">
+                            <span ng-bind="$select.selected"></span>
+                        </ui-select-match>
+                        <ui-select-null-choice>безсросчаная</ui-select-null-choice>
+                        <ui-select-choices repeat="opt in [31,365]">
+                            <span ng-bind="opt"></span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                     <div class="form-group">
-                        <p class="info-text">Таблица параметров характеристики товара (например, таблица размеров) показывается на странице товара.</p>
-                        <p class="text-center ">выбрать таблицу параметров для товара</p>
-                        <ui-select ng-if="item.addInfos"
-                                   ng-model="item.addInfo"
-                                   append-to-body="true"
-                                   skip-focusser="false"
-                                   ng-change="saveField(item,'addInfo')"
-                                   search-enabled="false">
-                            <ui-select-match allow-clear="true" placeholder="без таблицы параметров">
-                                <span ng-bind="$select.selected.name"></span>
-                            </ui-select-match>
-                            <ui-select-null-choice>без таблицы</ui-select-null-choice>
-                            <ui-select-choices repeat="o._id as o  in item.addInfos">
-                                <span ng-bind="o.name"></span>
-                            </ui-select-choices>
-                        </ui-select>
+                        <div class="checkbox">
+                            <label>
+                                <span ng-if="!item.access.p">в приоритет</span>
+                                <span ng-if="item.access.p">в приоритете</span>
+                                <input type="checkbox" ng-model="item.access.p" ng-change="saveField(item,'access')">
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="cart-detail">
+                <h4 class="text-center name-box"  ng-show="item.sortsOfStuff.differentPrice">наличие</h4>
+                <div style="overflow-x: auto" >
+                    <table class=" table table-striped table-hover different">
+                        <thead>
+                        <tr>
+                            <th>признак</th>
+                            <th class="text-center" >наличие</th>
+                            <th class="text-center"   ng-if="item.sortsOfStuff.differentPrice">цена</th>
+                            <th class="text-center"    ng-if="item.sale&&item.sortsOfStuff.differentPrice">sale</th>
+                            <th class="text-center"    ng-if="global.get('store').val.seller.retail&&item.sortsOfStuff.differentPrice">розница</th>
+                            <th class="text-center"    ng-if="item.priceCampaign&&item.sortsOfStuff.differentPrice">акция</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr ng-repeat="tag in item.stockKeysArray">
+                            <td><span ng-show="tag!='notag'" ng-bind="tag.name"></span></td>
+                            <td class="text-center">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" ng-model="tag.quantity" ng-true-value=1 ng-false-value=0 ng-change="$ctrl.changeStock(item,tag)">
+                                    </label>
+                                </div>
+
+                            </td>
+
+                            <td  class="price-box text-center"  ng-show="item.sortsOfStuff.differentPrice">
+                                <input class="form-control"type="text" ng-model="item.stock[tag._id].price"  ng-change="saveField(item,'stock')">
+
+                            </td>
+                            <td class="price-box text-center" ng-if="item.sale&&item.sortsOfStuff.differentPrice">
+                                <input class="form-control"type="text" ng-model="item.stock[tag._id].priceSale" disabled>
+
+                            </td>
+                            <td class="price-box text-center" ng-if="global.get('store').val.seller.retail&&item.sortsOfStuff.differentPrice">
+
+                                <input class="form-control"type="text" ng-model="item.stock[tag._id].retail" disabled>
+
+                            </td>
+                            <td class="price-box text-center" ng-if="item.priceCampaign&&item.sortsOfStuff.differentPrice">
+
+                                <input class="form-control"type="text" ng-model="item.stock[tag._id].priceCampaign" disabled>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="cart-detail">
                 <h4 class="name-box text-center">дополнительные значения</h4>
                 <div class="col-lg-8  col-md-8 col-sm-8 col-xs-12">
@@ -753,8 +626,91 @@
                 <div class="clearfix"></div>
                 <hr>
             </div>
+            <div class="cart-detail">
+                <div class="form-group text-center">
+                    <h4 class="name-box">дополнительная таблица</h4>
+                    <ui-select ng-model="item.addInfo"
+                               ng-change="saveField(item,'addInfo')"
+                               on-select="onSelected($item)"
+                               append-to-body="true"
+                               search-enabled="false">
+                        <ui-select-match allow-clear="true" placeholder="без таблицы">
+                            <span ng-bind="$select.selected.name"></span>
+                        </ui-select-match>
+                        <ui-select-null-choice>без доп таблицы</ui-select-null-choice>
+                        <ui-select-choices repeat="opt._id as opt in item.addInfos">
+                            <span ng-bind="opt.name"></span>
+                        </ui-select-choices>
+                    </ui-select>
 
+                </div>
+                <hr>
+
+                <div class=" item-filter" ng-if="item.category.filters.length">
+                    <div class="form-group">
+                        <p class="info-text">Таблица параметров характеристики товара (например, таблица размеров) показывается на странице товара.</p>
+                        <p class="text-center ">выбрать таблицу параметров для товара</p>
+                        <ui-select ng-if="item.addInfos"
+                                   ng-model="item.addInfo"
+                                   append-to-body="true"
+                                   skip-focusser="false"
+                                   ng-change="saveField(item,'addInfo')"
+                                   search-enabled="false">
+                            <ui-select-match allow-clear="true" placeholder="без таблицы параметров">
+                                <span ng-bind="$select.selected.name"></span>
+                            </ui-select-match>
+                            <ui-select-null-choice>без таблицы</ui-select-null-choice>
+                            <ui-select-choices repeat="o._id as o  in item.addInfos">
+                                <span ng-bind="o.name"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+            <div class="cart-detail">
+                <div class="form-inline text-center">
+                    <h4 class="name-box text-center">структура страницы (разделение на столбцы шириной в %)</h4>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="0" >
+                            50/50
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="1">
+                            40/60
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="2">
+                            30/70
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="3">
+                            60/40
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="4">
+                            70/30
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" ng-change="saveField(item,'grid')" ng-model="item.grid" name="optionsRatio" value="5">
+                            100/0
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="clearfix"></div>
+
+
         </div>
         <div class="clearfix"></div>
     </div>

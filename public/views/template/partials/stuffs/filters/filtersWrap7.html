@@ -1,0 +1,70 @@
+<div class="filters-first-box">
+    <div class="filter-box">
+        <div class="tag-box" ng-repeat="section in $ctrl.sections">
+            <p>
+                <a ng-click="$ctrl.changeAllCategories(section)"><span class="filter-name pull-left">{{section.name}} </span></a>
+                <div class="clearfix"></div>
+            </p>
+            <div class="clearfix"></div>
+            <div class="tag-row"  class="form-group tag" ng-repeat="category in section.categories" ng-if="!category.notActive">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"  ng-model="category.set"
+                               ng-click="$ctrl.changeCategory(category)">
+                        <div class="checkbox__text">&nbsp{{category.name}}</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="cancel-tag">
+            <a class="reset" ng-click="$ctrl.clearAll()" ng-show="$ctrl.showResetAll()" >
+                <span class="reset-all">
+                    {{$ctrl.global.get('lang').val.cancelAll}}
+                </span>
+            </a>
+        </div>
+        <div class="tag-box" ng-repeat="filter in $ctrl.filters" ng-if="filter.inList && (filter.tags.length||filter.count)">
+            <p>
+                <span class="filter-name pull-left">{{filter.name}} </span>
+                <span class="filter-name pull-left" ng-if="filter.count">{{filter.desc}}</span>
+                <a class="reset link-warning pull-right" ng-click="$ctrl.changeAllTags(filter)" ng-show="$ctrl.showReset(filter)">
+                    {{$ctrl.global.get('lang').val.tagsReset}}
+                </a>
+                <div class="clearfix"></div>
+            </p>
+            <div class="clearfix"></div>
+            <div ng-if="filter.count">
+                <rzslider
+                        rz-slider-model="filter.minValue"
+                        rz-slider-high="filter.maxValue"
+                        rz-slider-options="{floor: filter.min, ceil: filter.max}"></rzslider>
+                <a class="pull-right link-success" ng-click="$ctrl.setCountFilter(filter)">
+                    {{$ctrl.global.get('lang').val.set}}
+                </a>
+                <a class="link-warning" ng-click="$ctrl.clearCountFilter(filter)">
+                    {{$ctrl.global.get('lang').val.clear}}
+                </a>
+            </div>
+            <div class="tag-row" ng-if="!filter.count" class="form-group tag" ng-repeat="tag in filter.tags">
+                <div class="checkbox" ng-if="!filter.photo">
+                    <label>
+                        <input type="checkbox"  ng-model="tag.set"
+                               ng-click="$ctrl.changeTag(filter,tag)">
+                        <div class="checkbox__text">&nbsp{{tag.name}}</div>
+                    </label>
+                </div>
+                <div ng-if="filter.photo">
+                    <a ng-class="{'active':tag.set}" ng-click="tag.set=!tag.set;$ctrl.changeTag(filter,tag)">
+                        <img style="width:35px" ng-src="{{tag.img}}" >
+                    <span ng-bind="tag.name"></span>
+                    </a>
+                    <!--<label>
+                        <input type="checkbox"  ng-model="tag.set"
+                               ng-click="$ctrl.changeTag(filter,tag)">
+                        <div class="checkbox__text">&nbsp{{tag.name}}</div>
+                    </label>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

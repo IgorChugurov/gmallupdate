@@ -1,0 +1,66 @@
+/*menu1*/
+.navbar-fixed-top{
+    z-index: 1045;
+}
+.navbar {
+    border-radius: 0;
+    min-height: 0;
+}
+@media (min-width: 1025px) {
+    .navbar:hover {
+
+        background-color: $hover-background-color;
+    }
+}
+.navbar.menuColor {
+    @if $background-color {
+        background-color: $background-color;
+    }
+}
+.navbar .right-nav-menu {
+    z-index: 1050;
+}
+.wrap-for-horizontel-menu{
+    position: relative;
+}
+.menuColor a,
+.inverseColor a{
+    @if $color{
+        color: $color
+    }
+}
+.center-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+.center-wrap {
+    display:inline-block;
+}
+.left-nav-menu {
+    position:absolute;
+    left:0
+}
+.right-nav-menu {
+    position:absolute;
+    right:0
+}
+@media (min-width: 768px) {
+    .navbar {
+        min-height: 0;
+    }
+}
+@media (min-width: 100px) {
+    .navbar {
+        min-height: 0;
+    }
+}
+.mobile-wrapper .navbar {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+

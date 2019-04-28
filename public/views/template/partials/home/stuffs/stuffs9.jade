@@ -1,0 +1,45 @@
+if(dj[key].stuffs && dj[key].stuffs.length)
+    div(class=dj[key].wrapclass)
+        div(class=mobileWrapper)
+            div(class="home-stuffs stuffs-home")
+                div(class="container")
+                    if(dj[key].name)
+                        h2(class="text-center")=dj[key].name
+                    - var className  ="col-lg-3 col-md-3 col-sm-6 col-xs-12 stuffs-box"
+                    if(dj[key].stuffs.length == 2)
+                        - className="col-lg-6 col-md-6 col-sm-6 col-xs-12 stuffs-box"
+                    else if(dj[key].stuffs.length == 3)
+                        - className='col-lg-4 col-md-4 col-sm-4 col-xs-12 stuffs-box'
+                    else if(dj[key].stuffs.length == 4 || dj[key].stuffs.length == 8 || dj[key].stuffs.length == 12)
+                        - className="col-lg-3 col-md-3 col-sm-3 col-xs-12 stuffs-box"
+
+                    each stuff in dj[key].stuffs
+                        div(class=className,home-page-stuff=stuff._id)
+                            div(home-page-stuff=stuff._id,class="videoStuff")
+                                if stuff.video
+                                    a(href=stuff.link)
+                                        video(play-video-by-hover,preload="true",loop,autoplay1,style="width: 100%",muted=!stuff.video.audio,controls=stuff.video.videoControl,poster=stuff.img,webkit-playsinline)
+                                            if(dj[key].videoOgg)
+                                                source(src=photoHost + '/' + dj[key].stuff.videoOgg,type="video/ogg")
+                                            if(stuff.video.link)
+                                                source(src=photoHost + '/' + stuff.video.link,type="video/mp4")
+                            a(href=stuff.link)
+                                div(class="box-desc")
+                                    if(stuff.name)
+                                        h4(class="stuff-name")
+                                            span=stuff.name
+                                            | &nbsp;
+                                            span(class="artikul")=stuff.artikul
+                                    if stuff.masters
+                                        h5(class="masters")
+                                            each master,index in stuff.masters
+                                                span=master.name
+                                                if index !== stuff.masters.length - 1 && stuff.masters.length>1
+                                                    span
+                                                        | &nbsp;
+                                                        | &
+                                                        | &nbsp;
+                                    a(href=stuff.link)
+                                        p(class="begin-box")
+                                            span(class="begin",ng-bind="$ctrl.global.get('lang').val.startPracticing")
+                    div( class="clearfix")

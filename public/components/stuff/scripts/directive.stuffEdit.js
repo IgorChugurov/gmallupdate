@@ -22,12 +22,65 @@ angular.module('gmall.directives')
             $scope.$ctrl.listOfBlocksForStuffDetailBlocks=listOfBlocksForStuffDetailBlocks;
             $scope.$ctrl.listOfBlocks=angular.copy(listOfBlocksForAll);
 
+            $scope.$ctrl.bookkeep = (global.get('store').val.bookkeep)?true:null;
 
             $scope.$ctrl.addBlock=addBlock;
             $scope.$ctrl.deleteBlock=deleteBlock;
             $scope.$ctrl.saveField=saveFieldBlocks;
             $scope.$ctrl.saveFieldStuff=saveField;
             $scope.$ctrl.type='Stuff';
+            $scope.$ctrl.makeMaterial = makeMaterial;
+
+             function makeMaterial(){
+
+                 return $q.when()
+                     .then(function () {
+                         var q = {_id:$scope.item._id}
+                         return $http.get('/api/collections/Materila?query='+JSON.stringify(q));
+
+                     })
+                     .then(function (res) {
+                         console.log(res)
+                     })
+                     .catch(function (err) {
+                         console.log(err)
+                     })
+                 return
+                 /*let qq = {
+                     store:'5867d1b3163808c33b590c12',
+                     stuff:line[3],
+                     sort:line[4]
+                 }
+                 let material = await Material.findOne(qq).lean().exec();
+                 console.log('material',material)
+                 if(!material){
+                     if(!producers[line[2]]){
+                         let q ={store:'5867d1b3163808c33b590c12',name:line[2]};
+                         let pr = await Producer.findOne(q).lean().exec();
+                         //console.log('pr',pr)
+                         if(!pr){
+                             q.actived=true;
+                             pr = new Producer(q)
+                             await pr.save()
+                             producers[line[2]]=pr._id.toString();
+                         }
+                     }
+                     let m ={
+                         store:"5867d1b3163808c33b590c12",
+                         index:i,
+                         name : line[0],
+                         sku:line[1],
+                         producer:producers[line[2]],
+                         stuff:line[3],
+                         sort:line[4]
+                     }
+
+                     material = new Material(m);
+                     console.log('material',material)
+                     let r = await material.save()
+                     console.log(r)
+                 }*/
+             }
             /*$scope.$ctrl.setStyles=setStyles;
              $scope.$ctrl.deleteSlide=deleteSlide;
             $scope.$ctrl.movedItem=movedItem;

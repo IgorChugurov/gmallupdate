@@ -1,0 +1,13 @@
+div(class=dj[key].wrapclass)
+    div(class=mobileWrapper)
+        div(ng-if="$ctrl.item.sortsOfStuff && $ctrl.item.sortsOfStuff.stuffs.length>1",class="color-box")
+            div
+                p(class="group-name")
+                    span(class="group-box",ng-bind="$ctrl.item.sortsOfStuff.name")
+                    | &nbsp;
+                    span(class="group",ng-bind="$ctrl.item.sortsOfStuff.filterActiveTagName")
+                p(class="group-value")
+                    span(class="group-goods",ng-class="{'active':item._id==$ctrl.item._id}", ng-repeat="item in $ctrl.item.sortsOfStuff.stuffs")
+                        a(ui-sref1="stuffs.stuff(item.link)",ng-click="$ctrl.chancheStuff(item)")
+                            img(class="img-responsive", ng-src="{{item.gallery[0].thumbSmallTag||item.gallery[0].thumbSmall}}")
+                div(class="clearfix")

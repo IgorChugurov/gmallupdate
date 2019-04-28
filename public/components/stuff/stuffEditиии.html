@@ -202,13 +202,6 @@
                         <span ng-bind="item.driveSalePrice.maxDiscount"></span><span> %</span>
                     </p>
                 </div>
-                <br>
-                <div class="form-group  text-center" ng-if="$ctrl.bookkeep">
-                    <p class="label-menu">создание карточки в бухгалтерии</p>
-                    <a class="btn btn-success" ng-click="$ctrl.makeMaterial()" ng-show="!$ctrl.materialIs">создать карточку</a>
-                    <a class="btn btn-success" ng-show="$ctrl.materialIs">карточка создана</a>
-
-                </div>
             </div>
             <div class="cart-detail">
                 <h4 class="text-center name-box"  ng-show="item.sortsOfStuff.differentPrice">наличие</h4>
@@ -404,12 +397,12 @@
                             шаблон
                         </label>
                     </div>
-                    <!--<div class="radio ">
+                    <div class="radio ">
                         <label>
                             <input type="radio" ng-change="saveField(item,'orderType')"ng-model="item.orderType"name="optionsRadios" id="optionsRadios8" value="8">
                             скачивание видео
                         </label>
-                    </div>-->
+                    </div>
                 </div>
                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <div>
@@ -455,20 +448,40 @@
                             <input class="form-control" type="text" ng-change="saveField(item,'templateUrl')"ng-model="item.templateUrl">
                         </div>
                     </div>
-
+                    <div  ng-if="item.orderType==8">
+                        <p class="name-box text-center">ссылка для скачивания</p>
+                        <div class="form-group label-floating">
+                            <label class="control-label">ссылка для видео</label>
+                            <input class="form-control" type="text" ng-change="saveField(item,'media')"ng-model="item.media">
+                        </div>
+                        <p class="name-box text-center">уровень доступа</p>
+                        <ui-select ng-model="item.levelMedia"
+                                   ng-change="saveField(item,'levelMedia')"
+                                   on-select="onSelected($item)"
+                                   append-to-body="true"
+                                   search-enabled="false">
+                            <ui-select-match allow-clear="true" placeholder="уровень доступа">
+                                <span ng-bind="$select.selected"></span>
+                            </ui-select-match>
+                            <ui-select-null-choice>без единиц измерения</ui-select-null-choice>
+                            <ui-select-choices repeat="opt in levelMedia">
+                                <span ng-bind="opt"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
 
                 </div>
                 <div class="clearfix"></div>
             </div>
             <div class="cart-detail">
-                <h4 class="name-box text-center">для товаров, которые являются подпиской</h4>
+                <h4 class="name-box text-center">при платной подписке</h4>
                 <div class="form-group">
                     <div class="togglebutton text-center">
                         <label for="access">
                             <span ng-class="{'active':!item.access}">обычный товар</span>
                             <input type="checkbox"
                                    id="access"
-                                   ng-model="item.access"
+                                   ng-model="item.access.t"
                                    ng-change="saveField(item,'access')">
                             <span ng-class="{'active':item.access}">товар в приоритете</span>
                         </label>
@@ -490,7 +503,7 @@
                     </ui-select>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <h4 class="name-box text-center">длительность подписки</h4>
+                    <h4 class="name-box text-center">длительность</h4>
                     <ui-select ng-model="item.access.d"
                                ng-change="saveField(item,'access')"
                                append-to-body="true"
@@ -503,51 +516,6 @@
                             <span ng-bind="opt"></span>
                         </ui-select-choices>
                     </ui-select>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="cart-detail">
-                <h4 class="name-box text-center">для товаров, которые продаются по подписке</h4>
-                <div class="form-group">
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p class="name-box text-center">уровень доступа</p>
-                        <ui-select ng-model="item.levelMedia"
-                                   ng-change="saveField(item,'levelMedia')"
-                                   on-select="onSelected($item)"
-                                   append-to-body="true"
-                                   search-enabled="false">
-                            <ui-select-match allow-clear="true" placeholder="уровень доступа">
-                                <span ng-bind="$select.selected"></span>
-                            </ui-select-match>
-                            <ui-select-null-choice>без единиц измерения</ui-select-null-choice>
-                            <ui-select-choices repeat="opt in levelMedia">
-                                <span ng-bind="opt"></span>
-                            </ui-select-choices>
-                        </ui-select>
-                        <div class="form-group label-static">
-                            <p class="name-box text-center">длительность видео в минутах</p>
-                            <input class="form-control" type="number" ng-change="saveField(item,'videoTime')"ng-model="item.videoTime">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <p class="name-box text-center">ссылка для скачивания</p>
-                        <div class="form-group label-floating">
-                            <label class="control-label">ссылка для контента (HD)</label>
-                            <input class="form-control" type="text" ng-change="saveField(item,'media')"ng-model="item.media">
-                        </div>
-                        <div class="form-group label-floating">
-                            <label class="control-label">ссылка для контента 2 (SD)</label>
-                            <input class="form-control" type="text" ng-change="saveField(item,'media2')"ng-model="item.media2">
-                        </div>
-
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-6">
-                        <a class="btn btn-raised btn-info btn-block"  ng-click="isCollapsed2 = !isCollapsed2">ссылка для перехода когда контент не доступен</a>
-                        <create-link title='false' uib-collapse="!isCollapsed2"  link="item.hrefInsteadVideo" change="saveField(item,'hrefInsteadVideo')" edit-seo-page="true"></create-link>
-
-                    </div>
-
-                    <div class="clearfix"></div>
                 </div>
                 <!--<div class="form-group">
                     <div class="checkbox">

@@ -1,0 +1,15 @@
+.mobile-wrapper   .video-box {
+    overflow: hidden;
+}
+.mobile-wrapper   .video-box img {
+    object-fit: cover;
+}
+video {
+    height: 80vh;
+    object-fit: cover;
+    background-size: cover;
+}
+iframe{
+    width: 100% !important;
+}
+

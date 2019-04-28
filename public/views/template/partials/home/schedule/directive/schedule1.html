@@ -1,0 +1,50 @@
+<a name="schedule"></a>
+<div class="schedule">
+    <div class="container">
+        <div class="week-box" ng-init="$ctrl.week=0">
+            <div uib-carousel active="$ctrl.week" interval="$ctrl.myInterval" ng-cloak>
+                <div  class="box-day" uib-slide  ng-repeat="i in [0,1,2,3,4,5,6]" ng-class="{'active':i==$ctrl.week}" index=i  ng-swipe-left="$ctrl.chancheActiveSlide('left')" ng-swipe-right="$ctrl.chancheActiveSlide('right')")>
+                    <a ng-click="$ctrl.changeWeek(i)">
+                        <span ng-bind="$ctrl.weeksRange[i].startDateString"></span> -
+                        <span ng-bind="$ctrl.weeksRange[i].endDateString"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="schedule",id="innerDivInschedule">
+            <div class="online-box">
+                <div class="center-div">
+
+                        <div class="online-table-day" ng-repeat="(date,data) in $ctrl.selectedMaster.week" ng-class="{'disabled':$index<$ctrl.currentDayOfWeek&& !$ctrl.week}">
+                            <!--<div  class="online-table-day box-day" ng-repeat="d in $ctrl.datesOfWeeks" ng-init="dateField=$ctrl.getDateObj(d.date)">
+                                <p ng-bind="dateField"></p>
+                            </div>-->
+                            <h3 class="days" ng-bind="data.dateStr"></h3>
+                            <div class="box-day" ng-repeat="item in data.entryTimeTable|filter:$ctrl.filterTimePartForMaster">
+                                <div>
+                                    <div class="entry">
+                                        <span class="time" ng-bind="item.usedTime"></span>
+
+                                        <a class="service">
+                                            <span href=item.serviceLink  ng-bind="item.service"></span>
+                                        </a>
+                                        <span class="comment" ng-bind="item.comment"></span>
+                                        <span class="workplaceName" ng-bind="item.workplaceName"></span>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+            </div>
+    </div>
+    </div>
+</div>
+
+
+
+
