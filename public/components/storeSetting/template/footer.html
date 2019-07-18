@@ -209,6 +209,7 @@
                                             dnd-moved="$ctrl.item.footer.parts.splice($index,1)"
                                             ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
                                             <div class="block-box name col-lg-2 col-md-2 col-sm-2 col-xs-10">
+                                                <i class="material-icons link-success">swap_vert</i>
                                                 <div class="form-group">
                                                     <i class="material-icons link-success">swap_vert</i>
                                                      <span ng-repeat="(key,part) in $ctrl.listBlocksForFooter" ng-if="component.name==key">
@@ -1111,7 +1112,7 @@
                                             dnd-draggable="component"
                                             dnd-type="'footerMobile'"
                                             dnd-effect-allowed="move"
-                                            dnd-moved="$ctrl.item.footerTablet.parts.splice($index,1)"
+                                            dnd-moved="$ctrl.item.footerMobile.parts.splice($index,1)"
                                             ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
                                             <div class="block-box name col-lg-2 col-md-2 col-sm-2 col-xs-10">
                                                 <div class="form-group">

@@ -83,3 +83,18 @@ ul.pagination {
     }
 
 }
+.mobile-wrapper .paginator-block {
+    margin: 0;
+}
+.mobile-wrapper .left-right {
+    width: auto;
+}
+.mobile-wrapper .paginator-block a {
+    height: 40px;
+    padding: 5px;
+    width: 40px;
+}
+.mobile-wrapper .right,
+.mobile-wrapper .left {
+    display: none;
+}

@@ -16,7 +16,11 @@
         </div>
         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
 
-            <ui-select  placeholder="выберите специалиста" search-enabled="false" ng-model="entry.masterReplace" skip-focusser="true" append-to-body>
+            <ui-select  placeholder="выберите специалиста" search-enabled="false"
+                        ng-model="entry.masterReplace"
+                        skip-focusser="true" append-to-body
+                        ng-change="$ctrl.saveField('masterReplace')"
+            >
 
                 <ui-select-match  allow-clear="true" placeholder="выбрать мастера">{{$select.selected.name}}</ui-select-match>
                 <ui-select-choices repeat="opt._id as opt in masters">{{opt.name}}</ui-select-choices>
@@ -26,15 +30,32 @@
     </div>
     <div class="mb-40">
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-            <h4>занимающихся</h4>
+            <h4>посетители</h4>
         </div>
         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-            <ui-select ng-model="entry.members" skip-focusser="true" search-enabled="false">
-                <ui-select-match placeholder="количество">{{$select.selected}}</ui-select-match>
-                <ui-select-choices repeat="opt in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]">{{ opt }}</ui-select-choices>
-            </ui-select>
+            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                <h4>поиск клиента в базе</h4>
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-6 col-xs-12">
+                <ui-select ng-model="$ctrl.user" reset-search-input="false" ng-change="$ctrl.addNewUser()">
+                    <ui-select-match allow-clear="true" placeholder="введите телефон или email">
+                        {{$select.selected.name}}  +{{$select.selected.phone}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="user in $ctrl.users track by $index"
+                                       refresh="$ctrl.refreshUsers($select.search)"
+                                       ui-disable-choice="user.abonement<=0"
+                                       refresh-delay="0">
+                        <small ng-bind="user.name"></small>  <small ng-bind="'+'+user.phone"></small><small class="pull-right"   ng-bind="user.abonement"></small>
+
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="clearfix"></div>
         </div>
         <div class="clearfix"></div>
+    </div>
+    <div ng-repeat="user in entry.members" class="col-lg-12">
+        <strong ng-bind="user.name"></strong>  <span ng-bind="'+'+user.phone"></span><a class="pull-right" ng-click="$ctrl.deleteUser($index)">X</a>
     </div>
 
     <div class="text-center">

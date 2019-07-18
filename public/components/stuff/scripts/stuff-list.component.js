@@ -732,15 +732,16 @@
         var url='views/template/partials/stuffs/stuffs-list/'+global.get('sectionType').val+'/'+$rootScope.$stateParams.groupUrl+'/'+$rootScope.$stateParams.categoryUrl;
         var waiting,lastElement,page=0,waitingDiv;
         var td1,td2,td3,td4,td5;
-        var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#000000"
-        var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"#F5F5F5"
+        //var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#666666"
+        //var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"transparent"
         var innerWaitingDiv=[
-            '<div class="spinner-box clearfix text-center" style="width:100%;height:200px;background-color:'+BGcolor+';color:'+color+'">',
+            '<div class="spinner-box clearfix text-center" style="width:100%;height:100px;">',
             '<span class="icon-spinner-img"></span>',
             //'<img class="spinner" src="/img/spinner.gif" style="margin-top: 70px">',
             '</div>'
         ].join('')
         var tempContentIs=false;
+
         $q.when()
             .then(function(){
                 var params ={group:self.$stateParams.groupUrl,category:self.$stateParams.categoryUrl}
@@ -830,6 +831,7 @@
                 //seoContent.setDataCatalog()
 
                 waitingDiv=$('#paginateData'+page);
+                //waitingDiv.html(innerWaitingDiv);
                 self.totalQty=waitingDiv.data('total');
                 self.paginate.items=self.totalQty;
                 //console.log(self.totalQty)
@@ -1125,10 +1127,10 @@
         }
         var waiting,lastElement,page=0,waitingDiv;
         var td1,td2,td3,td4,td5;
-        var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#000000"
-        var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"#F5F5F5"
+        //var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#000000"
+        //var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"transparent"
         var innerWaitingDiv=[
-            '<div class="spinner-box clearfix text-center" style="width:100%;height:200px;background-color:'+BGcolor+';color:'+color+'">',
+            '<div class="spinner-box clearfix text-center" style="width:100%;height:200px;">',
             '<span class="icon-spinner-img"></span>',
             //'<img class="spinner" src="/img/spinner.gif" style="margin-top: 70px">',
             '</div>'
@@ -1398,6 +1400,7 @@
         self.Items=Stuff;
         self.mobile=global.get('mobile').val;
         self.global=global;
+        self.bookkeep=global.get('store').val.bookkeep;
         self.globalProperty=$rootScope.globalProperty;
         self.$state=$rootScope.$state;
         self.$stateParams=$rootScope.$stateParams;
@@ -1449,6 +1452,7 @@
         self.changeListCriteria=changeListCriteria;
         self.changeStock=changeStock
         self.deleteIndexPageHtml=deleteIndexPageHtml;
+        self.bookkeepSynchronize=bookkeepSynchronize;
 
         //*******************************************************
         activate();
@@ -1691,6 +1695,7 @@
                 })
         }
         function filterList(){
+
             $q.when()
                 .then(function(){
                     return self.Items.setFilters()
@@ -2284,8 +2289,18 @@
         function changeStock(stuff,tag) {
             //console.log(stuff)
             if(stuff.stock && stuff.stock[tag._id]){
-                stuff.stock[tag._id].quantity=tag.quantity
-                saveField(stuff,'stock');
+                if(global.get('store').val.bookkeep){
+                    if(tag.quantity==0){
+                        stuff.stock[tag._id].quantity=tag.quantity
+                        saveField(stuff,'stock');
+                    }else{
+                        exception.catcher('изменение количесва')('изменить количество можно только на ноль')
+                    }
+                }else{
+                    stuff.stock[tag._id].quantity=tag.quantity
+                    saveField(stuff,'stock');
+                }
+
             }
             //console.log(tag)
             //console.log(tag.quantity)
@@ -2301,6 +2316,28 @@
                 })
                 .catch(function(err){
                     exception.catcher('сброс страницы')(err)
+                })
+
+        }
+
+        function bookkeepSynchronize() {
+            $scope.$emit('$stateChangeStartToStuff')
+            console.log("bookkeepSynchronize")
+            Confirm('Подтверждаете?')
+                .then(function () {
+                    return $http({
+                        method: "get",
+                        url: '/api/stuffs/synchronizeWithBookkeep',
+                    })
+                })
+                .then(function(){
+                    $scope.$emit('$stateChangeEndToStuff')
+                    self.fixDesable=false
+                    exception.showToaster('info','synchronized','Ok')
+                })
+                .catch(function (err) {
+                    $scope.$emit('$stateChangeEndToStuff')
+                    exception.catcher('synchronize')(err)
                 })
 
         }
@@ -2370,6 +2407,8 @@
         }
         //console.log(self.sections)
 
+        self.allCategoriesSet=($stateParams.categoryUrl=='category')?true:false;
+
         self.changeAllBrands=changeAllBrands;
         self.changeAllTags=changeAllTags;
         self.clearAll=clearAll;
@@ -2434,6 +2473,7 @@
         function activate(){
             /*console.log(global.get('section').val)
             console.log(global.get('category').val)*/
+            //console.log(global.get('section'))
             if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
                 self.displayable=true;
             }else if(global.get('section') && global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
@@ -2713,7 +2753,7 @@
 
 
 
-        function changeTag(_filter,_tag){
+        function changeTag(_filter,_tag,type){
             //console.log(_filter,_tag)
             var queryTag='',brandTag='',brand='',filterTag='';
             //console.log(self.filters)
@@ -2747,17 +2787,34 @@
             })
 
             self.brands.forEach(function(b){
-                if(b.set){
-                    if(brand){brand+='__'}
-                    brand+=b.url;
-                }
-                b.tags.forEach(function(tag){
-                    if (tag.set){
-                        if(brandTag){brandTag+='__'}
-                        //console.log(tag.url,arr)
-                        brandTag+=tag.url;
+                if(type=='brand'){
+                    if(b.set){
+                        if(brand){brand+='__'}
+                        brand+=b.url;
                     }
-                })
+                }else if(type=='brandTag'){
+                    b.tags.forEach(function(tag){
+                        if (tag.set){
+                            if(brandTag){brandTag+='__'}
+                            //console.log(tag.url,arr)
+                            brandTag+=tag.url;
+                        }
+                    })
+                }else{
+                    if(b.set){
+                        if(brand){brand+='__'}
+                        brand+=b.url;
+                    }
+                    b.tags.forEach(function(tag){
+                        if (tag.set){
+                            if(brandTag){brandTag+='__'}
+                            //console.log(tag.url,arr)
+                            brandTag+=tag.url;
+                        }
+                    })
+                }
+
+
             })
             //console.log(filterTag)
             if(brand.split('__').length>1){
@@ -2856,16 +2913,24 @@
             //console.log(item)
             return item.name.toUpperCase()[0]==self.char
         }
-        function changeCategory(category) {
+        function changeCategory(category,section) {
             var o={
-                groupUrl:category.linkData.groupUrl,
-                categoryUrl:category.linkData.categoryUrl,
+                groupUrl:(category)?category.linkData.groupUrl:$stateParams.groupUrl,
+                categoryUrl:(category)?category.linkData.categoryUrl:'category',
                 queryTag:null,
                 brand:null,
                 brandTag:null,
                 categoryList:null
 
             };
+            if(!category || !category.set){
+                o.categoryUrl='category'
+            }
+            if(section && section.categories){
+                section.categories.forEach(function (c) {
+                    c.set=false;
+                })
+            }
             $state.go('stuffs',o)
         }
         function changeAllCategories(s) {

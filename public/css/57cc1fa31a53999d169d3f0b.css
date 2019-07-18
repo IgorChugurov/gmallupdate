@@ -23,6 +23,7 @@ body {
   background-color: #f8f8f8;
   font-family: HelveticaRegular;
   font-size: 18px;
+  height: 100vh;
   background-size: cover;
   background-position: center center; }
 
@@ -283,7 +284,8 @@ ul.pagination {
 .btn-md,
 .btn-sm,
 .btn-xs {
-  outline: none; }
+  outline: none;
+  border-radius: 0; }
 
 .btn:hover,
 .btn:active,
@@ -2139,149 +2141,36 @@ body.ng-pageslide-body-closed::before {
   -webkit-animation-name: fadeInRightBig;
   animation-name: fadeInRightBig; }
 
-.icon-right-img {
-  background: url("/img/icon/right/left-arrow (1).png") center center no-repeat;
+.icon-google-img {
+  background: url("/img/icon/google/social-google-plus-square-button.png") center center no-repeat;
   width: 24px;
   height: 24px;
   background-size: 24px;
   display: inline-block; }
 
-.icon-left-img {
-  background: url("/img/icon/left/left-arrow (1).png") center center no-repeat;
-  width: 24px;
-  height: 24px;
-  background-size: 24px;
-  display: inline-block; }
-
-.icon-addcart-img {
-  background: url("/img/icon/addcart/10.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block;
-  margin-right: 10px; }
-
-.icon-see-img {
-  background: url("/img/icon/see/logosmart.png") center center no-repeat;
-  width: 50px;
-  height: 50px;
-  background-size: 50px;
-  display: inline-block; }
-
-.icon-vkwhite-img {
-  background: url("/img/icon/vkwhite/vk_white.png") center center no-repeat;
-  width: 24px;
-  height: 24px;
-  background-size: 24px;
-  display: inline-block; }
-
-.icon-up-img {
-  background: url("/img/icon/up/up1.png") center center no-repeat;
-  width: 50px;
-  height: 50px;
-  background-size: 50px;
-  display: none; }
-
-.icon-twwhite-img {
-  background: url("/img/icon/twwhite/tw_white.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block; }
-
-.icon-tw-img {
-  background: url("/img/icon/tw/twitter-logo.png") center center no-repeat;
-  width: 24px;
-  height: 24px;
-  background-size: 24px;
-  display: inline-block; }
-
-.icon-subscription-img {
-  background: url("/img/icon/subscription/mail (2).png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block; }
-
-.icon-search-img {
-  background: url("/img/icon/search/search5.png") center center no-repeat;
-  width: 24px;
-  height: 24px;
-  background-size: 24px;
-  display: inline-block; }
-
-.icon-prev-img {
-  background: url("/img/icon/prev/prev2.png") center center no-repeat;
-  width: 50px;
-  height: 50px;
-  background-size: 50px;
-  display: inline-block; }
-
-.icon-pinwhite-img {
-  background: url("/img/icon/pinwhite/pin_white.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block; }
-
-.icon-pin-img {
-  background: url("/img/icon/pin/pinterest-sign.png") center center no-repeat;
-  width: 24px;
-  height: 24px;
-  background-size: 24px;
-  display: inline-block; }
-
-.icon-okwhite-img {
-  background: url("/img/icon/okwhite/ok_white.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block; }
-
-.icon-next-img {
-  background: url("/img/icon/next/next2.png") center center no-repeat;
-  width: 50px;
-  height: 50px;
-  background-size: 50px;
-  display: inline-block; }
-
-.icon-instwhite-img {
-  background: url("/img/icon/instwhite/inst_white.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block; }
-
-.icon-inst-img {
-  background: url("/img/icon/inst/instyana.png") center center no-repeat;
+.icon-fb-img {
+  background: url("/img/icon/fb/fbyana.png") center center no-repeat;
   width: 30px;
   height: 30px;
   background-size: 30px;
   display: inline-block; }
 
-.icon-chat-img {
-  background: url("/img/icon/chat/dialog.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
+.icon-envelope-img {
+  background: url("/img/icon/envelope/mail (1).png") center center no-repeat;
+  width: 32зч;
+  height: 32зч;
+  background-size: 32зч;
   display: inline-block; }
 
-.icon-fbwhite-img {
-  background: url("/img/icon/fbwhite/facebook-logo-in-circular-button-outlined-social-symbol.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
+.icon-down-img {
+  background: url("/img/icon/down/down_duble1.png") center center no-repeat;
+  width: 50px;
+  height: 50px;
+  background-size: 50px;
   display: inline-block; }
 
-.icon-cart-img {
-  background: url("/img/icon/cart/3.png") center center no-repeat;
-  width: 32px;
-  height: 32px;
-  background-size: 32px;
-  display: inline-block; }
-
-.icon-cart-inverse {
-  background: url("/img/icon/cart/3a.png") center center no-repeat;
+.icon-call-img {
+  background: url("/img/icon/call/phone-call.png") center center no-repeat;
   width: 32px;
   height: 32px;
   background-size: 32px;
@@ -2301,36 +2190,149 @@ body.ng-pageslide-body-closed::before {
   background-size: 26px;
   display: inline-block; }
 
-.icon-call-img {
-  background: url("/img/icon/call/phone-call.png") center center no-repeat;
+.icon-cart-img {
+  background: url("/img/icon/cart/3.png") center center no-repeat;
   width: 32px;
   height: 32px;
   background-size: 32px;
   display: inline-block; }
 
-.icon-down-img {
-  background: url("/img/icon/down/down_duble1.png") center center no-repeat;
-  width: 50px;
-  height: 50px;
-  background-size: 50px;
+.icon-cart-inverse {
+  background: url("/img/icon/cart/3a.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
   display: inline-block; }
 
-.icon-envelope-img {
-  background: url("/img/icon/envelope/mail (1).png") center center no-repeat;
-  width: 32зч;
-  height: 32зч;
-  background-size: 32зч;
+.icon-fbwhite-img {
+  background: url("/img/icon/fbwhite/facebook-logo-in-circular-button-outlined-social-symbol.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
   display: inline-block; }
 
-.icon-fb-img {
-  background: url("/img/icon/fb/fbyana.png") center center no-repeat;
+.icon-chat-img {
+  background: url("/img/icon/chat/dialog.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block; }
+
+.icon-inst-img {
+  background: url("/img/icon/inst/instyana.png") center center no-repeat;
   width: 30px;
   height: 30px;
   background-size: 30px;
   display: inline-block; }
 
-.icon-google-img {
-  background: url("/img/icon/google/social-google-plus-square-button.png") center center no-repeat;
+.icon-instwhite-img {
+  background: url("/img/icon/instwhite/inst_white.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block; }
+
+.icon-next-img {
+  background: url("/img/icon/next/next2.png") center center no-repeat;
+  width: 50px;
+  height: 50px;
+  background-size: 50px;
+  display: inline-block; }
+
+.icon-okwhite-img {
+  background: url("/img/icon/okwhite/ok_white.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block; }
+
+.icon-pin-img {
+  background: url("/img/icon/pin/pinterest-sign.png") center center no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  display: inline-block; }
+
+.icon-pinwhite-img {
+  background: url("/img/icon/pinwhite/pin_white.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block; }
+
+.icon-prev-img {
+  background: url("/img/icon/prev/prev2.png") center center no-repeat;
+  width: 50px;
+  height: 50px;
+  background-size: 50px;
+  display: inline-block; }
+
+.icon-search-img {
+  background: url("/img/icon/search/search5.png") center center no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  display: inline-block; }
+
+.icon-subscription-img {
+  background: url("/img/icon/subscription/mail (2).png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block; }
+
+.icon-tw-img {
+  background: url("/img/icon/tw/twitter-logo.png") center center no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  display: inline-block; }
+
+.icon-twwhite-img {
+  background: url("/img/icon/twwhite/tw_white.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block; }
+
+.icon-up-img {
+  background: url("/img/icon/up/up1.png") center center no-repeat;
+  width: 50px;
+  height: 50px;
+  background-size: 50px;
+  display: none; }
+
+.icon-vkwhite-img {
+  background: url("/img/icon/vkwhite/vk_white.png") center center no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  display: inline-block; }
+
+.icon-see-img {
+  background: url("/img/icon/see/logosmart.png") center center no-repeat;
+  width: 50px;
+  height: 50px;
+  background-size: 50px;
+  display: inline-block; }
+
+.icon-addcart-img {
+  background: url("/img/icon/addcart/10.png") center center no-repeat;
+  width: 32px;
+  height: 32px;
+  background-size: 32px;
+  display: inline-block;
+  margin-right: 10px; }
+
+.icon-left-img {
+  background: url("/img/icon/left/left-arrow (1).png") center center no-repeat;
+  width: 24px;
+  height: 24px;
+  background-size: 24px;
+  display: inline-block; }
+
+.icon-right-img {
+  background: url("/img/icon/right/left-arrow (1).png") center center no-repeat;
   width: 24px;
   height: 24px;
   background-size: 24px;

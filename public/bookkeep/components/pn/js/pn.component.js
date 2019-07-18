@@ -22,8 +22,8 @@
             templateUrl: 'bookkeep/components/pn/pn.html',
         }
     }
-    itemsCtrl.$inject=['Pn','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','$state','exception']
-    function itemsCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,$state,exception){
+    itemsCtrl.$inject=['Pn','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','$state','exception','Material']
+    function itemsCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,$state,exception,Material){
         var self = this;
         self.mobile = global.get('mobile').val;
         self.global = global;
@@ -88,8 +88,8 @@
 
         }
 
-        function createItem() {
-            $state.go('frame.pns.pn',{id:'new_'+self.virtualAccount})
+        function createItem(type) {
+            $state.go('frame.pns.pn',{id:'new_'+self.virtualAccount,type:type})
         }
 
         activate();
@@ -160,9 +160,34 @@
             //self.virtualAccount=null;
             self.paginate.page = 0;
             return getList().then(function () {
-                delete self.paginate.search
+
                 console.log('Activated pns list View');
-            });
+                if(!self.items.length){
+                    return Material.getList({page:0,rows:100,search:self.paginate.search}, {})
+                        .then(function (data) {
+                            delete self.paginate.search;
+                            if(data && data.length){
+								var ids =data.map(function(m){return m._id})
+                                var query = {'materials.item' :{$in:ids}}
+                                return Items.getList(self.paginate, query)
+                            }else{
+								return []
+							}
+
+
+
+                        }).then(function (data) {
+							console.log(data)
+                            data.forEach(function (d) {
+                                d.nameOfTypeOfConrtAgent=$scope.getNameTypeOfContrAgent(d.typeOfContrAgent)
+                            })
+                            self.items = data;
+                            $scope.items=data
+                        //console.log(self.items)
+                    });
+                }
+
+            })
         }
         function deleteItem(item) {
             if(!item.actived){
@@ -189,8 +214,8 @@
 
 
     }
-    itemCtrl.$inject=['Pn','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','exception','$state','Supplier','Material','Worker','Founder','Contragent','Customer']
-    function itemCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,exception,$state,Supplier,Material,Worker,Founder,Contragent,Customer){
+    itemCtrl.$inject=['Pn','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','exception','$state','Supplier','Material','Worker','Founder','Contragent','Customer','Rn']
+    function itemCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,exception,$state,Supplier,Material,Worker,Founder,Contragent,Customer,Rn){
         var self = this;
         self.mobile = global.get('mobile').val;
         self.global = global;
@@ -221,7 +246,7 @@
             return a.actived
         })
         self.currencyRate={}
-        console.log(global.get('store').val)
+        //console.log(global.get('store').val)
         for(var key in global.get('store').val.currency){
             if(key!=global.get('store').val.mainCurrency){
                 self.currencyRate[key]=Math.round((1/global.get('store').val.currency[key][0])*100)/100
@@ -252,6 +277,9 @@
         self.getTotalSum=getTotalSum;
         self.activePN=activePN;
         self.tagTransformForMaterial=tagTransformForMaterial;
+        self.changeContrAgent=changeContrAgent;
+        self.changeCurrency=changeCurrency;
+        self.refreshMaterialsForReturn=refreshMaterialsForReturn;
 
 
         function tagTransformForMaterial(newTag) {
@@ -304,8 +332,18 @@
                         self.contrAgents=result;
                     }
 
+
+
                     if(self.$stateParams[0]!='new'){
                         return getItem($stateParams.id)
+                    }else{
+                        if($stateParams.type && $stateParams.type=='return'){
+                            self.item.type='return';
+                            self.item.typeOfContrAgent='Customer';
+                            getContrAgents(self.item.typeOfContrAgent)
+                            //getContrAgents(self.item[field])
+
+                        }
                     }
                 })
                 .catch(function(err){
@@ -333,7 +371,7 @@
                         data.typeOfContrAgent='Supplier'
                     }
                     self.item=data;
-                    if(!self.contrAgents.length){
+                    if(!self.contrAgents.length || data.typeOfContrAgent!='Supplier'){
                         return getContrAgents(data.typeOfContrAgent)
                     }
                     if(data.actived){
@@ -410,22 +448,74 @@
                 })
         }
 
+        function changeContrAgent() {
+            if(self.item.type=='return'){
+                if(self.item.materials.length){
+                    self.item.currency=null;
+                    self.item.materials=[];
+                }
+
+                if(!self.item._id){return}
+                saveField('contrAgent');
+                if(self.item.materials.length){
+                    saveField('currency');
+                    saveField('materials');
+                }
+
+
+
+            }else{
+                saveField('contrAgent');
+            }
+
+
+        }
+        function changeCurrency() {
+            if(self.item.type=='return'){
+                if(self.item.materials.length){
+                    self.item.contrAgent=null;
+                    self.item.materials=[];
+                }
+
+
+                if(!self.item._id){return}
+                saveField('currency');
+                if(self.item.materials.length){
+                    saveField('materials');
+                    saveField('contrAgent');
+                }
+
+
+            }else{
+                saveField('currency');
+            }
+        }
+
         function saveField(field){
             if(field=='typeOfContrAgent'){
-                getContrAgents(self.item[field])
                 self.item.contrAgent=null;
-            }
-            if(!self.item._id){return}
+                getContrAgents(self.item[field])
 
+            }
             if(!self.item._id){return}
             var o={_id:self.item._id};
             if(field=='materials'){
                 o[field]=self.item[field].filter(function (m) {
                     return m.item && m.item._id
                 }).map(function (m) {
-                    console.log(m)
-                    console.log({item:m.item._id,qty:m.qty,price:m.price})
-                    return {item:m.item._id,qty:m.qty,price:m.price}
+                    /*console.log(m)
+                    console.log({item:m.item._id,qty:m.qty,price:m.price})*/
+                    var o = {item:m.item._id,qty:m.qty,price:m.price};
+                    if(m.priceReturn){
+                        o.priceReturn=m.priceReturn;
+                    }
+                    if(m.supplier){
+                        o.supplier=m.supplier;
+                    }
+                    if(m.supplierType){
+                        o.supplierType=m.supplierType;
+                    }
+                    return o;
                 })
             }else if(field=='typeOfContrAgent'){
                 o[field]=self.item[field]
@@ -465,13 +555,70 @@
             })
 
 
+
+        }
+        self.lastYearDate= new Date()
+        self.lastYearDate.setDate(-365);
+        self.lastQuery={};
+        self.materials=[];
+        function refreshMaterialsForReturn(searchStr) {
+            if(self.item.type=='return' && !self.item.contrAgent){
+                exception.catcher('поиск материалов')('выберите контрагента')
+                self.materials=[];
+                return;
+            }
+            if(self.item.type=='return' && !self.item.currency){
+                exception.catcher('поиск материалов')('выберите валюту')
+                self.materials=[];
+                return;
+            }
+            var populate = {
+                path:'materials.item',
+                select:'name sku'
+            }
+            var query={actived:true,'virtualAccount':self.item.virtualAccount,date:{'$gt':self.lastYearDate.getTime()},contrAgent:self.item.contrAgent,currency:self.item.currency}
+            /*console.log(self.lastQuery.contrAgent!=query.contrAgent)
+            console.log(self.lastQuery.currency!=query.currency)
+            console.log(self.lastQuery.virtualAccount!=query.virtualAccount)*/
+            if(self.lastQuery.contrAgent==query.contrAgent &&  self.lastQuery.currency==query.currency && self.lastQuery.virtualAccount==query.virtualAccount){return}
+            Rn.getList({page:0},query,populate)
+                .then(function (res) {
+                    self.lastQuery = query;
+                    //console.log(res);
+
+                    if(res.length){
+                        var arr =[];
+                        res.forEach(function (rn) {
+                            rn.materials.forEach(function (m) {
+                                var mm={
+                                    _id:m.item._id,
+                                    name:m.item.name,
+                                    sku:m.item.sku,
+                                    price:m.priceForSale,
+                                    priceReturn: m.price,
+                                    supplier: m.supplier,
+                                    supplierType: m.supplierType
+                                }
+                                arr.push(mm)
+                            })
+                        })
+                        self.materials=arr;
+                    }else{
+                        self.materials=[];
+                    }
+                })
+                .catch(function (err) {
+                    exception.catcher('получение списка товаров',err)
+                })
+
         }
         function deleteItem(idx) {
             self.item.materials.splice(idx,1);
             saveField('materials')
         }
         function changeMaterial(item,idx) {
-            //console.log(item)
+            console.log(item)
+
             if(self.item.materials.some(function (m,i) {
                     return m.item && m.item._id==item._id && i!=idx
                 })){
@@ -479,6 +626,12 @@
                 self.item.materials[idx].item=null;
             }else{
                 console.log(item)
+                if(self.item.type=='return'){
+                    self.item.materials[idx].price=self.item.materials[idx].item.price;
+                    self.item.materials[idx].priceReturn=self.item.materials[idx].item.priceReturn;
+                    self.item.materials[idx].supplier=self.item.materials[idx].item.supplier;
+                    self.item.materials[idx].supplierType=self.item.materials[idx].item.supplierType;
+                }
                 if(item._id=='new'){
                     $q.when()
                         .then(function () {
@@ -492,6 +645,7 @@
                     saveField('materials')
                 }
             }
+            console.log(self.item.materials)
         }
 
         function getTotalSum() {

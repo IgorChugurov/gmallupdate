@@ -284,7 +284,9 @@ angular.module('gmall.services', []).
             while (node.offsetParent && node.offsetParent != document.body) {
                 node = node.offsetParent;
                 y += node.offsetTop;
-            } return y;
+            }
+            console.log(y)
+            return y;
         }
 
     };

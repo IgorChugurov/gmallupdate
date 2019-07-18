@@ -2,6 +2,8 @@
 var api = require('../controllers/api');
 var middleware = require('../middleware')
 module.exports = function(router) {
+    router.post('/api/orders/changeAbonement',middleware.getStore,api.changeAbonement);
+    router.post('/api/orders/checkStuffInOldOrders',middleware.getStore,api.checkStuffInOldOrders);
     router.post('/api/orders/checkoutLiqpay',middleware.getStore,api.checkoutLiqpay);
     router.post('/api/orders/checkoutLiqpayInvoice',middleware.getStore,api.checkoutLiqpayInvoice);
     router.post('/api/orders/checkoutLiqpayEntry',middleware.getStore,api.checkoutLiqpayEntry);

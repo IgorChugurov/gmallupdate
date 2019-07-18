@@ -130,7 +130,7 @@ angular.module('gmall.services', []).
 
 .service('anchorSmoothScroll', function(){
     
-    this.scrollTo = function(eID) {
+    this.scrollTo = function(eID,top) {
 
         // This scrolling function 
         // is from http://www.itnewb.com/tutorial/Creating-the-Smooth-Scroll-Effect-with-JavaScript
@@ -170,14 +170,27 @@ angular.module('gmall.services', []).
         }
         
         function elmYPosition(eID) {
+            var i =0;
+            if(top){
+                var e = $('#menu1-section')
+                if(e.hasClass('navbar-fixed-top')){
+                    i=e.outerHeight();
+                }
+            }
             var elm = document.getElementById(eID);
             if (!elm) return 0;
             var y = elm.offsetTop;
             var node = elm;
+            //console.log(node.offsetParent)
             while (node.offsetParent && node.offsetParent != document.body) {
                 node = node.offsetParent;
                 y += node.offsetTop;
-            } return y;
+            }
+            //console.log(y,i)
+            if(top){
+                y-=i;
+            }
+            return y;
         }
 
     };

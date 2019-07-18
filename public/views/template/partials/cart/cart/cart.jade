@@ -6,14 +6,13 @@ div(class=dj[key].wrapclass)
                     div(class="row")
                         div(class="")
                             div(class="col-sm-12 col-lg-12 col-md-12 col-xs-12")
-                                h2(class="page-section text-center",ng-bind="$ctrl.global.get('lang').val.yourorder", ng-if="$ctrl.order.totalCount")
+                                div(class="order-header", ng-if="$ctrl.order.totalCount")
+                                    h2(class="page-section text-center",ng-bind="$ctrl.global.get('lang').val.yourorder")
 
-                                //p(class="text-center", ng-if="$ctrl.order.totalCount>0")
-                                    a(class="btn  btn-project btn-border ", ng-class="{'pull-right':!$ctrl.mobile}",ng-click="$ctrl.clearCart()",ng-bind="$ctrl.global.get('lang').val.clearcart")
-                                    div(class=" clearfix")
-                                h2(class="text-center", ng-if="!$ctrl.order.totalCount")
-                                    span(ng-bind="$ctrl.global.get('lang').val.basketEmpty")
-                                hr
+                                    //p(class="text-center", ng-if="$ctrl.order.totalCount>0")
+                                        a(class="btn  btn-project btn-border ", ng-class="{'pull-right':!$ctrl.mobile}",ng-click="$ctrl.clearCart()",ng-bind="$ctrl.global.get('lang').val.clearcart")
+                                        div(class=" clearfix")
+                                    hr
                                 div(class="cart-inner",ng-show="$ctrl.order.cart.stuffs.length", ng-repeat="(idx,stuff) in $ctrl.order.cart.stuffs track by $index", class="cart-detail",  id="cart-inner")
                                         div
                                             span(class="index",ng-bind="idx + 1")
@@ -140,18 +139,22 @@ div(class=dj[key].wrapclass)
                                         | &nbsp; - &nbsp;
                                         span(ng-bind="$ctrl.opt")
                                             span(ng-bind="$ctrl.global.get('lang').val.unitsadd")
-
-                                div(class=" col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center",ng-show="$ctrl.textCheckWarehouse")
-                                    p(ng-bind="$ctrl.textCheckWarehouse")
                                 div(class=" col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center",ng-if="$ctrl.enableCheckOut()", ng-disabled="$ctrl.disabledCheckOut()")
                                     a(class="btn btn-lg btn-project",ng-class="{'pull-right':!$ctrl.mobile}",ng-click="$ctrl.checkOut()")
                                         span(ng-bind="$ctrl.global.get('lang').val.checkout")
                                 div(class="clearfix")
-                if(dj[key].desc)
-                    h1=dj[key].name
-                if(dj[key].desc)
-                    p
-                        | !{dj[key].desc}
+                div(class="text-center empty", ng-if="!$ctrl.order.totalCount")
+                    h2(class="")
+                        span(ng-bind="$ctrl.global.get('lang').val.basketEmpty")
+                    hr
+                    a(class="btn  btn-project btn-border back", ng-click="$ctrl.backToShop()",ng-bind="$ctrl.global.get('lang').val.backToShopping")
+
+                div(class="desc-cart",ng-if="$ctrl.order.totalCount")
+                    if(dj[key].desc)
+                        h1=dj[key].name
+                    if(dj[key].desc)
+                        div
+                            | !{dj[key].desc}
 
 
 

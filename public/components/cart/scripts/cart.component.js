@@ -120,6 +120,7 @@
         self.goToStuff=goToStuff;
         self.disabledCheckOut=disabledCheckOut
         self.back=back;
+        self.backToShop=backToShop;
         self.getFilterName=getFilterName;
         self.decreaseQty=decreaseQty
         self.increaseQty=increaseQty
@@ -375,6 +376,15 @@
             }else if(states.some(function(state){return state.name=='stuffs.stuff'})){
                 $state.go('stuffs.stuff',o)
             }
+        }
+        function backToShop() {
+
+            var o={groupUrl:'null',
+                categoryUrl:'category'};
+            if(global.get('sections').val && global.get('sections').val[0]){
+                o.groupUrl=global.get('sections').val[0].url;
+            }
+            $state.go('stuffs',o)
         }
 
         function disabledCheckOut(){

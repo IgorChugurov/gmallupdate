@@ -213,6 +213,8 @@ var SfuffSchema = new Schema({
         p:Boolean
     }, // доступ к контенту t - тип доступа d - длительность в днях p- приоритет (активное предложение для подписки)
     accessLevel:Number,// уровень доступа к контенту данного товара, корреспондируется с access.t
+    abonement:Number,// количество посещений по абонементу
+    masters:[{type : Schema.ObjectId, ref : 'Master'}],
 }, {
     toObject: {
         virtuals: true
@@ -266,6 +268,7 @@ function retailPrice(doc,retail){
 
 SfuffSchema.statics = {
     preUpdate:function(req,cb){
+        //console.log('preUpdate')
         let self=this;
         return new Promise(function(rs,rj){
             self.findOne({$and:[{store:req.store._id},{ idForXML:{$lt:100000} }]})
@@ -400,7 +403,7 @@ SfuffSchema.statics = {
         this.findOne(query)
             .populate('sortsOfStuff addInfo')
             .populate('blocks.stuffs','name artikul nameL artikulL link gallery actived')
-
+            .populate('masters','name nameL url desc descL blocks')
             .populate('category','name nameL url')
             .populate('brand','name nameL url')
             .populate({
@@ -444,6 +447,73 @@ SfuffSchema.statics = {
                         doc.groupStuffs.masters.forEach(function (eee,idx){
                             //console.log(eee.toObject)
                             let el = doc.groupStuffs.masters[idx];
+                            let img,imgs,desc,position,stuffs,video,positionL,descL;
+                            if(el.blocks && el.blocks.length){
+                                el.blocks.sort(function (a,b) {
+                                    return a.index-b.index
+                                })
+
+                                for(let i=0;i<el.blocks.length;i++){
+                                    if(!el.blocks[i] || !el.blocks[i].is){continue}
+                                    if(el.blocks[i].useImg){
+                                        img=el.blocks[i].img;
+                                        imgs=null;
+                                        video=null;
+                                    }
+                                    if(el.blocks[i].useDesc){
+                                        let s = el.blocks[i].desc.myTrim().clearTag().substring(0,150);
+                                        //console.log(s)
+                                        if(s){
+                                            desc=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                            descL=el.blocks[i].descL;
+                                        }
+                                    }
+                                    if(!desc && el.blocks[i].desc){
+                                        let s = el.blocks[i].desc.myTrim().clearTag().substring(0,150);
+                                        //console.log(s)
+                                        if(s){
+                                            desc=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                            descL=el.blocks[i].descL;
+                                        }
+                                    }
+                                    if(img || video || imgs){continue}
+                                    if((el.blocks[i].type=='banner'||el.blocks[i].type=='bannerOne') && el.blocks[i].img){
+                                        img = el.blocks[i].img
+                                    }
+                                    if(img || video || imgs){continue}
+                                    if(el.blocks[i].type=='videoLink' && el.blocks[i].videoLink){
+                                        video = el.blocks[i].videoLink
+                                    }
+                                    if(img || video || imgs){continue}
+                                    if(el.blocks[i].type=='slider' &&el.blocks[i].imgs && el.blocks[i].imgs.length){
+                                        imgs= el.blocks[i].imgs
+                                    }
+                                }
+                                if(img){el.img=img}else{el.img=null}
+                                if(imgs){el.imgs=imgs}else{el.imgs=null}
+                                if(desc){el.desc=desc}else{el.desc=null}
+                                if(descL && typeof descL=='object'){
+                                    for(let k in descL){
+                                        if(descL[k] && descL[k].clearTag){
+                                            let s = descL[k].clearTag().substring(0,150)
+                                            descL[k]=s.substr(0, Math.min(s.length, s.lastIndexOf(" ")))+' ...'
+                                        }
+                                    }
+                                    el.descL=descL;
+                                }else{
+                                    el.descL={}
+                                }
+                                if(video){el.video=video;}else{el.video=null;}
+                                el.blocks=null;
+                                //console.log(el.img,el.descL)
+                            }
+                        })
+
+                    }
+                    if(doc.masters && doc.masters.length){
+                        doc.masters.forEach(function (eee,idx){
+                            //console.log(eee.toObject)
+                            let el = doc.masters[idx];
                             let img,imgs,desc,position,stuffs,video,positionL,descL;
                             if(el.blocks && el.blocks.length){
                                 el.blocks.sort(function (a,b) {
@@ -588,17 +658,18 @@ SfuffSchema.statics = {
                 try{
                     criteria.store=store
                     let promise = self.find(criteria)
-                        .select('access name tags brandTag brand category gallery price store artikul url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePrt color blocks translated templateUrl asin groupStuffs')
+                        .select('abonement access name tags brandTag brand category gallery price store artikul url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePrt color blocks translated templateUrl asin groupStuffs video')
                         .sort({'index': -1}) // sort by date
                         .limit(options.perPage)
                         .skip(options.perPage * options.page)
                         .populate('sortsOfStuff','filter differentPrice filterGroup')
-                        .populate('brand','name')
-                        .populate('brandTag','name')
+                        .populate('brand','name nameL')
+                        .populate('brandTag','name nameL')
+                        .lean()
                         .exec(function(err,docs){
                             if (docs && docs.length){
                                 docs = docs.map(function(doc){
-                                    var el = doc.toObject();
+                                    var el = doc;
                                     if(el.blocks && el.blocks.length){
                                         for(let i=0;i<el.blocks.length;i++){
                                             if(el.blocks[i].useImg){
@@ -649,17 +720,21 @@ SfuffSchema.statics = {
         }else{
             //console.log(criteria)
             var query =this.find(criteria);
-            query.select('access name tags brandTag brand category gallery price store artikul artikulL url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePart backgroundcolor priceForFilter blocks translated templateUrl asin groupStuffs')
+            query.select('abonement access name tags brandTag brand category gallery price store artikul artikulL url index  unitOfMeasure single multiple minQty maxQty  seller actived stock driveSalePrice driveRetailPrice sortsOfStuff service currency orderType sort timePart imgs nameL unitOfMeasureL extCatalog idForXML archived desc descL link timePart backgroundcolor priceForFilter blocks translated templateUrl asin groupStuffs video')
             query.sort({'index': -1}) // sort by date
             query.limit(options.perPage)
             query.skip(options.perPage * options.page)
             query.populate('sortsOfStuff','filter differentPrice filterGroup')
             query.populate('brand','name nameL url')
             query.populate('brandTag','name nameL url')
+            query.lean()
             query.exec(function(err,docs){
                 if (docs && docs.length){
                     docs = docs.map(function(doc){
-                        var el = doc.toObject();
+
+                        var el = doc;
+                        el.stuffFromList = true;
+                        //console.log(el.stuffFromList)
                         if(el.blocks && el.blocks.length){
                             for(let i=0;i<el.blocks.length;i++){
                                 if(el.blocks[i].useImg){
@@ -700,6 +775,9 @@ SfuffSchema.statics = {
         let field= 'keywords.'+(options.lang?options.lang:options.req.store.lang)
         //console.log(field)
         let o={store:options.req.store._id,actived:true}
+        if(options.allStuffs){
+            delete o.actived
+        }
         o[field]=searchStr
 
         /*let o={['nameL.'+options.lang]:searchStr};

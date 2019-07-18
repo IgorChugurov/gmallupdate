@@ -58,7 +58,7 @@
             }
         }
         self.actions={};
-        self.displayList=['block','inline','inline-block','none','table','inline-table','table-cell','table-column','table-row','table-caption','none !important']
+        self.displayList=['block','inline','inline-block','none','table','inline-table','table-cell','table-column','table-row','table-caption','none !important','block!important']
         self.saveData=saveData;
         self.deleteData=deleteData;
 

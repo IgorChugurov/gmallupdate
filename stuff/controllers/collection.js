@@ -107,8 +107,11 @@ exports.list = function(req, res, next) {
         //console.log(req.query)
         if (req.query && req.query.search && req.collection.searchList){
 
-            options.perPage=20;
-            options.searchStr= req.query.search
+            options.perPage=50;
+            options.searchStr= req.query.search;
+            if(req.query.allStuffs){
+                options.allStuffs=true;
+            }
 
             req.collection.searchList(options,function(e, results){
                 //console.log('results',results)
@@ -226,6 +229,13 @@ exports.save = function(req, res, next) {
                 co(function*() {
                     if(req.body.name){
                         req.body.url = yield getUrl.create(req.collection,req.query.store,req.body.name,req.collectionName)
+                    }
+                    if(req.body.blocks && req.body.blocks.length){
+                        req.body.blocks.forEach(b=>{
+                            b.template=null;
+                            delete b.nameTemplate;
+                            b.stuffs=[];
+                        })
                     }
 
                     if (req.collection.preUpdate && typeof req.collection.preUpdate === 'function'){

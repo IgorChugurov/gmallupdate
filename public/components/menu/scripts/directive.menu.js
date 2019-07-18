@@ -283,6 +283,7 @@
         }
     }
     function menuSectionHorizontalPug(){
+        //console.log('menuSectionHorizontalPug')
         return {
             scope: {},
             restrict:"AE",
@@ -346,6 +347,8 @@
         self.clickMenu=global.get('store').val.template.clickMenu;
         self.dropDownCatalog=global.get('store').val.template.dropDownCatalog;
         self.global=global;
+        self.getActiveClassForGroupUrl=getActiveClassForGroupUrl;
+
         var menuLis;
         var sectionElements=[];
         var innerDivs=[];
@@ -539,6 +542,15 @@
 
         }
 
+        function getActiveClassForGroupUrl(groupUrl) {
+            console.log(groupUrl)
+            if($stateParams.groupUrl){
+                var s = global.get('sections').val.getOFA('url',groupUrl);
+                console.log(s)
+            }
+
+        }
+
     }
     directiveMenuV.$inject=['Sections','$state','$q','global','$rootScope','$element'];
     function directiveMenuV(Sections,$state,$q,global,$rootScope,$element){
@@ -570,14 +582,17 @@
                         })
 
                         var innerUl = $element.find('.category-in-section');
+                        //console.log(innerUl)
                         $(innerUl).each(function (i,section) {
                             var ul = $(section).find('ul');
                             //console.log('slideToggle',ul)
                             $(ul).slideToggle()
 
                             $(section).click(function(e) {
-                                console.log('section',section)
-                                //e.stopPropagation()
+                                //console.log('section',section);
+                                if($(section).hasClass('brand-name')){
+                                    e.stopPropagation()
+                                }
                                 $(ul).stop(true, false, true).slideToggle(300);
                             });
                         })
@@ -590,13 +605,14 @@
                 })
         }
         function bindHoverLi(li,ii){
+            //console.log(li,ii)
             if(!self.sections[ii] || !self.sections[ii].openCatalog){
                 $(innerDivs[ii]).slideToggle();
             }
-            console.log(li,ii,self.clickMenu)
+            //console.log(li,ii,self.clickMenu)
             if(self.clickMenu){
                 li.click(function(e) {
-
+                    //console.log("?????")
                     for(var i=0,l=innerDivs.length;i<l;i++){
                         if(i==ii){
                             $(innerDivs[i]).stop(true, false, true).slideToggle(300);

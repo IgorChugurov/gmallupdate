@@ -11,7 +11,7 @@ div(class=dj[key].wrapclass+pullClass)
                         | !{lang.login}
                 div(class="clearfix")
             span(class="part",ng-show="global.get('user').val && global.get('user').val._id",ng-cloak)
-                a(class="enter-first",ng-click="global.get('functions').val.changeLocation('/manage')",set-animate=dj[key].animate,data-animation=dj[key].animate)
+                a(class="enter-first",ng-click="global.get('functions').val.changeLocation('/manage')",set-animate=dj[key].animate,data-animation=dj[key].animate,ng-class="{'active':$state.current.name=='cabinet'}")
                     span()
                         | !{lang.cabinet}&nbsp;
                 //span(class="slash") /

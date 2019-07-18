@@ -8,6 +8,7 @@ var forEach = myUtil.forEachForGenerators;
 const util = require('util')
 var Excel = require('exceljs');
 var xml2js = require('xml2js');
+var archiver = require('archiver');
 //https://github.com/oozcitak/xmlbuilder-js
 var xmlbuilder = require('xmlbuilder');
 
@@ -125,37 +126,45 @@ exports.downloadCatalog=function(req,res,next){
         })
         .then(function () {
             //console.log('working')
+
+            if (fs.existsSync(filePath)) {
+                co(function* () {
+                    let term = 24 * 60 * 60 * 1000;
+                    term = 1 * 1000;// minute
+                    let update = yield needToUpdagte(filePath, term)
+                    console.log('next ',update)
+                    if(update){
+                        yield updateFileCatalog(filePath,req)
+                        //console.log('OK update')
+                        next()
+                    }else{
+                        next()
+                    }
+
+                }).catch(function(err){
+                    console.log('co catch err - ',err)
+                    res.writeHead(400, {"Content-Type": "text/plain"});
+                    res.end("ERROR File does NOT Exists");
+                })
+            }else{
+                updateFileCatalog(filePath,req).then(function(){
+                    console.log('OK not exist')
+                    next()
+                }).catch(function (err) {
+                    console.log(err)
+                    res.writeHead(400, {"Content-Type": "text/plain"});
+                    res.end("ERROR File does NOT Exists");
+                })
+            }
+            return;
+
             fs.exists(filePath, function(exists){
                 //http://stackoverflow.com/questions/10046039/nodejs-send-file-in-response
-                if (exists) {
-                    co(function* () {
-                        let term = 24 * 60 * 60 * 1000;
-                        term = 1 * 1000;// minute
-                        let update = yield needToUpdagte(filePath, term)
-                        //console.log('next ',update)
-                        if(update){
-                            yield updateFileCatalog(filePath,req)
-                            //console.log('OK update')
-                            next()
-                        }else{
-                            next()
-                        }
+                if (exists && false) {
 
-                    }).catch(function(err){
-                        console.log('co catch err - ',err)
-                        res.writeHead(400, {"Content-Type": "text/plain"});
-                        res.end("ERROR File does NOT Exists");
-                    })
 
                 } else {
-                    updateFileCatalog(filePath,req).then(function(){
-                        console.log('OK not exist')
-                        next()
-                    }).catch(function (err) {
-                        console.log(err)
-                        res.writeHead(400, {"Content-Type": "text/plain"});
-                        res.end("ERROR File does NOT Exists");
-                    })
+
 
                 }
             });
@@ -450,6 +459,7 @@ function createFile(filePath,req) {
                     let o={store:req.store._id}
 
                     Stuff.find(o).lean().populate('brand').populate('brandTag').sort(({'index': -1})).exec(function(err,items){
+                        myUtil.setLangField(items,lang)
                         if(err){rj(err)}
                         items.forEach(function(s){
                             if(s.idForXML && s.idForXML>=stuffIdForXML && s.idForXML<100000){
@@ -479,6 +489,8 @@ function createFile(filePath,req) {
                         })
 
                         items.forEach(function(s){
+
+
                             if(s.idForXML<100000){
                                 //console.log(s.idForXML)
                                 let st;
@@ -507,7 +519,6 @@ function createFile(filePath,req) {
                 })
             })
             .then(function () {
-
                 if(typeFile=='xml'){
                     createXMLFile()
                 }else if(typeFile=='xlsx'){
@@ -515,8 +526,6 @@ function createFile(filePath,req) {
                 }else{
                     rj(err)
                 }
-
-
             })
             .then(function (sortsOfStuffUpdate) {
                 //console.log('sortsOfStuffUpdate',sortsOfStuffUpdate)
@@ -545,7 +554,7 @@ function createFile(filePath,req) {
                 rj(err)
             })
 
-        function createXLSXFile() {
+        async function createXLSXFile() {
             var d = new Date("2015-03-25");
             var configIP=require('../../config/config.js')
             var photoHost="http://"+configIP.photoDownload;
@@ -620,19 +629,26 @@ function createFile(filePath,req) {
                 { header: 'Название_Характеристики', key: 'tags8Filter'},
                 { header: 'Измерение_Характеристики', key: 'tags8UoM'},
                 { header: 'Значение_Характеристики', key: 'tags8Name'},
+                { header: 'zip', key: 'zipImg'},
             ];
             createCategories(sheetCategories,store,groups)
             //console.log('categoriesToXMLid',categoriesToXMLid)
             let dateNow = Date.now();
             let thirty_day=1000*60*60*24*30;
-            stuffs.forEach(function(stuff,idx){
-                //console.log('stuff.name',stuff.name)
+            let idx=-1;
+            for(let stuff of stuffs){
+                /*if(s._id.toString()=='5b080a2464f02064abf47811'){
+                    console.log(s.name,s.id)
+                }*/
+
+                idx++;
+
                 if(stuff.archived){
                     let d = new Date(stuff.archivedDate).getTime()
                     let difference = Math.round((dateNow-d)/thirty_day);
                     //console.log('difference',difference)
                     if(difference){
-                        return;
+                        continue;
                     }
                 }
                 //if(idx>10){return}
@@ -648,10 +664,17 @@ function createFile(filePath,req) {
                     }
                 }
                 if(stuff.sortsOfStuff && stuff.sortsOfStuff.filter){
+
                     if(!filterSort || filterSort._id.toString()!=stuff.sortsOfStuff.filter.toString()){
                         filterSort = filters.getOFA('_id',stuff.sortsOfStuff.filter.toString())
                     }
-                    if(filterSort){
+                    /*if(stuff.artikul=='FILM красная'){
+                        console.log('filterSort',filterSort)
+                    }*/
+
+
+                    if(filterSort || true){
+
                         // с разновидностями
                         if(stuff.stock && !stuff.stock['notag']){
                             let keys= Object.keys(stuff.stock).filter(function (t) {return t &&  t!='null'});
@@ -663,6 +686,7 @@ function createFile(filePath,req) {
                                     tags.splice(a,1)
                                 }
                             }
+
 
                             let qty=0;
                             // количество для оболочки
@@ -677,14 +701,20 @@ function createFile(filePath,req) {
                                 // товар с разновидностями выводится в одну строчку
                                 tagsForGroup=keys;
                             }
-                            createRow(sheetStuff,stuff,tagsForGroup,{price:stuff.price,priceSale:stuff.priceSale,quantity:qty},true);
+                            /*if(stuff._id.toString()=='5b080a2464f02064abf47811'){
+                                console.log(stuff.artikul)
+                                console.log(stuff.artikulL)
+                            }*/
+                            await createRow(sheetStuff,stuff,tagsForGroup,{price:stuff.price,priceSale:stuff.priceSale,quantity:qty},true);
+
                             if(typeCatelog=='prom'){
-                                keys.forEach(function (tag) {
+                                for(let tag of keys){
                                     stuff.idForXML+=1000000;
                                     if(tag){
-                                        createRow(sheetStuff,stuff,[tag],stuff.stock[tag]);
+                                        await  createRow(sheetStuff,stuff,[tag],stuff.stock[tag]);
                                     }
-                                })
+                                }
+
                             }
 
                         }
@@ -694,9 +724,11 @@ function createFile(filePath,req) {
                 }else{
                     //без разновидностей
                     //console.log('без разновидностей')
-                    createRow(sheetStuff,stuff,stuff.tags,stuff.stock['notag'],true);
+                    await createRow(sheetStuff,stuff,stuff.tags,stuff.stock['notag'],true);
                 }
-            })
+            }
+
+
 
             //console.log('saving')
             workbook.xlsx.writeFile(filePath)
@@ -706,7 +738,7 @@ function createFile(filePath,req) {
                 })
                 .catch(rj);
 
-            function createRow(sheetStuff,stuff,tags,prices,wrapper) {
+            async function createRow(sheetStuff,stuff,tags,prices,wrapper) {
                 //if(!prices){console.log(stuff.name,stuff.artikul)}
                 let available= (prices && prices.quantity && stuff.actived && !stuff.archived)?'+':'-';
                 if(typeCatelog!='prom' && !available){available='-'}
@@ -850,6 +882,7 @@ function createFile(filePath,req) {
                 //*************************************************************************************************
                 //*************************************************************************************************
                 stuff.gallery.sort(function(a,b){return a.index-b.index});
+                stuff.galleryArch=[];
                 let imgs = stuff.gallery.reduce(function (imgs,img) {
                     if(img && img.img){
                         if( img.img.charAt(0) === '/' && img.img.charAt(1) === '/'){
@@ -857,6 +890,7 @@ function createFile(filePath,req) {
                         }else if(img.img.charAt(0) !== '/'){
                             img.img='/'+img.img;
                         }
+                        stuff.galleryArch.push(img.img)
                         if(imgs){imgs+=','}
                         //imgs+=photoHost+img.img
                         imgs+=req.store.link+img.img
@@ -865,44 +899,84 @@ function createFile(filePath,req) {
                         return imgs
                     }
                 },'')
-                /*if(stuff.name=='сумка1'){
-                    console.log(prices)
-                }*/
-                let o ={
-                    artikul:(stuff.artikul)?stuff.artikul:null,
-                    name:stuff.name,
-                    desc:(stuff.desc)?stuff.desc: null,
-                    price:(prices && prices.price)?prices.price:null,
-                    currency:(stuff.currency)?stuff.currency:null,
-                    unitOfMesure:(stuff.unitOfMesure)?stuff.unitofMesure:null,
-                    imgs:(imgs)?imgs:null,
-                    group_id:stuff.group_id,
-                    quantity:(prices && prices.quantity)?prices.quantity:0,
-                    categoryId:categoryId,
-                    vendor:vendor,
-                    available:available,
-                    keywords:(keywords.length)?keywords.length:null,
-                    tags0Filter:stuff.tags0Filter,
-                    tags0Name:stuff.tags0Name,
-                    tags1Filter:stuff.tags1Filter,
-                    tags1Name:stuff.tags1Name,
-                    tags2Filter:stuff.tags2Filter,
-                    tags2Name:stuff.tags2Name,
-                    tags3Filter:stuff.tags3Filter,
-                    tags3Name:stuff.tags3Name,
-                    tags4Filter:stuff.tags4Filter,
-                    tags4Name:stuff.tags4Name,
-                    tags5Filter:stuff.tags5Filter,
-                    tags5Name:stuff.tags5Name,
-                    tags6Filter:stuff.tags6Filter,
-                    tags6Name:stuff.tags6Name,
-                    tags7Filter:stuff.tags7Filter,
-                    tags7Name:stuff.tags7Name,
-                    tags8Filter:stuff.tags8Filter,
-                    tags8Name:stuff.tags8Name,
+                let is;
+                for(let sort in stuff.stock){
+                    if(stuff.stock[sort].quantity && Number(stuff.stock[sort].quantity)>0){
+                        is=true;
+                    }
                 }
+                //console.log('is',is,available)
 
-                sheetStuff.addRow(o)
+
+
+                try{
+
+                    if(is){
+                        let pathForImgsArchFolder = "./public/images/"+req.store.subDomain+'/Stuff/'+stuff.url;
+                        await fs.mkdirParentPromise(pathForImgsArchFolder);
+                        stuff.pathForImgsArch=pathForImgsArchFolder+'/'+stuff.url+'.zip'
+                        stuff.pathForImgsArchWithDomain = req.store.link + "/images/"+req.store.subDomain+'/Stuff/'+stuff.url+'/'+stuff.url+'.zip';
+                        //console.log("fs.existsSync(stuff.pathForImgsArch)",fs.existsSync(stuff.pathForImgsArch))
+                        if(!fs.existsSync(stuff.pathForImgsArch)) {
+                            /*console.log(stuff.pathForImgsArch);
+                            console.log(stuff.galleryArch);*/
+                            await createZipWithImgs(stuff.galleryArch, stuff.pathForImgsArch)
+                        }
+                    }
+                    let o ={
+                        artikul:(stuff.artikul)?stuff.artikul:null,
+                        name:stuff.name,
+                        desc:(stuff.desc)?stuff.desc: null,
+                        price:(prices && prices.price)?prices.price:null,
+                        currency:(stuff.currency)?stuff.currency:null,
+                        unitOfMesure:(stuff.unitOfMesure)?stuff.unitofMesure:null,
+                        imgs:(imgs)?imgs:null,
+                        group_id:stuff.group_id,
+                        quantity:(prices && prices.quantity)?prices.quantity:0,
+                        categoryId:categoryId,
+                        vendor:vendor,
+                        available:available,
+                        keywords:(keywords.length)?keywords.length:null,
+                        tags0Filter:stuff.tags0Filter,
+                        tags0Name:stuff.tags0Name,
+                        tags1Filter:stuff.tags1Filter,
+                        tags1Name:stuff.tags1Name,
+                        tags2Filter:stuff.tags2Filter,
+                        tags2Name:stuff.tags2Name,
+                        tags3Filter:stuff.tags3Filter,
+                        tags3Name:stuff.tags3Name,
+                        tags4Filter:stuff.tags4Filter,
+                        tags4Name:stuff.tags4Name,
+                        tags5Filter:stuff.tags5Filter,
+                        tags5Name:stuff.tags5Name,
+                        tags6Filter:stuff.tags6Filter,
+                        tags6Name:stuff.tags6Name,
+                        tags7Filter:stuff.tags7Filter,
+                        tags7Name:stuff.tags7Name,
+                        tags8Filter:stuff.tags8Filter,
+                        tags8Name:stuff.tags8Name,
+                        zipImg:((stuff.pathForImgsArchWithDomain)?stuff.pathForImgsArchWithDomain:null)
+                    }
+                    /*if(!o.zipImg){
+                        console.log('not',o.name)
+                    }else{
+                        console.log('yes',o.name)
+                        //console.log(o)
+                    }*/
+
+                    sheetStuff.addRow(o)
+                    //console.log('sheetStuff.addRow',idx)
+
+                }catch(err){console.log(err)}
+
+                /*if(stuff.pathForImgsArchWithDomain){
+                    delete o.imgs;
+                    o.imgs = stuff.pathForImgsArchWithDomain;
+                    console.log(o.imgs)
+                }*/
+
+                //console.log(o.zipImg)
+
             }
             function createCategories(sheetCategories,store,groups) {
                 /* создание списка категорий 1. корневой раздел не учитывается.*/
@@ -998,6 +1072,42 @@ function createFile(filePath,req) {
                 })
             }
 
+            function createZipWithImgs(files,zipFile) {
+                return new Promise(function (rs,rj) {
+                    var output = fs.createWriteStream(zipFile);
+                    var archive = archiver('zip', {
+                        zlib: { level: 6 } // Sets the compression level.
+                    });
+                    output.on('close', function() {
+                        console.log(archive.pointer() + ' total bytes');
+                        console.log('archiver has been finalized and the output file descriptor has closed.');
+                    });
+                    archive.on('error', function(err) {
+                        rj(err);
+                    });
+
+
+                    archive.pipe(output);
+
+
+                    files.forEach(function (file) {
+                        let fileName = file.split('/')
+                        fileName=fileName[fileName.length-1]
+                        var file1 =  './public'+file;
+                        archive.append(fs.createReadStream(file1), { name: fileName });
+                    })
+
+
+
+                    archive.finalize();
+                    console.log('готово')
+                    rs();
+
+                })
+
+
+            }
+
         }
         function createXMLFile(){
             var d = new Date("2015-03-25");
@@ -1047,11 +1157,13 @@ function createFile(filePath,req) {
                         stuff.category=store.newTag._id;
                     }
                 }
+
                 if(stuff.sortsOfStuff && stuff.sortsOfStuff.filter){
                     if(!filterSort || filterSort._id.toString()!=stuff.sortsOfStuff.filter.toString()){
                         filterSort = filters.getOFA('_id',stuff.sortsOfStuff.filter.toString())
                     }
-                    if(filterSort){
+
+                    if(filterSort || true){
                         // с разновидностями
                         if(stuff.stock && !stuff.stock['notag']){
                             let keys= Object.keys(stuff.stock).filter(function (t) {return t &&  t!='null'});

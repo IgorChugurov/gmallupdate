@@ -17,11 +17,13 @@ div(class="stuffs")
                     img(class="img-responsive img-goods",src=stuff.img||stuff.gallery[0].img,alt=stuff.name+' '+((stuff.artikul)?stuff.artikul:'')+' '+((stuff.brand && stuff.brand.name)?stuff.brand.name:''))
                     div(class="box-overlay")
                     div(class="half-shadow")
-                        - var desc=stuff.desc.clearTag().substring(0,450);
-                        div
+                        //- var desc=stuff.desc.clearTag().substring(0,450);
+                        //div
                             span
                                 | !{desc}
-                            span ...
+                        if(stuff.desc)
+                            div(class="desc-box")
+                                | !{stuff.desc}
                         div(class="see")
                             span(class="icon-see-img")
                             p(class="see-master",ng-bind="$ctrl.global.get('lang').val.more")

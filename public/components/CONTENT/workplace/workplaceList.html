@@ -56,10 +56,10 @@
                             <div class=" form-group label-floating box-input">
                                 <label for="name1" class="control-label">название</label>
                                 <input type="text" id="name1" class="form-control name"
-                                       ng-model="item.name"
+                                       ng-model="item.nameL[$ctrl.global.get('store').val.lang]"
                                        ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 300, 'blur': 0 } }"
                                        required
-                                       lost-focus="$ctrl.saveField(item,'name')" style="margin-bottom: 0"/>
+                                       lost-focus="$ctrl.saveField(item,'nameL')" style="margin-bottom: 0"/>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">

@@ -1,13 +1,12 @@
-<div class="select-modal">
+<div class="select-modal select-item-blocks">
     <div class="modal-header">
         <h3 class="modal-title text-center" ng-bind="$ctrl.header"></h3>
         <a class="cancel"  ng-click="$ctrl.cancel()"></a>
     </div>
     <div class="modal-body">
-
         <ul>
             <li ng-repeat="item in $ctrl.items">
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 form-group">
                     <a ng-click="$ctrl.selectItem(item)">
                         <span ng-bind="item.nameTemplate"></span>
                     </a>

@@ -1,0 +1,194 @@
+<section class="report" ng-class="{'order-mobile':$ctrl.global.get('mobile').val}"ng-cloak ng-if="$ctrl.global.get('seller').val">
+    <div class="nav-box-stuff">
+        <div>
+            <div ng-if2="!$ctrl.mobile">
+                <div class="tab-nav-stuff">
+                    <a class="btn btn-fab btn-fab-mini btn-violet" ui-sref="frame">
+                        <i class="material-icons">reply</i>
+                    </a>
+                </div>
+                <div class="tab-nav-stuff">
+                    <a class="btn btn-fab btn-fab-mini btn-success"
+                       ng-if="$ctrl.global.get('seller').val"
+                       ng-click="$ctrl.selectStuffs()"
+                       title="создать новый отчет">
+                        <i class="material-icons">add</i>
+                    </a>
+                </div>
+                <div class="tab-nav-stuff">
+                    <div class="dropdown">
+                        <a class="btn btn-fab btn-fab-mini btn-info dropdown-toggle" title="список последних отчетов" data-toggle="dropdown" data-target="#">
+                            <i class="material-icons">format_list_numbered</i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li >
+                                <a ng-click="">
+                                    <span>Все</span>
+                                </a>
+                            </li>
+                            <li ng-repeat="item in $ctrl.oldReports track by $index">
+                                <a ng-click="$ctrl.selectStuffs(item.stuffs)">
+                                    <span ng-bind="item.name"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-nav-stuff">
+                    <a class="btn btn-fab btn-fab-mini btn-primary"
+                       ng-if="$ctrl.global.get('seller').val"
+                       ng-click="$ctrl.saveReport()"
+                       title="скачать отчет">
+                        <i class="material-icons">vertical_align_bottom</i>
+                    </a>
+                </div>
+                <div class="tab-nav-stuff pull-right calendar">
+                    <p class="form-group input-group">
+                        <span class="form-control">
+                            <span class="date-article"  ng-class="{'active-date':$ctrl.openStart}"
+                                  ng-bind="$ctrl.datePicker.date.startDate|date"
+                                  ng-click="$ctrl.openStart=true">
+                        </span>
+                        <input type="hidden"
+                               uib-datepicker-popup="{{locale.DATETIME_FORMATS.shortDate}}"
+                               ng-model="$ctrl.datePicker.date.startDate"
+                               show-button-bar="false"
+                               is-open="$ctrl.openStart"
+                               ng-required="true"
+                               ng-change="$ctrl.item.openEnd=true"/>
+                        <span  class="date-article">&nbsp; - &nbsp;</span>
+                        <span  class="date-article"  ng-class="{'active-date':$ctrl.openEnd}"ng-bind="$ctrl.datePicker.date.endDate|date" ng-click="$ctrl.openEnd=true"></span>
+                            <!--datepicker-options="$ctrl.item.dateOptions"-->
+                        <input type="hidden"
+                               uib-datepicker-popup="{{locale.DATETIME_FORMATS.shortDate}}"
+                               ng-model="$ctrl.datePicker.date.endDate"
+                               is-open="$ctrl.openEnd"
+                               show-button-bar="false"
+                               ng-required="true" />
+                        </span>
+                    </p>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div  class="cart-detail">
+            <div class="bg-box">
+                <div class="report-box" ng-repeat="item in $ctrl.stuffsInReport"  >
+                    <div bs-component>
+                        <div  id="{{item._id}}" class="report-table">
+                            <div class="item-block">
+                                <h4><strong  ng-bind="item.name"></strong> </h4>
+                            </div>
+                            <div class="item-block pb-10 pt-10 report-header" ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}"  ng-show="item.data.length">
+                                <div class="col-lg-5 col-md-5 col-sm-4 col-xs-12 table-block">
+                                    <!--<div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 text-center">
+                                        &lt;!&ndash;<button ng-click="$ctrl.sortBy()">сброс</button>&ndash;&gt;
+
+                                    </div>-->
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <a ng-click="$ctrl.sortBy('num')">№</a>
+                                        <span class="sortorder" ng-show="$ctrl.propertyName === 'num'" ng-class="{reverse: $ctrl.reverse}"></span>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <a ng-click="$ctrl.sortBy('dateForSort')">Дата</a>
+                                        <span class="sortorder" ng-show="$ctrl.propertyName === 'dateForSort'" ng-class="{reverse: $ctrl.reverse}"></span>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center">
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 table-block">
+                                    <div class="col-lg-7 col-md-7 col-sm-5 col-xs-7 fio-box">
+                                        <a ng-click="$ctrl.sortBy('fio')">Имя</a>
+                                        <span class="sortorder" ng-show="$ctrl.propertyName === 'fio'" ng-class="{reverse: $ctrl.reverse}"></span>
+                                    </div>
+                                    <div class="col-lg-5 col-md-5 col-sm-7 col-xs-5">
+                                        Телефон
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-4 ">
+                                    Сумма
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-8">
+                                    <a ng-click="$ctrl.sortBy('status')">Статус</a>
+                                    <span class="sortorder" ng-show="$ctrl.propertyName === 'status'" ng-class="{reverse: $ctrl.reverse}"></span>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="item-block pb-10 pt-10" ng-repeat="order in item.data| orderBy:$ctrl.propertyName:$ctrl.reverse" ng-class="{bgcolor_one:($index%2==0),bgcolor_two:($index%2!=0)}">
+                                <div class="col-lg-5 col-md-5 col-sm-4 col-xs-12 table-block">
+                                    <!--<div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+
+                                    </div>-->
+                                    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <span ng-bind="$index+1"></span>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <a ui-sref="frame.orders.order({id:order._id})" target="_blank">
+                                            <span ng-bind="order.num"></span> от <span ng-bind="order.date"></span>
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                        <span >заметка</span>
+                                        <a ng-click="order.showNote=!order.showNote"><i class="material-icons" ng-show="!order.showNote">expand_more</i></a>
+                                        <a ng-click="order.showNote=!order.showNote"><i class="material-icons" ng-show="order.showNote">expand_less</i></a>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-show="order.showNote">
+                                        <div class="form-group" >
+                                            <label class="control-label">добавить заметку </label>
+                                            <textarea rows="2"class="form-control" ng-model="order.note"
+                                                      ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                                                      ng-change="$ctrl.updateOrderField('note',order.note,order._id)"></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 table-block">
+                                    <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
+                                        <span ng-bind="order.fio"></span>
+                                    </div>
+                                    <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                                        <a ng-show="order.phone" href="tel:+{{order.phone}}">+<span ng-bind="order.phone"></span></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-4 report-sum">
+                                   <!-- <span ng-bind="order.cena"></span>*<span ng-bind="order.quantity"></span>=-->
+                                    <span ng-bind="order.sum"></span> <span ng-bind="order.currency"></span>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-8">
+                                    <span class="status-name" ng-bind="order.status" ng-class="{'payed':order.status=='оплачен'}"></span><br>
+                                    <span ng-if="order.payDate" ng-bind="order.payDate"></span><br>
+                                </div>
+
+                                <!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-show="order.showNote">
+                                    <div class="form-group" >
+                                        <label class="control-label">добавить заметку </label>
+                                        <textarea rows="2"class="form-control" ng-model="order.note"
+                                                  ng-model-options="{'updateOn': 'default blur','debounce': {'default': 700,'blur': 0}}"
+                                                  ng-change="$ctrl.updateOrderField('note',order.note,order._id)"></textarea>
+                                    </div>
+                                </div>-->
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="item-block pb-10 pt-10" ng-show="!item.data.length">
+                                в выбраном периоде заказов нет
+                            </div>
+
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+
+</section>
+
+
+

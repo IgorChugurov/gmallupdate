@@ -32,13 +32,6 @@
     </div>
     <div class="nav-box-stuff-vertical">
         <div class="tab-nav-stuff">
-            <a class="btn btn-fab btn-fab-mini btn-success"
-               ng-click="$ctrl.createItem()"
-               title="создать поставщика">
-                <i class="material-icons">add</i>
-            </a>
-        </div>
-        <div class="tab-nav-stuff">
             <div class="dropdown-box">
                 <a class="btn btn-fab btn-fab-mini btn-warning btn-dropdown"
                    title="поиск по списку" ng-click="$ctrl.menuSlide1=!$ctrl.menuSlide1">
@@ -62,6 +55,14 @@
                 </div>
             </div>
         </div>
+        <div class="tab-nav-stuff">
+            <a class="btn btn-fab btn-fab-mini btn-success"
+               ng-click="$ctrl.createItem()"
+               title="создать поставщика">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+
     </div>
     <div class="clearfix"></div>
     <div  class="suppliers">
@@ -114,12 +115,14 @@
                                     </div>
                                     <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
                                         <div class="debet-credit">
-                                            <span ng-bind="item.debet"></span>
+                                            <strong><span ng-bind="item.debet"></span></strong>
+                                            <small><span ng-bind="$ctrl.mainCurrency"></span></small>
                                         </div>
                                     </div>
                                     <div class="td-list col-lg-2 col-md-2 col-xs-2 text-center">
                                         <div class="debet-credit">
-                                            <span ng-bind="item.credit"></span>
+                                            <strong><span ng-bind="item.credit"></span></strong>
+                                            <small><span ng-bind="$ctrl.mainCurrency"></span></small>
                                         </div>
                                     </div>
                                     <div class="td-list  create col-lg-2 col-md-2 col-sm-2 col-xs-2">

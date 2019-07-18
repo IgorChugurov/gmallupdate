@@ -330,7 +330,9 @@ module.exports = function(grunt) {
                     'public/components/CONTENT/groupStuffs/scripts/groupStuffs-item.component.js',
                     'public/components/CONTENT/workplace/scripts/workplace-list.component.js',
 
-
+                    'public/components/CONTENT/links/scripts/list.component.js',
+                    'public/components/CONTENT/links/scripts/item.component.js',
+                    'public/components/CONTENT/links/scripts/service.js',
 
                     'public/components/PROMO/campaign/scripts/campaign.service.js',
                     'public/components/blocks/scripts/blocks.components.js',
@@ -428,6 +430,7 @@ module.exports = function(grunt) {
                     'public/bower_components/angular-daterangepicker/js/angular-daterangepicker.js',
                     'public/scripts/angular-drag-and-drop-lists.js',
                     'public/bower_components/angularjs-slider/dist/rzslider.min.js',
+                    'public/assets/FileSaver.js-master/dist/FileSaver.min.js'
                     //'public/bower_components/jszip/dist/jszip.min.js',
 
 
@@ -469,6 +472,7 @@ module.exports = function(grunt) {
                     'public/bower_components/angularjs-slider/dist/rzslider.min.js',
                     'public/bower_components/tinymce/tinymce.js',
                     'public/bower_components/angular-ui-tinymce/src/tinymce.js',
+
                     //'public/bower_components/jszip/dist/jszip.min.js',
                 ],
                 dest: 'public/contentdev_scripts.js'
@@ -779,6 +783,8 @@ module.exports = function(grunt) {
                         'public/components/info/css/info.component.css',
                         'public/views/template/partials/stuffDetail/modal/css/zoom.css',
                         'public/components/CONTENT/label/css/label.component.css',
+                        'public/components/CONTENT/links/css/component.list.css',
+                        'public/components/CONTENT/links/css/component.item.css',
 
                     ]}
             },

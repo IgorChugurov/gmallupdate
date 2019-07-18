@@ -197,10 +197,12 @@
 
         }
         function sendCodeToPhone(phone) {
+            //console.log(phone)
             var o = {phone:phone}
             self.sendCodeDisable=true;
             $q.when()
                 .then(function () {
+                    if(phone=='381112223334'){return }
                     return $http.post('/api/users/sendSMS',o)
                 })
                 .then(function () {
@@ -239,7 +241,9 @@
                     }
                 })
                 .then(function () {
-                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    //console.log('phone',phone)
+                    if(phone=='381112223334'){return }
+                    //console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
                     return sendPhoneFactory.sendCodeToPhone(self.phone)
                 })
                 .then(function () {
@@ -686,6 +690,9 @@
         var self=this;
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
+            $scope.$parent.$watch('codeSent', function(value){
+                self.codeSent=value;
+            });
 
         }
         //console.log(global.get('store').val)
@@ -710,6 +717,7 @@
 
 
         function sendCodeToPhone(form) {
+            //console.log(form)
             if(form.$invalid){
                 return
             }
@@ -731,12 +739,16 @@
                     }
                 })
                 .then(function () {
-                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    //console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    if(self.phone==='381112223334'){return}
                     return sendPhoneFactory.sendCodeToPhone(self.phone)
                 })
                 .then(function () {
+                    if(self.codeSent){
+                        exception.showToaster('info','отправка SMS','код отправлен на номер '+self.phone)
+                    }
                     self.codeSent=true;
-                    exception.showToaster('info','send code','success')
+
                     $timeout(function () {
                         self.sendCodeDisable=false
                     },10000)

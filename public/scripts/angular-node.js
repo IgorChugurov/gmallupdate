@@ -485,27 +485,20 @@
 
     };
     order.prototype.getCouponSum=function(){
+        this.couponSum = this.sum;
         //console.log(this.coupon)
         if (this.coupon && Object.keys(this.coupon).length){
             if(!this.coupon.condition){
-                return Math.ceil10((this.sum-(this.sum/100)*Number(this.coupon.val)),-5);
+                this.couponSum = Math.ceil10((this.sum-(this.sum/100)*Number(this.coupon.val)),-5);
             }else if(this.coupon.condition){
                 var val=this.coupon.val;
-                //console.log(this.sum,val)
                 if(this.coupon.currency && this.currencyStore[this.coupon.currency] && this.currencyStore[this.coupon.currency][0]){
                     val = Math.round(val/this.currencyStore[this.coupon.currency][0])
                 }
-                /*if(this.coupon.currency && this.coupon.currency!=this.currency && this.currencyStore && this.currencyStore[this.coupon.currency] && this.currencyStore[this.coupon.currency][0]){
-                    console.log(this.currencyStore[this.coupon.currency][0])
-                    val = Math.round(val/this.currencyStore[this.coupon.currency][0])
-                }*/
-                //console.log(this.sum-Number(val))
-                return (this.sum-Number(val));
+                this.couponSum = this.sum-Number(val);
             }
-        }else{
-            //console.log(this.sum)
-            return this.sum
         }
+        return this.couponSum;
     };
     order.prototype.clearOrder=function(){
         this.cart.stuffs.length=0;

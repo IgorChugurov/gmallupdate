@@ -241,23 +241,40 @@ exports.list = function(req, res, next) {
         if(!req.query.store){
             return next(new Error('не указан магазин'))
         }else{
-            if(options.criteria && typeof options.criteria==='object'){
-                var keys = Object.keys(options.criteria);
-                if(keys.length==0){
-                    options.criteria={store:req.query.store};
-                }else if(keys.length==1){
-                    if(keys[0]=='$and'){
-                        options.criteria.$and.push({store:req.query.store});
+            if(req.collectionName!=='CartInOrder'){
+                if(options.criteria && typeof options.criteria==='object'){
+                    var keys = Object.keys(options.criteria);
+                    if(keys.length==0){
+                        options.criteria={store:req.query.store};
+                    }else if(keys.length==1){
+                        if(keys[0]=='$and'){
+                            options.criteria.$and.push({store:req.query.store});
+                        }else{
+                            options.criteria={$and:[{store:req.query.store},options.criteria]}
+                        }
                     }else{
                         options.criteria={$and:[{store:req.query.store},options.criteria]}
                     }
                 }else{
-                    options.criteria={$and:[{store:req.query.store},options.criteria]}
+                    options.criteria={store:req.query.store};
                 }
             }else{
-                options.criteria={store:req.query.store};
+                options.criteria2={store:req.query.store};
+                if(options.criteria.date){
+                    options.criteria2.date=options.criteria.date;
+                    delete options.criteria.date;
+
+                }
+                if(options.criteria.user){
+                    options.criteria2.user=options.criteria.user;
+                    delete options.criteria.user;
+
+                }
+
             }
         }
+
+
         //console.log('options.criteria ',options.criteria.$and)
         //console.log('req.collectionName ',req.collectionName)
         req.collection.list(options,function(e, results){

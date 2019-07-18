@@ -53,16 +53,7 @@
         font-size: 20px;
     }
 }
-.spinner-box {
-    width: 100%;
-    height: 100vh;
-    z-index: 10000;
-}
-.spinner {
-    position: absolute;
-    top:45%;
-    left: 45%;
-}
+
 .cancel {
     position: absolute;
     right: 20px;
@@ -425,7 +416,10 @@ a:focus {
 .wrapper-stuffs-list.wrapper-stuffs-list-mobile .text-muted {
     font-size: 14px;
 }
-
+.name-stuffs {
+    padding: 5px;
+    height: 50px;
+}
 /*material-icons*/
 .material-icons {
     margin-right: 10px;
@@ -598,6 +592,10 @@ input::-webkit-input-placeholder {
 .radio label .check {
     width: 20px;
     height: 20px;
+}
+.inline-select .checkbox+.checkbox,
+.inline-select .radio+.radio {
+    margin-top: 10px;
 }
 .form-group .radio p,
 .form-group .radio p{
@@ -808,6 +806,9 @@ textarea:focus,
     background-color: #999;
 }
 /*select-modal*/
+.modal-dialog.modal-sm {
+    max-width: 400px;
+}
 .modal-dialog {
     width: 60%
 }
@@ -1573,15 +1574,49 @@ a.content-box-link:hover {
 {
     height:100vh;
     width:100%;
-    background-color: rgb(189, 198, 194);
+    background-color: #fff;
     position:fixed;
     top:0;
     left:0;
     z-index:1050;
     padding:0;
     margin:0;
-    opacity:0.96;
+}
+.spinner-box {
+    width: 100%;
+    height: 100vh;
+    z-index: 10000;
+}
+.spinner {
+    position: absolute;
+    top:50%;
+    width: 300px;
+    left: 50%;
+    margin-left: -150px;
+    margin-top: -150px;
+}
+@media (max-width: 1024px) and (min-width: 421px) {
+    .spinner {
+        left: 50%;
+        width: 200px;
+        top: 50%;
+        margin-left: -100px;
+        margin-top: -100px;
+    }
+}
+@media (max-width: 420px) {
+    .spinner {
+        left: 50%;
+        width: 150px;
+        top: 50%;
+        margin-left: -75px;
+        margin-top: -75px;
+    }
+}
 
+.img-upload-box .loadimg-spinner {
+    position: relative;
+    margin-top: 20px;
 }
 
 /*gallery*/
@@ -1817,6 +1852,10 @@ a.content-box-link:hover {
 }
 .city .form-control {
     width: 90%;
+}
+.select-item-blocks li{
+    list-style: none;
+    clear: both;
 }
 
 

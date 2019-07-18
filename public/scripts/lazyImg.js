@@ -23,13 +23,13 @@ angular.module('lazyImg', []).service(
             $timeout.cancel(scrollTimeoutId);
 
 // wait for 200ms and then invoke listeners (simulates stop event)
-            scrollTimeoutId = $timeout(invokeListeners, 200);
+            scrollTimeoutId = $timeout(invokeListeners, 100);
         });
 
 
         $window.addEventListener('resize', function() {
             $timeout.cancel(resizeTimeoutId);
-            resizeTimeoutId = $timeout(invokeListeners, 200);
+            resizeTimeoutId = $timeout(invokeListeners, 100);
         });
 
 
@@ -52,32 +52,37 @@ angular.module('lazyImg').directive(
         return {
             restrict: 'A',
             link: function ($scope, $element, $attributes) {
-                //console.log($attributes)
-                var listenerRemover;
-                //console.log($element.offsetParent())
+                var listenerRemover = scrollAndResizeListener.bindListener(isInView);
+                var targetElement;
+                angular.element($element).ready(function () {
+                    //console.log("angular.element(elem).ready(function () {")
+                    $timeout(function(){
+                        targetElement=$( "[image-lazy-src='"+$attributes.imageLazySrc+"']" )
+                        //console.log(targetElement)
+                        isInView(
+                            $document[0].documentElement.clientHeight,
+                            $document[0].documentElement.clientWidth
+                        );
+
+                    },300)
+                });
+
+                //console.log($attributes.imageLazySrc)
                 function isInView(clientHeight, clientWidth) {
-                    //console.log($attributes.imageLazySrc);
-// get element position
-                    var imageRect = $element[0].getBoundingClientRect();
-                    //console.log($element[0],imageRect,clientHeight,$attributes.imageLazySrc)
-                    //console.log((imageRect.top >= 0 && imageRect.bottom <= (clientHeight+250)) )
-                    //console.log(imageRect,clientHeight+600,(imageRect.top >= 0 && imageRect.bottom <= (clientHeight+600) && imageRect.top!=imageRect.bottom && !$element[0].src))
-                    //if (imageRect.top >= 0 && imageRect.bottom <= (clientHeight+600) && imageRect.top!=imageRect.bottom && !$element[0].src) {
-                    if (imageRect.top >= 0 && imageRect.bottom <= (clientHeight+600)  && !$element[0].src) {
-                        //console.log($element[0],imageRect,clientHeight,$attributes.imageLazySrc)
-                        //console.log($attributes.imageLazySrc)
-
-                        //$attributes.$set('ng-src',$attributes.imageLazySrc)
-                        $element[0].src = $attributes.imageLazySrc; // set src attribute on element (it will load image)
-                        //console.log($attributes.name,$element[0].src)
-
-// unbind event listeners when image src has been set
-                        listenerRemover();
+                    if(targetElement && targetElement[0]){
+                        var imageRect = targetElement[0].getBoundingClientRect();
+                        // get element position
+                        //var imageRect = $element[0].getBoundingClientRect();
+                        if (imageRect.top >= 0 && imageRect.bottom <= (clientHeight+800)  && !$element[0].src) {
+                            targetElement[0].src = $attributes.imageLazySrc; // set src attribute on element (it will load image)
+                            listenerRemover();
+                        }
                     }
+
                 }
 
 // bind listener
-                listenerRemover = scrollAndResizeListener.bindListener(isInView);
+
 
 // unbind event listeners if element was destroyed
 // it happens when you change view, etc
@@ -87,12 +92,7 @@ angular.module('lazyImg').directive(
 
 
 // explicitly call scroll listener (because, some images are in viewport already and we haven't scrolled yet)
-                $timeout(function(){
-                    isInView(
-                        $document[0].documentElement.clientHeight,
-                        $document[0].documentElement.clientWidth
-                    );
-                },300)
+
 
             }
         };

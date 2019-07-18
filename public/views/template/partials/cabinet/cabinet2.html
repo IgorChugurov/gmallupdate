@@ -16,7 +16,9 @@
                                     <span class="status" ng-switch="order.status">
                                        <span  ng-switch-when="1" ng-bind="$ctrl.global.get('langOrder').val.entered"></span>
                                        <span  ng-switch-when="2" ng-bind="$ctrl.global.get('langOrder').val.accepted"></span>
-                                       <span  ng-switch-when="3" ng-bind="$ctrl.global.get('langOrder').val.paid"></span>
+                                       <big  ng-switch-when="3">
+                                           <b ng-bind="$ctrl.global.get('langOrder').val.paid"></b>
+                                       </big>
                                        <span  ng-switch-when="4" ng-bind="$ctrl.global.get('langOrder').val.shipped"></span>
                                        <span  ng-switch-when="5" ng-bind="$ctrl.global.get('langOrder').val.delivered"></span>
                                        <span class="delete" ng-switch-when="6" ng-bind="$ctrl.global.get('langOrder').val.deleted"></span>

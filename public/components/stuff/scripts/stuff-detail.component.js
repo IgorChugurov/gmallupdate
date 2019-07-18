@@ -1391,7 +1391,7 @@
                 //console.log($scope.stuff22)
                 $scope.stuff = Stuff.setDataForStuff($scope.stuff,global.get('filterTags').val)
                 self.stuff=$scope.stuff;
-                console.log(self.stuff)
+                //console.log(self.stuff)
                 self.item=$scope.stuff
                 self.objShare=seoContent.setDataItem(self.item);
                 //console.log(self.item)
@@ -1906,6 +1906,50 @@
             },
             transclude: true,
             link: function(scope, element, attrs, ctrl, transclude) {
+                //console.log('link')
+                $timeout(function () {
+                    //console.log(document.querySelectorAll('a[href^="#"]'))
+
+                    //console.log(3333,$(element).find('a[href^="#"]'))
+                    $(element).find('a[href^="#"]').each(function(i,anchor) {
+                        /*var anchor = $(anchorJ)[0]
+                        console.log(anchor)
+                        anchor.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        });*/
+
+                        var selector = $(anchor).attr('href')
+                        //console.log(selector)
+                        if(selector){
+                            selector= selector.substring(1);
+                        }
+                        $(anchor).click(function (e) {
+                            e.preventDefault();
+                            var el = $("[id="+selector+"]");
+                            if(el && el[0]){
+                                el[0].scrollIntoView({
+                                    behavior: 'smooth'
+                                });
+                            }else{
+                                var el = $("[name="+selector+"]");
+                                if(el && el[0]){
+                                    //console.log(el)
+                                    el[0].scrollIntoView({
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }
+                            /*console.log( document.querySelector(selector))
+                            var el= document.querySelector(selector)
+                            document.querySelector(selector).scrollIntoView({
+                                behavior: 'smooth'
+                            });*/
+                        });
+                    })
+                },1000)
                 $timeout(function () {
                     if(global.get('stuffsInList').val){
                         if(element[0].parentElement && element[0].parentElement.parentElement && element[0].parentElement.parentElement.id && global.get('stuffsInList').val[element[0].parentElement.parentElement.id]){
@@ -1913,13 +1957,28 @@
                         }
                     }
 
+                    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                        console.log(anchor)
+                        anchor.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        });
+                    });
+
                     transclude(scope, function(clone) {
                         element.append(clone);
+
+
+
+
                         //console.log(scope.stuff)
                         try{
                             if(window.videojs){
                                 var vv = document.getElementsByClassName("mainVideo");
-                                if(vv[0]) {
+
+                                if(vv[0] && scope.stuff.videoLink) {
                                     videojs(vv[0], {
                                         "fluid": true,
                                         "techOrder": ["vimeo"],
@@ -1929,144 +1988,25 @@
                                     });
                                 }
                                 var videoTizer = document.getElementsByClassName("videoTeaser");
-                                if(videoTizer[0]){
-                                    videojs(videoTizer[0], {"fluid": true,controls: true}, function () {
+                                if(videoTizer[0] && scope.stuff.media2){
+                                    var options = {
+                                        "fluid": true,
+                                        "techOrder": ["vimeo"],
+                                        "sources": [{ "type": "video/vimeo", "src": scope.stuff.media2}],
+                                        "vimeo": { "color": "#fbc51b"}
+                                    }
+                                    //console.log(options)
+                                    videojs(videoTizer[0], options, function () {
+                                        //console.log("videoTizer[0]",scope.stuff.media2)
                                     });
                                 }
                                 var videoPreview = document.getElementsByClassName("videoPreview");
-                                if(videoPreview[0]){
+                                /*if(videoPreview[0]){
                                     videojs(videoPreview[0], {"fluid": true,controls: true}, function () {
                                     });
-                                }
-                                /*videojs(scope.stuff._id+"video", {}, function(){
-                                });*/
-
-
-                                //console.log('window.videojs',window.videojs)
-                                //console.log(document.getElementsByClassName("video-js")[0])
-                                /*var vv = document.getElementsByClassName("video-js");
-                                if(vv[0]){
-                                    videojs(vv[0], {
-                                        controls: true,
-                                        plugins: {
-                                            videoJsResolutionSwitcher: {
-                                                default: 'high',
-                                                dynamicLabel: true
-                                            }
-                                        }
-                                    }, function(){
-                                        var player = this;
-                                        var arr = [];
-                                        if(scope.stuff.videoLink2){
-                                            arr.push({
-                                                src: scope.stuff.videoLink2,
-                                                type: 'video/mp4',
-                                                label: 'SD',
-                                                res: 360
-                                            })
-                                        }
-                                        if(scope.stuff.videoLink){
-                                            arr.push({
-                                                src: scope.stuff.videoLink,
-                                                type: 'video/mp4',
-                                                label: 'HD',
-                                                res: 720
-                                            })
-                                        }
-                                        player.updateSrc(arr)
-
-                                        console.log(arr)
-
-                                        player.on('resolutionchange', function(){
-                                            console.info('Source changed to %s', player.src())
-                                        })
-                                    })
                                 }*/
-
-
-                                //var videoTizer = document.getElementsByClassName("videoTeaser");
-                                /*var videoT = videojs("videoTeaser");
-                                if(videoT && videoT.src && scope.stuff.video.link){
-                                    videoT.src(scope.stuff.video.link);
-                                }*/
-                                //console.log(videoTizer)
-                                /*if(videoTizer[0]){
-                                    videojs(videoTizer[0], {
-                                        controls: true,
-                                        plugins: {
-                                            videoJsResolutionSwitcher: {
-                                                default: 'high',
-                                                dynamicLabel: true
-                                            }
-                                        }
-                                    }, function(){
-                                        var playerT = this;
-                                        window.playerT = playerT;
-                                        var arr = [];
-                                        //console.log(scope.stuff)
-                                        if(scope.stuff.video){
-                                            arr.push({
-                                                src: scope.stuff.video.link,
-                                                type: 'video/mp4',
-                                            })
-                                        }
-
-                                        playerT.updateSrc(arr)
-                                    })
-                                }
-
-
-*/
-
-                                /*var videoP = videojs("videoPreview");
-                                if(videoP && videoP.src && scope.stuff.video1.link){
-                                    videoP.src(scope.stuff.video1.link);
-                                }*/
-
-                                /*var videoPreview = document.getElementsByClassName("videoPreview");
-                                if(videoTizer[0]){
-                                    videojs(videoPreview[0], {
-                                        controls: true,
-                                        plugins: {
-                                            videoJsResolutionSwitcher: {
-                                                default: 'high',
-                                                //dynamicLabel: true
-                                            }
-                                        }
-                                    }, function(){
-                                        var playerP = this;
-                                        window.playerP = playerP;
-                                        var arr = [];
-                                        //console.log(scope.stuff)
-                                        if(scope.stuff.video1){
-                                            arr.push({
-                                                src: scope.stuff.video1.link,
-                                                type: 'video/mp4',
-                                            })
-                                        }
-
-                                        playerP.updateSrc(arr)
-                                    })
-                                }*/
-
-
-
-                                /* videojs(document.getElementsByClassName("video-js")[0], {}, function(){
-
-                                 });*/
-                                //afterglow.init()
                             }
-                            if(window.afterglow){
-                                //console.log(afterglow)
-                                //http://afterglowplayer.com/
-                                //https://blog.bitsrc.io/5-open-source-html5-video-players-for-2018-38fa85932afb
-                               //afterglow.init()
-                                /*var play= $('.icon-videoplay-img');
-                                 console.log(play)
-                                 $(play).click(function () {
-                                 console.log(this)
-                                 })*/
-                            }
+
                         }catch(err){
                             console.log(err)
                         }
@@ -2084,6 +2024,10 @@
 
         }
     }
+
+    /*Build flexibility and fluidity in your practice with five perfectly designed flows for each area of your body. Have fun flowing without the sets, reps, and static postures that many flexibility-building practices require. Instead, Fluid Flexibility Flows uses a series of muscle-specific flows designed to target areas of the body that we struggle the most with building flexibility in: the hamstrings, shoulders, front body, and back body.
+
+The 5 classes in this plan range from 30-70 minutes. Four classes focus on building heat and flexibility in one part of the body -- hamstrings, hips, back body, and front body – and one class utilizes all muscle groups for a freeing full-body flexibility flow. Not only will each class give you a great workout, they will also help you learn to open up the body in a safe and effective way by using clear alignment cues that guide your practice. Expect to feel invigorated, balanced, elated, and more flexible after each class.*/
 
 
     galleryСarouselCtrl.$inject=['$scope','$timeout','$element','$compile','global']

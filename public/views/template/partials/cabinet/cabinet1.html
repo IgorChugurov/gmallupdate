@@ -17,7 +17,9 @@
                    <span ng-switch="order.status">
                                         <span class="status" ng-switch-when="1">поступил</span>
                                         <span class="status" ng-switch-when="2">принят</span>
-                                        <span class="status" ng-switch-when="3">оплачен</span>
+                                        <big  ng-switch-when="3">
+                                           <b ng-bind="$ctrl.global.get('langOrder').val.paid"></b>
+                                       </big>
                                         <span class="status" ng-switch-when="5">доставлен</span>
                                         <span class="status del" ng-switch-when="6">удален</span>
                                     </span>

@@ -1,6 +1,6 @@
 div(class="stuffs")
     div(id="list"+stuff._id,class="goods-container-img")
-        a(href=stuff.link)
+        a(href=stuff.link,class="name-block")
             div(class="stuff-box")
                 if(stuff.gallery && stuff.gallery.length)
                     .page-slides
@@ -24,7 +24,7 @@ div(class="stuffs")
                         span(class="collection")
                             span(ng-bind="$ctrl.global.get('lang').val.collection")
                             | &nbsp;
-                            span(class="")=(stuff.brandTag && stuff.brandTag.name)?stuff.brandTag.name:''
+                            span(class="collection-name")=(stuff.brandTag && stuff.brandTag.name)?stuff.brandTag.name:''
                             | &nbsp;
         div(class="price-block",ng-cloack)
             p
@@ -52,26 +52,31 @@ div(class="stuffs")
                             span(class="sort-item",ng-click="stuff.changeSortOfStuff(sort._id)",ng-show="sort.quantity",ng-bind="sort.name")
 
                 div(ng-if="stuff.sort")
-                    if(stuff.orderType == '1')
-                        div
-                            a(class="btn  btn-project btn-border", ng-click="stuff.order()", ng-bind="$ctrl.global.get('lang').val.toOrder")
-                    else if(stuff.orderType == '2')
-                        div
-                            a(class="btn  btn-project btn-border", ng-click="$ctrl.global.get('functions').val.witget('dateTime',{stuff:stuff})",ng-bind="$ctrl.global.get('lang').val.enroll")
-                    else if(stuff.orderType == '3')
-                        div
-                            a(class="btn  btn-project btn-border",href=stuff.link,ng-bind="$ctrl.global.get('lang').val.more")
-                    else if(stuff.orderType == '4')
-                        div
-                            a(class="btn  btn-project btn-border",ng-click="stuff.getBonus()",ng-bind="$ctrl.global.get('store').val.bonusButtonText")
-                    else if(stuff.orderType == '6')
-                        div
-                            a(class="btn  btn-project btn-border", ng-click="$ctrl.global.get('functions').val.witget('call',{stuff:stuff})",ng-bind="$ctrl.global.get('lang').val.enroll")
-                    else
-                        span(ng-show="stuff.checkInCart()")
-                            a(class="btn  btn-project btn-border",ng-bind="$ctrl.global.get('lang').val.inCart",disabled="disabled")
-                        span(ng-hide="stuff.checkInCart()")
-                            a( class="btn  btn-project btn-border",ng-click="stuff.addItemToOrder()",ng-bind="$ctrl.global.get('lang').val.addToCart")
-
-
+                    div(class="btn-box")
+                        if(stuff.orderType == '1')
+                            div
+                                a(class="btn  btn-project", ng-click="stuff.order()", ng-bind="$ctrl.global.get('lang').val.toOrder")
+                        else if(stuff.orderType == '2')
+                            div
+                                a(class="btn  btn-project", ng-click="$ctrl.global.get('functions').val.witget('dateTime',{stuff:stuff})",ng-bind="$ctrl.global.get('lang').val.enroll")
+                        else if(stuff.orderType == '3')
+                            div
+                                a(class="btn  btn-project",href=stuff.link,ng-bind="$ctrl.global.get('lang').val.more")
+                        else if(stuff.orderType == '4')
+                            div
+                                a(class="btn  btn-project",ng-click="stuff.getBonus()",ng-bind="$ctrl.global.get('store').val.bonusButtonText")
+                        else if(stuff.orderType == '6')
+                            div
+                                a(class="btn  btn-project", ng-click="$ctrl.global.get('functions').val.witget('call',{stuff:stuff})",ng-bind="$ctrl.global.get('lang').val.enroll")
+                        else
+                            //span(ng-show="stuff.checkInCart()",ng-cloack)
+                                a(class="btn  btn-project",title="{{$ctrl.global.get('lang').val.inCart}}",disabled="disabled")
+                                    span(class="icon-cartin-img")
+                            //span(ng-hide="stuff.checkInCart()")
+                                a( class="btn  btn-project",ng-click="stuff.addItemToOrder()",title="{{$ctrl.global.get('lang').val.addToCart}}")
+                                    span(class="icon-cartplus-img")
+                            span(ng-show="stuff.checkInCart()")
+                                a(class="btn  btn-project",ng-bind="$ctrl.global.get('lang').val.inCart",disabled="disabled")
+                            span(ng-hide="stuff.checkInCart()")
+                                a( class="btn  btn-project",ng-click="stuff.addItemToOrder()",ng-bind="$ctrl.global.get('lang').val.addToCart")
     div(class="clearfix")

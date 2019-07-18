@@ -42,14 +42,17 @@
         if(self.unitOfMeasure && self.unitOfMeasure.length){
             self.item.unitOfMeasure=self.unitOfMeasure[0]
         }
+        if(global.get('store').val.subDomain=='autofan'){
+            self.item.currency='EUR'
+        }
 
-        self.create=create;
-        self.addsku2=addsku2;
-        self.deleteSku2=deleteSku2;
-        self.deleteItem=deleteItem;
-        self.clearItem=clearItem;
+        self.create     =create;
+        self.addsku2    =addsku2;
+        self.deleteSku2 =deleteSku2;
+        self.deleteItem =deleteItem;
+        self.clearItem  =clearItem;
         self.refreshData=refreshData;
-        self.back=back;
+        self.back       =back;
 
         function back() {
             if($state.current.name=='frame.warehouse.material'){

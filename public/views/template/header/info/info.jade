@@ -11,7 +11,7 @@ div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-anim
                                 =page.name
         else
             div(class=c,uib-dropdown,is-open="status.isopen2")
-                a(href="",class="dropdown-toggle",data-toggle="dropdown2",ng-click="goToInfo()",uib-dropdown-toggle)
+                a(href="",class="dropdown-toggle",data-toggle="dropdown2",ng-click="goToInfo()",uib-dropdown-toggle,ng-class="{'active':$state.current.name=='stat.item'}")
                     span(class="part")
                         span(set-animate=dj[key].animate,data-animation=dj[key].animate)=lang.info
                         span(class="caret")

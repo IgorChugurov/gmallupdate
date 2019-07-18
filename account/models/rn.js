@@ -84,7 +84,7 @@ RnSchema.statics = {
     list: function (options, cb) {
         var criteria = options.criteria || {}
         var Pn=mongoose.model('Pn');
-        this.find(criteria)
+        /*this.find(criteria)
             .populate({
                 path: 'zakaz'
                 , select: 'name type'
@@ -93,7 +93,45 @@ RnSchema.statics = {
             .limit(options.perPage)
             .skip(options.perPage * options.page)
             .lean()
-            .exec(cb)
+            .exec(cb)*/
+
+        let query =this.find(criteria);
+        /*query.populate({
+            path: 'zakaz'
+            , select: 'name type'
+        })*/
+
+        if(options.populate ){
+            if(typeof options.populate=='string'){
+                try{
+                    let pp = JSON.parse(options.populate)
+                    /*console.log(pp)
+                    console.log(typeof pp)*/
+                    query.populate(pp)
+                }catch(err){console.log(err)}
+            }else if(typeof options.populate=='object'){
+                query.populate(options.populate)
+            }
+           /* console.log('options.populate',options.populate)
+            console.log(typeof options.populate)*/
+
+        }
+
+        /*if(options.populate){
+            query.populate({
+                path: 'materials.item',
+                select:'name sku sku2 producer unitOfMeasure',
+                // Get friends of friends - populate the 'friends' array for every friend
+                populate: { path: 'producer' ,select:'name'}
+            })
+        }*/
+
+        query.sort({'date': -1}) // sort by date
+        query.limit(options.perPage)
+        query.skip(options.perPage * options.page)
+        query.lean()
+        query.exec(cb)
+
     },
     preUpdate:async function(req){
         let Zakaz = mongoose.model('Zakaz')

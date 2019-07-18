@@ -51,6 +51,7 @@ async function run() {
 
     }catch (err){
         console.log(err)
+        return err
     }
 
 

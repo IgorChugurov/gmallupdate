@@ -5,6 +5,7 @@ var ObjectID = mongoose.Types.ObjectId;
 var fs = require('fs');
 var path = require('path');
 var request=require('request');
+var rp = require('request-promise');
 var Pn=mongoose.model('Pn');
 var Material=mongoose.model('Material');
 var SampleEntries=mongoose.model('SampleEntries');
@@ -17,6 +18,9 @@ var Contragent=mongoose.model('Contragent');
 var Account=mongoose.model('Account');
 var globalVariable = require('../../../public/bookkeep/scripts/variables.js')
 var calculate=require('../calculate');
+const ports = require('../../../modules/ports')
+const stuffHost = 'http://127.0.0.1:'+ports.stuffPort;
+
 const Models={
     Supplier:Supplier,
     Customer:Customer,
@@ -65,6 +69,7 @@ async function hold(id,store) {
     const currency = store.currency
     const mainCurrency=(store.currency.mainCurrency)?store.currency.mainCurrency:'UAH'
     try {
+        let stuffs=[];
         const pn = await Pn.findOne({_id:id}).populate('contrAgent').lean().exec();
         const virtualAccount = (pn.virtualAccount && pn.virtualAccount.toString)?pn.virtualAccount.toString():pn.virtualAccount;
         let queryForSA = {store:store._id,date:{$gte:pn.date},virtualAccount:virtualAccount}
@@ -110,8 +115,22 @@ async function hold(id,store) {
         })
         let ids = materials.map(m=>m.item)
         let materialsFromDB = await Material.find({_id:{$in:ids}}).exec()
-
-
+        //console.log(materialsFromDB)
+        for(let m of pn.materials){
+            //console.log(m)
+            let material = materialsFromDB.find(mat=>{
+                return ((mat._id.toString)?mat._id.toString():mat._id)==
+                    ((m.item && m.item.toString)?m.item.toString():m.item)
+            })
+            if(store.bookkeep && material.stuff){
+                let item = {
+                    stuff:material.stuff,
+                    sort:material.sort,
+                    qty:m.qty
+                }
+                stuffs.push(item)
+            }
+        }
 
 
         const promises= pn.materials.map(handleMaterial)
@@ -126,12 +145,28 @@ async function hold(id,store) {
             return s
         },0)
         pn.sum=Math.round(sumPN*100)/100;
-        let sumPNRate = Math.round((sumPN/pnCurrencyRate)*100)/100
+        //let sumPNRate = Math.round((sumPN/pnCurrencyRate)*100)/100
         pn.entries=[];
         /* проводки*/
         let accountWarehouse = accounts.find(a=>a.type=='Warehouse')._id.toString()
         let accountSupplier = accounts.find(a=>a.type==pn.typeOfContrAgent)._id.toString()
         calculate.makeEntries(pn.entries,accountWarehouse,accountSupplier,virtualAccount,pn.sum,ed,pn.currency)
+
+        if(pn.type=='return'){
+            let sumPNReturn=materials.reduce(function(s,m){
+                //console.log('m',m)
+                s +=m.qty*m.priceReturn
+                return s
+            },0)
+            pn.sumReturn=Math.round(sumPNReturn*100)/100;
+            let delta = Math.round((pn.sum-pn.sumReturn)*100)/100;
+            let accountProfit = accounts.find(a=>a.type=='Profit')._id.toString()
+            /*1 разница между стоимостью продажи клиенту и складской ценой*/
+            ed.comment='Разница между стоимостью продажи клиенту и складской ценой при возврате товара.'
+            calculate.makeEntries(pn.entries,accountProfit,accountWarehouse,virtualAccount,delta,ed,pn.currency)
+        }
+
+
         let resultPN = await Pn.update({_id:id},{ $set: { currencyData: currency,entries:pn.entries,materials:pn.materials,sum:pn.sum}})
         if(!pn.supplier.data){
             pn.supplier.data=[]
@@ -140,10 +175,25 @@ async function hold(id,store) {
 
         resultPN = await Models[pn.typeOfContrAgent].update({_id:pn.supplier._id},{$set:{data:pn.supplier.data}})
         await Pn.update({_id:pn._id},{$set:{sum:sumPN,actived:true}})
+
+        if(store.bookkeep && stuffs.length){
+            try {
+                await setStockData(stuffs,'+',store._id)
+            }catch (e) {
+                return e;
+            }
+        }
+
         console.log('done hold pn')
         return null;
 
         async function handleMaterial(m) {
+            //console.log(m)
+            let supplierM = m.supplier || supplier;
+            let supplierTypeM = m.supplierType || pn.typeOfContrAgent;
+            /*if(pn.type=='return'){
+
+            }*/
             let material = materialsFromDB.find(mat=>mat._id.toString()==m.item)
             let materialCurrency = (material.currency)?material.currency:mainCurrency;
             let materialCurrencyRate =(currency[materialCurrency]&& currency[materialCurrency][0])?currency[materialCurrency][0]:1;
@@ -157,22 +207,29 @@ async function hold(id,store) {
 
                 let data = material.data.find(function (d) {
                     let dVA = (d.virtualAccount && d.virtualAccount.toString)?d.virtualAccount.toString():d.virtualAccount
-                    return dVA==virtualAccount && d.supplier.toString()==supplier && d.supplierType==pn.typeOfContrAgent;
+                    return dVA==virtualAccount && d.supplier.toString()==supplierM && d.supplierType==supplierTypeM;
                 })
                 /* такой товар на таком складе от такого поставщика уже существует*/
                 if(!data){
                     /* создаем пустой объект для данных*/
-                    data ={virtualAccount:virtualAccount,supplier:supplier,supplierType:pn.typeOfContrAgent,qty:0,price:0,priceForSale:0}
+                    data ={virtualAccount:virtualAccount,supplier:supplierM,supplierType:supplierTypeM,qty:0,price:0,priceForSale:0}
                     material.data.push(data)
                     data = material.data.find(function (d) {
-                        return d.virtualAccount==virtualAccount && d.supplier==supplier && d.supplierType==pn.typeOfContrAgent;
+                        return d.virtualAccount==virtualAccount && d.supplier==supplierM && d.supplierType==supplierTypeM;
                     })
                 }
 
                 m.priceForSale=Math.round((m.price*supplierRate)*100)/100
-                //console.log(m)
-                calculate.pn_getPriceAndPriceForSaleForMaterialData(m,data,rate)
-                console.log(data)
+
+                let mm = JSON.parse(JSON.stringify(m))
+                /* для возвратной накладной от покупателя. складская цена находится в ячейке priceReturn*/
+                if(mm.priceReturn){
+                    mm.priceForSale=mm.price;
+                    mm.price = mm.priceReturn
+                }
+                //console.log(mm)
+                calculate.pn_getPriceAndPriceForSaleForMaterialData(mm,data,rate)
+                //console.log(data)
                 let price=0;
                 let qty=0;
                 let priceForSale=0;
@@ -187,12 +244,12 @@ async function hold(id,store) {
                 //console.log(material)
                 try{
                     let r = await Material.update({_id:material._id},{$set:{price:material.price,qty:material.qty,priceForSale:material.priceForSale,data:material.data}});
-                    if(material.stuff && material.sort){
+                    /*if(material.stuff && material.sort){
                         let data = {_id:material.stuff};
                         let update = 'stock.'+material.sort+'.quantity'
                         data[update]=material.qty;
                         await updateStuff(data,store,update)
-                    }
+                    }*/
                 }catch(err){
                     console.log('err saving material ',err)
                     let r = await Material.update({_id:material._id},{$set:{price:material.price,qty:material.qty,priceForSale:material.priceForSale,data:material.data}});
@@ -257,7 +314,13 @@ async function cancel(id,store) {
     //https://blog.lavrton.com/javascript-loops-how-to-handle-async-await-6252dd3c795
 
     try {
+        let stuffs=[];
         const pn = await Pn.findOne({_id:id}).populate('contrAgent').lean().exec();
+        //console.log('pn',pn)
+        if(!pn){
+            let err = new Error('нет приходной накладной '+id)
+            return err;
+        }
         const virtualAccount = (pn.virtualAccount && pn.virtualAccount.toString)?pn.virtualAccount.toString():pn.virtualAccount;
         pn.supplier=pn.contrAgent;
         let queryForCP = {store:store._id,actived:true,date:{$gte:pn.date},virtualAccount:virtualAccount}
@@ -293,7 +356,26 @@ async function cancel(id,store) {
 
         let ids = materials.map(m=>m.item)
         let materialsFromDB = await Material.find({_id:{$in:ids}}).exec()
+        //console.log(materialsFromDB)
+
+        for(let m of pn.materials){
+            let material = materialsFromDB.find(mat=>{
+                return ((mat && mat._id && mat._id.toString)?mat._id.toString():mat._id)==
+                    ((m.item && m.item.toString)?m.item.toString():m.item)
+            })
+            if(store.bookkeep && material.stuff){
+                let item = {
+                    stuff:material.stuff,
+                    sort:material.sort,
+                    qty:m.qty
+                }
+                stuffs.push(item)
+            }
+        }
+
+
         const promises= pn.materials.map(handleMaterial)
+
         await Promise.all(promises)
         pn.entries=[];
         let resultPN = await Pn.update({_id:id},{ $set: { entries: pn.entries,actived:false}})
@@ -303,11 +385,21 @@ async function cancel(id,store) {
         }
         /*сторнируем запись у поставщика*/
         calculate.data(pn.supplier,pn.sum,pn.currency,virtualAccount,'debet','credit')
-        resultPN = await await Models[pn.typeOfContrAgent].update({_id:pn.supplier._id},{$set:{data:pn.supplier.data}})
+        resultPN = await Models[pn.typeOfContrAgent].update({_id:pn.supplier._id},{$set:{data:pn.supplier.data}})
+
+        if(store.bookkeep && stuffs.length){
+            try {
+                await setStockData(stuffs,'-',store._id)
+            }catch (e) {
+                return e;
+            }
+        }
+
        return null;
 
         async function handleMaterial(m) {
-
+            let supplierM = m.supplier || supplier;
+            let supplierTypeM = m.supplierType || pn.typeOfContrAgent;
             //console.log(pnCurrency)
             let material = materialsFromDB.find(mat=>mat._id.toString()==m.item)
             if(!material){return}
@@ -320,12 +412,12 @@ async function cancel(id,store) {
             //console.log(material)
 
 
-            let data ={virtualAccount:virtualAccount,supplier:supplier,qty:0,price:0,priceForSale:0}
+            let data ={virtualAccount:virtualAccount,supplier:supplierM,qty:0,price:0,priceForSale:0}
             let isData;
             if(material.data && material.data.length){
                 let m = material.data.find(function (d) {
                     let dVA = (d.virtualAccount && d.virtualAccount.toString)?d.virtualAccount.toString():d.virtualAccount
-                    return dVA==virtualAccount && d.supplier.toString()==supplier && d.supplierType==pn.typeOfContrAgent;
+                    return dVA==virtualAccount && d.supplier.toString()==supplierM && d.supplierType==supplierTypeM;
                 })
                 /* такой товар на таком складе от такого поставщика уже существует*/
                 if(m){data = m;isData=true;}
@@ -343,6 +435,10 @@ async function cancel(id,store) {
              let qty=(material.qty && material.qty>0)?material.qty:0;
              let sum = price*qty;
              let sumForSale = priceForSale*qty;*/
+            if(m.priceReturn){
+                m.priceForSale=m.price;
+                m.price = m.priceReturn
+            }
 
             m.sum = (m.price*m.qty)/rate
             m.sum = Math.round((m.sum)*100)/100
@@ -396,6 +492,36 @@ async function cancel(id,store) {
 
 
 }
+
+
+function setStockData(stuffs,sign,store) {
+    let url =stuffHost+'/api/stuffs/changeStock';
+    var options = {
+        method: 'POST',
+        uri: url,
+        body: {
+            stuffs : stuffs,
+            sign : sign,
+            store:store
+        },
+        json: true // Automatically stringifies the body to JSON
+    };
+    //console.log(options)
+
+    try{
+        return  rp(options)
+            .then(function (parsedBody) {
+                console.log(parsedBody)
+            })
+            .catch(function (err) {
+                console.log(err)
+            });
+    }catch(err){
+        console.log(err)
+    }
+
+}
+
 
 
 

@@ -32,7 +32,7 @@
         </div>
         <span class="help-block text-danger" ng-show="signupForm.displayName.$invalid && signupForm.$submitted" ng-messages="signupForm.displayName.$error">
             <span ng-message="maxlength">{{$ctrl.global.get('langError').val.namelong}}</span>
-            <!--<span ng-message="minlength">{{$ctrl.global.get('langError').val.nameshort}}</span>-->
+            <span ng-message="minlength">{{$ctrl.global.get('langError').val.nameshort}}</span>
         </span>
         <div class="form-group has-feedback">
             <input ng-class="{ 'has-error' : signupForm.email.$invalid && signupForm.$submitted}" class="form-control input-lg"

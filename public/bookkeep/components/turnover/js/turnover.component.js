@@ -115,6 +115,11 @@
                     if(res && res.data){
                         self.items=res.data.items;
                         self.itogo=res.data.itogo;
+                        if(res.data.saInPeriod){
+                            var d = new Date(res.data.saInPeriod.date);
+                            var text = 'Есть инвентаризация ('+res.data.saInPeriod.name+'), проведенная позже начала периода - '+ d.toLocaleDateString();
+                            exception.showToaster('info','Формирование оборотной ведомости',text)
+                        }
                     }
                     return;
                 })

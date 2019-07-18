@@ -9,9 +9,10 @@
                 <ul class="cabinet-list">
                     <li ng-repeat="order in $ctrl.orders" >
                         <div class="header-order">
-                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                 <a ng-click="$ctrl.orderDetail(order)">
                                     <span>№</span> <span  ng-bind="order.num"></span>
+                                    <span>&nbsp;&nbsp;</span>
                                     <span  ng-bind="order.date"></span>
                                 </a>
                             </div>
@@ -19,7 +20,9 @@
                                     <span class="status" ng-switch="order.status">
                                        <span  ng-switch-when="1" ng-bind="$ctrl.global.get('langOrder').val.entered"></span>
                                        <span  ng-switch-when="2" ng-bind="$ctrl.global.get('langOrder').val.accepted"></span>
-                                       <span  ng-switch-when="3" ng-bind="$ctrl.global.get('langOrder').val.paid"></span>
+                                       <big  ng-switch-when="3">
+                                           <b ng-bind="$ctrl.global.get('langOrder').val.paid"></b>
+                                       </big>
                                        <span  ng-switch-when="4" ng-bind="$ctrl.global.get('langOrder').val.shipped"></span>
                                        <span  ng-switch-when="5" ng-bind="$ctrl.global.get('langOrder').val.delivered"></span>
                                        <span class="delete" ng-switch-when="6" ng-bind="$ctrl.global.get('langOrder').val.deleted"></span>
@@ -30,7 +33,7 @@
                                         </span>
                                     </span>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
                                     <span class="">
                                         <span  ng-bind="$ctrl.global.get('lang').val.sum"></span>
                                         <span ng-bind="(order.paySum+((order.totalPay)?order.totalPay:0)).toFixed(2)"></span>
@@ -46,8 +49,8 @@
                                     <span ng-bind="order.pay[0].date"></span>
                                 </span>
                             </div>
-                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
-                                <span class="pull-right" ng-show="order.status==1">
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                                <span class="pull-right" ng-show="order.status==1 || (order.status==2 && !$ctrl.global.get('store').val.bookkeep)">
                                     <a ng-click="$ctrl.deleteOrder(order)">
                                         <span ng-bind="$ctrl.global.get('lang').val.delete"></span>
                                     </a>
@@ -227,6 +230,11 @@
                 <div class="user-profile">
                     <div class="my-switch-container" >
                         <div class="profile-inner" ng-if="$ctrl.user.val">
+                            <p class="data" ng-if="$ctrl.user.val.abonement">
+                                <span class=" date-label col-lg-2 col-md-2 col-sm-3 col-xs-3">количество посещений по абонементу</span>
+                                <span class="col-lg-10 col-md-10 col-sm-9 col-xs-9" ng-bind="$ctrl.user.val.abonement"></span>
+                                <span class="clearfix"></span>
+                            </p>
                             <p class="data">
                                 <span class=" date-label col-lg-2 col-md-2 col-sm-3 col-xs-3">Login</span>
                                 <span class="col-lg-10 col-md-10 col-sm-9 col-xs-9" ng-bind="$ctrl.user.val.name"></span>

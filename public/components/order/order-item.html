@@ -171,7 +171,7 @@
                             </div>
                         </div><br>
                         <a class="create btn btn-fab btn-fab-mini btn-success"
-                           ng-if="$ctrl.participant=='seller'" title="редактировать цену товара"
+                           ng-if="$ctrl.participant=='seller' && $ctrl.order.status<2" title="редактировать цену товара"
                            ng-click="$ctrl.setNewPriceForStuff(good)">
                             <i class="material-icons">
                                 create

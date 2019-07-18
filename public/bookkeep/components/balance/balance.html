@@ -10,14 +10,14 @@
             <a class="btn btn-raised btn-warning"
                ng-click="$ctrl.closePeriod()"
                title="закрыть период">
-                <span>закрыть<br> период</span>
+                <span>Закрыть<br> период</span>
             </a>
         </div>
         <div class="tab-nav-stuff pull-right">
             <a class="btn btn-raised btn-success"
                ng-click="$ctrl.createItem()"
                title="сформировать баланс">
-                <span>сформировать<br> баланс</span>
+                <span>Сформировать<br> баланс</span>
             </a>
         </div>
         <div class="tab-nav-stuff pull-right date-box">
@@ -61,8 +61,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
     <div class="clearfix"></div>
     <div class="balance">
@@ -99,8 +97,8 @@
                         </div>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="stuff-admin ware"  ng-repeat-start="item in $ctrl.items">
-                        <div ng-show="item.va.length===1">
+                    <div ng-repeat-start="item in $ctrl.items">
+                        <div  class="stuff-admin ware"  ng-show="item.va.length===1 && item.va[0].currencyArr">
                             <div ng-repeat="c in  item.va[0].currencyArr">
                                 <div class="td-list  col-lg-2 col-md-2 col-sm-2 col-xs-2">
                                     <strong ng-bind="item.name" ng-show="!$index"></strong>
@@ -136,7 +134,7 @@
                             </div>
 
                         </div>
-                        <div ng-show="item.va.length!==1">
+                        <div  class="stuff-admin ware"  ng-show="item.va.length!==1">
                             <div ng-repeat="c in  item.currencyArr">
                                 <div class="td-list  col-lg-2 col-md-2 col-sm-2 col-xs-2">
                                     <span ng-show="!$index">
@@ -258,32 +256,32 @@
                             <div class="td-list  col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
                                 <span>{{c}}</span>
                             </div>
-                        <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <span ng-bind="$ctrl.itogo.s.d[c]"></span>
+                            <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="$ctrl.itogo.s.d[c]"></span>
+                                </div>
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="$ctrl.itogo.s.c[c]"></span>
+                                </div>
                             </div>
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <span ng-bind="$ctrl.itogo.s.c[c]"></span>
+                            <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="$ctrl.itogo.o.d[c]"></span>
+                                </div>
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="$ctrl.itogo.o.c[c]"></span>
+                                </div>
                             </div>
-                        </div>
-                        <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <span ng-bind="$ctrl.itogo.o.d[c]"></span>
+                            <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="$ctrl.itogo.e.d[c]"></span>
+                                </div>
+                                <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <span ng-bind="$ctrl.itogo.e.c[c]"></span>
+                                </div>
                             </div>
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <span ng-bind="$ctrl.itogo.o.c[c]"></span>
-                            </div>
-                        </div>
-                        <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <span ng-bind="$ctrl.itogo.e.d[c]"></span>
-                            </div>
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                                <span ng-bind="$ctrl.itogo.e.c[c]"></span>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </strong>
+                            <div class="clearfix"></div>
+                        </strong>
                     </div>
 
 

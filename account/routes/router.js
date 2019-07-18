@@ -32,6 +32,7 @@ module.exports = function(router) {
 
     router.post('/api/bookkeep/Rn/createByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.createByAPIFromSite)
     router.post('/api/bookkeep/Rn/cancelByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.cancelByAPIFromSite)
+    router.post('/api/bookkeep/Rn/checkPriceForSaleInRn',middleware.getStore,apiRN.checkPriceForSaleInRn)
     router.post('/api/bookkeep/Rn/holdByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.holdByAPIFromSite)
     router.post('/api/bookkeep/Rn/cancelZakazByAPIFromSite',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,apiRN.cancelZakazByAPIFromSite)
 

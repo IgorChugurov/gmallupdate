@@ -16,7 +16,7 @@
                            id="categoryact{{category._id}}"
                            ng-model="category.notActive"
                            ng-change="$ctrl.saveCategoryActive(category)">
-                    <span ng-class="{'active':category.notActive}">не опубликована</span>
+                    <span ng-class="{'active':!!category.notActive}">не опубликована</span>
                 </label>
             </div>
         </div>

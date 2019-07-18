@@ -110,8 +110,8 @@ var CartInOrderSchema = new Schema({
             t:Number,
             d:Number,
             p:Boolean
-        }
-
+        },
+        abonement:Number,
     }]
 });
 
@@ -213,7 +213,36 @@ OrderSchema.pre('update', function preSave(next){
 CartInOrderSchema.statics = {
     load: function(id,cb){
         this.findById(id).exec(cb)
-    }
+    },
+    list: function (options, cb) {
+        var criteria = options.criteria || {}
+        var criteria2 = options.criteria2 || {}
+        //console.log(criteria)
+        this.find(criteria)
+            .limit(options.perPage)
+            .skip(options.perPage * options.page)
+            .lean()
+            .exec(function (err,docs) {
+                if(err){
+                    return cb(err);
+                }
+                if(docs.length){
+                    let carts = docs.map(d=>d._id)
+                    criteria2['cart']={$in:carts};
+                    /*delete criteria2.date;*/
+                    //console.log(criteria2)
+                    const Order = mongoose.model('Order');
+                    Order.find(criteria2)
+                        .populate('cart')
+                        .sort({'date': -1})
+                        .lean()
+                        .exec(cb)
+                }else {
+                    return cb(null,docs)
+                }
+            })
+            //.exec(cb)
+    },
 }
 OrderSchema.statics = {
     preUpdate:function(req,cb){

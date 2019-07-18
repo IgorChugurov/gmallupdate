@@ -1,4 +1,4 @@
-<div>
+<div class="turnover">
     <div class="nav-box-stuff" >
         <div class="tab-nav-stuff">
             <a class="btn btn-fab btn-fab-mini btn-info"
@@ -8,7 +8,9 @@
             </a>
         </div>
         <div class="tab-nav-stuff">
-            <h4 class="name-box">Оборотная ведомость {{$ctrl.typeName}}  {{$ctrl.getVirtualAccountName()}}</h4>
+            <h4 class="name-box">Оборотная ведомость <br>
+                {{$ctrl.typeName}}  {{$ctrl.getVirtualAccountName()}}
+            </h4>
         </div>
         <div class="tab-nav-stuff pull-right">
             <a class="btn btn-raised btn-success action-btn"
@@ -98,7 +100,7 @@
             </div>
         </div>
     </div>
-    <div class="turnover">
+    <div class="">
         <div class="news-stuff-container">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
@@ -132,7 +134,10 @@
                     <div class="stuff-admin ware"  ng-repeat="item in $ctrl.items">
                         <div ng-repeat="c in $ctrl.currencyArr">
                             <div class="td-list  col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                <span ng-bind="item.name"></span> - <span ng-bind="c"></span>
+                                <strong><span class="pull-left name-user" ng-bind="item.name" ng-show="!$index"></span></strong>
+                                <span>&nbsp;</span>
+                                <span ng-bind="c" class="pull-right"></span>
+                                <div class="clearfix"></div>
                             </div>
                             <div class="td-list-box col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
                                 <div class="td-list  col-lg-6 col-md-6 col-sm-6 col-xs-6 ">

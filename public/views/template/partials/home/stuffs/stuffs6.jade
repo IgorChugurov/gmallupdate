@@ -5,7 +5,6 @@ if(dj[key].stuffs && dj[key].stuffs.length)
                 div(class="container")
                     if(dj[key].name)
                         h2(class="text-center")=dj[key].name
-
                     each stuff in dj[key].stuffs
                         div(class="col-lg-4 col-md-4 col-sm-4 col-xs-12",home-page-stuff=stuff._id)
                             a(href=stuff.link)
@@ -13,7 +12,8 @@ if(dj[key].stuffs && dj[key].stuffs.length)
                                 if(stuff.name)
                                     div(class="box-desc")
                                         h4
-                                            span=stuff.name
+                                            span
+                                             | !{stuff.name}
                                             | &nbsp;
                                             span(class="artikul")=stuff.artikul
                     div( class="clearfix")

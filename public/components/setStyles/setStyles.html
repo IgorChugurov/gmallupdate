@@ -105,11 +105,14 @@
                 text-transform:  <span class="style-value">{{$ctrl.item[15]}}</span>
                 text-decoration:  <span class="style-value">{{$ctrl.item[23]}}</span>
                 text-align:  <span class="style-value">{{$ctrl.item[24]}}</span>
+                text-indent:  <span class="style-value">{{$ctrl.item[64]}}</span>
+                text-overflow:  <span class="style-value">{{$ctrl.item[63]}}</span>
                 vertical-align:  <span class="style-value">{{$ctrl.item[36]}}</span>
                 line-height:  <span class="style-value">{{$ctrl.item[50]}}</span>
                 word-break:  <span class="style-value">{{$ctrl.item[58]}}</span>
                 word-wrap:  <span class="style-value">{{$ctrl.item[59]}}</span>
                 word-spacing:  <span class="style-value">{{$ctrl.item[60]}}</span>
+                white-space:  <span class="style-value">{{$ctrl.item[62]}}</span>
             </a>
             <ul class="dropdown-menu">
                 <li>
@@ -156,10 +159,23 @@
                 </li>
                 <li>
                     <div class="form-group label-static">
+                        <label for="dd10426" class="control-label">text-indent</label>
+                        <input   class="form-control" id="dd10426" placeholder="text-indent" ng-model="$ctrl.item[64]">
+                    </div>
+                </li>
+                <li>
+                    <div class="form-group label-static">
+                        <label for="dd10904b" class="control-label">text-overflow</label>
+                        <input   class="form-control" id="dd10904b" placeholder="text-overflow" ng-model="$ctrl.item[63]">
+                    </div>
+                </li>
+                <li>
+                    <div class="form-group label-static">
                         <label for="dd1042yy9" class="control-label">vertical-align</label>
                         <input   class="form-control" id="dd1042yy9" placeholder="vertical-align" ng-model="$ctrl.item[36]">
                     </div>
                 </li>
+
                 <li>
                     <div class="form-group label-static">
                         <label for="dd10461" class="control-label">line-height</label>
@@ -184,6 +200,13 @@
                         <input   class="form-control" id="dd10904" placeholder="word-spacing" ng-model="$ctrl.item[60]">
                     </div>
                 </li>
+                <li>
+                    <div class="form-group label-static">
+                        <label for="dd10904a" class="control-label">white-space</label>
+                        <input   class="form-control" id="dd10904a" placeholder="white-space" ng-model="$ctrl.item[62]">
+                    </div>
+                </li>
+
             </ul>
         </div>
     </div>
@@ -465,6 +488,7 @@
                 background-position: <span class="style-value">{{$ctrl.item[38]}}</span>
                 background-attachment: <span class="style-value">{{$ctrl.item[54]}}</span>
                 background-repeat: <span class="style-value">{{$ctrl.item[55]}}</span>
+                background-image: <span class="style-value">{{$ctrl.item[61]}}</span>
                 transition: <span class="style-value">{{$ctrl.item[41]}}</span>
                 box-shadow: <span class="style-value">{{$ctrl.item[42]}}</span>
                 transform: <span class="style-value">{{$ctrl.item[43]}}</span>
@@ -501,6 +525,12 @@
                     <div class="form-group label-static">
                         <label for="fdd104aa" class="control-label">background-repeat</label>
                         <input class="form-control" id="fdd104aa" placeholder="background-repeat" ng-model="$ctrl.item[55]">
+                    </div>
+                </li>
+                <li>
+                    <div class="form-group label-static">
+                        <label for="fdd104aa" class="control-label">background-image</label>
+                        <input class="form-control" id="fdd104a3" placeholder="background-image" ng-model="$ctrl.item[61]">
                     </div>
                 </li>
                 <li>

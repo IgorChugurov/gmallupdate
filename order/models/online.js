@@ -82,7 +82,8 @@ var BookingSchema = new Schema({
     closed:Boolean,
     setColor:Boolean,
     masterReplace:String,// замена
-    members:Number
+    members:[{_id:String,name:String,phone:String}],
+
 });
 
 BookingSchema.pre("save", function(next) {

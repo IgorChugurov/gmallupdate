@@ -14,6 +14,7 @@ module.exports = function(router) {
     router.post('/auth/vkontakte',middleware.getStore,authCtrl.vkontakte);
 
     router.get('/api/me/:store',middleware.ensureAuthenticated,middleware.getStore,authCtrl.me);
+    router.get('/api/changeAbomenet/:user/:sign/:qty',middleware.getStore,api.changeAbomenet);
     //router.get('/api/me',middleware.ensureAuthenticated,middleware.getStore,authCtrl.me);
 
 

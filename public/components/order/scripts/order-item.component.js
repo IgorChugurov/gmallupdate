@@ -391,7 +391,7 @@
             modalInstance.result.then(function (priceSale) {
                 //console.log(priceSale,typeof priceSale,typeof stuff.price)
                 reload=true;
-                if(priceSale && priceSale!='0' && priceSale!=stuff.price){
+                if(priceSale && priceSale!='0'){
                     stuff.priceSale=priceSale;
                     stuff.priceSaleHandle=true;
                 }else{
@@ -1130,11 +1130,8 @@
 
         }
 
-        function reserve() {
+        function reserve(status,oldStatus) {
             return   $q.when()
-                .then(function () {
-                    return $order.checkWarehouse()
-                })
                 .then(function () {
                     return $order.checkWarehouse()
                 })
@@ -1157,12 +1154,13 @@
                     }
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('обработка данных в бухгалтерии')(err)
                     }
                 })
         }
-        function cancelReserve() {
+        function cancelReserve(status,oldStatus) {
             return   $q.when()
                 .then(function () {
                     return $order.cancelRn()
@@ -1177,13 +1175,14 @@
                     showToaster('note','Сохренено','информация обновлена')
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('изменение статуса')(err)
                     }
                 })
         }
 
-        function holdZakaz() {
+        function holdZakaz(status,oldStatus) {
             return   $q.when()
                 .then(function () {
                     return $order.holdZakaz()
@@ -1194,12 +1193,13 @@
                     showToaster('note','Сохренено','информация обновлена')
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('изменение статуса')(err)
                     }
                 })
         }
-        function cancelZakaz() {
+        function cancelZakaz(status,oldStatus) {
             return   $q.when()
                 .then(function () {
                     return $order.cancelZakaz()
@@ -1215,6 +1215,7 @@
                     showToaster('note','Сохренено','информация обновлена')
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('изменение статуса')(err)
                     }
@@ -1222,7 +1223,9 @@
         }
 
         function changeStatus(status){
-            console.log(status,self.order.status)
+            //console.log(status,self.order.status)
+
+            var oldStatus = self.order.status;
             if(global.get('store').val.bookkeep){
                 if(self.order.status==status.value){return}
                 if(self.order.status==1 && status.value!=2){
@@ -1230,31 +1233,42 @@
                     self.status=self.statusArray[Number(self.order.status)-1]
                     exception.catcher('изменение статуса')('только на принят')
                 }else if(status.value==2 && self.order.status==1){
-                    return reserve()
+                    return reserve(status,self.order.status)
                 }else if(status.value==1 && (self.order.status==2 || self.order.status==3)){
-                    cancelReserve()
+                    cancelReserve(status,self.order.status)
                 }else if(status.value==4 && (self.order.status==2 || self.order.status==3)){
-                    holdZakaz()
+                    holdZakaz(status,self.order.status)
                 }else if(status.value==1 && self.order.status==4){
-                    cancelZakaz()
+                    cancelZakaz(status,self.order.status)
                 }else if(self.order.status==4 && status.value!=1){
-                    console.log(self.order.status)
+                    //console.log(self.order.status)
                     self.status=self.statusArray[Number(self.order.status)-1]
                     exception.catcher('изменение статуса')('только на поступил')
                 }
-
+                if((oldStatus==3 && self.order.status==2)||(oldStatus==2 && self.order.status==3)){
+                    checkAbonement()
+                }
+                $timeout(function () {
+                    $rootScope.$emit('reloadOrderList')
+                },500)
                 return;
             }
 
 
             self.order.status=status.value;
             self.updateOrderField('status')
-
+            if((oldStatus==3 && self.order.status==2)||(oldStatus==2 && self.order.status==3)){
+                checkAbonement()
+            }
+            /*данные по статистике гугла*/
             if(self.order.statSent ||(self.order.status!=3&&self.order.status!=5)){
                 return
             }
             self.order.statSent=true;
             self.updateOrderField('statSent')
+            $timeout(function () {
+                $rootScope.$emit('reloadOrderList')
+            },500)
             var order = self.order;
             try{
                 if ((global.get('local')&& !global.get('local').val) && $window.ga){
@@ -1307,6 +1321,43 @@
             }catch(err){
                 throw err
             }
+        }
+
+        function checkAbonement() {
+            //console.log(self.order)
+            var a =self.order.cart.stuffs.reduce(function (ac,it) {
+                if(it.abonement){
+                    ac+=it.abonement;
+                }
+                return ac;
+            },0);
+            //console.log(a);
+            if(a){
+                var o={
+                    a:a,
+                    user:self.order.user._id
+
+                }
+                if(self.order.status==3){
+                    o.add=true;
+                }else if(self.order.status==2){
+                    o.add=false;
+                }
+                $q.when()
+                    .then(function () {
+                        return $http.post('/api/orders/changeAbonement',o)
+                    })
+                    .then(function (res) {
+                        console.log(res)
+                        showToaster('note','Сохренено','информация в абонементе обновлена')
+                    })
+                    .catch(function (err) {
+                        if(err){
+                            exception.catcher('обновление данных в абонементе')(err)
+                        }
+                    })
+            }
+
         }
 
         function makeAccess() {

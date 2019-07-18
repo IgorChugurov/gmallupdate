@@ -141,7 +141,7 @@
                     global.get('cache').val[model + 'list']=response.data.html;
                 }*/
                // $element.append(response.data.html)
-                //console.log(response.data)
+                //console.log(response.data.html)
                 if(response.data.titles && response.data.titles.title){
                     for(var k in response.data.titles){
                         if(response.data.titles[k]){
@@ -217,7 +217,13 @@
                                 td1.append(atd1)
                                 td2.append(atd2)
                                 td3.append(atd3)
+                                //console.log('td1.append(atd1)')
+
+
                                 $timeout(function () {
+                                    $compile(atd1)($scope)
+                                    $compile(atd2)($scope)
+                                    $compile(atd3)($scope)
                                     lastElement=(self.lastItemId!=null)?$('#item-'+self.lastItemId):null;
                                     waiting=false;
                                 },200)

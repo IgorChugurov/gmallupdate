@@ -218,14 +218,14 @@
                 $rootScope.$emit('modalOpened')
                 modalInstance.result.then(function(entry){
                     $rootScope.$emit('modalClosed');
-                    //console.log(item)
+                    console.log(entry)
                     var o ={_id:entry._id}
                     var field ='masterReplace pays members'
                     o['masterReplace']=entry['masterReplace']
                     o['pays']=entry['pays']
                     o['members']=entry['members']
                     //console.logmembers
-                    Booking.save({update:field},o,function(err){
+                    /*Booking.save({update:field},o,function(err){
                         global.set('saving',true);
                         $timeout(function(){
                             global.set('saving',false);
@@ -233,17 +233,95 @@
                         },1500)
 
 
-                    })
+                    })*/
+                    $state.reload();
                     resolve(entry)
                 },function(){$rootScope.$emit('modalClosed');reject()});
             })
 
         }
-        classInfoCtrl.$inject=['$scope','$uibModalInstance','$rootScope','global','exception','Booking','entry']
-        function classInfoCtrl($scope,$uibModalInstance,$rootScope,global,exception,Booking,entry) {
+        classInfoCtrl.$inject=['$scope','$uibModalInstance','$rootScope','global','exception','Booking','entry','$user']
+        function classInfoCtrl($scope,$uibModalInstance,$rootScope,global,exception,Booking,entry,$user) {
 
             var self = this;
             self.entry=entry;
+            self.users=[];
+
+
+            self.refreshUsers=refreshUsers;
+            self.saveField=saveField;
+            self.deleteUser=deleteUser;
+            self.addNewUser=addNewUser;
+
+
+
+            function refreshUsers(phone){
+                if (phone.length<3){return}
+                //var newVal = phone.replace(pattern, '').substring(0,10);
+                self.cachePhone=phone
+                //if(self.oldPhone==phone){return}else{self.oldPhone=phone}
+                searchUser(phone)
+            }
+            function searchUser(phone){
+                var q= {$or:[{'profile.phone':phone},{name:phone},{email:phone}]}
+                q= {search:phone}
+                $user.query({perPage:50,page:0,search:phone} ).$promise
+                //$user.getList({page:0,rows:20},q)
+                    .then(function(res){
+                    self.users=res.map(function (user) {
+                        if(user.profile && user.profile.phone && user.profile.phone[0]=="+"){
+                            user.profile.phone=user.profile.phone.substring(1)
+                        }
+                        if(user.profile && user.profile.phone && user.profile.phone.length<10){
+                            while(user.profile.phone.length<10){
+                                user.profile.phone+='0'
+                            }
+                        }
+                        if(user.profile && user.profile.phone && user.profile.phone.length==10){
+                            user.profile.phone='38'+user.profile.phone
+                        }
+                        user.phone=(user.profile)?user.profile.phone:null;
+                        if(user.profile && user.profile.fio){
+                            user.name = user.profile.fio;
+                        }
+                        return user
+                    });
+                })
+            }
+            function saveField(field){
+                var o ={_id:entry._id}
+                o[field]=entry[field];
+                Booking.save({update:field},o,function(err){
+                    global.set('saving',true);
+                    $timeout(function(){
+                        global.set('saving',false);
+                    },1500)
+
+
+                })
+            }
+            function addNewUser(){
+                if(!entry.members){
+                    entry.members=[];
+                }
+                if(self.user && self.user.abonement){
+                    self.user.abonement--;
+                    var user ={_id:self.user._id,name:self.user.name,phone:self.user.phone}
+                    entry.members.push(user)
+                    self.user=null;
+                    saveField('members')
+                }
+
+            }
+            function deleteUser(idx){
+                if(entry.members && entry.members.length){
+                    var user = entry.members.splice(idx,1);
+                    saveField('membrs')
+                }
+            }
+        /*обновление данных по абонементу в списке. при удалении при добавление так же сохранение данных на сервере user*/
+
+
             self.ok = function ok() {
                 $uibModalInstance.close($scope.entry);
             }

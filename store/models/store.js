@@ -14,6 +14,7 @@ StoreSchema = new Schema({
     descL:{},// служебное описание магазина
     name: {type: String, default: '', trim: true},
     nameL:{},
+    nameXml:String,
     date:{type:Date,defaul:Date.now()},
     index:{type:Number,default:1},
     url: {type: String, index: true},
@@ -182,7 +183,9 @@ StoreSchema = new Schema({
         first: Boolean,
         oferta:Boolean,// наличие в регистрационной форме чекбокса с подтверждением правил испльзования сайта
     },
+    ips:String,
     bookkeep:Boolean,// использовать бухгалтерию на витрине
+    virtualAccount: String,// id подразделения из бухгалтерии
 });
 /*StoreSchema.add({sh:{
     fb:{is:Boolean,type:Number},

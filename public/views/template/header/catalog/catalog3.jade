@@ -7,7 +7,7 @@ div(class=dj[key].wrapclass+pullClass)
                         - for (var i = 0; i < sectionsMenu.length; i++)
                             - var section=sectionsMenu[i]
                             li(id=section.id,class="mainli")
-                                a(class="section-name",set-animate=dj[key].animate,data-animation=dj[key].animate,href=(section.innerData) ? null : section.allCategiriesHref)
+                                a(class="section-name",set-animate=dj[key].animate,data-animation=dj[key].animate,href=(section.innerData) ? null : section.allCategiriesHref,ng-class="{'active':$stateParams.groupUrl=='"+section.url+"'}")
                                     span()
                                         !=section.name
                                     span(class="icon-caret-img")

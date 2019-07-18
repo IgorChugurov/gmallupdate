@@ -6,7 +6,7 @@ div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-anim
                 each page,index in stats
                     li(set-animate=dj[key].blockAnimate,data-animation=dj[key].blockAnimate,data-animation-delay=dj[key].animationDelay)
                         - var hr = "/stat/"+page.url
-                        a(href=hr)
+                        a(href=hr,ng-class="{'active':$state.current.name=='stat.item' && $stateParams.id=='"+page.url+"'}")
                             span(class="part",set-animate=dj[key].animate,data-animation=dj[key].animate)
                                 =page.name
         else
@@ -15,7 +15,7 @@ div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-anim
                     each page,index in stats
                         li(set-animate=dj[key].blockAnimate,data-animation=dj[key].blockAnimate,data-animation-delay=dj[key].animationDelay)
                             - var hr = "/stat/"+page.url
-                            a(href=hr)
+                            a(href=hr,ng-class="{'active':$state.current.name=='stat.item' && $stateParams.id=='"+page.url+"'}")
                                 span(class="part",set-animate=dj[key].animate,data-animation=dj[key].animate)
                                     =page.name
 

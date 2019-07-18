@@ -487,6 +487,10 @@ var myApp= angular.module('gmall', [
             url: "/online?type",
             template:'<online-booking></online-booking>'
         })
+        .state("frame.report", {
+            url: "/report",
+            template:'<report-orders></report-orders>'
+        })
         .state("frame.schedule", {
             url: "/schedule",
             template:'<week-schedule></week-schedule>'

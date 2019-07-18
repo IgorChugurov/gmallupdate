@@ -90,6 +90,7 @@
         self.excelLink= global.get('store').val.link+'/warehouse/'+global.get('store').val.subDomain+'.xlsx'
 
         function getExcel() {
+            $scope.$emit('$stateChangeStartToStuff')
             $q.when()
                 .then(function () {
                     var va =(self.virtualAccount)?self.virtualAccount:'allVirtualAccounts';
@@ -97,11 +98,13 @@
                     return $http.get(url)
                 })
                 .then(function () {
+                    $scope.$emit('$stateChangeEndToStuff')
                     //console.log('$scope.$parent.getParentList',$scope.$parent.getParentList)
                     exception.showToaster('info','формирование остатков в файл','обновлено')
                     //getList()
                 })
                 .catch(function(err){
+                    $scope.$emit('$stateChangeEndToStuff')
                     err = err.data||err
                     exception.catcher('формирование остатков в файл')(err)
                 });
@@ -270,6 +273,7 @@
 
         }
         function makeBalances() {
+            $scope.$emit('$stateChangeStartToStuff')
             $q.when()
                 .then(function () {
                     var va =(self.virtualAccount)?self.virtualAccount:'allVirtualAccounts';
@@ -280,8 +284,10 @@
                     //console.log('$scope.$parent.getParentList',$scope.$parent.getParentList)
                     exception.showToaster('info','формирование остатков','обновлено')
                     getList()
+                    $scope.$emit('$stateChangeEndToStuff')
                 })
                 .catch(function(err){
+                    $scope.$emit('$stateChangeEndToStuff')
                     err = err.data||err
                     exception.catcher('формирование остатков')(err)
                 });

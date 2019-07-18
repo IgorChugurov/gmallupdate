@@ -1535,27 +1535,20 @@ String.prototype.getFormatedDate=function(){
 
     };
     order.prototype.getCouponSum=function(){
+        this.couponSum = this.sum;
         //console.log(this.coupon)
         if (this.coupon && Object.keys(this.coupon).length){
             if(!this.coupon.condition){
-                return Math.ceil10((this.sum-(this.sum/100)*Number(this.coupon.val)),-5);
+                this.couponSum = Math.ceil10((this.sum-(this.sum/100)*Number(this.coupon.val)),-5);
             }else if(this.coupon.condition){
                 var val=this.coupon.val;
-                //console.log(this.sum,val)
                 if(this.coupon.currency && this.currencyStore[this.coupon.currency] && this.currencyStore[this.coupon.currency][0]){
                     val = Math.round(val/this.currencyStore[this.coupon.currency][0])
                 }
-                /*if(this.coupon.currency && this.coupon.currency!=this.currency && this.currencyStore && this.currencyStore[this.coupon.currency] && this.currencyStore[this.coupon.currency][0]){
-                    console.log(this.currencyStore[this.coupon.currency][0])
-                    val = Math.round(val/this.currencyStore[this.coupon.currency][0])
-                }*/
-                //console.log(this.sum-Number(val))
-                return (this.sum-Number(val));
+                this.couponSum = this.sum-Number(val);
             }
-        }else{
-            //console.log(this.sum)
-            return this.sum
         }
+        return this.couponSum;
     };
     order.prototype.clearOrder=function(){
         this.cart.stuffs.length=0;
@@ -1943,6 +1936,33 @@ var myApp= angular.module('gmall', [
             Brands.reloadItems();
             Sections.reloadItems();
         }
+        if(toState.name=='frame.stuffs'){
+            $q.when()
+                .then(function(){
+                    return Sections.getSections();
+                })
+                .then(function(groups){
+                    console.log(groups,toState)
+                    var sec;
+                    loop1 : for(var i=0;i<groups.length;i++){
+                        if(groups[i].url==toParams.groupUrl){
+                            sec=groups[i];
+                            break;
+                        }
+                        if(groups[i].child && groups[i].child.length){
+                            for(var j=0;j<groups[i].child.length;j++){
+                                if(groups[i].child[j].url==toParams.groupUrl){
+                                    sec=groups[i].child[j];
+                                    break loop1;
+                                }
+                            }
+                        }
+                    }
+                   // console.log(sec)
+
+                    global.set('section',sec)
+                })
+        }
         if(fromState.name=='frame.stuffs' && toState.name=='frame.stuffs.stuff'){
             $rootScope.srollPosition=$(window).scrollTop();
         }
@@ -2197,6 +2217,7 @@ var myApp= angular.module('gmall', [
     // инициализация глобальных переменных
     globalProvider.set('groups');
     globalProvider.set('sections'); //дубдь
+    globalProvider.set('section');
     globalProvider.set('categories');
     globalProvider.set('categoriesO');
     //globalProvider.set('filters');
@@ -2308,6 +2329,9 @@ var myApp= angular.module('gmall', [
             template:'<filter-tag-edit></filter-tag-edit>',
         })
 
+
+
+
         .state("frame.stuffs", {
             url: "/stuffs/:groupUrl/:categoryUrl?searchStr&queryTag&brand&brandTag&msg&filters",
             templateUrl: function(){ return 'modules/content/views/stuffs.html'},
@@ -2378,6 +2402,15 @@ var myApp= angular.module('gmall', [
             url: "/:id",
             template:'<static-page></static-page>',
         })
+        .state("frame.links", {
+            url: "/links",
+            template: '<link-list></link-list>',
+        })
+        .state("frame.links.item", {
+            url: "/:id",
+            template:'<link-item></link-item>',
+        })
+
         .state("frame.additionals", {
             url: "/additionals",
             template: '<additional-pages></additional-pages>',
@@ -2711,6 +2744,37 @@ angular.module('gmall.filters', [] )
             return result
         };
     })
+    .filter('propsFilter', function() {
+        return function(items, props) {
+            var out = [];
+
+            if (angular.isArray(items)) {
+                var keys = Object.keys(props);
+
+                items.forEach(function(item) {
+                    var itemMatches = false;
+
+                    for (var i = 0; i < keys.length; i++) {
+                        var prop = keys[i];
+                        var text = props[prop].toLowerCase();
+                        if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                            itemMatches = true;
+                            break;
+                        }
+                    }
+
+                    if (itemMatches) {
+                        out.push(item);
+                    }
+                });
+            } else {
+                // Let the output be the input untouched
+                out = items;
+            }
+
+            return out;
+        };
+    })
 
 
 
@@ -2915,10 +2979,12 @@ angular.module('gmall.filters', [] )
 
         }
         function sendCodeToPhone(phone) {
+            //console.log(phone)
             var o = {phone:phone}
             self.sendCodeDisable=true;
             $q.when()
                 .then(function () {
+                    if(phone=='381112223334'){return }
                     return $http.post('/api/users/sendSMS',o)
                 })
                 .then(function () {
@@ -2957,7 +3023,9 @@ angular.module('gmall.filters', [] )
                     }
                 })
                 .then(function () {
-                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    //console.log('phone',phone)
+                    if(phone=='381112223334'){return }
+                    //console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
                     return sendPhoneFactory.sendCodeToPhone(self.phone)
                 })
                 .then(function () {
@@ -3404,6 +3472,9 @@ angular.module('gmall.filters', [] )
         var self=this;
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
+            $scope.$parent.$watch('codeSent', function(value){
+                self.codeSent=value;
+            });
 
         }
         //console.log(global.get('store').val)
@@ -3428,6 +3499,7 @@ angular.module('gmall.filters', [] )
 
 
         function sendCodeToPhone(form) {
+            //console.log(form)
             if(form.$invalid){
                 return
             }
@@ -3449,12 +3521,16 @@ angular.module('gmall.filters', [] )
                     }
                 })
                 .then(function () {
-                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    //console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    if(self.phone==='381112223334'){return}
                     return sendPhoneFactory.sendCodeToPhone(self.phone)
                 })
                 .then(function () {
+                    if(self.codeSent){
+                        exception.showToaster('info','отправка SMS','код отправлен на номер '+self.phone)
+                    }
                     self.codeSent=true;
-                    exception.showToaster('info','send code','success')
+
                     $timeout(function () {
                         self.sendCodeDisable=false
                     },10000)
@@ -3754,17 +3830,19 @@ confirmFactory.$inject = ['$q','$uibModal'];
 
 function confirmFactory($q,$uibModal) {
     return service;
-    function service(question){
+    function service(question,html){
         return $q(function(resolve,reject){
             var options={
                 animation: true,
                 template : [
                     '<div class="modal-header">',
                         '<h3 class="modal-title text-center" ng-bind="$ctrl.question"></h3>',
-                        '<span class="cancel-confirm"><span class="icon-cancel-img" ng-click=""$ctrl.cancel()"></span></span>',
+
+                        '<span class="cancel-confirm" ng-click="$ctrl.cancel()"><span class="icon-cancel-img" ></span></span>',
 
                     '</div>',
                     '<div class="modal-body confirm">',
+                    '<div class="modal-html" ng-bind-html="$ctrl.html|unsafe"></div>',
                     '<form ng-submit="$ctrl.ok()">'+
                     '<button autofocus class="btn btn-project btn-border  btn-modal pull-right" type="reset" ng-click="$ctrl.cancel()">{{global.get("langOrder").val.noo}}</button>',
                     '<button class="btn btn-project btn-modal pull-left" type="submit">{{global.get("langOrder").val.yes}}</button>',
@@ -3772,21 +3850,32 @@ function confirmFactory($q,$uibModal) {
                     '<div class="clearfix"></div>',
                     '</div>'
                 ].join(''),
-                controller: function($uibModalInstance,question){
+                controller: function($uibModalInstance,$rootScope,question,html){
                     var self=this;
-                    self.question=question
+                    self.question=question;
+                    if(html){
+                        self.html=html;
+                    }
                     self.ok=function(){
                         $uibModalInstance.close();
                     }
                     self.cancel = function () {
-                        $uibModalInstance.dismiss('cancel');
+                        //console.log('????')
+                        $uibModalInstance.dismiss();
                     };
+                    $rootScope.$on('$stateChangeStart',function(){
+                        $uibModalInstance.dismiss();
+                    });
                 },
                 controllerAs:'$ctrl',
                 size: 'sm',
                 resolve:{
-                    question: function(){return question}
+                    question: function(){return question},
+                    html: function(){return html}
                 }
+            }
+            if(html){
+                options.size='md'
             }
             $uibModal.open(options).result.then(function () {resolve();},function () {reject()});
         })
@@ -6968,6 +7057,7 @@ angular.module('gmall.controllers')
             saveField:saveField,
             selectItem:selectItem,
             select:selectItem,
+            selectStuffs:selectItems,
             selectItemWithSort:selectItemWithSort,
             getServicesForOnlineEntry:getServicesForOnlineEntry,
             getAllBonus:getAllBonus,
@@ -7503,6 +7593,7 @@ angular.module('gmall.controllers')
                         console.log('tag',tag)
 
                     }*/
+                    //console.log(Number(stuff.stock[k].quantity))
                     if(tag){
                         return {_id:k,index:tag.index,name:tag.name,quantity:Number(stuff.stock[k].quantity)}
                     }else{
@@ -7515,8 +7606,12 @@ angular.module('gmall.controllers')
                     return a.index-b.index
                 })
                 /*console.log(stuff.stock)
-                console.log(stuff.stockKeysArray)*/
+                console.log(JSON.stringify(stuff.stockKeysArray))*/
                 var sort_Id=null;
+                if($state.current.name==='stuffs.stuff' && $stateParams.sort && $stateParams.stuffUrl===stuff.url && !stuff.stuffFromList && keys.indexOf($stateParams.sort)>-1){
+                    stuff.sort=$stateParams.sort;
+
+                }
                 //console.log(stuff)
                 stuff.stockKeysArray.forEach(function (key) {
                     //console.log(key,stuff.stock[key._id])
@@ -7589,7 +7684,9 @@ angular.module('gmall.controllers')
                         if(stuff.multiple && stuff.minQty){
                             key.quantity= Number(stuff.minQty);
                         }else{
-                            key.quantity=1;
+                            if($state.current.name!='frame.stuffs.stuff' && $state.current.name!='frame.stuffs'){
+                                key.quantity=1;
+                            }
                             stuff.minQty=1;
                         }
                     }
@@ -7600,6 +7697,8 @@ angular.module('gmall.controllers')
                         stuff.filterActiveTagName=stuff.stock[key._id].name;
                     }
                 })
+
+                //console.log("JSON.stringify(stuff.stockKeysArray)",JSON.stringify(stuff.stockKeysArray))
 
                 if(stuff.stockKeysArray.length && sort_Id){
                     _changeSortOfStuff.call(stuff,sort_Id);
@@ -7851,9 +7950,9 @@ angular.module('gmall.controllers')
                 return $q.reject(error);
             }
         }
-        function search(search,setData){
+        function search(search,setData,allStuffs){
             // setData - если ищем товар в админке для дальнейшего использования необходимо получить с сервера все данные
-            var data ={search:search,setData:setData};
+            var data ={search:search,setData:setData,allStuffs:allStuffs};
             return Items.query(data).$promise
                 .then(getListComplete)
                 .catch(getListFailed);
@@ -8534,6 +8633,23 @@ angular.module('gmall.controllers')
             })
 
         }
+        function selectItems(){
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/stuff/modal/selectStuffsWithSortModal.html',
+                    controller: selectItemsCtrl,
+                    controllerAs:'$ctrl',
+                    size: 'lg',
+                });
+                modalInstance.result.then(function (stuffs) {
+                    resolve(stuffs)
+                },function(){
+                    reject()
+                });
+            })
+
+        }
         function getServicesForOnlineEntry(){
             //console.log('stuffsService',stuffsService)
             if(stuffsService && stuffsService.length){return stuffsService}
@@ -8907,6 +9023,132 @@ angular.module('gmall.controllers')
         }
         function getFilterName(_id){
             return self.filters.getOFA('_id',_id ).name||null;
+        }
+
+    }
+    selectItemsCtrl.$inject=['$q','Stuff','$uibModalInstance','Filters','FilterTags','exception','global'];
+    function selectItemsCtrl($q,Stuff,$uibModalInstance,Filters,FilterTags,exception,global){
+        var self=this;
+        self.global=global;
+        self.stuffs=[];
+        self.name='';
+        var paginate={page:0,rows:30,items:0}
+        self.selectedStuffs=[];
+
+        self.deleteStuff=deleteStuff;
+
+        self.getFilterName=getFilterName;
+        self.search = function(name){
+            //console.log(name)
+            if (name.length<3){return}
+            $q.when()
+                .then(function(){
+                    return Stuff.search(name,true,true)
+                })
+                .then(function(res){
+                    if(!global.get('seller') || !global.get('seller').val){
+                        self.stuffs=res.map(function (s) {
+                            //console.log(s)
+                            for(var i=0;i<s.stockKeysArray.length;i++){
+                                if(!s.stockKeysArray[i].quantity){
+                                    s.stockKeysArray.splice(i,1)
+                                    i--;
+                                }
+                            }
+                            return s;
+                        }).filter(function(s){
+                            // /console.log(s)
+                            return s.actived && s.stockKeysArray.length})
+                        //console.log(self.stuffs)
+                    }else{
+                        self.stuffs=res;
+                    }
+                })
+
+
+            return;
+            if(query){
+                if (!query.$and){query={$and:[query]}}
+                query.$and.push({$or:[{name:name},{artikul:name}]})
+            }else{
+                query={$or:[{name:name},{artikul:name}]}
+            }
+            Stuff.getList(paginate,query).then(function(res){
+                query=angular.copy(cashQuery)
+                if(!global.get('seller') || !global.get('seller').val){
+                    self.stuffs=res.map(function (s) {
+                        //console.log(s)
+                        for(var i=0;i<s.stockKeysArray.length;i++){
+                            if(!s.stockKeysArray[i].quantity){
+                                s.stockKeysArray.splice(i,1)
+                                i--;
+                            }
+                        }
+                        return s;
+                    }).filter(function(s){
+                        // /console.log(s)
+                        return s.actived && s.stockKeysArray.length})
+                    //console.log(self.stuffs)
+                }else{
+                    self.stuffs=res;
+                }
+
+            })
+        }
+        self.addStuff=function(stuff){
+            if(stuff.sortsOfStuff && stuff.sortsOfStuff.filter && !stuff.sort){
+                exception.catcher('ошибка')('выберите разновидность')
+            }else {
+                /*var inCart= stuff.getDataForCart()
+                if(inCart.sort){
+                    inCart.addCriterionName=getTagName(inCart.sort);
+                }*/
+                for(var i =0;i<self.selectedStuffs.length;i++){
+                    if(self.selectedStuffs[i]._id===stuff._id && self.selectedStuffs[i].sort===stuff.sort){
+                         return exception.catcher('ошибка')('уже добавлен')
+                    }
+                }
+                var o = {
+                    _id:stuff._id,
+                    name:stuff.name,
+                    artikul:stuff.artikul,
+                    sort:stuff.sort,
+                    sortName:stuff.sortName,
+                }
+                self.selectedStuffs.push(o);
+            }
+        }
+        self.done=function(){
+            $uibModalInstance.close(self.selectedStuffs);
+        }
+        self.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+        activate()
+        function activate(){
+            $q.when()
+                .then(function(){
+                    return Filters.getFilters()
+                })
+                .then(function(filters){
+                    self.filters=filters;
+                })
+                .then(function(){
+                    return FilterTags.getFilterTags()
+                })
+                .then(function(filterTags){
+                    self.filterTags=filterTags;
+                })
+                .catch(function(err){
+                    console.log(err)
+                })
+        }
+        function getFilterName(_id){
+            var o = self.filters.getOFA('_id',_id )
+            return (o && o.name)?o.name:'';
+        }
+        function deleteStuff(i) {
+            self.selectedStuffs.splice(i,1)
         }
 
     }
@@ -9722,15 +9964,16 @@ angular.module('gmall.controllers')
         var url='views/template/partials/stuffs/stuffs-list/'+global.get('sectionType').val+'/'+$rootScope.$stateParams.groupUrl+'/'+$rootScope.$stateParams.categoryUrl;
         var waiting,lastElement,page=0,waitingDiv;
         var td1,td2,td3,td4,td5;
-        var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#000000"
-        var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"#F5F5F5"
+        //var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#666666"
+        //var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"transparent"
         var innerWaitingDiv=[
-            '<div class="spinner-box clearfix text-center" style="width:100%;height:200px;background-color:'+BGcolor+';color:'+color+'">',
+            '<div class="spinner-box clearfix text-center" style="width:100%;height:100px;">',
             '<span class="icon-spinner-img"></span>',
             //'<img class="spinner" src="/img/spinner.gif" style="margin-top: 70px">',
             '</div>'
         ].join('')
         var tempContentIs=false;
+
         $q.when()
             .then(function(){
                 var params ={group:self.$stateParams.groupUrl,category:self.$stateParams.categoryUrl}
@@ -9820,6 +10063,7 @@ angular.module('gmall.controllers')
                 //seoContent.setDataCatalog()
 
                 waitingDiv=$('#paginateData'+page);
+                //waitingDiv.html(innerWaitingDiv);
                 self.totalQty=waitingDiv.data('total');
                 self.paginate.items=self.totalQty;
                 //console.log(self.totalQty)
@@ -10115,10 +10359,10 @@ angular.module('gmall.controllers')
         }
         var waiting,lastElement,page=0,waitingDiv;
         var td1,td2,td3,td4,td5;
-        var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#000000"
-        var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"#F5F5F5"
+        //var color = (global.get('store').val.template.dimScreenColor)?global.get('store').val.template.dimScreenColor:"#000000"
+        //var BGcolor = (global.get('store').val.template.dimScreenBGColor)?global.get('store').val.template.dimScreenBGColor:"transparent"
         var innerWaitingDiv=[
-            '<div class="spinner-box clearfix text-center" style="width:100%;height:200px;background-color:'+BGcolor+';color:'+color+'">',
+            '<div class="spinner-box clearfix text-center" style="width:100%;height:200px;">',
             '<span class="icon-spinner-img"></span>',
             //'<img class="spinner" src="/img/spinner.gif" style="margin-top: 70px">',
             '</div>'
@@ -10388,6 +10632,7 @@ angular.module('gmall.controllers')
         self.Items=Stuff;
         self.mobile=global.get('mobile').val;
         self.global=global;
+        self.bookkeep=global.get('store').val.bookkeep;
         self.globalProperty=$rootScope.globalProperty;
         self.$state=$rootScope.$state;
         self.$stateParams=$rootScope.$stateParams;
@@ -10439,6 +10684,7 @@ angular.module('gmall.controllers')
         self.changeListCriteria=changeListCriteria;
         self.changeStock=changeStock
         self.deleteIndexPageHtml=deleteIndexPageHtml;
+        self.bookkeepSynchronize=bookkeepSynchronize;
 
         //*******************************************************
         activate();
@@ -10681,6 +10927,7 @@ angular.module('gmall.controllers')
                 })
         }
         function filterList(){
+
             $q.when()
                 .then(function(){
                     return self.Items.setFilters()
@@ -11274,8 +11521,18 @@ angular.module('gmall.controllers')
         function changeStock(stuff,tag) {
             //console.log(stuff)
             if(stuff.stock && stuff.stock[tag._id]){
-                stuff.stock[tag._id].quantity=tag.quantity
-                saveField(stuff,'stock');
+                if(global.get('store').val.bookkeep){
+                    if(tag.quantity==0){
+                        stuff.stock[tag._id].quantity=tag.quantity
+                        saveField(stuff,'stock');
+                    }else{
+                        exception.catcher('изменение количесва')('изменить количество можно только на ноль')
+                    }
+                }else{
+                    stuff.stock[tag._id].quantity=tag.quantity
+                    saveField(stuff,'stock');
+                }
+
             }
             //console.log(tag)
             //console.log(tag.quantity)
@@ -11291,6 +11548,28 @@ angular.module('gmall.controllers')
                 })
                 .catch(function(err){
                     exception.catcher('сброс страницы')(err)
+                })
+
+        }
+
+        function bookkeepSynchronize() {
+            $scope.$emit('$stateChangeStartToStuff')
+            console.log("bookkeepSynchronize")
+            Confirm('Подтверждаете?')
+                .then(function () {
+                    return $http({
+                        method: "get",
+                        url: '/api/stuffs/synchronizeWithBookkeep',
+                    })
+                })
+                .then(function(){
+                    $scope.$emit('$stateChangeEndToStuff')
+                    self.fixDesable=false
+                    exception.showToaster('info','synchronized','Ok')
+                })
+                .catch(function (err) {
+                    $scope.$emit('$stateChangeEndToStuff')
+                    exception.catcher('synchronize')(err)
                 })
 
         }
@@ -11337,7 +11616,7 @@ angular.module('gmall.controllers')
         if($stateParams.categoryUrl!='category'){
             self.sectionName=global.get('category').val.name;
         }else{
-            self.sectionName=global.get('section').val.name;
+            self.sectionName=(global.get('section') && global.get('section').val)?global.get('section').val.name:'раздел';
         }
         self.breadcrumbs=global.get('breadcrumbs').val;
         //console.log('set filers')
@@ -11346,16 +11625,21 @@ angular.module('gmall.controllers')
 
         self.chars=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
         self.char=self.chars[0]
+        var sT = (global.get('sectionType') && global.get('sectionType').val)?global.get('sectionType').val:'good';
+        if(global.get('store').val.template.stuffListType[sT].filtersCategories){
+            if(global.get('sections') && global.get('sections').val){
+                self.sections = global.get('sections').val.filter(function (s) {
 
-        if(global.get('store').val.template.stuffListType[global.get('sectionType').val].filtersCategories){
-            self.sections = global.get('sections').val.filter(function (s) {
+                    return s.viewsFilters;
+                });
+            }
 
-                return s.viewsFilters;
-            });
         }else{
             self.sections = [];
         }
         //console.log(self.sections)
+
+        self.allCategoriesSet=($stateParams.categoryUrl=='category')?true:false;
 
         self.changeAllBrands=changeAllBrands;
         self.changeAllTags=changeAllTags;
@@ -11371,6 +11655,7 @@ angular.module('gmall.controllers')
         self.deleteCrumb=deleteCrumb;
         self.showReset=showReset;
         self.showResetAll=AllshowReset;
+        self.showResetAllBrand=showResetAllBrand;
 
         function showReset(filter) {
             //console.log(filter)
@@ -11380,6 +11665,13 @@ angular.module('gmall.controllers')
         }
         function AllshowReset() {
             return self.filters.some(function (f) {
+                return f.tags.some(function (t) {
+                    return t.set
+                })
+            })
+        }
+        function showResetAllBrand() {
+            return self.brands.some(function (f) {
                 return f.tags.some(function (t) {
                     return t.set
                 })
@@ -11413,9 +11705,10 @@ angular.module('gmall.controllers')
         function activate(){
             /*console.log(global.get('section').val)
             console.log(global.get('category').val)*/
+            //console.log(global.get('section'))
             if(global.get('category').val && global.get('category').val.filters && global.get('category').val.filters.length){
                 self.displayable=true;
-            }else if(global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
+            }else if(global.get('section') && global.get('section').val && global.get('section').val.filters && global.get('section').val.filters.length){
                 self.displayable=true;
             }
             //if(global.get('section').val)
@@ -11692,7 +11985,7 @@ angular.module('gmall.controllers')
 
 
 
-        function changeTag(_filter,_tag){
+        function changeTag(_filter,_tag,type){
             //console.log(_filter,_tag)
             var queryTag='',brandTag='',brand='',filterTag='';
             //console.log(self.filters)
@@ -11726,17 +12019,34 @@ angular.module('gmall.controllers')
             })
 
             self.brands.forEach(function(b){
-                if(b.set){
-                    if(brand){brand+='__'}
-                    brand+=b.url;
-                }
-                b.tags.forEach(function(tag){
-                    if (tag.set){
-                        if(brandTag){brandTag+='__'}
-                        //console.log(tag.url,arr)
-                        brandTag+=tag.url;
+                if(type=='brand'){
+                    if(b.set){
+                        if(brand){brand+='__'}
+                        brand+=b.url;
                     }
-                })
+                }else if(type=='brandTag'){
+                    b.tags.forEach(function(tag){
+                        if (tag.set){
+                            if(brandTag){brandTag+='__'}
+                            //console.log(tag.url,arr)
+                            brandTag+=tag.url;
+                        }
+                    })
+                }else{
+                    if(b.set){
+                        if(brand){brand+='__'}
+                        brand+=b.url;
+                    }
+                    b.tags.forEach(function(tag){
+                        if (tag.set){
+                            if(brandTag){brandTag+='__'}
+                            //console.log(tag.url,arr)
+                            brandTag+=tag.url;
+                        }
+                    })
+                }
+
+
             })
             //console.log(filterTag)
             if(brand.split('__').length>1){
@@ -11835,16 +12145,24 @@ angular.module('gmall.controllers')
             //console.log(item)
             return item.name.toUpperCase()[0]==self.char
         }
-        function changeCategory(category) {
+        function changeCategory(category,section) {
             var o={
-                groupUrl:category.linkData.groupUrl,
-                categoryUrl:category.linkData.categoryUrl,
+                groupUrl:(category)?category.linkData.groupUrl:$stateParams.groupUrl,
+                categoryUrl:(category)?category.linkData.categoryUrl:'category',
                 queryTag:null,
                 brand:null,
                 brandTag:null,
                 categoryList:null
 
             };
+            if(!category || !category.set){
+                o.categoryUrl='category'
+            }
+            if(section && section.categories){
+                section.categories.forEach(function (c) {
+                    c.set=false;
+                })
+            }
             $state.go('stuffs',o)
         }
         function changeAllCategories(s) {
@@ -11901,7 +12219,7 @@ angular.module('gmall.directives')
     .directive('driveSale',driveSaleDirective)
     .directive('driveRetail',driveRetailDirective)
 
-.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks','$fileUpload',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks,$fileUpload){
+.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks','$fileUpload','FilterTags','Master',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks,$fileUpload,FilterTags,Master){
     return {
         restrict:"E",
         scope:{},
@@ -11919,13 +12237,116 @@ angular.module('gmall.directives')
             $scope.unitOfMeasure=global.get('store').val.unitOfMeasure;
             $scope.$ctrl.listOfBlocksForStuffDetailBlocks=listOfBlocksForStuffDetailBlocks;
             $scope.$ctrl.listOfBlocks=angular.copy(listOfBlocksForAll);
+            $scope.$ctrl.bookkeep =global.get('store').val.bookkeep
 
+            $scope.$ctrl.bookkeep = (global.get('store').val.bookkeep)?true:null;
+            console.log("$scope.$ctrl.bookkeep",$scope.$ctrl.bookkeep)
 
             $scope.$ctrl.addBlock=addBlock;
             $scope.$ctrl.deleteBlock=deleteBlock;
             $scope.$ctrl.saveField=saveFieldBlocks;
             $scope.$ctrl.saveFieldStuff=saveField;
             $scope.$ctrl.type='Stuff';
+            $scope.$ctrl.makeMaterial = makeMaterial;
+            $scope.changeUrl=changeUrl;
+
+             function makeMaterial(){
+
+                 return $q.when()
+                     .then(function () {
+                         var q = {stuff:$scope.item._id}
+                         return $http.get('/api/collections/Material?query='+JSON.stringify(q));
+
+                     })
+                     .then(function (res) {
+                         console.log(res)
+                         console.log($scope.item)
+                         if(res.data && res.data.length){
+                             throw 'материал создан'
+                         }
+                         return FilterTags.getFilterTags()
+
+
+
+                     })
+                     .then(function (filterTags) {
+                         console.log(filterTags);
+                         if(!filterTags){
+                             throw 'ошибка получения списка признаков характеристик'
+                         }
+                         var arr21 =[];
+                         for(var sort in $scope.item.stock){
+                             arr21.push(sort);
+                         }
+
+                         var act = arr21.map(function (sort) {
+                             var o ={
+                                 store:global.get('store').val._id,
+                                 stuff:$scope.item._id,
+                                 sort:sort,
+                                 name : $scope.item.name,
+                                 sku:($scope.item.artikul)?$scope.item.artikul:''
+
+                             }
+
+                             if(sort!=='notag'){
+                                 //console.log(global.get('fiterTags').val)
+                                 var tag = filterTags.getOFA('_id',sort);
+                                 if(tag){
+                                     o.sku += " "+tag.name
+                                 }
+                             }
+                             console.log(o)
+                             return $http.post('/api/collections/Material',o);
+                         })
+                         return $q.all(act)
+                     })
+                     .then(function (res) {
+                         console.log(res)
+                         $scope.$ctrl.materialIs=true;
+                     })
+                     .catch(function (err) {
+
+                         console.log(err)
+                         //err = err.data||err
+                         exception.catcher('удаление комментария')(err)
+                     })
+                 return
+                 /*let qq = {
+                     store:'5867d1b3163808c33b590c12',
+                     stuff:line[3],
+                     sort:line[4]
+                 }
+                 let material = await Material.findOne(qq).lean().exec();
+                 console.log('material',material)
+                 if(!material){
+                     if(!producers[line[2]]){
+                         let q ={store:'5867d1b3163808c33b590c12',name:line[2]};
+                         let pr = await Producer.findOne(q).lean().exec();
+                         //console.log('pr',pr)
+                         if(!pr){
+                             q.actived=true;
+                             pr = new Producer(q)
+                             await pr.save()
+                             producers[line[2]]=pr._id.toString();
+                         }
+                     }
+                     let m ={
+                         store:"5867d1b3163808c33b590c12",
+                         index:i,
+                         name : line[0],
+                         sku:line[1],
+                         producer:producers[line[2]],
+                         stuff:line[3],
+                         sort:line[4]
+                     }
+
+                     material = new Material(m);
+                     console.log('material',material)
+                     let r = await material.save()
+                     console.log(r)
+                 }*/
+             }
             /*$scope.$ctrl.setStyles=setStyles;
              $scope.$ctrl.deleteSlide=deleteSlide;
             $scope.$ctrl.movedItem=movedItem;
@@ -12304,12 +12725,20 @@ angular.module('gmall.directives')
             $scope.$ctrl.paginate1={rows:5,page:0,items:0};
             activate();
             function activate() {
+
                 $q.when()
                     .then(function(){
                         return Filters.getFilters()
                     } )
                     .then(function(filters){
                         $scope.filters=filters;
+                    })
+                    .then(function () {
+                        return Master.getList()
+                    })
+                    .then(function (ms) {
+                        $scope.masters=ms
+                        //console.log(self.masters)
                     })
                     .then(function(){
                         return  Stuff.getItem($stateParams.stuffUrl)
@@ -12403,6 +12832,19 @@ angular.module('gmall.directives')
                     .then(function(){
                         $anchorScroll();
                         return getAddInfos();
+                    })
+                    .then(function () {
+                        var q = {stuff:$scope.item._id}
+                        return $http.get('/api/collections/Material?query='+JSON.stringify(q));
+
+                    })
+                    .then(function (res) {
+                        $scope.$ctrl.checkedMaterial=true;
+                        if(res.data && res.data.length){
+                            $scope.$ctrl.materialIs = true;
+                        }
+                        console.log(res)
+
                     })
                     .catch(function(err){
                         console.log(err)
@@ -12943,11 +13385,40 @@ angular.module('gmall.directives')
             function changeStock(stuff,tag) {
                 //console.log(stuff)
                 if(stuff.stock && stuff.stock[tag._id]){
-                    stuff.stock[tag._id].quantity=tag.quantity
-                    saveField(stuff,'stock');
+                    if(global.get('store').val.bookkeep){
+                        if(tag.quantity==0){
+                            stuff.stock[tag._id].quantity=tag.quantity
+                            saveField(stuff,'stock');
+                        }else{
+                            exception.catcher('изменение количесва')('изменить количество можно только на ноль')
+                        }
+                    }else{
+                        stuff.stock[tag._id].quantity=tag.quantity
+                        saveField(stuff,'stock');
+                    }
+
                 }
+
+
+
+
                 //console.log(tag)
                 //console.log(tag.quantity)
+            }
+
+            function changeUrl() {
+                return $q.when()
+                    .then(function () {
+                        return $http.get('/api/stuffs/changeUrl/'+$scope.item._id);
+
+                    })
+                    .then(function (res) {
+                        $rootScope.$state.go('frame.stuffs',$rootScope.$stateParams,{reload:reload})
+                    })
+                    .catch(function (err) {
+                        console.log(err)
+                        exception.catcher('удаление комментария')(err)
+                    })
             }
 
 
@@ -14732,14 +15203,17 @@ angular.module('gmall.directives')
                         })
 
                         var innerUl = $element.find('.category-in-section');
+                        //console.log(innerUl)
                         $(innerUl).each(function (i,section) {
                             var ul = $(section).find('ul');
                             //console.log('slideToggle',ul)
                             $(ul).slideToggle()
 
                             $(section).click(function(e) {
-                                console.log('section',section)
-                                //e.stopPropagation()
+                                //console.log('section',section);
+                                if($(section).hasClass('brand-name')){
+                                    e.stopPropagation()
+                                }
                                 $(ul).stop(true, false, true).slideToggle(300);
                             });
                         })
@@ -14752,13 +15226,14 @@ angular.module('gmall.directives')
                 })
         }
         function bindHoverLi(li,ii){
+            //console.log(li,ii)
             if(!self.sections[ii] || !self.sections[ii].openCatalog){
                 $(innerDivs[ii]).slideToggle();
             }
-            console.log(li,ii,self.clickMenu)
+            //console.log(li,ii,self.clickMenu)
             if(self.clickMenu){
                 li.click(function(e) {
-
+                    //console.log("?????")
                     for(var i=0,l=innerDivs.length;i<l;i++){
                         if(i==ii){
                             $(innerDivs[i]).stop(true, false, true).slideToggle(300);
@@ -16562,15 +17037,15 @@ angular.module('gmall.services')
 
 
 
-        //**************************************************************************************
+        //**************************header для писем*************************
         function getHeader(user) {
             var s=
-                '<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 20px 0 0 0" border="0">'+
-                '<tr width="100%" style="max-width:900px;">' +
+                '<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 20px 0 0 0" border="0">'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;">' +
                     // лого и название
                 '<td width="50%" style=" padding:5px 20px"><a href="'+global.get('store').val.link+'">';
                     if(global.get('store').val.logo) {
-                        s+='<img  style="width: 100px;" src="' + photoHostForFactory + '/' + global.get('store').val.logo + '"></br>'
+                        s+='<img  style="width: 100px;" src="' + photoHostForFactory + '/' + global.get('store').val.logo + '" alt="logo '+global.get('store').val.name+'"></br>'
 
                     }
                     if(global.get('store').val.name) {
@@ -16581,37 +17056,38 @@ angular.module('gmall.services')
             s+='<td width="50%"  style="text-align: right; padding:5px 20px">'
             if(global.get('store').val.seller.phone) {
                 s+='<p><span>' +global.get('langOrder').val.phone+ '</span>'+
-                    ': <a style="color:#666" href="tel:'+'+'+global.get('store').val.seller.phone+'"><span>'+'+' +global.get('store').val.seller.phone + '</span></a></p>'
+                    ': <a style="color:#666666" href="tel:'+'+'+global.get('store').val.seller.phone+'"><span>'+'+' +global.get('store').val.seller.phone + '</span></a></p>'
             }
             if(global.get('store').val.feedbackEmail) {
                 s += '<p><span>e-mail</span>'+
-                    ': <a style="color:#666" href="mailto:'+global.get('store').val.feedbackEmail+'"><span>' + global.get('store').val.feedbackEmail + '</span></a></p>'
+                    ': <a style="color:#666666" href="mailto:'+global.get('store').val.feedbackEmail+'"><span>' + global.get('store').val.feedbackEmail + '</span></a></p>'
             }
 
-            s+='</td></tr>';
+            s+='</td></tr></table>';
 
             //переходы на сайт
             if(global.get('sections') && global.get('sections').val && global.get('sections').val[0]){
-                s+='<table width="860px" cellpadding="0" cellspacing="0" style="max-width:900px;background-color: #000;border-collapse:collapse; border:1px solid #000;table-layout: fixed; padding: 0;margin: 0px 20px">' +
-                    '<td width="50%" style="background-color: #333;text-align: center; padding: 20px;border:1px solid #fff;">' +
-                    '<a style="color: #fff; text-transform: uppercase" href="'+global.get('store').val.link+'/cabinet'+'"><span>'+global.get('langOrder').val.mainCabinet+'</span></a>'+
+                s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;border-collapse:collapse; table-layout: fixed; padding: 0;margin: 0px 20px">' +
+                    '<tr width="100%" style="max-width:600px;min-width:240px;">' +
+                    '<td  width="50%" style="max-width:300px;min-width:150px;background-color: #333333;text-align: center; padding: 20px;border:1px solid #ffffff;">' +
+                    '<a style="color: #ffffff; text-transform: uppercase" href="'+global.get('store').val.link+'/cabinet'+'"><span>'+global.get('langOrder').val.mainCabinet+'</span></a>'+
                     '</td>';
-                s+='<td width="50%" style="background-color: #333;text-align: center; padding: 20px;border:1px solid #fff;">' +
-                    '<a style="color: #fff; text-transform: uppercase" href="'+global.get('store').val.link+'/'+global.get('sections').val[0].url+'/category'+'"><span>'+global.get('lang').val.catalog+'</span></a>'+
+                s+='<td  width="50%" style="max-width:300px;min-width:150px; background-color: #333333;text-align: center; padding: 20px;border:1px solid #ffffff;">' +
+                    '<a style="color: #ffffff; text-transform: uppercase" href="'+global.get('store').val.link+'/'+global.get('sections').val[0].url+'/category'+'"><span>'+global.get('lang').val.catalog+'</span></a>'+
                     '</td>';
                 s+='</tr></table>'
-
-                /*'<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px; font-size: 20px;"><h3>'+user+'</h3></td></tr>'+
-
-                 '<tr width="100%"><td><h2 style="font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #333333; font-family:  Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+name+'</h2></td></tr>';*/
-                s+=    '</table>';
             }
 
             return s;
         }
+        //**************************footer*************************
         function getFooter(){
-            var s='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
-                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            var s='<style>@media (max-width: 420px) {.name {font-size:12px !important; line-height: 14px!important;} .footer td {font-size: 12px!important; padding: 5px!important}}</style>' +
+                '<table class="footer-letter"  width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px; color: #000000; border-collapse:collapse; border:none;table-layout: fixed; padding: 0 20px; margin: 20px" border="0">' +
+                '<tr><td>'+
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; " border="0">' +
+                '<tr style="vertical-align: top; background-color:#333333"><td  style=" padding: 10px 20px">' +
+                '<span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
                     if(global.get('store').val.sn[key].is){
@@ -16626,23 +17102,25 @@ angular.module('gmall.services')
                 }
 
             }
-            s+='</span></td></tr>'+
-                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            s+='</span></td></tr></table></td></tr>'+
+
+                '<tr><td>' +
+                '<table width="50%" cellpadding="0" cellspacing="0"  style="max-width:300px; min-width:150px; color: #000000; border-collapse:collapse; border:none; table-layout: fixed; float: left;" border="0"">' +
+                '<tr><td align="left" style="vertical-align: top; padding: 20px 20px 20px 0"><span style="font-size:14px; ">';
             /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
             if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
             }
 
-            s+='</span></td>';
-            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
-             s+=global.get('store').val.footer.text1;
-             }*/
+            s+='</span></td></tr></table>';
+            s+='<table width="50%" cellpadding="0" cellspacing="0"  style="max-width:300px; min-width:150px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; float: left;" border="0">' +
+                '<tr><td align="right" style="vertical-align: top; padding: 20px 0 20px 20px"><span style="font-size:14px;">';
+
             if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
             }
 
-            s+='</span></td></tr></table>';
+            s+='</span></td></tr></table></td></tr></table>';
             return s
         }
         // ********************пустой контент
@@ -16668,24 +17146,31 @@ angular.module('gmall.services')
                 case 'campaign':return d+'/camapign/'+u;
             }
         }
+
+        //**************************рассылка новостей*************************
         function emailFromNews(item){
-            console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
-            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])
+            //console.log(item)
+            /*console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
+            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])*/
+
+            //**************************header для рассылки*************************
             var s=
-                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></a></td></tr>'+
-                '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px; font-size: 20px;"><h3>usernameforreplace</h3></td></tr>'+
+                '<style>@media (max-width: 420px) {h2 {font-size: 20px}}</style>' +
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0 auto" border="0">'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'" alt="logo '+global.get('store').val.name+'"></a></td></tr>'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;"><td style="text-align: center; padding: 5px; font-size: 20px;"><h3>usernameforreplace</h3></td></tr>'+
 
                 '<tr width="100%"><td><h2 style="font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #333333; font-family:  Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.name+'</h2></td></tr>';
-            s+=    '</table>';
+            s+= '</table>';
 
+            //**************************имя рассылки*************************
 
-            s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0 " border="0">';
+            s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0 auto " border="0">';
             if(item.blocks && item.blocks.length){
                 item.blocks.forEach(function (block) {
                     if(block.name){
                         if(block.type=='text2'){
-                            s+='<tr width="100%" style="max-width:900px;">' +
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;">' +
                                 '<td style="padding: 5px">' +
                                 '<h3 style="text-align: center; color: :#333333; font: 22px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none; text-transform: uppercase">'+((block.name)?block.name:'')+'</h3>' +
                                 '</td>' +
@@ -16694,18 +17179,21 @@ angular.module('gmall.services')
                                 '</td>' +
                                 '</tr>';
                         }else{
-                            s+='<tr width="100%" style="max-width:900px;"><td colspan="2" style="padding: 5px"><h3 style="text-align: center; color: :#333333; font: 22px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none; text-transform: uppercase">'+block.name+'</h3></td></tr>';
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td colspan="2" style="padding: 5px"><h3 style="text-align: center; color: :#333333; font: 22px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.name+'</h3></td></tr>';
                         }
 
 
                     }
+
+                    //**************************блок с img*************************
+
                     if(block.img){
-                        s+='<tr width="100%" style="max-width:900px;"><td  colspan="2" width="100%" style=" padding: 5px" >' ;
+                        s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td  colspan="2" width="100%" style=" padding: 5px" >' ;
                         if(block.link){
                             s+= '<a href="'+global.get('store').val.link+block.link+'" style="cursor: pointer;">'
                         }
 
-                        s+= '<img alt="" style="width: 100%;margin-bottom: 10px; display: block" src="'+photoHostForFactory+'/'+block.img+'">';
+                        s+= '<img alt="'+((block.name)?block.name:'')+'" style="width: 100%;margin-bottom: 10px; display: block" src="'+photoHostForFactory+'/'+block.img+'">';
                         if(block.link){
                             s+= '</a>'
                         }
@@ -16713,11 +17201,13 @@ angular.module('gmall.services')
                         s+= '</td></tr>';
 
                     }
-                    //console.log(block)
+
+                    //**************************текстовый блок*************************
+
                     if(block.desc){
                         if(block.type=='text2'){
                             //console.log(block)
-                            s+='<tr width="100%" style="max-width:900px;">' +
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;">' +
                                 '<td style="padding: 5px">' +
                                 '<span style="text-align: justify;  color: :#333333; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+((block.desc)?block.desc:'')+'</span>' +
                                 '</td>' +
@@ -16726,10 +17216,12 @@ angular.module('gmall.services')
                                 '</td>' +
                                 '</tr>';
                         }else{
-                            s+='<tr width="100%" style="max-width:900px;"><td colspan="2" style="padding: 5px"><span style="text-align: justify;  color: :#333333; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.desc+'</span></td></tr>';
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td colspan="2" style="padding: 5px"><span style="text-align: justify;  color: :#333333; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.desc+'</span></td></tr>';
                         }
 
                     }
+
+                    //**************************блок с images*************************
 
                     if(block.imgs && block.imgs.length){
                         for (var i=0,l=block.imgs.length;i<l;i += 2){
@@ -16753,9 +17245,9 @@ angular.module('gmall.services')
                                 s+='<a href="'+link1+'">';
                             }
 
-                            s+='<img alt="" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i].img+'">';
+                            s+='<img alt="'+((block.imgs[i].name)?block.imgs[i].name:'')+'" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i].img+'">';
                             if(block.imgs[i].name){
-                                s+='<span style="font-weight: 700; color: #666666; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.imgs[i].name+'</span>' ;
+                                s+='<span class="name" style="font-weight: 700; color: #666666; font: 14px Arial, line-height:20px; sans-serif;  -webkit-text-size-adjust:none;">'+block.imgs[i].name+'</span>' ;
                             }
 
                             if(link1){
@@ -16782,9 +17274,9 @@ angular.module('gmall.services')
                                     s+='<a href="'+link2+'">';
                                 }
 
-                                s+='<img alt="" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i+1].img+'">';
+                                s+='<img alt="'+((block.imgs[i+1].name)?block.imgs[i+1].name:'')+'" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i+1].img+'">';
                                 if(block.imgs[i+1].name){
-                                    s+='<span style="font-weight: 700; color: #666666; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.imgs[i+1].name+'</span>' ;
+                                    s+='<span class="name" style="font-weight: 700; color: #666666; font: 14px Arial, line-height:20px; sans-serif; -webkit-text-size-adjust:none;">'+block.imgs[i+1].name+'</span>' ;
                                 }
                                 if(link2){
                                     s+='</a>';
@@ -16826,8 +17318,16 @@ angular.module('gmall.services')
             }
             s+='</span></td></tr>'+
                 '</table>'*/
-            s +='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
-                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            //**************************footer для рассылки*************************
+
+            s +='<style>@media (max-width: 420px) {.name {font-size:12px !important; line-height: 14px!important;}.footer td {font-size: 12px!important; padding: 5px!important}}</style>' +
+                '<table class="footer" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px; color: #000000; border-collapse:collapse; border:none;table-layout: fixed; padding: 0 20px; margin: 20px auto" border="0">'+
+                '<tr><td>' +
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; " border="0">' +
+                '<tr style="vertical-align: top; background-color:#333333"><td style="padding: 10px 20px;" align="center"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+
+            //**************************блок соцсетей*************************
+            //console.log(global.get('store').val)
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
                     if(global.get('store').val.sn[key].is){
@@ -16842,38 +17342,46 @@ angular.module('gmall.services')
                 }
 
             }
-            s+='</span></td></tr>'+
-                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            s+='</span></td></tr></table></td></tr>'+
+
+                //**************************блок с текстами*************************
+                
+                '<tr><td>' +
+                '<table width="50%" cellpadding="0" cellspacing="0"   style="max-width:300px; min-width:150px; color: #000000; border-collapse:collapse; border:none; table-layout: fixed; float: left;" border="0"">' +
+                '<tr ><td align="left" style="vertical-align: top; padding: 20px 20px 20px 0"><span style="font-size:14px; ">';
             /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
             if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
             }
 
-            s+='</span></td>';
-            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
-             s+=global.get('store').val.footer.text1;
-             }*/
+            s+='</span></td></tr></table>';
+            s+='<table width="50%" cellpadding="0" cellspacing="0"  style="max-width:300px; min-width:150px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; float: left;" border="0">' +
+                '<tr><td align="right" style="vertical-align: top; padding:  20px 0px 20px 20px"><span style="font-size:14px;">';
+
             if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
             }
 
-            s+='</span></td></tr></table>';
+            s+='</span></td></tr></table></td></tr></table>';
 
             return s;
             return '<!DOCTYPE html><html><head>' +
                 '<link rel="stylesheet" type="text/css" href="http://gmall.io/bower_components/bootstrap/dist/css/bootstrap.css" />' +
+                '<style>@media (max-width: 420px) {.name {font-size:12px !important}}</style>' +
                 '</head><body onload="window.print()"><div class="reward-body">' + s + '</div>' +
                 '</html>';
         }
+
+        //**************************emailBonus*************************
+
         function emailBonus(stuffs){
             //console.log(stuffs)
             var nameEmail='бонусы'
             var item;
 
             var s=
-                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr width="100%" style="max-width:600px;"><td style="text-align: center; padding: 5px"><img alt="посмотреть на сайте" style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></td></tr>'+
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;"><td style="text-align: center; padding: 5px"><img alt="посмотреть на сайте" style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></td></tr>'+
                 '<tr width="100%"><td><h2 style="font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #333333; font-family:  Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+nameEmail+'</h2></td></tr>';
 
 
@@ -16881,10 +17389,10 @@ angular.module('gmall.services')
             stuffs.forEach(function(stuff){
                 item=stuff;
                 if(item.imgs && item.imgs.length){
-                    s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">';
+                    s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">';
                     for (var i=0,l=item.imgs.length;i<l;i++){
                         if(item.imgs[i].name){
-                            s+='<tr width="100%" style="max-width:600px;">' +
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;">' +
                                 '<td style=" padding: 5px"><p style="color: #333333; font: 16px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.imgs[i].name+'</p></td>' +
                                 '</tr>';
                         }
@@ -16895,7 +17403,7 @@ angular.module('gmall.services')
 
                         s+='</tr>'
                         if(item.imgs[i].desc){
-                            s+='<tr width="100%" style="max-width:600px;"><td style=" padding: 5px"><p style="color: #333333; font: 16px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.imgs[i].desc+'</p></td></tr>';
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td style=" padding: 5px"><p style="color: #333333; font: 16px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.imgs[i].desc+'</p></td></tr>';
                         }
 
                     }
@@ -16907,8 +17415,8 @@ angular.module('gmall.services')
 
 
 
-            s+='<table width="600px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr><td border="0" colspan="2" style="border:none; border-top:#cccccc 5px solid;"></td></tr>'+
+            s+='<table width="600px;" cellpadding="0" cellspacing="0" style="max-width600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+                '<tr><td border="0" colspan="2" style="border:none; border-top:5px solid #cccccc ;"></td></tr>'+
                 '<tr><td align="left" style="vertical-align: top"><span style="font-family:Tahoma; font-size:12px; color:#404040;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
@@ -16932,7 +17440,9 @@ angular.module('gmall.services')
             //return s;
             return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div>' + s + '</div></html>';
         }
-        //************************************************************************************
+
+        //**************************письмо о заказе*************************
+
         function orderNote(order){
             //console.log(order)
             var s='';
@@ -16987,14 +17497,14 @@ angular.module('gmall.services')
             user =global.get('langOrder').val.hello + ', '+user+'!';
             var s= getHeader(name)
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
             '<tr  width="100%"><td colspan="2" style="padding: 0 20px;"><h3 style="font-size: 24px">'+user+'</h3></td></tr>';
             if(order.status==1){
                 s+='<tr  width="100%"><td colspan="2" style="padding: 0 20px"><p>'+orderMailText+'</p></td></tr>';
             }
 
 
-            s+='<tr style="max-width:900px;"><td width="50%" style="max-width:900px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
+            s+='<tr style="max-width:600px;min-width:240px;"><td width="50%" style="max-width:600px;min-width:240px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
                 '<h4 style="font-weight: bold">'+status+'</h4>'+
                 '<h4 style="font-weight: bold">'+global.get('langOrder').val.order.toUpperCase()+' № '+order.num+'</h4>'+
                 '<p style="margin-bottom: 30px">'+global.get('langOrder').val.from+' '+moment(order.date).format('lll')+'</p>';
@@ -17040,7 +17550,7 @@ angular.module('gmall.services')
             /*s +='<div class="container"><div class="col-lg-10 col-lg-offset-1"><div class="col-lg-6">'+
                 '<h3>'+global.get('langOrder').val.order+' № '+order.num+'</h3> '+global.get('langOrder').val.from+' '+moment(order.date).format('lll')+'<br/>';*/
 
-            s +='<table style="margin: 20px" width="860px" cellspacing="0" cellpadding="5" border="1px">';
+            s +='<table style="margin: 20px" width="600px" cellspacing="0" cellpadding="5" border="1px">';
             s+= '<thead><tr><th style="padding: 10px">#</th>' +
                 '<th style="padding: 10px">'+global.get('langOrder').val.title+'</th>' +
                 '<th class="text-center" style="padding: 10px; text-align: center">'+global.get('langOrder').val.species+'</th>' +
@@ -17055,7 +17565,8 @@ angular.module('gmall.services')
                 s +='<tr><td style="padding: 10px">'+(j+1)+'</td><td style="padding: 10px"> '+good.name+' '+((good.artikul)?good.artikul:'')+'</td>' +
                     '<td class="text-center" style="padding: 10px; text-align: center">'+((good.sortName)?good.sortName:'')+
                     '</td><td class="text-center" style="padding: 10px; text-align: center">'+(order.kurs*good.cena).toFixed(2)+' '+order.currency+
-                    '</td><td class="text-center" style="padding: 10px; text-align: center">'+good.quantity+'</td><td class="text-center">'+ ( order.kurs*good.sum).toFixed(2)+' '+order.currency+
+                    '</td><td class="text-center" style="padding: 10px; text-align: center">'+good.quantity+'</td>' +
+                    '<td class="text-center" style="padding: 10px; text-align: center">'+ ( order.kurs*good.sum).toFixed(2)+' '+order.currency+
                     '</td></tr>';
             }
             s +='</tbody>';
@@ -17122,11 +17633,11 @@ angular.module('gmall.services')
             user =global.get('langOrder').val.hello + ', '+user+'!';
             var s= getHeader(name)
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr  width="100%"><td colspan="2" style="padding: 20px;"><h3 style="font-size: 24px">'+user+'</h3></td></tr></table>';
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr style="max-width:900px;"><td width="50%" style="max-width:900px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
+            s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+                '<tr style="max-width:600px;min-width:240px;"><td width="50%" style="max-width:600px;min-width:240px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
                 '<h4 style="font-weight: bold">'+global.get('langOrder').val.order.toUpperCase()+' № '+order.num+'</h4>'+
                 '<p>'+global.get('langOrder').val.from+' '+moment(order.date).format('lll')+'</p>'+
                 '<h4 style="font-weight: bold;margin-bottom: 30px">'+status+'</h4>'+
@@ -17135,7 +17646,7 @@ angular.module('gmall.services')
 
 
             if(shipDetail && shipDetail.length){
-                s +='<table style="margin: 20px" width="860px" cellspacing="0" cellpadding="5" border="1px">';
+                s +='<table style="margin: 20px" width="860px" cellspacing="0" cellpadding="5" border="1px solid #000000">';
                 s+='<thead><tr><th class="text-center"  style="padding: 10px; text-align: center">'+global.get('langOrder').val.title+'</th>' +
                     '<th class="text-center"  style="padding: 10px; text-align: center">'+global.get('langOrder').val.where+'</th>' +
                     '<th class="text-center"  style="padding: 10px; text-align: center">'+global.get('langOrder').val.waybill+'</th>' +
@@ -17435,6 +17946,8 @@ angular.module('gmall.services')
                 order.user=res.user;
                 order.shipDetail=res.shipDetail;
                 order.domain=global.get('store').val.domain||global.get('store').val.subDomain;
+                order.pn=res.pn;
+                order.rn=res.rn;
                 //order=res;
                 q.resolve(order)
             },function(err){
@@ -17559,21 +18072,26 @@ angular.module('gmall.services')
     this.cartCount=function(){
         return order.totalCount;
     }
-    this.sendOrder=function(user){
+    this.sendOrder=function(user,opt,cabinet){
         var self=this;
         return $q.when()
             .then(function () {
                 try{
                     if(user){
                         if(!user._id){
-                            console.log(user)
+                            //console.log(user)
                             throw  'не авторизирован!';
                         }
-                    } else{
+                    }else{
                         if(global.get('user' ).val && global.get('user' ).val._id){
                             order.user=global.get('user' ).val;
                             //order.profile=global.get('user').val.profile;
+                            console.log(global.get('user').val.profile)
                             order.profile=angular.copy(global.get('user').val.profile);
+                            if(!order.profile.fio){
+                                order.profile.fio=global.get('user').val.name;
+                            }
+                            //console.log(order.profile)
                         }else{
                             throw  'не авторизирован!';
                         }
@@ -17639,6 +18157,11 @@ angular.module('gmall.services')
                 })
             })// coupon
             .then(function(){
+                if(opt && typeof opt ==='object'){
+                    for(var key in opt){
+                        order[key]=opt[key];
+                    }
+                }
                 //throw order;
                 //console.log(order)
                 return Orders.save(order).$promise
@@ -17680,7 +18203,7 @@ angular.module('gmall.services')
 
                 return $q(function(resolve,reject){
                     $email.save(o,function(res){
-                        exception.showToaster('note',global.get('langNote').val.emailSent,'');
+                        //exception.showToaster('note',global.get('langNote').val.emailSent,'');
                         resolve()
                     },function(err){
                         exception.showToaster('warning',global.get('langNote').val.error,err.data)
@@ -17690,6 +18213,8 @@ angular.module('gmall.services')
             }) //email
             .then(function(){
                 //order.profile=global.get('user').val.profile;
+                /*если регистрация только через телефон,то письмо не отправляем*/
+                if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.phone){return}
                 try{
                     // письмо
                     order.user=(user)?user:global.get('user').val;
@@ -17731,7 +18256,7 @@ angular.module('gmall.services')
 
                 return $q(function(resolve,reject){
                     $notification.save(o,function(res){
-                        exception.showToaster('note', global.get('langNote').val.sent,'');
+                        //exception.showToaster('note', global.get('langNote').val.sent,'');
                         resolve()
                     },function(err){
                         exception.catcher('error')(err);
@@ -17741,6 +18266,9 @@ angular.module('gmall.services')
             })//notification
             .then(function(){
                 try{
+                    if(cabinet){
+                        return $state.go('cabinet')
+                    }
                     var states= $state.get();
                     if(global.get('paps') && states.some(function(state){return state.name=='thanksPage'})){
                         var pap = global.get('paps').val.getOFA('action','order');
@@ -17866,8 +18394,25 @@ angular.module('gmall.services')
 
 
     this.checkWarehouse=function () {
-        console.log(order)
+        //console.log(order)
+        var virtualAccount;
         return $q.when()
+            .then(function () {
+                if(!global.get('store').val.virtualAccount){
+                    return $http.get('/api/collections/VirtualAccount')
+                }
+            })
+            .then(function (r) {
+                //console.log(r)
+                if(r && r.data && r.data.length){
+                    global.get('store').val.virtualAccount=r.data[1]._id
+                }
+                virtualAccount=global.get('store').val.virtualAccount;
+                if(!virtualAccount){
+                    throw 'невозможно установить подразделение'
+                }
+
+            })
             .then(function () {
                 var acts = order.cart.stuffs.map(function (s) {
                     var q = {stuff:s._id,sort:s.sort}
@@ -17880,8 +18425,18 @@ angular.module('gmall.services')
                 //console.log(checkResult)
                 if(checkResult){
                     var r = checkResult.map(function (rr,index) {
-                        if(rr.data && rr.data.length && rr.data[1] && rr.data[1].qty &&  rr.data[1].qty>=order.cart.stuffs[index].quantity){
-                            return
+                        if(rr.data && rr.data.length && rr.data[1]){
+                            var material =  rr.data[1];
+                            for(var i =0;i<material.data.length;i++){
+                                if(((material.data[i].virtualAccount && material.data[i].virtualAccount._id)?material.data[i].virtualAccount._id:material.data[i].virtualAccount)==virtualAccount && material.data[i].qty>=order.cart.stuffs[index].quantity){
+                                    order.cart.stuffs[index].priceUchet=material.data[i].price;
+                                    order.cart.stuffs[index].supplierType=material.data[i].supplierType;
+                                    order.cart.stuffs[index].supplier=((material.data[i].supplier && material.data[i].supplier._id)?material.data[i].supplier._id:material.data[i].supplier);
+                                    order.cart.stuffs[index].virtualAccount=virtualAccount;
+                                    //console.log(order.cart.stuffs[index])
+                                    return;
+                                }
+                            }
                         }
                         return order.cart.stuffs[index]
                     })
@@ -17898,13 +18453,201 @@ angular.module('gmall.services')
                 if(stuffs.length){
                     var error='';
                     stuffs.forEach(function (s) {
-                        error +="Необходимое количество "+s.name+" отсутствует. Перейдите на страницу товара и уточните наличие."
+                        var n = s.name;
+                        if(s.artikul){
+                            n+=' '+s.artikul;
+                        }
+                        if(s.sortName){
+                            n+=' '+s.sortName;
+                        }
+                        error +="Указанное в корзине количество "+n+" отсутствует на складе. Уменьшите количество данного товара в корзине."
                     })
-
-                    throw error;
+                    throw {status : "checkWarehouse", message : error};
+                    //throw {status:''checkWarehouse,message:error};
                 }
 
             })
+    }
+    this.makeRn = function (){
+        console.log('makeRn')
+        //console.log(global.get('store'))
+        var o ={
+            currency: order.currency,
+            name:'Расходная накладная на заказ '+order.num,
+            materials:[],
+            typeOfZakaz: "order",
+            virtualAccount: global.get('store').val.virtualAccount,
+            store: global.get('store')._id,
+            worker: 'any',
+            zakaz: order._id,
+            invoice:order._id,
+            makeReserve:true,
+            customer:{
+                name : order.profile.fio, email : order.user.email
+            }
+        };
+
+
+        if(order.profile.phone){
+            o.customer.phone=order.profile.phone;
+        }
+        if(order.profile.city){
+            o.customer.field1=order.profile.city;
+        }
+
+        if(order.shipCost){
+            o.delivery = Math.round((Number(order.shipCost))*100)/100;
+        }
+        var percent=0;
+        var percentCart =0;
+        var percentCoupon = 0;
+        if(order.discount.type && order.discount.value){
+            percent = Number(order.discount.value);
+        }
+        if(order.sum0!==order.sum){
+            percentCart=order.sum/order.sum0;
+        }
+        if(order.sum!==order.couponSum){
+            percentCoupon=order.couponSum/order.sum;
+        }
+        console.log(order)
+        console.log('percentCart',percentCart)
+        order.cart.stuffs.forEach(function (s) {
+            //console.log(s)
+            var m = {}
+            /*m.name=s.name;
+            if(s.brand){
+                var b = global.get('brands').val.getOFA('_id',s.brand)
+                if(b){
+                    m.producer=b.name;
+                }
+            }
+            if(s.artikul){
+                m.sku = s.artikul
+            }
+            if(s.sortName){
+                m.sku+=' '+s.sortName;
+            }*/
+            m.stuff = s._id;
+            m.sort = s.sort;
+            m.qty = s.quantity;
+            m.priceForSale = Math.round((s.sum/s.quantity)*100)/100;
+            m.price = Math.round((s.priceUchet)*100)/100;
+            m.supplier = s.supplier;
+            m.supplierType = s.supplierType;
+            m.virtualAccount=global.get('store').val.virtualAccount;
+            //m.supplier = m.supplier.charAt(0).toUpperCase() + m.supplier.slice(1);
+
+            if((order.discount.type==3 || order.discount.type==5 || order.discount.type==6)){
+                m.priceForSale = Math.round(m.priceForSale*(100-percent))/100;
+            }else if(order.discount.type==4   && !s.priceSale){
+                m.priceForSale = Math.round(m.priceForSale*(100-percent))/100;
+            }else if(order.discount.type==7){
+                m.priceForSale = Math.round((m.priceForSale*percentCart)*100)/100;
+            }
+            if(percentCoupon!=0){
+                m.priceForSale = Math.round((m.priceForSale*percentCoupon)*100)/100;
+            }
+            o.materials.push(m)
+
+        })
+        //console.log(o)
+
+
+        if(!o.materials.length){
+            return exception.catcher('создание накладной','не выбраны товары');
+        }
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/createByAPIFromSite',o);
+            })
+            .then(function (res) {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная в резерве');
+                return res
+            })
+
+
+
+    }
+    this.cancelRn = function (){
+        console.log('cancelRn',order)
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        if(order.pn){
+            o.pn=order.pn;
+        }
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/cancelByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
+            })
+            /*.catch(function (err) {
+                console.log(err);
+                if(err){
+                    exception.catcher('обработка данных в бухгалтерии')(err);
+                }
+            });*/
+
+
+    }
+    this.holdZakaz = function (){
+        console.log('holdZakaz')
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/holdByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная проведена');
+            })
+            /*.catch(function (err) {
+                console.log(err);
+                if(err){
+                    exception.catcher('обработка данных в бухгалтерии')(err);
+                }
+            });*/
+
+
+    }
+    this.cancelZakaz = function (){
+        console.log('cancelZakaz')
+        var o ={
+            store: global.get('store').val._id,
+            rn:order.rn
+        };
+        if(order.pn){
+            o.pn=order.pn;
+        }
+        console.log(o)
+        return $q.when()
+            .then(function () {
+                return $http.post('/api/bookkeep/Rn/cancelZakazByAPIFromSite',o);
+            })
+            .then(function (res) {
+                console.log(res)
+            })
+            .then(function () {
+                exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
+            })
+    }
+    
+    this.checkStuff = function (stuff,user) {
+        return $http.post('/api/orders/checkStuffInOldOrders',{stuff:stuff,user:user});
     }
 
 
@@ -18174,6 +18917,7 @@ angular.module('gmall.services')
         self.goToStuff=goToStuff;
         self.disabledCheckOut=disabledCheckOut
         self.back=back;
+        self.backToShop=backToShop;
         self.getFilterName=getFilterName;
         self.decreaseQty=decreaseQty
         self.increaseQty=increaseQty
@@ -18245,7 +18989,7 @@ angular.module('gmall.services')
             }else{
                 self.order=$order.getOrder();
             }
-            console.log(self.order)
+            //console.log(self.order)
             //console.log(self.order.cart.stuffs)
             $anchorScroll();
             // купон
@@ -18305,11 +19049,8 @@ angular.module('gmall.services')
             $order.increaseQty(i)
         }
         function checkOut(){
-
+            self.textCheckWarehouse=null;
             $rootScope.$emit('InitiateCheckout')
-
-
-
             //console.log('checkOut')
             if(!self.order.cart.stuffs.length){return}
             //console.log(global.get('user').val)
@@ -18343,17 +19084,17 @@ angular.module('gmall.services')
                         return sendOrder()
                     })
                     .catch(function(err){
-                        console.log(err)
+
+                        //console.log(err)
                         if(err){
+                            if(err.status=='checkWarehouse'){
+                                self.textCheckWarehouse=err.message;
+                            }
                             exception.catcher('заказ')(err)
                         }
                         //return sendOrder()
                     })
-
             }
-
-
-
         }
 
         function sendOrder(){
@@ -18432,6 +19173,15 @@ angular.module('gmall.services')
             }else if(states.some(function(state){return state.name=='stuffs.stuff'})){
                 $state.go('stuffs.stuff',o)
             }
+        }
+        function backToShop() {
+
+            var o={groupUrl:'null',
+                categoryUrl:'category'};
+            if(global.get('sections').val && global.get('sections').val[0]){
+                o.groupUrl=global.get('sections').val[0].url;
+            }
+            $state.go('stuffs',o)
         }
 
         function disabledCheckOut(){
@@ -19860,7 +20610,7 @@ angular.module('gmall.directives')
             link: function (scope, element, attrs, controller) {
                //console.log('likn paginator',scope.paginate);
                 var store = global.get('store').val
-                var stuffListType = (global.get('sectionType'))?global.get('sectionType').val:'good';
+                var stuffListType = (global.get('sectionType') && global.get('sectionType').val)?global.get('sectionType').val:'good';
                 //console.log(store.template.stuffListType)
                 var rows=(store.template.stuffListType[stuffListType] && store.template.stuffListType[stuffListType].rows)||3;
                 var filterBlock=store.template.stuffListType[stuffListType].parts.find(function(e){return e.name=='filters' && e.is && e.is!='false'})
@@ -23824,6 +24574,7 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     var $ctrl=self;
     self.setDescForSort=setDescForSort;
     self.lang=global.get('store').val.lang;
+    self.bookkeep =global.get('store').val.bookkeep
 
     function setDescForSort(stuff,tag) {
         //console.log(stuff)
@@ -24467,6 +25218,9 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     // delet stuff from sort*********************
     //*******************************************
     self.deleteStuffFromSort=function(stuff,index){
+        /*console.log(stuff);
+        console.log(self.stuff)*/
+
         $q.when()
             .then(function(){
                 // товары в группе
@@ -24528,8 +25282,9 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
                     if(sort) {
                         Items.get({id:sort},function(res){
                             self.stuff.sortsOfStuff=res;
+                            var c = (self.stuff.category && self.stuff.category.length)?self.stuff.category[0]:self.stuff.category;
                             self.stuff.sortsOfStuff.filter=
-                                self.stuff.category.filters.getOFA('_id',self.stuff.sortsOfStuff.filter)
+                                c.filters.getOFA('_id',self.stuff.sortsOfStuff.filter)
                             resolve()
                         },function(err){reject(err)})
                     }else{
@@ -29123,7 +29878,8 @@ angular.module('gmall.services')
                                 })
                             }
                         }
-                        block.imgs=[]
+                        block.imgs=[];
+                        block.stuffs=[];
                     })
                     //throw 'test'
                     return self.Items.save(self.newItem).$promise
@@ -32840,6 +33596,739 @@ angular.module('gmall.services')
 
 'use strict';
 (function(){
+
+    angular.module('gmall.services')
+        .directive('linkList',listDirective)
+
+    function listDirective(){
+        return {
+            scope: {},
+            bindToController: true,
+            controller: listCtrl,
+            controllerAs: '$ctrl',
+            templateUrl: 'components/CONTENT/links/list.html',
+        }
+    };
+    listCtrl.$inject=['Link','$state','global','Confirm','$q','exception','$timeout'];
+    function listCtrl(Link,$state,global,Confirm,$q,exception,$timeout){
+        var self = this;
+        self.mobile=global.get('mobile' ).val;
+        self.global=global;
+        //self.moment=moment;
+        self.$state=$state;
+        self.Items=Link;
+        self.query={};
+        self.labels=[]
+        self.paginate={page:0,rows:50,totalItems:0}
+        self.newItem={name:'имя мастера'}
+        self.getList=getList;
+        self.saveField = saveField;
+        self.searchItem=searchItem;
+        self.deleteItem=deleteItem;
+        self.createItem=createItem;
+        self.dropCallback=dropCallback;
+        self.cloneItem=cloneItem;
+        //*******************************************************
+        activate();
+
+        function activate() {
+            getList()
+        }
+        function getList() {
+            return self.Items.getList(self.paginate,self.query)
+                .then(function(data) {
+                    self.items = data;
+                    return self.items;
+                });
+        }
+        function searchItem(searchStr){
+            if(searchStr){
+                self.query = {name:searchStr.substring(0,10)};
+            }else{
+                self.query = {};
+            }
+
+            self.paginate.page=0;
+            return getList().then(function() {
+                console.log('Activated list View');
+            });
+        }
+        function saveField(item,field){
+            var o={_id:item._id};
+            o[field]=item[field]
+            self.Items.save({update:field},o ,function () {
+                global.set('saving',true)
+                $timeout(function () {
+                    global.set('saving',false);
+                },1500)
+            })
+        };
+        function createItem(){
+            self.Items.create()
+                .then(function(res){
+                    self.newItem={}
+                    self.newItem.name=res;
+                    return self.Items.save(self.newItem).$promise
+                } )
+                .then(function(res){
+                    self.newItem._id=res.id;
+                    self.newItem.url=res.url;
+                    self.paginate.page=0;
+                    getList(self.paginate);
+                })
+                .then(function(){
+                    var id=self.newItem._id;
+                    delete self.newItem._id
+                    setTimeout(function(){
+                        $state.go('frame.links.item',{id:id})
+                    },100)
+
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('создание мастера')(err)
+                    }
+                })
+        }
+        function cloneItem(item){
+            var name;
+            self.Items.create('clone')
+                .then(function (res) {
+                    name=res;
+                    return self.Items.getItem(item._id)
+                })
+                .then(function(data){
+                    self.newItem=angular.copy(data)
+                    self.newItem.name=name;
+                    self.newItem.nameL={};
+
+                    delete self.newItem._id
+                    delete self.newItem.__v
+                    delete self.newItem.url;
+                    console.log( self.newItem)
+                    self.newItem.blocks.forEach(function (block) {
+                        delete block.img;
+                        delete block._id;
+                        if(block.type=='stuffs'){
+                            if(block.stuffs && block.stuffs.length){
+                                block.stuffs=block.stuffs.map(function (s) {
+                                    return s._id
+                                })
+                            }
+                        }
+                        block.imgs=[]
+                    })
+                    //throw 'test'
+                    return self.Items.save(self.newItem).$promise
+                } )
+                .then(function(res){
+                    self.newItem._id=res.id;
+                    self.newItem.url=res.url;
+                    self.paginate.page=0;
+                    getList(self.paginate);
+                })
+                .then(function(){
+                    var id=self.newItem._id;
+                    delete self.newItem._id
+                    setTimeout(function(){
+                        $state.go('frame.links.item',{id:id})
+                    },100)
+
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('создание объекта')(err)
+                    }
+                })
+        }
+        function deleteItem(item){
+            //var folder='images/'+global.get('store').val.subDomain+'/Master/'+item.url
+
+
+
+            Confirm("удалить???" )
+                .then(function(){
+                    return self.Items.delete({_id:item._id} ).$promise;
+                } )
+                .then(function(){
+                    return self.getList();
+                })
+                .then(function(){
+                    //Photo.deleteFolder('Master',folder)
+                })
+                .catch(function(err){
+                    if(!err){return}
+                    err = (err &&err.data)||err
+                    if(err){
+                        exception.catcher('удаление объекта')(err)
+                    }
+
+                })
+
+
+        }
+        function dropCallback(item){
+            var i=0;
+            //http://stackoverflow.com/questions/28983424/make-angular-foreach-wait-for-promise-after-going-to-next-object
+            setTimeout(function(){
+                self.items.reduce(function(p, item) {
+                    return p.then(function() {
+                        i++;
+                        item.index=i;
+                        return saveField(item,'index')
+                    });
+                }, $q.when(true)).then(function(){
+                    console.log(self.items.map(function(el){return el.index}))
+                });
+            },50)
+
+            return item;
+        }
+    }
+})()
+
+'use strict';
+(function(){
+
+    angular.module('gmall.directives')
+        .directive('linkItem',itemDirective)
+
+    function itemDirective(){
+        return {
+            scope: {},
+            restrict:"E",
+            bindToController: true,
+            controller: itemCtrl,
+            controllerAs: '$ctrl',
+            templateUrl: 'components/CONTENT/links/item.html',
+        }
+    }
+    itemCtrl.$inject=['Link','$stateParams','$q','$uibModal','global','exception','$scope','$timeout','Confirm','$rootScope','Stuff','FilterTags','BrandTags','Category','Brands','Filters'];
+    function itemCtrl(Link,$stateParams,$q,$uibModal,global,exception,$scope,$timeout,Confirm,$rootScope,Stuff,FilterTags,BrandTags,Category,Brand,Filters){
+        var self = this;
+        self.Items=Link;
+        self.type='Link'
+        self.item={};
+        self.mobile=global.get('mobile' ).val;
+        self.global=global;
+        self.moment=moment;
+        self.filters=[];
+        self.saveField=saveField;
+
+        self.rowNumber = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+        self.terms = [0.001,0.01,0.1,0.5,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
+        self.twoArr=['-' , '|' , ',' , ', ' , '.' , '!' , '/' ,' ']
+        self.rowValues = listOfStuffFields;
+        self.currencyArr=global.get('store').val.currencyArr;
+        self.langArr=global.get('store').val.langArr;
+        console.log(global.get('store').val)
+        self.changeRow=changeRow;
+        self.setType=setType;
+
+
+
+        self.selectFilterTag=selectFilterTag;
+        self.selectFilter=selectFilter;
+        self.selectBrandTag=selectBrandTag;
+        self.selectBrand=selectBrand;
+        self.selectCategory=selectCategory;
+        self.selectStuff=selectStuff;
+        self.selectConditionFilterTag=selectConditionFilterTag;
+        self.selectConditionBrandTag=selectConditionBrandTag;
+        self.selectConditionBrand=selectConditionBrand;
+        self.selectConditionCategory=selectConditionCategory;
+        self.selectConditionStuff=selectConditionStuff;
+        self.deleteBrandTag=deleteBrandTag;
+        self.deleteCategory=deleteCategory;
+        self.deleteFilterTag=deleteFilterTag;
+        self.deleteFilter=deleteFilter;
+        self.deleteStuff=deleteStuff;
+        self.deleteConditionBrandTag=deleteConditionBrandTag;
+        self.deleteConditionBrand=deleteConditionBrand;
+        self.deleteBrand=deleteBrand;
+        self.deleteConditionCategory=deleteConditionCategory;
+        self.deleteConditionFilterTag=deleteConditionFilterTag;
+        self.deleteConditionStuff=deleteConditionStuff;
+
+        self.getFilterName=getFilterName;
+
+        self.dropCallback=dropCallback;
+        self.deleteRow=deleteRow;
+        self.addRow=addRow;
+        //********************activate***************************
+        activate();
+        //*******************************************************
+        function activate() {
+            //console.log(id)
+            getItem($stateParams.id)
+            $q.when()
+                .then(function () {
+                    return Filters.getFilters()
+                })
+                .then(function (fs) {
+                    //console.log(fs)
+                    self.filters=fs;
+                })
+        }
+
+
+
+        $scope.$on('changeLang',function(){
+            activate();
+        })
+        function getItem(id) {
+            //console.log(id)
+            return self.Items.getItem(id).then(function(data) {
+                self.item=data;
+                if(!self.item.rows){
+                    self.item.rows=[];
+                    self.item.rowQty=0;
+                }
+                self.item.rows=self.item.rows.map(function (r) {
+                    if(!r){
+                        r ={}
+                    }
+                    return r;
+                })
+            } ).catch(function(err){
+                err = err.data||err
+                exception.catcher('получение объекта')(err)
+            });
+
+        }
+        function saveField(field){
+            console.log(self.item)
+            var o={_id:self.item._id};
+            if(field=='tags'||field=='brandTags'|| field=='brands'||field=='stuffs'|| field=='categories'
+                ||field=='conditionTags'||field=='conditionBrandTags'|| field=='conditionBrands'||field=='conditionStuffs'|| field=='conditionCategories'){
+                o[field]=self.item[field].map(function (i) {
+                    return i._id
+                })
+            }else{
+                o[field]=self.item[field]
+            }
+
+            var query={update:field}
+            console.log(query,o)
+            self.Items.save(query,o,function () {
+                global.set('saving',true)
+                $timeout(function () {
+                    global.set('saving',false);
+                },1500)
+            });
+        };
+
+        function changeRow() {
+            var n = self.item.rowQty-self.item.rows.length
+            if(n>0){
+                //console.log('more')
+                while(self.item.rowQty>self.item.rows.length){
+                    self.item.rows.push({});
+                }
+            }else if(n<0){
+                //console.log('less')
+                while(self.item.rowQty<self.item.rows.length){
+                    self.item.rows.pop();
+                }
+            }else{
+                return;
+            }
+            saveField('rowQty');
+            saveField('rows');
+
+        }
+        function setType(v) {
+            self.item.type=v;
+            saveField('type');
+        }
+
+        function getFilterName(f) {
+            if(!self.filters){return}
+            var d = self.filters.getOFA('_id',f);
+            if(d){
+                return d.name
+            }
+        }
+
+
+        function selectFilterTag(){
+            $q.when()
+                .then(function(){
+                    return FilterTags.selectFilterTag();
+                })
+                .then(function(tag){
+                    if(!self.item.tags){self.item.tags=[]}
+                    //console.log(tag)
+                    self.item.tags.push(tag)
+                    saveField('tags');
+                })
+                .catch(function(err){
+                    exception.catcher('выбор характеристики')(err)
+                })
+        }
+        function selectFilter(row){
+            $q.when()
+                .then(function(){
+                    return Filters.select();
+                })
+                .then(function(f){
+                    //console.log(tag)
+                    if(!row.filter){
+                        row.filter=[]
+                    }
+                    row.filter.push(f._id)
+                    saveField('rows');
+                })
+                .catch(function(err){
+                    exception.catcher('выбор характеристики')(err)
+                })
+        }
+        function selectBrandTag(){
+            $q.when()
+                .then(function(){
+                    return BrandTags.selectBrandTag();
+                })
+                .then(function(tag){
+                    //console.log(tag)
+                    if(!self.item.brandTags){self.item.brandTags=[]}
+                    self.item.brandTags.push(tag)
+                    //console.log(tag)
+                    saveField('brandTags');
+                })
+                .catch(function(err){
+                    exception.catcher('выбор коллекции')(err)
+                })
+        }
+        function selectBrand(){
+            $q.when()
+                .then(function(){
+                    return Brand.select();
+                })
+                .then(function(tag){
+                    if(!self.item.brands){self.item.brands=[]}
+                    self.item.brands.push(tag)
+                    //console.log(tag)
+                    saveField('brands');
+
+                })
+                .catch(function(err){
+                    exception.catcher('выбор коллекции')(err)
+                })
+        }
+        function selectCategory(){
+            $q.when()
+                .then(function(){
+                    return Category.selectWithSection();
+                })
+                .then(function(c){
+                    //console.log(c)
+                    if(!c){return}
+                    if(!self.item.categories){self.item.categories=[]}
+                    if(typeof c == 'object' && c.length){
+                        c.forEach(function (cat) {
+                            if(!self.item.categories.getOFA('_id',cat._id)){
+                                self.item.categories.push(cat)
+                            }
+                        })
+                    }else{
+                        if(!self.item.categories.getOFA('_id',c._id)){
+                            self.item.categories.push(c)
+                        }
+                    }
+                    saveField('categories');
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('выбор категории')(err)
+                    }
+                })
+        }
+
+        function selectStuff(){
+            $q.when()
+                .then(function(){
+                    return Stuff.selectItem({actived:true});
+                })
+                .then(function(stuff){
+                    if(!self.item.stuffs){self.item.stuffs=[]}
+                    self.item.stuffs.push(stuff)
+                    saveField('stuffs');
+
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('выбор товара')(err)
+                    }
+
+                })
+        }
+        function selectConditionFilterTag(){
+            $q.when()
+                .then(function(){
+                    return FilterTags.selectFilterTag();
+                })
+                .then(function(tag){
+                    if(!self.item.conditionTags){self.item.conditionTags=[]}
+                    self.item.conditionTags.push(tag)
+                    saveField('conditionTags');
+                })
+                .catch(function(err){
+                    exception.catcher('выбор характеристики')(err)
+                })
+        }
+        function selectConditionBrandTag(){
+            $q.when()
+                .then(function(){
+                    return BrandTags.selectBrandTag();
+                })
+                .then(function(tag){
+                    if(!self.item.conditionBrandTags){self.item.conditionBrandTags=[]}
+                    self.item.conditionBrandTags.push(tag)
+                    saveField('conditionBrandTags');
+                })
+                .catch(function(err){
+                    exception.catcher('выбор коллекции')(err)
+                })
+        }
+        function selectConditionBrand(){
+            $q.when()
+                .then(function(){
+                    return Brand.select();
+                })
+                .then(function(tag){
+                    if(!self.item.conditionBrands){self.item.conditionBrands=[]}
+                    self.item.conditionBrands.push(tag)
+                    saveField('conditionBrands');
+                })
+                .catch(function(err){
+                    exception.catcher('выбор коллекции')(err)
+                })
+        }
+        function selectConditionCategory(){
+            $q.when()
+                .then(function(){
+                    return Category.selectWithSection();
+                })
+                .then(function(c){
+                    if(!c){return}
+                    if(!self.item.conditionCategories){self.item.conditionCategories=[]}
+
+                    if(typeof c == 'object' && c.length){
+                        c.forEach(function (cat) {
+                            if(!self.item.conditionCategories.getOFA('_id',cat._id)){
+                                self.item.conditionCategories.push(cat)
+                            }
+                        })
+                    }else{
+                        if(!self.item.conditionCategories.getOFA('_id',c._id)){
+                            self.item.conditionCategories.push(c)
+                        }
+                    }
+                    saveField('conditionCategories');
+                })
+                .catch(function(err){
+                    if(err){
+                        exception.catcher('выбор категории')(err)
+                    }
+                })
+        }
+        function selectConditionStuff(){
+            $q.when()
+                .then(function(){
+                    return Stuff.selectItem();
+                })
+                .then(function(stuff){
+                    if(!self.item.conditionStuffs){self.item.conditionStuffs=[]}
+                    self.item.conditionStuffs.push(stuff)
+                    saveField('conditionStuffs');
+
+                })
+                .catch(function(err){
+                    exception.catcher('выбор товара')(err)
+                })
+        }
+        function deleteBrandTag(i){
+            self.item.brandTags.splice(i,1);
+            saveField('brandTags');
+        }
+        function deleteBrand(i){
+            self.item.brands.splice(i,1);
+            saveField('brands');
+        }
+        function deleteCategory(i){
+            self.item.categories.splice(i,1);
+            saveField('categories');
+        }
+        function deleteFilterTag(i){
+            self.item.tags.splice(i,1);
+            saveField('tags');
+        }
+        function deleteFilter(row,index){
+            row.filter.splice(index,1)
+            saveField('rows');
+        }
+        function deleteStuff(i){
+            self.item.stuffs.splice(i,1);
+            saveField('stuffs');
+        }
+        function deleteConditionBrandTag(i){
+            self.item.conditionBrandTags.splice(i,1);
+            saveField('conditionBrandTags');
+        }
+        function deleteConditionBrand(i){
+            self.item.conditionBrands.splice(i,1);
+            saveField('conditionBrands');
+        }
+        function deleteConditionCategory(i){
+            self.item.conditionCategories.splice(i,1);
+            saveField('conditionCategories');
+        }
+        function deleteConditionFilterTag(i){
+            self.item.conditionTags.splice(i,1);
+            saveField('conditionTags');
+        }
+        function deleteConditionStuff(i){
+            self.item.conditionStuffs.splice(i,1);
+            saveField('conditionStuffs');
+        }
+
+        function dropCallback(item){
+            //console.log(item)
+            setTimeout(function(){
+                /*self.item.footer.forEach(function(part,idx){
+                    part.index=idx+1;
+                })*/
+                saveField('rows')
+            },100)
+            return item
+        }
+        function deleteRow(idx) {
+            self.item.rows.splice(idx,1);
+            saveField('rows')
+        }
+        function addRow() {
+            if(!self.item.rows){
+                self.item.rows=[];
+            }
+            self.item.rows.push({})
+            saveField('rows')
+        }
+
+    }
+
+
+})()
+
+'use strict';
+(function(){
+
+    angular.module('gmall.services')
+        .service('Link', serviceFoo);
+    serviceFoo.$inject=['$resource','$uibModal','$q','global'];
+    function serviceFoo($resource,$uibModal,$q,global){
+        var Items= $resource('/api/collections/Link/:_id',{_id:'@_id'});
+        return {
+            getList:getList,
+            getItem:getItem,
+            query:Items.query,
+            get:Items.get,
+            save:Items.save,
+            delete:Items.delete,
+            create:create,
+        }
+        function getList(paginate,query){
+           if(!paginate){
+               paginate={page:0}
+           }
+            var data ={perPage:paginate.rows ,page:paginate.page,query:query};
+            if(global.get('crawler') && global.get('crawler').val){
+                data.subDomain=global.get('store').val.subDomain;
+            }
+            return Items.query(data).$promise
+                .then(getListComplete)
+                //.catch(getListFailed);
+            function getListComplete(response) {
+                if(paginate.page==0){
+                    if(response && response.length){
+                        paginate.items=response.shift().index;
+                    }else{
+                        paginate.items=0;
+                    }
+                }
+                return response;
+            }
+
+            function getListFailed(error) {
+                console.log('XHR Failed for getNews.' + error);
+                return $q.reject(error);
+            }
+        }
+        function getItem(id){
+            return Items.get({_id:id} ).$promise
+                .then(getItemComplete)
+                //.catch(getItemFailed);
+            function getItemComplete(response) {
+                if(response && response.blocks && response.blocks.length){
+                    response.blocks.forEach(function (b) {
+                        if(b.type=='stuffs'){
+                            if(b.stuffs && b.stuffs.length){
+                                b.imgs=b.stuffs.map(function(s){
+                                    if(s.gallery && s.gallery.length && s.gallery[0].img){
+                                        s.img=s.gallery[0].img;
+                                    }
+                                    return s;
+                                });
+                            }else{b.imgs=[]}
+                        }
+                    })
+                }
+                return response;
+            }
+            function getItemFailed(error) {
+                return $q.reject(error);
+            }
+        }
+        function create(clone){
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/CONTENT/links/create.html',
+                    controller: function($uibModalInstance,clone){
+                        var self=this;
+                        self.header=(clone)?'Клонирование объекта':'Создание объекта';
+                        self.name=''
+                        self.ok=function(){
+                            $uibModalInstance.close(self.name);
+                        }
+                        self.cancel = function () {
+                            $uibModalInstance.dismiss();
+                        };
+                    },
+                    resolve:{
+                        clone:function () {
+                            return clone;
+                        }
+                    },
+                    controllerAs:'$ctrl',
+                });
+                modalInstance.result.then(function (name) {
+                    if(name){
+                        resolve(name.substring(0,50))
+                    }else{
+                        reject()
+                    }
+
+                }, function (err) {
+                    reject(err)
+                });
+            })
+
+        }
+    }
+})()
+
+'use strict';
+(function(){
     'use strict';
     angular.module('gmall.services')
         .service('Campaign', campaignService);
@@ -34112,7 +35601,7 @@ angular.module('gmall.services')
             }
         }
         self.actions={};
-        self.displayList=['block','inline','inline-block','none','table','inline-table','table-cell','table-column','table-row','table-caption','none !important']
+        self.displayList=['block','inline','inline-block','none','table','inline-table','table-cell','table-column','table-row','table-caption','none !important','block!important']
         self.saveData=saveData;
         self.deleteData=deleteData;
 
@@ -34837,7 +36326,7 @@ var modelsName={
 
 
 
-var lengthStyleBlock=61;
+var lengthStyleBlock=65;
 var arrEmptyForProperties=[];
 for(var i=0;i<lengthStyleBlock;i++){arrEmptyForProperties.push('')}
 
@@ -35211,7 +36700,7 @@ var listOfBlocksForStuffList={
 var tableOfColorsForButton={0:'black-white',1:'pink-white',2:'turquoise-white',3:'yellow-white',4:'bordo-white',5:'braun-white',6:'powder-white',7:'pinklight-white',8:'white-black',9:'black-white'}
 var tableOfButtonsFile={0:'standart',1:'border-radius',2:'no border',3:'inverse',4:'border',5:'transparent'}
 
-var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','lock','lockwhite','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','vk','vkwhite','see','enter','zoom','yt','ytwhite']
+var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','liqpay','likes','lock','lockwhite','mastercard','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','privat','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','visa','vk','vkwhite','see','enter','zoom','yt','ytwhite']
 
 var notificationsTypeLang={
     //клиенту
@@ -35334,7 +36823,7 @@ var ratioClassStuffDetail={
     4:{left:'left-block horizontal-left2 col-lg-8 col-md-8 col-sm-12 col-xs-12',right:'right-block vertical-right2 col-lg-4 col-md-4 col-sm-12 col-xs-12'},
     5:{left:'left-block col-lg-12 col-md-12 col-sm-12 col-xs-12',right:'right-block col-lg-12 col-md-12 col-sm-12 col-xs-12'},
 }
-var elementsList=['a','p','div','h1','h2','h3','h4','ol','ul','li','span','img','hr','iframe','table','tr','th','td']
+var elementsList=['a','p','div','h1','h2','h3','h4','h5','ol','ul','li','span','img','input','hr','iframe','table','tr','th','td','video']
 
 var getNamePropertyCSS = function(i,item,k) {
     if(item){
@@ -35400,6 +36889,10 @@ var getNamePropertyCSS = function(i,item,k) {
             case 58: return  ['word-break',item];
             case 59: return  ['word-wrap',item];
             case 60: return  ['word-spacing',item];
+            case 61: return  ['background-image',item];
+            case 62: return  ['white-space',item];
+            case 63: return  ['text-overflow',item];
+            case 64: return  ['text-indent',item];
         }
     }else{
         switch (i){
@@ -35464,6 +36957,10 @@ var getNamePropertyCSS = function(i,item,k) {
             case 58: return  'word-break';
             case 59: return  'word-wrap';
             case 60: return  'word-spacing';
+            case 61: return  'background-image';
+            case 62: return  'white-space';
+            case 63: return  'text-overflow';
+            case 64: return  'text-indent';
         }
     }
 
@@ -35538,5 +37035,81 @@ if(typeof window === 'undefined') {
     exports.minTimePart=minTimePart;
     exports.listOfBlocksForStuffDetailBlocks=listOfBlocksForStuffDetailBlocks;
 }
+
+var listOfStuffFields = [
+    {
+        name:'название',
+        value:'name'
+    },
+    {
+        name:'артикул',
+        value:'artikul'
+    },
+    {
+        name:'описание',
+        value:'desc'
+    },
+    {
+        name:'количество',
+        value:'quantity'
+    },
+    {
+        name:'бренд',
+        value:'brand'
+    },
+    {
+        name:'коллекция',
+        value:'brandTag'
+    },
+    {
+        name:'категория',
+        value:'category'
+    },
+    {
+        name:'цена',
+        value:'price'
+    },
+    {
+        name:'цена sale',
+        value:'priceSale'
+    },
+    {
+        name:'цена розница',
+        value:'retail'
+    },
+    {
+        name:'фото',
+        value:'imgs'
+    },
+    {
+        name:'архив фото',
+        value:'zipImg'
+    },
+    {
+        name:'валюта',
+        value:'currency'
+    },
+    {
+        name:'id валюты',
+        value:'currencyId'
+    },
+    {
+        name:'разновидность',
+        value:'sort'
+    },
+    {
+        name:'url',
+        value:'url'
+    },
+    {
+        name:'id категории',
+        value:'categoryId'
+    },
+    {
+        name:'характеристики',
+        value:'tags'
+    },
+]
+
 
 

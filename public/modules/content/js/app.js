@@ -236,6 +236,33 @@ var myApp= angular.module('gmall', [
             Brands.reloadItems();
             Sections.reloadItems();
         }
+        if(toState.name=='frame.stuffs'){
+            $q.when()
+                .then(function(){
+                    return Sections.getSections();
+                })
+                .then(function(groups){
+                    console.log(groups,toState)
+                    var sec;
+                    loop1 : for(var i=0;i<groups.length;i++){
+                        if(groups[i].url==toParams.groupUrl){
+                            sec=groups[i];
+                            break;
+                        }
+                        if(groups[i].child && groups[i].child.length){
+                            for(var j=0;j<groups[i].child.length;j++){
+                                if(groups[i].child[j].url==toParams.groupUrl){
+                                    sec=groups[i].child[j];
+                                    break loop1;
+                                }
+                            }
+                        }
+                    }
+                   // console.log(sec)
+
+                    global.set('section',sec)
+                })
+        }
         if(fromState.name=='frame.stuffs' && toState.name=='frame.stuffs.stuff'){
             $rootScope.srollPosition=$(window).scrollTop();
         }
@@ -490,6 +517,7 @@ var myApp= angular.module('gmall', [
     // инициализация глобальных переменных
     globalProvider.set('groups');
     globalProvider.set('sections'); //дубдь
+    globalProvider.set('section');
     globalProvider.set('categories');
     globalProvider.set('categoriesO');
     //globalProvider.set('filters');
@@ -601,6 +629,9 @@ var myApp= angular.module('gmall', [
             template:'<filter-tag-edit></filter-tag-edit>',
         })
 
+
+
+
         .state("frame.stuffs", {
             url: "/stuffs/:groupUrl/:categoryUrl?searchStr&queryTag&brand&brandTag&msg&filters",
             templateUrl: function(){ return 'modules/content/views/stuffs.html'},
@@ -671,6 +702,15 @@ var myApp= angular.module('gmall', [
             url: "/:id",
             template:'<static-page></static-page>',
         })
+        .state("frame.links", {
+            url: "/links",
+            template: '<link-list></link-list>',
+        })
+        .state("frame.links.item", {
+            url: "/:id",
+            template:'<link-item></link-item>',
+        })
+
         .state("frame.additionals", {
             url: "/additionals",
             template: '<additional-pages></additional-pages>',

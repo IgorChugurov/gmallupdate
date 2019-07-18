@@ -1535,27 +1535,20 @@ String.prototype.getFormatedDate=function(){
 
     };
     order.prototype.getCouponSum=function(){
+        this.couponSum = this.sum;
         //console.log(this.coupon)
         if (this.coupon && Object.keys(this.coupon).length){
             if(!this.coupon.condition){
-                return Math.ceil10((this.sum-(this.sum/100)*Number(this.coupon.val)),-5);
+                this.couponSum = Math.ceil10((this.sum-(this.sum/100)*Number(this.coupon.val)),-5);
             }else if(this.coupon.condition){
                 var val=this.coupon.val;
-                //console.log(this.sum,val)
                 if(this.coupon.currency && this.currencyStore[this.coupon.currency] && this.currencyStore[this.coupon.currency][0]){
                     val = Math.round(val/this.currencyStore[this.coupon.currency][0])
                 }
-                /*if(this.coupon.currency && this.coupon.currency!=this.currency && this.currencyStore && this.currencyStore[this.coupon.currency] && this.currencyStore[this.coupon.currency][0]){
-                    console.log(this.currencyStore[this.coupon.currency][0])
-                    val = Math.round(val/this.currencyStore[this.coupon.currency][0])
-                }*/
-                //console.log(this.sum-Number(val))
-                return (this.sum-Number(val));
+                this.couponSum = this.sum-Number(val);
             }
-        }else{
-            //console.log(this.sum)
-            return this.sum
         }
+        return this.couponSum;
     };
     order.prototype.clearOrder=function(){
         this.cart.stuffs.length=0;
@@ -2194,6 +2187,10 @@ var myApp= angular.module('gmall', [
             url: "/online?type",
             template:'<online-booking></online-booking>'
         })
+        .state("frame.report", {
+            url: "/report",
+            template:'<report-orders></report-orders>'
+        })
         .state("frame.schedule", {
             url: "/schedule",
             template:'<week-schedule></week-schedule>'
@@ -2596,10 +2593,12 @@ angular.module('gmall.services', [])
 
         }
         function sendCodeToPhone(phone) {
+            //console.log(phone)
             var o = {phone:phone}
             self.sendCodeDisable=true;
             $q.when()
                 .then(function () {
+                    if(phone=='381112223334'){return }
                     return $http.post('/api/users/sendSMS',o)
                 })
                 .then(function () {
@@ -2638,7 +2637,9 @@ angular.module('gmall.services', [])
                     }
                 })
                 .then(function () {
-                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    //console.log('phone',phone)
+                    if(phone=='381112223334'){return }
+                    //console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
                     return sendPhoneFactory.sendCodeToPhone(self.phone)
                 })
                 .then(function () {
@@ -3085,6 +3086,9 @@ angular.module('gmall.services', [])
         var self=this;
         self.$onInit=function () {
             //console.log($scope.toaster,$scope.successFoo,self.toaster)
+            $scope.$parent.$watch('codeSent', function(value){
+                self.codeSent=value;
+            });
 
         }
         //console.log(global.get('store').val)
@@ -3109,6 +3113,7 @@ angular.module('gmall.services', [])
 
 
         function sendCodeToPhone(form) {
+            //console.log(form)
             if(form.$invalid){
                 return
             }
@@ -3130,12 +3135,16 @@ angular.module('gmall.services', [])
                     }
                 })
                 .then(function () {
-                    console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    //console.log('sendPhoneFactory.sendCodeToPhone(self.phone)')
+                    if(self.phone==='381112223334'){return}
                     return sendPhoneFactory.sendCodeToPhone(self.phone)
                 })
                 .then(function () {
+                    if(self.codeSent){
+                        exception.showToaster('info','отправка SMS','код отправлен на номер '+self.phone)
+                    }
                     self.codeSent=true;
-                    exception.showToaster('info','send code','success')
+
                     $timeout(function () {
                         self.sendCodeDisable=false
                     },10000)
@@ -3435,17 +3444,19 @@ confirmFactory.$inject = ['$q','$uibModal'];
 
 function confirmFactory($q,$uibModal) {
     return service;
-    function service(question){
+    function service(question,html){
         return $q(function(resolve,reject){
             var options={
                 animation: true,
                 template : [
                     '<div class="modal-header">',
                         '<h3 class="modal-title text-center" ng-bind="$ctrl.question"></h3>',
-                        '<span class="cancel-confirm"><span class="icon-cancel-img" ng-click=""$ctrl.cancel()"></span></span>',
+
+                        '<span class="cancel-confirm" ng-click="$ctrl.cancel()"><span class="icon-cancel-img" ></span></span>',
 
                     '</div>',
                     '<div class="modal-body confirm">',
+                    '<div class="modal-html" ng-bind-html="$ctrl.html|unsafe"></div>',
                     '<form ng-submit="$ctrl.ok()">'+
                     '<button autofocus class="btn btn-project btn-border  btn-modal pull-right" type="reset" ng-click="$ctrl.cancel()">{{global.get("langOrder").val.noo}}</button>',
                     '<button class="btn btn-project btn-modal pull-left" type="submit">{{global.get("langOrder").val.yes}}</button>',
@@ -3453,21 +3464,32 @@ function confirmFactory($q,$uibModal) {
                     '<div class="clearfix"></div>',
                     '</div>'
                 ].join(''),
-                controller: function($uibModalInstance,question){
+                controller: function($uibModalInstance,$rootScope,question,html){
                     var self=this;
-                    self.question=question
+                    self.question=question;
+                    if(html){
+                        self.html=html;
+                    }
                     self.ok=function(){
                         $uibModalInstance.close();
                     }
                     self.cancel = function () {
-                        $uibModalInstance.dismiss('cancel');
+                        //console.log('????')
+                        $uibModalInstance.dismiss();
                     };
+                    $rootScope.$on('$stateChangeStart',function(){
+                        $uibModalInstance.dismiss();
+                    });
                 },
                 controllerAs:'$ctrl',
                 size: 'sm',
                 resolve:{
-                    question: function(){return question}
+                    question: function(){return question},
+                    html: function(){return html}
                 }
+            }
+            if(html){
+                options.size='md'
             }
             $uibModal.open(options).result.then(function () {resolve();},function () {reject()});
         })
@@ -5451,6 +5473,7 @@ angular.module('gmall.controllers')
             saveField:saveField,
             selectItem:selectItem,
             select:selectItem,
+            selectStuffs:selectItems,
             selectItemWithSort:selectItemWithSort,
             getServicesForOnlineEntry:getServicesForOnlineEntry,
             getAllBonus:getAllBonus,
@@ -5986,6 +6009,7 @@ angular.module('gmall.controllers')
                         console.log('tag',tag)
 
                     }*/
+                    //console.log(Number(stuff.stock[k].quantity))
                     if(tag){
                         return {_id:k,index:tag.index,name:tag.name,quantity:Number(stuff.stock[k].quantity)}
                     }else{
@@ -5998,8 +6022,12 @@ angular.module('gmall.controllers')
                     return a.index-b.index
                 })
                 /*console.log(stuff.stock)
-                console.log(stuff.stockKeysArray)*/
+                console.log(JSON.stringify(stuff.stockKeysArray))*/
                 var sort_Id=null;
+                if($state.current.name==='stuffs.stuff' && $stateParams.sort && $stateParams.stuffUrl===stuff.url && !stuff.stuffFromList && keys.indexOf($stateParams.sort)>-1){
+                    stuff.sort=$stateParams.sort;
+
+                }
                 //console.log(stuff)
                 stuff.stockKeysArray.forEach(function (key) {
                     //console.log(key,stuff.stock[key._id])
@@ -6072,7 +6100,9 @@ angular.module('gmall.controllers')
                         if(stuff.multiple && stuff.minQty){
                             key.quantity= Number(stuff.minQty);
                         }else{
-                            key.quantity=1;
+                            if($state.current.name!='frame.stuffs.stuff' && $state.current.name!='frame.stuffs'){
+                                key.quantity=1;
+                            }
                             stuff.minQty=1;
                         }
                     }
@@ -6083,6 +6113,8 @@ angular.module('gmall.controllers')
                         stuff.filterActiveTagName=stuff.stock[key._id].name;
                     }
                 })
+
+                //console.log("JSON.stringify(stuff.stockKeysArray)",JSON.stringify(stuff.stockKeysArray))
 
                 if(stuff.stockKeysArray.length && sort_Id){
                     _changeSortOfStuff.call(stuff,sort_Id);
@@ -6334,9 +6366,9 @@ angular.module('gmall.controllers')
                 return $q.reject(error);
             }
         }
-        function search(search,setData){
+        function search(search,setData,allStuffs){
             // setData - если ищем товар в админке для дальнейшего использования необходимо получить с сервера все данные
-            var data ={search:search,setData:setData};
+            var data ={search:search,setData:setData,allStuffs:allStuffs};
             return Items.query(data).$promise
                 .then(getListComplete)
                 .catch(getListFailed);
@@ -7017,6 +7049,23 @@ angular.module('gmall.controllers')
             })
 
         }
+        function selectItems(){
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/stuff/modal/selectStuffsWithSortModal.html',
+                    controller: selectItemsCtrl,
+                    controllerAs:'$ctrl',
+                    size: 'lg',
+                });
+                modalInstance.result.then(function (stuffs) {
+                    resolve(stuffs)
+                },function(){
+                    reject()
+                });
+            })
+
+        }
         function getServicesForOnlineEntry(){
             //console.log('stuffsService',stuffsService)
             if(stuffsService && stuffsService.length){return stuffsService}
@@ -7390,6 +7439,132 @@ angular.module('gmall.controllers')
         }
         function getFilterName(_id){
             return self.filters.getOFA('_id',_id ).name||null;
+        }
+
+    }
+    selectItemsCtrl.$inject=['$q','Stuff','$uibModalInstance','Filters','FilterTags','exception','global'];
+    function selectItemsCtrl($q,Stuff,$uibModalInstance,Filters,FilterTags,exception,global){
+        var self=this;
+        self.global=global;
+        self.stuffs=[];
+        self.name='';
+        var paginate={page:0,rows:30,items:0}
+        self.selectedStuffs=[];
+
+        self.deleteStuff=deleteStuff;
+
+        self.getFilterName=getFilterName;
+        self.search = function(name){
+            //console.log(name)
+            if (name.length<3){return}
+            $q.when()
+                .then(function(){
+                    return Stuff.search(name,true,true)
+                })
+                .then(function(res){
+                    if(!global.get('seller') || !global.get('seller').val){
+                        self.stuffs=res.map(function (s) {
+                            //console.log(s)
+                            for(var i=0;i<s.stockKeysArray.length;i++){
+                                if(!s.stockKeysArray[i].quantity){
+                                    s.stockKeysArray.splice(i,1)
+                                    i--;
+                                }
+                            }
+                            return s;
+                        }).filter(function(s){
+                            // /console.log(s)
+                            return s.actived && s.stockKeysArray.length})
+                        //console.log(self.stuffs)
+                    }else{
+                        self.stuffs=res;
+                    }
+                })
+
+
+            return;
+            if(query){
+                if (!query.$and){query={$and:[query]}}
+                query.$and.push({$or:[{name:name},{artikul:name}]})
+            }else{
+                query={$or:[{name:name},{artikul:name}]}
+            }
+            Stuff.getList(paginate,query).then(function(res){
+                query=angular.copy(cashQuery)
+                if(!global.get('seller') || !global.get('seller').val){
+                    self.stuffs=res.map(function (s) {
+                        //console.log(s)
+                        for(var i=0;i<s.stockKeysArray.length;i++){
+                            if(!s.stockKeysArray[i].quantity){
+                                s.stockKeysArray.splice(i,1)
+                                i--;
+                            }
+                        }
+                        return s;
+                    }).filter(function(s){
+                        // /console.log(s)
+                        return s.actived && s.stockKeysArray.length})
+                    //console.log(self.stuffs)
+                }else{
+                    self.stuffs=res;
+                }
+
+            })
+        }
+        self.addStuff=function(stuff){
+            if(stuff.sortsOfStuff && stuff.sortsOfStuff.filter && !stuff.sort){
+                exception.catcher('ошибка')('выберите разновидность')
+            }else {
+                /*var inCart= stuff.getDataForCart()
+                if(inCart.sort){
+                    inCart.addCriterionName=getTagName(inCart.sort);
+                }*/
+                for(var i =0;i<self.selectedStuffs.length;i++){
+                    if(self.selectedStuffs[i]._id===stuff._id && self.selectedStuffs[i].sort===stuff.sort){
+                         return exception.catcher('ошибка')('уже добавлен')
+                    }
+                }
+                var o = {
+                    _id:stuff._id,
+                    name:stuff.name,
+                    artikul:stuff.artikul,
+                    sort:stuff.sort,
+                    sortName:stuff.sortName,
+                }
+                self.selectedStuffs.push(o);
+            }
+        }
+        self.done=function(){
+            $uibModalInstance.close(self.selectedStuffs);
+        }
+        self.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+        activate()
+        function activate(){
+            $q.when()
+                .then(function(){
+                    return Filters.getFilters()
+                })
+                .then(function(filters){
+                    self.filters=filters;
+                })
+                .then(function(){
+                    return FilterTags.getFilterTags()
+                })
+                .then(function(filterTags){
+                    self.filterTags=filterTags;
+                })
+                .catch(function(err){
+                    console.log(err)
+                })
+        }
+        function getFilterName(_id){
+            var o = self.filters.getOFA('_id',_id )
+            return (o && o.name)?o.name:'';
+        }
+        function deleteStuff(i) {
+            self.selectedStuffs.splice(i,1)
         }
 
     }
@@ -8770,7 +8945,7 @@ angular.module('gmall.services')
     this.cartCount=function(){
         return order.totalCount;
     }
-    this.sendOrder=function(user){
+    this.sendOrder=function(user,opt,cabinet){
         var self=this;
         return $q.when()
             .then(function () {
@@ -8780,11 +8955,16 @@ angular.module('gmall.services')
                             //console.log(user)
                             throw  'не авторизирован!';
                         }
-                    } else{
+                    }else{
                         if(global.get('user' ).val && global.get('user' ).val._id){
                             order.user=global.get('user' ).val;
                             //order.profile=global.get('user').val.profile;
+                            console.log(global.get('user').val.profile)
                             order.profile=angular.copy(global.get('user').val.profile);
+                            if(!order.profile.fio){
+                                order.profile.fio=global.get('user').val.name;
+                            }
+                            //console.log(order.profile)
                         }else{
                             throw  'не авторизирован!';
                         }
@@ -8850,6 +9030,11 @@ angular.module('gmall.services')
                 })
             })// coupon
             .then(function(){
+                if(opt && typeof opt ==='object'){
+                    for(var key in opt){
+                        order[key]=opt[key];
+                    }
+                }
                 //throw order;
                 //console.log(order)
                 return Orders.save(order).$promise
@@ -8891,7 +9076,7 @@ angular.module('gmall.services')
 
                 return $q(function(resolve,reject){
                     $email.save(o,function(res){
-                        exception.showToaster('note',global.get('langNote').val.emailSent,'');
+                        //exception.showToaster('note',global.get('langNote').val.emailSent,'');
                         resolve()
                     },function(err){
                         exception.showToaster('warning',global.get('langNote').val.error,err.data)
@@ -8901,6 +9086,8 @@ angular.module('gmall.services')
             }) //email
             .then(function(){
                 //order.profile=global.get('user').val.profile;
+                /*если регистрация только через телефон,то письмо не отправляем*/
+                if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.phone){return}
                 try{
                     // письмо
                     order.user=(user)?user:global.get('user').val;
@@ -8942,7 +9129,7 @@ angular.module('gmall.services')
 
                 return $q(function(resolve,reject){
                     $notification.save(o,function(res){
-                        exception.showToaster('note', global.get('langNote').val.sent,'');
+                        //exception.showToaster('note', global.get('langNote').val.sent,'');
                         resolve()
                     },function(err){
                         exception.catcher('error')(err);
@@ -8952,6 +9139,9 @@ angular.module('gmall.services')
             })//notification
             .then(function(){
                 try{
+                    if(cabinet){
+                        return $state.go('cabinet')
+                    }
                     var states= $state.get();
                     if(global.get('paps') && states.some(function(state){return state.name=='thanksPage'})){
                         var pap = global.get('paps').val.getOFA('action','order');
@@ -9143,7 +9333,7 @@ angular.module('gmall.services')
                         if(s.sortName){
                             n+=' '+s.sortName;
                         }
-                        error +="Необходимое количество "+n+" отсутствует. Перейдите на страницу товара и уточните наличие."
+                        error +="Указанное в корзине количество "+n+" отсутствует на складе. Уменьшите количество данного товара в корзине."
                     })
                     throw {status : "checkWarehouse", message : error};
                     //throw {status:''checkWarehouse,message:error};
@@ -9181,8 +9371,20 @@ angular.module('gmall.services')
         if(order.shipCost){
             o.delivery = Math.round((Number(order.shipCost))*100)/100;
         }
-
-
+        var percent=0;
+        var percentCart =0;
+        var percentCoupon = 0;
+        if(order.discount.type && order.discount.value){
+            percent = Number(order.discount.value);
+        }
+        if(order.sum0!==order.sum){
+            percentCart=order.sum/order.sum0;
+        }
+        if(order.sum!==order.couponSum){
+            percentCoupon=order.couponSum/order.sum;
+        }
+        console.log(order)
+        console.log('percentCart',percentCart)
         order.cart.stuffs.forEach(function (s) {
             //console.log(s)
             var m = {}
@@ -9208,10 +9410,21 @@ angular.module('gmall.services')
             m.supplierType = s.supplierType;
             m.virtualAccount=global.get('store').val.virtualAccount;
             //m.supplier = m.supplier.charAt(0).toUpperCase() + m.supplier.slice(1);
+
+            if((order.discount.type==3 || order.discount.type==5 || order.discount.type==6)){
+                m.priceForSale = Math.round(m.priceForSale*(100-percent))/100;
+            }else if(order.discount.type==4   && !s.priceSale){
+                m.priceForSale = Math.round(m.priceForSale*(100-percent))/100;
+            }else if(order.discount.type==7){
+                m.priceForSale = Math.round((m.priceForSale*percentCart)*100)/100;
+            }
+            if(percentCoupon!=0){
+                m.priceForSale = Math.round((m.priceForSale*percentCoupon)*100)/100;
+            }
             o.materials.push(m)
 
         })
-        console.log(o)
+        //console.log(o)
 
 
         if(!o.materials.length){
@@ -9304,6 +9517,10 @@ angular.module('gmall.services')
             .then(function () {
                 exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
             })
+    }
+    
+    this.checkStuff = function (stuff,user) {
+        return $http.post('/api/orders/checkStuffInOldOrders',{stuff:stuff,user:user});
     }
 
 
@@ -10116,6 +10333,7 @@ angular.module('gmall.controllers')
 
     angular.module('gmall.services')
         .directive('ordersList',ordersListDirective)
+        .directive('reportOrders',reportOrders)
         .directive('emptyList',['$timeout',function($timeout){
             return {
                 restrict:'E',
@@ -10144,6 +10362,16 @@ angular.module('gmall.controllers')
             controller: orderListCtrl,
             controllerAs: '$ctrl',
             templateUrl: 'components/order/orders-list.html',
+        }
+    }
+    function reportOrders(){
+        return {
+            scope: {},
+            restrict:'E',
+            bindToController: true,
+            controller: reportOrdersCtrl,
+            controllerAs: '$ctrl',
+            templateUrl: 'components/order/reportOrders.html',
         }
     }
     orderListCtrl.$inject=['Orders','global','$rootScope','$window','$timeout','$location','socket','$q','$user','exception','Confirm','$dialogs','CartInOrder'];
@@ -10564,6 +10792,389 @@ angular.module('gmall.controllers')
 
 //***************************************************************************************************
     }
+
+    reportOrdersCtrl.$inject=['Orders','global','$rootScope','$window','$timeout','$location','Stuff','$q','$user','exception','Confirm','$dialogs','CartInOrder','localStorage'];
+    function reportOrdersCtrl(Orders,global,$rootScope,$window,$timeout,$location,Stuff,$q,$user,exception,Confirm,$dialogs,CartInOrder,localStorage){
+        var self=this;
+        self.global=global;
+        self.mobile=global.get('mobile').val
+
+
+        self.propertyName = 'dateForSort';
+        self.reverse = true;
+        self.sortBy = function(propertyName) {
+            if(!propertyName){
+                self.propertyName=null;
+                self.reverse = false;
+                return;
+            }
+            self.reverse = (self.propertyName === propertyName) ? !self.reverse : false;
+            self.propertyName = propertyName;
+        };
+
+// установка диапазона дат для получения списка
+        self.dt  = new Date();
+        self.today = function(t) {
+            if(t){return new Date(self.dt.setHours(0,0,0));}else {return new Date(self.dt.setHours(23,59,59));}
+        };
+        self.maxDate=self.today(true)
+        var dtto = self.today();
+        var dtfrom=self.today(true);
+        dtfrom.setDate(dtfrom.getDate() - 356);
+        self.dtto=dtto;
+        self.dtfrom=dtfrom;
+        var now = new Date();
+        var yesterday=new Date(new Date(self.today(true)).setDate(now.getDate() - 1));
+        var nextWeek = new Date(new Date(self.today(true)).setDate(now.getDate() - 7));
+        var nextMonth = new Date(new Date(self.today(true)).setMonth(now.getMonth() - 1));
+        var y = dtto.getFullYear(), m = dtto.getMonth();
+        var thisMonth = new Date(y, m, 1);
+        var last30day = new Date(new Date(self.today(true)).setDate(now.getDate() - 30));
+
+        self.datePicker={};
+        self.options={
+            "ranges": {
+                "сегодня": [
+                    self.today(true),
+                    dtto
+                ],
+                "вчера": [
+                    yesterday,
+                    self.today(true)
+                ],
+                "последние 7 дней": [
+                    nextWeek,
+                    dtto
+                ],
+                "последние 30 дней": [
+                    last30day,
+                    dtto
+                ],
+                "текущий месяц": [
+                    thisMonth,
+                    dtto
+                ],
+                "прошлый месяц": [
+                    nextMonth,
+                    dtto
+                ]
+            },
+            locale: {
+                applyClass: 'btn-green',
+                applyLabel: "Выбрать",
+                fromLabel: "от",
+                toLabel: "до",
+                cancelLabel: 'Отменить',
+                customRangeLabel: 'прозвольный диапазон',
+                format:"DD.MM.YY",
+                daysOfWeek: ['Пн', 'Вт', 'Ср', 'Чт', 'Пн', 'Сб', 'Вс'],
+                firstDay: 1,
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель','Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь',
+                    'Ноябрь', 'Декабрь'
+                ]
+            }
+        }
+        self.datePicker.date = {
+            startDate: dtfrom,
+            endDate: dtto
+        };
+        moment.locale("ru");
+        self.moment=moment;
+
+        //**********************************************************************************************
+        //*********************************************************************************************
+
+        self.statusO={
+            1:'поступил',
+            2:'принят',
+            3:'оплачен',
+            4:'отправлен',
+            5:'доставлен',
+            6:'удален'
+        }
+
+
+        self.selectStuffs=selectStuffs;
+        self.updateOrderField=updateOrderField;
+        self.saveReport=saveReport;
+
+
+        var subDomain = global.get('store').val.subDomain;
+        self.paginate={page:0,rows:1000}
+
+        activate()
+
+        function activate(){
+            self.oldReports=localStorage.get(subDomain+'-reports');
+            if(!self.oldReports){
+                self.oldReports=[];
+            }
+            //console.log(self.oldReports)
+            if(self.oldReports.length){
+                $timeout(function () {
+                    selectStuffs(self.oldReports[0].stuffs)
+                },500)
+
+            }
+        }
+
+
+
+
+        function selectStuffs(oldData) {
+            $q.when()
+                .then(function () {
+                    if(oldData){
+                        return oldData
+                    }else{
+                        return Stuff.selectStuffs()
+                    }
+
+                })
+                .then(function (stuffs) {
+                    //console.log(stuffs)
+                    self.stuffsInReport = {};
+                    var ss=''
+                    stuffs.forEach(function (s,i) {
+                        var o ={
+                            _id:s._id,
+                            sort:s.sort,
+                            data:[]
+                        };
+                        o.name = s.name;
+                        if(s.artikul){
+                            o.name+=' '+s.artikul;
+                        }
+                        if(s.sortName){
+                            o.name+=' '+s.sortName;
+                        }
+
+                        self.stuffsInReport[s._id+s.sort]=o;
+                        if(i){ss+=' ||| '}
+                        ss+=o.name;
+                    });
+                    var oo={
+                        name:ss,
+                        stuffs:stuffs
+                    }
+
+
+                    if(!oldData){
+                        self.oldReports.unshift(oo)
+                        if(self.oldReports.length>10){
+                            self.oldReports.splise(10)
+                        }
+                        localStorage.set(subDomain+'-reports', self.oldReports);
+                        console.log(self.oldReports)
+                    }
+
+
+
+
+                    self.query={};
+                    if (!global.get('seller' ) || !global.get('seller' ).val){
+                        self.query['user']=global.get('user' ).val._id;
+                    }
+                    self.query.date={$gte:new Date(self.datePicker.date.startDate),$lte: new Date(self.datePicker.date.endDate)};
+                    if(stuffs.length==1){
+                        self.query={
+                            'stuffs._id':stuffs[0]._id
+                        };
+                        self.query['stuffs.sort']=stuffs[0].sort;
+                    }else if(stuffs.length>1){
+                        self.query={$or:[]};
+                        for(var i =0;i<stuffs.length;i++){
+                            var o ={}
+                            o['stuffs._id']=stuffs[i]._id;
+                            o['stuffs.sort']=stuffs[i].sort;
+                            self.query.$or.push(o)
+                        }
+                    }
+                    return CartInOrder.getList({page:0,rows:10000},self.query)
+
+
+                })
+                .then(function(res){
+                    //console.log(res);
+                    self.report=[];
+                    res.forEach(function (order) {
+                        //console.log(order)
+                        order.cart.stuffs.forEach(function (s) {
+
+                            if(self.stuffsInReport[s._id+s.sort]){
+                                var o={
+                                    date:moment(order.date).format('LLL'),
+                                    dateForSort:order.date,
+                                    num:order.num,
+                                    fio:(order.profile)?order.profile.fio:'',
+                                    phone:(order.profile)?order.profile.phone:'',
+                                    cena:s.cena,
+                                    sum:s.sum,
+                                    quantity:s.quantity,
+                                    currency:s.currency,
+                                    _id:order._id,
+                                    status:self.statusO[order.status],
+                                    note:order.note
+
+                                }
+                                console.log(order.pay)
+                                if(order.pay && order.pay[0]){
+                                    o.payDate = moment(order.pay[0].date).format('LLL');
+                                }
+                            console.log(o.payDate)
+                                self.stuffsInReport[s._id+s.sort].data.push(o)
+                            }
+                        })
+                    })
+                    //console.log(self.stuffsInReport)
+                })
+        }
+        function saveReport() {
+            var keys = Object.keys(self.stuffsInReport);
+            //console.log(keys)
+            if(!keys.length){return};
+            var s ='';
+            try {
+                var htmlBilder = new createBilderHTML();
+
+                var body = htmlBilder.getBody();
+                var p = htmlBilder.createTag(body,'p',null)
+                var span = htmlBilder.createTag(p,'span',null,moment(self.dtfrom).format('LLL'))
+                span = htmlBilder.createTag(p,'span',null,' - ')
+                span = htmlBilder.createTag(p,'span',null,moment(self.dtto).format('LLL'))
+                for(var k in self.stuffsInReport){
+                    var d = self.stuffsInReport[k];
+                    var h3 = htmlBilder.createTag(body,'h3',null,d.name)
+                    if(d.data.length){
+                        var table = htmlBilder.createTag(body,'table',{border:"1",cellpadding:"10px",style:"border-collapse:collapse"})
+                        var tr = htmlBilder.createTag(table,'tr')
+                        var td = htmlBilder.createTag(tr,'th',null,'заказ')
+                        var td = htmlBilder.createTag(tr,'th',null,'клиент')
+                        var td = htmlBilder.createTag(tr,'th',null,'позиция')
+                        var td = htmlBilder.createTag(tr,'th',null,'статус')
+                    }
+                    d.data.forEach(function (d) {
+                        var tr = htmlBilder.createTag(table,'tr')
+                        var td = htmlBilder.createTag(tr,'td',null,'№-'+d.num+' от '+d.date);
+
+
+                        var td = htmlBilder.createTag(tr,'td',null);
+                        var a = htmlBilder.createTag(td,'a',{href:'tel:'+d.phone},d.fio+'  тел: '+d.phone);
+                        var td = htmlBilder.createTag(tr,'td',null,d.quantity+'*'+d.cena+'='+d.sum+' '+d.currency)
+                        var td = htmlBilder.createTag(tr,'td',null,d.status)
+                    })
+
+                }
+
+
+
+                s = htmlBilder.toSrt()
+
+                //s.toSrt()
+            }catch(err){
+                console.log(err)
+            }
+
+
+            var filename = self.stuffsInReport[keys[0]].name;
+
+
+            var blob = new Blob([s], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, filename+".html");
+        }
+
+        function createBilderHTML(){
+            var o={
+                    html:{
+                        name:'html',
+                        tags:[
+                            {
+                                name:'head',
+                                tags:[
+                                    {
+                                        name:'meta',
+                                        tags:[],
+                                        attrs:{
+                                            charset:"UTF-8"
+                                        }
+                                    }
+                                ],
+                                attrs:{}
+                            },
+                            {
+                                name:'body',
+                                tags:[],
+                                attrs:{}
+                            },
+                        ],
+                        attrs:{
+                            lang:"en"
+                        }
+                    }
+            }
+            o.toSrt=function () {
+                var html = this.html;
+                var s='<!DOCTYPE html>'+"\n"+"<html ";
+                s += handleTag(html)
+                //console.log(s)
+                return s
+            }
+            o.getBody=function () {
+                return o.html.tags[1];
+            }
+            o.createTag=function (tag,name,arrts,content) {
+                //console.log(tag,name)
+                var t = {
+                    name:name,
+                    tags:[],
+                    attrs:arrts|| {},
+                    c:content||null
+                }
+                tag.tags.push(t)
+                return t
+            }
+            function handleTag(tag) {
+                var s='<'+tag.name+' ';
+                var keys = Object.keys(tag.attrs);
+                keys.forEach(function (k) {
+                    s+=k+'="'+tag.attrs[k]+'" ';
+                })
+                s+='>'
+                if(tag.c){
+                    s+=tag.c;
+                }
+                //console.log(tag.tags)
+                if(tag.tags){
+                    tag.tags.forEach(function (tt) {
+                        s +=handleTag(tt)
+                    })
+                    for(var tagInner in tag.tags){
+
+                    }
+                }
+                s+='</'+tag.name+'>'
+                return s;
+
+            }
+            return o;
+        }
+        function updateOrderField(field,val,_id) {
+            var o={ _id:_id}
+            o[field]=val;
+            Orders.save({update:field},o,function(){
+                global.set('saving',true);
+                $timeout(function(){
+                    global.set('saving',false);
+                },1500)
+            },function(err){
+                if(err){
+                    exception.catcher('сохранение ордера')(err)
+                }
+            });
+        }
+    }
+
+
 })()
 
 'use strict';
@@ -10959,7 +11570,7 @@ angular.module('gmall.controllers')
             modalInstance.result.then(function (priceSale) {
                 //console.log(priceSale,typeof priceSale,typeof stuff.price)
                 reload=true;
-                if(priceSale && priceSale!='0' && priceSale!=stuff.price){
+                if(priceSale && priceSale!='0'){
                     stuff.priceSale=priceSale;
                     stuff.priceSaleHandle=true;
                 }else{
@@ -11698,11 +12309,8 @@ angular.module('gmall.controllers')
 
         }
 
-        function reserve() {
+        function reserve(status,oldStatus) {
             return   $q.when()
-                .then(function () {
-                    return $order.checkWarehouse()
-                })
                 .then(function () {
                     return $order.checkWarehouse()
                 })
@@ -11725,12 +12333,13 @@ angular.module('gmall.controllers')
                     }
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('обработка данных в бухгалтерии')(err)
                     }
                 })
         }
-        function cancelReserve() {
+        function cancelReserve(status,oldStatus) {
             return   $q.when()
                 .then(function () {
                     return $order.cancelRn()
@@ -11745,13 +12354,14 @@ angular.module('gmall.controllers')
                     showToaster('note','Сохренено','информация обновлена')
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('изменение статуса')(err)
                     }
                 })
         }
 
-        function holdZakaz() {
+        function holdZakaz(status,oldStatus) {
             return   $q.when()
                 .then(function () {
                     return $order.holdZakaz()
@@ -11762,12 +12372,13 @@ angular.module('gmall.controllers')
                     showToaster('note','Сохренено','информация обновлена')
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('изменение статуса')(err)
                     }
                 })
         }
-        function cancelZakaz() {
+        function cancelZakaz(status,oldStatus) {
             return   $q.when()
                 .then(function () {
                     return $order.cancelZakaz()
@@ -11783,6 +12394,7 @@ angular.module('gmall.controllers')
                     showToaster('note','Сохренено','информация обновлена')
                 })
                 .catch(function (err) {
+                    self.status=self.statusArray[Number(self.order.status)-1]
                     if(err){
                         exception.catcher('изменение статуса')(err)
                     }
@@ -11790,7 +12402,9 @@ angular.module('gmall.controllers')
         }
 
         function changeStatus(status){
-            console.log(status,self.order.status)
+            //console.log(status,self.order.status)
+
+            var oldStatus = self.order.status;
             if(global.get('store').val.bookkeep){
                 if(self.order.status==status.value){return}
                 if(self.order.status==1 && status.value!=2){
@@ -11798,31 +12412,42 @@ angular.module('gmall.controllers')
                     self.status=self.statusArray[Number(self.order.status)-1]
                     exception.catcher('изменение статуса')('только на принят')
                 }else if(status.value==2 && self.order.status==1){
-                    return reserve()
+                    return reserve(status,self.order.status)
                 }else if(status.value==1 && (self.order.status==2 || self.order.status==3)){
-                    cancelReserve()
+                    cancelReserve(status,self.order.status)
                 }else if(status.value==4 && (self.order.status==2 || self.order.status==3)){
-                    holdZakaz()
+                    holdZakaz(status,self.order.status)
                 }else if(status.value==1 && self.order.status==4){
-                    cancelZakaz()
+                    cancelZakaz(status,self.order.status)
                 }else if(self.order.status==4 && status.value!=1){
-                    console.log(self.order.status)
+                    //console.log(self.order.status)
                     self.status=self.statusArray[Number(self.order.status)-1]
                     exception.catcher('изменение статуса')('только на поступил')
                 }
-
+                if((oldStatus==3 && self.order.status==2)||(oldStatus==2 && self.order.status==3)){
+                    checkAbonement()
+                }
+                $timeout(function () {
+                    $rootScope.$emit('reloadOrderList')
+                },500)
                 return;
             }
 
 
             self.order.status=status.value;
             self.updateOrderField('status')
-
+            if((oldStatus==3 && self.order.status==2)||(oldStatus==2 && self.order.status==3)){
+                checkAbonement()
+            }
+            /*данные по статистике гугла*/
             if(self.order.statSent ||(self.order.status!=3&&self.order.status!=5)){
                 return
             }
             self.order.statSent=true;
             self.updateOrderField('statSent')
+            $timeout(function () {
+                $rootScope.$emit('reloadOrderList')
+            },500)
             var order = self.order;
             try{
                 if ((global.get('local')&& !global.get('local').val) && $window.ga){
@@ -11875,6 +12500,43 @@ angular.module('gmall.controllers')
             }catch(err){
                 throw err
             }
+        }
+
+        function checkAbonement() {
+            //console.log(self.order)
+            var a =self.order.cart.stuffs.reduce(function (ac,it) {
+                if(it.abonement){
+                    ac+=it.abonement;
+                }
+                return ac;
+            },0);
+            //console.log(a);
+            if(a){
+                var o={
+                    a:a,
+                    user:self.order.user._id
+
+                }
+                if(self.order.status==3){
+                    o.add=true;
+                }else if(self.order.status==2){
+                    o.add=false;
+                }
+                $q.when()
+                    .then(function () {
+                        return $http.post('/api/orders/changeAbonement',o)
+                    })
+                    .then(function (res) {
+                        console.log(res)
+                        showToaster('note','Сохренено','информация в абонементе обновлена')
+                    })
+                    .catch(function (err) {
+                        if(err){
+                            exception.catcher('обновление данных в абонементе')(err)
+                        }
+                    })
+            }
+
         }
 
         function makeAccess() {
@@ -16713,7 +17375,7 @@ angular.module('gmall.directives')
             link: function (scope, element, attrs, controller) {
                //console.log('likn paginator',scope.paginate);
                 var store = global.get('store').val
-                var stuffListType = (global.get('sectionType'))?global.get('sectionType').val:'good';
+                var stuffListType = (global.get('sectionType') && global.get('sectionType').val)?global.get('sectionType').val:'good';
                 //console.log(store.template.stuffListType)
                 var rows=(store.template.stuffListType[stuffListType] && store.template.stuffListType[stuffListType].rows)||3;
                 var filterBlock=store.template.stuffListType[stuffListType].parts.find(function(e){return e.name=='filters' && e.is && e.is!='false'})
@@ -17139,15 +17801,15 @@ angular.module('gmall.services')
 
 
 
-        //**************************************************************************************
+        //**************************header для писем*************************
         function getHeader(user) {
             var s=
-                '<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 20px 0 0 0" border="0">'+
-                '<tr width="100%" style="max-width:900px;">' +
+                '<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 20px 0 0 0" border="0">'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;">' +
                     // лого и название
                 '<td width="50%" style=" padding:5px 20px"><a href="'+global.get('store').val.link+'">';
                     if(global.get('store').val.logo) {
-                        s+='<img  style="width: 100px;" src="' + photoHostForFactory + '/' + global.get('store').val.logo + '"></br>'
+                        s+='<img  style="width: 100px;" src="' + photoHostForFactory + '/' + global.get('store').val.logo + '" alt="logo '+global.get('store').val.name+'"></br>'
 
                     }
                     if(global.get('store').val.name) {
@@ -17158,37 +17820,38 @@ angular.module('gmall.services')
             s+='<td width="50%"  style="text-align: right; padding:5px 20px">'
             if(global.get('store').val.seller.phone) {
                 s+='<p><span>' +global.get('langOrder').val.phone+ '</span>'+
-                    ': <a style="color:#666" href="tel:'+'+'+global.get('store').val.seller.phone+'"><span>'+'+' +global.get('store').val.seller.phone + '</span></a></p>'
+                    ': <a style="color:#666666" href="tel:'+'+'+global.get('store').val.seller.phone+'"><span>'+'+' +global.get('store').val.seller.phone + '</span></a></p>'
             }
             if(global.get('store').val.feedbackEmail) {
                 s += '<p><span>e-mail</span>'+
-                    ': <a style="color:#666" href="mailto:'+global.get('store').val.feedbackEmail+'"><span>' + global.get('store').val.feedbackEmail + '</span></a></p>'
+                    ': <a style="color:#666666" href="mailto:'+global.get('store').val.feedbackEmail+'"><span>' + global.get('store').val.feedbackEmail + '</span></a></p>'
             }
 
-            s+='</td></tr>';
+            s+='</td></tr></table>';
 
             //переходы на сайт
             if(global.get('sections') && global.get('sections').val && global.get('sections').val[0]){
-                s+='<table width="860px" cellpadding="0" cellspacing="0" style="max-width:900px;background-color: #000;border-collapse:collapse; border:1px solid #000;table-layout: fixed; padding: 0;margin: 0px 20px">' +
-                    '<td width="50%" style="background-color: #333;text-align: center; padding: 20px;border:1px solid #fff;">' +
-                    '<a style="color: #fff; text-transform: uppercase" href="'+global.get('store').val.link+'/cabinet'+'"><span>'+global.get('langOrder').val.mainCabinet+'</span></a>'+
+                s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;border-collapse:collapse; table-layout: fixed; padding: 0;margin: 0px 20px">' +
+                    '<tr width="100%" style="max-width:600px;min-width:240px;">' +
+                    '<td  width="50%" style="max-width:300px;min-width:150px;background-color: #333333;text-align: center; padding: 20px;border:1px solid #ffffff;">' +
+                    '<a style="color: #ffffff; text-transform: uppercase" href="'+global.get('store').val.link+'/cabinet'+'"><span>'+global.get('langOrder').val.mainCabinet+'</span></a>'+
                     '</td>';
-                s+='<td width="50%" style="background-color: #333;text-align: center; padding: 20px;border:1px solid #fff;">' +
-                    '<a style="color: #fff; text-transform: uppercase" href="'+global.get('store').val.link+'/'+global.get('sections').val[0].url+'/category'+'"><span>'+global.get('lang').val.catalog+'</span></a>'+
+                s+='<td  width="50%" style="max-width:300px;min-width:150px; background-color: #333333;text-align: center; padding: 20px;border:1px solid #ffffff;">' +
+                    '<a style="color: #ffffff; text-transform: uppercase" href="'+global.get('store').val.link+'/'+global.get('sections').val[0].url+'/category'+'"><span>'+global.get('lang').val.catalog+'</span></a>'+
                     '</td>';
                 s+='</tr></table>'
-
-                /*'<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px; font-size: 20px;"><h3>'+user+'</h3></td></tr>'+
-
-                 '<tr width="100%"><td><h2 style="font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #333333; font-family:  Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+name+'</h2></td></tr>';*/
-                s+=    '</table>';
             }
 
             return s;
         }
+        //**************************footer*************************
         function getFooter(){
-            var s='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
-                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            var s='<style>@media (max-width: 420px) {.name {font-size:12px !important; line-height: 14px!important;} .footer td {font-size: 12px!important; padding: 5px!important}}</style>' +
+                '<table class="footer-letter"  width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px; color: #000000; border-collapse:collapse; border:none;table-layout: fixed; padding: 0 20px; margin: 20px" border="0">' +
+                '<tr><td>'+
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; " border="0">' +
+                '<tr style="vertical-align: top; background-color:#333333"><td  style=" padding: 10px 20px">' +
+                '<span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
                     if(global.get('store').val.sn[key].is){
@@ -17203,23 +17866,25 @@ angular.module('gmall.services')
                 }
 
             }
-            s+='</span></td></tr>'+
-                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            s+='</span></td></tr></table></td></tr>'+
+
+                '<tr><td>' +
+                '<table width="50%" cellpadding="0" cellspacing="0"  style="max-width:300px; min-width:150px; color: #000000; border-collapse:collapse; border:none; table-layout: fixed; float: left;" border="0"">' +
+                '<tr><td align="left" style="vertical-align: top; padding: 20px 20px 20px 0"><span style="font-size:14px; ">';
             /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
             if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
             }
 
-            s+='</span></td>';
-            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
-             s+=global.get('store').val.footer.text1;
-             }*/
+            s+='</span></td></tr></table>';
+            s+='<table width="50%" cellpadding="0" cellspacing="0"  style="max-width:300px; min-width:150px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; float: left;" border="0">' +
+                '<tr><td align="right" style="vertical-align: top; padding: 20px 0 20px 20px"><span style="font-size:14px;">';
+
             if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
             }
 
-            s+='</span></td></tr></table>';
+            s+='</span></td></tr></table></td></tr></table>';
             return s
         }
         // ********************пустой контент
@@ -17245,24 +17910,31 @@ angular.module('gmall.services')
                 case 'campaign':return d+'/camapign/'+u;
             }
         }
+
+        //**************************рассылка новостей*************************
         function emailFromNews(item){
-            console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
-            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])
+            //console.log(item)
+            /*console.log(global.get('store').val.texts.mailTextFooter[global.get('store').val.lang])
+            console.log(global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang])*/
+
+            //**************************header для рассылки*************************
             var s=
-                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></a></td></tr>'+
-                '<tr width="100%" style="max-width:900px;"><td style="text-align: center; padding: 5px; font-size: 20px;"><h3>usernameforreplace</h3></td></tr>'+
+                '<style>@media (max-width: 420px) {h2 {font-size: 20px}}</style>' +
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0 auto" border="0">'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;"><td style="text-align: center; padding: 5px"><a href="'+global.get('store').val.link+'"><img  style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'" alt="logo '+global.get('store').val.name+'"></a></td></tr>'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;"><td style="text-align: center; padding: 5px; font-size: 20px;"><h3>usernameforreplace</h3></td></tr>'+
 
                 '<tr width="100%"><td><h2 style="font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #333333; font-family:  Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.name+'</h2></td></tr>';
-            s+=    '</table>';
+            s+= '</table>';
 
+            //**************************имя рассылки*************************
 
-            s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0 " border="0">';
+            s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0 auto " border="0">';
             if(item.blocks && item.blocks.length){
                 item.blocks.forEach(function (block) {
                     if(block.name){
                         if(block.type=='text2'){
-                            s+='<tr width="100%" style="max-width:900px;">' +
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;">' +
                                 '<td style="padding: 5px">' +
                                 '<h3 style="text-align: center; color: :#333333; font: 22px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none; text-transform: uppercase">'+((block.name)?block.name:'')+'</h3>' +
                                 '</td>' +
@@ -17271,18 +17943,21 @@ angular.module('gmall.services')
                                 '</td>' +
                                 '</tr>';
                         }else{
-                            s+='<tr width="100%" style="max-width:900px;"><td colspan="2" style="padding: 5px"><h3 style="text-align: center; color: :#333333; font: 22px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none; text-transform: uppercase">'+block.name+'</h3></td></tr>';
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td colspan="2" style="padding: 5px"><h3 style="text-align: center; color: :#333333; font: 22px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.name+'</h3></td></tr>';
                         }
 
 
                     }
+
+                    //**************************блок с img*************************
+
                     if(block.img){
-                        s+='<tr width="100%" style="max-width:900px;"><td  colspan="2" width="100%" style=" padding: 5px" >' ;
+                        s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td  colspan="2" width="100%" style=" padding: 5px" >' ;
                         if(block.link){
                             s+= '<a href="'+global.get('store').val.link+block.link+'" style="cursor: pointer;">'
                         }
 
-                        s+= '<img alt="" style="width: 100%;margin-bottom: 10px; display: block" src="'+photoHostForFactory+'/'+block.img+'">';
+                        s+= '<img alt="'+((block.name)?block.name:'')+'" style="width: 100%;margin-bottom: 10px; display: block" src="'+photoHostForFactory+'/'+block.img+'">';
                         if(block.link){
                             s+= '</a>'
                         }
@@ -17290,11 +17965,13 @@ angular.module('gmall.services')
                         s+= '</td></tr>';
 
                     }
-                    //console.log(block)
+
+                    //**************************текстовый блок*************************
+
                     if(block.desc){
                         if(block.type=='text2'){
                             //console.log(block)
-                            s+='<tr width="100%" style="max-width:900px;">' +
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;">' +
                                 '<td style="padding: 5px">' +
                                 '<span style="text-align: justify;  color: :#333333; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+((block.desc)?block.desc:'')+'</span>' +
                                 '</td>' +
@@ -17303,10 +17980,12 @@ angular.module('gmall.services')
                                 '</td>' +
                                 '</tr>';
                         }else{
-                            s+='<tr width="100%" style="max-width:900px;"><td colspan="2" style="padding: 5px"><span style="text-align: justify;  color: :#333333; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.desc+'</span></td></tr>';
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td colspan="2" style="padding: 5px"><span style="text-align: justify;  color: :#333333; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.desc+'</span></td></tr>';
                         }
 
                     }
+
+                    //**************************блок с images*************************
 
                     if(block.imgs && block.imgs.length){
                         for (var i=0,l=block.imgs.length;i<l;i += 2){
@@ -17330,9 +18009,9 @@ angular.module('gmall.services')
                                 s+='<a href="'+link1+'">';
                             }
 
-                            s+='<img alt="" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i].img+'">';
+                            s+='<img alt="'+((block.imgs[i].name)?block.imgs[i].name:'')+'" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i].img+'">';
                             if(block.imgs[i].name){
-                                s+='<span style="font-weight: 700; color: #666666; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.imgs[i].name+'</span>' ;
+                                s+='<span class="name" style="font-weight: 700; color: #666666; font: 14px Arial, line-height:20px; sans-serif;  -webkit-text-size-adjust:none;">'+block.imgs[i].name+'</span>' ;
                             }
 
                             if(link1){
@@ -17359,9 +18038,9 @@ angular.module('gmall.services')
                                     s+='<a href="'+link2+'">';
                                 }
 
-                                s+='<img alt="" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i+1].img+'">';
+                                s+='<img alt="'+((block.imgs[i+1].name)?block.imgs[i+1].name:'')+'" style="width: 100%; display: block" src="'+photoHostForFactory+'/'+block.imgs[i+1].img+'">';
                                 if(block.imgs[i+1].name){
-                                    s+='<span style="font-weight: 700; color: #666666; font: 18px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+block.imgs[i+1].name+'</span>' ;
+                                    s+='<span class="name" style="font-weight: 700; color: #666666; font: 14px Arial, line-height:20px; sans-serif; -webkit-text-size-adjust:none;">'+block.imgs[i+1].name+'</span>' ;
                                 }
                                 if(link2){
                                     s+='</a>';
@@ -17403,8 +18082,16 @@ angular.module('gmall.services')
             }
             s+='</span></td></tr>'+
                 '</table>'*/
-            s +='<style>.footer a</style><table class="footer" width="860px" cellpadding="0" cellspacing="0" style="margin: 20px;color: #000;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;" border="0">'+
-                '<tr><td colspan="2" align="center" style="vertical-align: top; padding: 10px 20px;background-color:#333"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+            //**************************footer для рассылки*************************
+
+            s +='<style>@media (max-width: 420px) {.name {font-size:12px !important; line-height: 14px!important;}.footer td {font-size: 12px!important; padding: 5px!important}}</style>' +
+                '<table class="footer" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px; color: #000000; border-collapse:collapse; border:none;table-layout: fixed; padding: 0 20px; margin: 20px auto" border="0">'+
+                '<tr><td>' +
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; min-width:240px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; " border="0">' +
+                '<tr style="vertical-align: top; background-color:#333333"><td style="padding: 10px 20px;" align="center"><span style="font-family:Tahoma; font-size:12px; color:#e8e8e8;">';
+
+            //**************************блок соцсетей*************************
+            //console.log(global.get('store').val)
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
                     if(global.get('store').val.sn[key].is){
@@ -17419,38 +18106,46 @@ angular.module('gmall.services')
                 }
 
             }
-            s+='</span></td></tr>'+
-                '<tr style="background-color: #fff;color: #000"><td align="left" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px; ">';
+            s+='</span></td></tr></table></td></tr>'+
+
+                //**************************блок с текстами*************************
+                
+                '<tr><td>' +
+                '<table width="50%" cellpadding="0" cellspacing="0"   style="max-width:300px; min-width:150px; color: #000000; border-collapse:collapse; border:none; table-layout: fixed; float: left;" border="0"">' +
+                '<tr ><td align="left" style="vertical-align: top; padding: 20px 20px 20px 0"><span style="font-size:14px; ">';
             /*if(global.get('store').val.footer && global.get('store').val.footer.text){}*/
             if(global.get('store').val.texts.mailTextFooter && global.get('store').val.texts.mailTextFooter[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter[global.get('store').val.lang];
             }
 
-            s+='</span></td>';
-            s+='<td align="right" style="vertical-align: top; padding: 10px 20px"><span style="font-size:14px;">';
-            /*if(global.get('store').val.footer && global.get('store').val.footer.text1){
-             s+=global.get('store').val.footer.text1;
-             }*/
+            s+='</span></td></tr></table>';
+            s+='<table width="50%" cellpadding="0" cellspacing="0"  style="max-width:300px; min-width:150px;color: #000000;border-collapse:collapse; border:none;table-layout: fixed; float: left;" border="0">' +
+                '<tr><td align="right" style="vertical-align: top; padding:  20px 0px 20px 20px"><span style="font-size:14px;">';
+
             if(global.get('store').val.texts.mailTextFooter1 && global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang]){
                 s+=global.get('store').val.texts.mailTextFooter1[global.get('store').val.lang];
             }
 
-            s+='</span></td></tr></table>';
+            s+='</span></td></tr></table></td></tr></table>';
 
             return s;
             return '<!DOCTYPE html><html><head>' +
                 '<link rel="stylesheet" type="text/css" href="http://gmall.io/bower_components/bootstrap/dist/css/bootstrap.css" />' +
+                '<style>@media (max-width: 420px) {.name {font-size:12px !important}}</style>' +
                 '</head><body onload="window.print()"><div class="reward-body">' + s + '</div>' +
                 '</html>';
         }
+
+        //**************************emailBonus*************************
+
         function emailBonus(stuffs){
             //console.log(stuffs)
             var nameEmail='бонусы'
             var item;
 
             var s=
-                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr width="100%" style="max-width:600px;"><td style="text-align: center; padding: 5px"><img alt="посмотреть на сайте" style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></td></tr>'+
+                '<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+                '<tr width="100%" style="max-width:600px;min-width:240px;"><td style="text-align: center; padding: 5px"><img alt="посмотреть на сайте" style="width: 100px;" src="'+photoHostForFactory+'/'+global.get('store').val.logo+'"></td></tr>'+
                 '<tr width="100%"><td><h2 style="font-weight: 500; letter-spacing: 2px; text-transform: uppercase; text-align: center; color: #333333; font-family:  Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+nameEmail+'</h2></td></tr>';
 
 
@@ -17458,10 +18153,10 @@ angular.module('gmall.services')
             stuffs.forEach(function(stuff){
                 item=stuff;
                 if(item.imgs && item.imgs.length){
-                    s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">';
+                    s+='<table class="table-mobile" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333; border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">';
                     for (var i=0,l=item.imgs.length;i<l;i++){
                         if(item.imgs[i].name){
-                            s+='<tr width="100%" style="max-width:600px;">' +
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;">' +
                                 '<td style=" padding: 5px"><p style="color: #333333; font: 16px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.imgs[i].name+'</p></td>' +
                                 '</tr>';
                         }
@@ -17472,7 +18167,7 @@ angular.module('gmall.services')
 
                         s+='</tr>'
                         if(item.imgs[i].desc){
-                            s+='<tr width="100%" style="max-width:600px;"><td style=" padding: 5px"><p style="color: #333333; font: 16px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.imgs[i].desc+'</p></td></tr>';
+                            s+='<tr width="100%" style="max-width:600px;min-width:240px;"><td style=" padding: 5px"><p style="color: #333333; font: 16px Arial, sans-serif; line-height: 30px; -webkit-text-size-adjust:none;">'+item.imgs[i].desc+'</p></td></tr>';
                         }
 
                     }
@@ -17484,8 +18179,8 @@ angular.module('gmall.services')
 
 
 
-            s+='<table width="600px" cellpadding="0" cellspacing="0" style="color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr><td border="0" colspan="2" style="border:none; border-top:#cccccc 5px solid;"></td></tr>'+
+            s+='<table width="600px;" cellpadding="0" cellspacing="0" style="max-width600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+                '<tr><td border="0" colspan="2" style="border:none; border-top:5px solid #cccccc ;"></td></tr>'+
                 '<tr><td align="left" style="vertical-align: top"><span style="font-family:Tahoma; font-size:12px; color:#404040;">';
             if(global.get('store').val.sn){
                 for(var key in global.get('store').val.sn){
@@ -17509,7 +18204,9 @@ angular.module('gmall.services')
             //return s;
             return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body><div>' + s + '</div></html>';
         }
-        //************************************************************************************
+
+        //**************************письмо о заказе*************************
+
         function orderNote(order){
             //console.log(order)
             var s='';
@@ -17564,14 +18261,14 @@ angular.module('gmall.services')
             user =global.get('langOrder').val.hello + ', '+user+'!';
             var s= getHeader(name)
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
             '<tr  width="100%"><td colspan="2" style="padding: 0 20px;"><h3 style="font-size: 24px">'+user+'</h3></td></tr>';
             if(order.status==1){
                 s+='<tr  width="100%"><td colspan="2" style="padding: 0 20px"><p>'+orderMailText+'</p></td></tr>';
             }
 
 
-            s+='<tr style="max-width:900px;"><td width="50%" style="max-width:900px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
+            s+='<tr style="max-width:600px;min-width:240px;"><td width="50%" style="max-width:600px;min-width:240px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
                 '<h4 style="font-weight: bold">'+status+'</h4>'+
                 '<h4 style="font-weight: bold">'+global.get('langOrder').val.order.toUpperCase()+' № '+order.num+'</h4>'+
                 '<p style="margin-bottom: 30px">'+global.get('langOrder').val.from+' '+moment(order.date).format('lll')+'</p>';
@@ -17617,7 +18314,7 @@ angular.module('gmall.services')
             /*s +='<div class="container"><div class="col-lg-10 col-lg-offset-1"><div class="col-lg-6">'+
                 '<h3>'+global.get('langOrder').val.order+' № '+order.num+'</h3> '+global.get('langOrder').val.from+' '+moment(order.date).format('lll')+'<br/>';*/
 
-            s +='<table style="margin: 20px" width="860px" cellspacing="0" cellpadding="5" border="1px">';
+            s +='<table style="margin: 20px" width="600px" cellspacing="0" cellpadding="5" border="1px">';
             s+= '<thead><tr><th style="padding: 10px">#</th>' +
                 '<th style="padding: 10px">'+global.get('langOrder').val.title+'</th>' +
                 '<th class="text-center" style="padding: 10px; text-align: center">'+global.get('langOrder').val.species+'</th>' +
@@ -17632,7 +18329,8 @@ angular.module('gmall.services')
                 s +='<tr><td style="padding: 10px">'+(j+1)+'</td><td style="padding: 10px"> '+good.name+' '+((good.artikul)?good.artikul:'')+'</td>' +
                     '<td class="text-center" style="padding: 10px; text-align: center">'+((good.sortName)?good.sortName:'')+
                     '</td><td class="text-center" style="padding: 10px; text-align: center">'+(order.kurs*good.cena).toFixed(2)+' '+order.currency+
-                    '</td><td class="text-center" style="padding: 10px; text-align: center">'+good.quantity+'</td><td class="text-center">'+ ( order.kurs*good.sum).toFixed(2)+' '+order.currency+
+                    '</td><td class="text-center" style="padding: 10px; text-align: center">'+good.quantity+'</td>' +
+                    '<td class="text-center" style="padding: 10px; text-align: center">'+ ( order.kurs*good.sum).toFixed(2)+' '+order.currency+
                     '</td></tr>';
             }
             s +='</tbody>';
@@ -17699,11 +18397,11 @@ angular.module('gmall.services')
             user =global.get('langOrder').val.hello + ', '+user+'!';
             var s= getHeader(name)
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+            s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;min-width:240px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
                 '<tr  width="100%"><td colspan="2" style="padding: 20px;"><h3 style="font-size: 24px">'+user+'</h3></td></tr></table>';
 
-            s+='<table width="900px" cellpadding="0" cellspacing="0" style="max-width:900px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
-                '<tr style="max-width:900px;"><td width="50%" style="max-width:900px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
+            s+='<table width="600px" cellpadding="0" cellspacing="0" style="max-width:600px;color: #333333;border-collapse:collapse; border:none;table-layout: fixed; padding: 0;margin: 0" border="0">'+
+                '<tr style="max-width:600px;min-width:240px;"><td width="50%" style="max-width:600px;min-width:240px;padding: 10px 20px;font-size: 16px;vertical-align: top">'+
                 '<h4 style="font-weight: bold">'+global.get('langOrder').val.order.toUpperCase()+' № '+order.num+'</h4>'+
                 '<p>'+global.get('langOrder').val.from+' '+moment(order.date).format('lll')+'</p>'+
                 '<h4 style="font-weight: bold;margin-bottom: 30px">'+status+'</h4>'+
@@ -17712,7 +18410,7 @@ angular.module('gmall.services')
 
 
             if(shipDetail && shipDetail.length){
-                s +='<table style="margin: 20px" width="860px" cellspacing="0" cellpadding="5" border="1px">';
+                s +='<table style="margin: 20px" width="860px" cellspacing="0" cellpadding="5" border="1px solid #000000">';
                 s+='<thead><tr><th class="text-center"  style="padding: 10px; text-align: center">'+global.get('langOrder').val.title+'</th>' +
                     '<th class="text-center"  style="padding: 10px; text-align: center">'+global.get('langOrder').val.where+'</th>' +
                     '<th class="text-center"  style="padding: 10px; text-align: center">'+global.get('langOrder').val.waybill+'</th>' +
@@ -19458,6 +20156,9 @@ angular.module('gmall.directives')
                                         if(month<10){month='0'+month}
                                         if(day<10){day='0'+day}
                                         d.date='date'+year+month+day;
+                                        delete d.masterReplace;
+                                        delete d.pays;
+                                        delete d.members;
                                         var newEntryPromise = Booking.save(d);
                                         acts.push(newEntryPromise.$promise)
 
@@ -22567,7 +23268,7 @@ var modelsName={
 
 
 
-var lengthStyleBlock=61;
+var lengthStyleBlock=65;
 var arrEmptyForProperties=[];
 for(var i=0;i<lengthStyleBlock;i++){arrEmptyForProperties.push('')}
 
@@ -22941,7 +23642,7 @@ var listOfBlocksForStuffList={
 var tableOfColorsForButton={0:'black-white',1:'pink-white',2:'turquoise-white',3:'yellow-white',4:'bordo-white',5:'braun-white',6:'powder-white',7:'pinklight-white',8:'white-black',9:'black-white'}
 var tableOfButtonsFile={0:'standart',1:'border-radius',2:'no border',3:'inverse',4:'border',5:'transparent'}
 
-var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','lock','lockwhite','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','vk','vkwhite','see','enter','zoom','yt','ytwhite']
+var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','liqpay','likes','lock','lockwhite','mastercard','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','privat','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','visa','vk','vkwhite','see','enter','zoom','yt','ytwhite']
 
 var notificationsTypeLang={
     //клиенту
@@ -23064,7 +23765,7 @@ var ratioClassStuffDetail={
     4:{left:'left-block horizontal-left2 col-lg-8 col-md-8 col-sm-12 col-xs-12',right:'right-block vertical-right2 col-lg-4 col-md-4 col-sm-12 col-xs-12'},
     5:{left:'left-block col-lg-12 col-md-12 col-sm-12 col-xs-12',right:'right-block col-lg-12 col-md-12 col-sm-12 col-xs-12'},
 }
-var elementsList=['a','p','div','h1','h2','h3','h4','ol','ul','li','span','img','hr','iframe','table','tr','th','td']
+var elementsList=['a','p','div','h1','h2','h3','h4','h5','ol','ul','li','span','img','input','hr','iframe','table','tr','th','td','video']
 
 var getNamePropertyCSS = function(i,item,k) {
     if(item){
@@ -23130,6 +23831,10 @@ var getNamePropertyCSS = function(i,item,k) {
             case 58: return  ['word-break',item];
             case 59: return  ['word-wrap',item];
             case 60: return  ['word-spacing',item];
+            case 61: return  ['background-image',item];
+            case 62: return  ['white-space',item];
+            case 63: return  ['text-overflow',item];
+            case 64: return  ['text-indent',item];
         }
     }else{
         switch (i){
@@ -23194,6 +23899,10 @@ var getNamePropertyCSS = function(i,item,k) {
             case 58: return  'word-break';
             case 59: return  'word-wrap';
             case 60: return  'word-spacing';
+            case 61: return  'background-image';
+            case 62: return  'white-space';
+            case 63: return  'text-overflow';
+            case 64: return  'text-indent';
         }
     }
 
@@ -23268,6 +23977,82 @@ if(typeof window === 'undefined') {
     exports.minTimePart=minTimePart;
     exports.listOfBlocksForStuffDetailBlocks=listOfBlocksForStuffDetailBlocks;
 }
+
+var listOfStuffFields = [
+    {
+        name:'название',
+        value:'name'
+    },
+    {
+        name:'артикул',
+        value:'artikul'
+    },
+    {
+        name:'описание',
+        value:'desc'
+    },
+    {
+        name:'количество',
+        value:'quantity'
+    },
+    {
+        name:'бренд',
+        value:'brand'
+    },
+    {
+        name:'коллекция',
+        value:'brandTag'
+    },
+    {
+        name:'категория',
+        value:'category'
+    },
+    {
+        name:'цена',
+        value:'price'
+    },
+    {
+        name:'цена sale',
+        value:'priceSale'
+    },
+    {
+        name:'цена розница',
+        value:'retail'
+    },
+    {
+        name:'фото',
+        value:'imgs'
+    },
+    {
+        name:'архив фото',
+        value:'zipImg'
+    },
+    {
+        name:'валюта',
+        value:'currency'
+    },
+    {
+        name:'id валюты',
+        value:'currencyId'
+    },
+    {
+        name:'разновидность',
+        value:'sort'
+    },
+    {
+        name:'url',
+        value:'url'
+    },
+    {
+        name:'id категории',
+        value:'categoryId'
+    },
+    {
+        name:'характеристики',
+        value:'tags'
+    },
+]
+
 
 
 

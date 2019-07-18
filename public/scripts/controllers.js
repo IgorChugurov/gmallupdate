@@ -8,9 +8,11 @@ angular.module('gmall.controllers', [])
 .controller('mainFrameCtrl',['$scope','global','$witgets','$http','anchorSmoothScroll','$state','$timeout','$sce','$order','toaster','$rootScope','User','$window',function($scope,global,$witgets,$http,anchorSmoothScroll,$state,$timeout,$sce,$order,toaster,$rootScope,User,$window){
     $scope.mainFrameCtrl=this;
     $scope.mainFrameCtrl.sizeMenu='350px';
-    $scope.mainFrameCtrl.scrollTo = function(id) {
-        //console.log(id);
-        anchorSmoothScroll.scrollTo(id);
+    $scope.mainFrameCtrl.scrollTo = function(id,top) {
+        /*console.log(id);
+        var element  = document.getElementById(id);
+        element.scrollIntoView({behavior:'smooth',block:'start'});*/
+        anchorSmoothScroll.scrollTo(id,top);
     };
         //console.log(global.get('store' ).val)
     /*$scope.mainFrameCtrl=this;
@@ -67,10 +69,11 @@ angular.module('gmall.controllers', [])
 }])
 .controller('homeCtrl', ['$scope','$q','$resource','global','seoContent','anchorSmoothScroll','$anchorScroll','News','exception','$auth','$stateParams','$location','Account','HomePage',
     function ($scope,$q,$resource,global,seoContent,anchorSmoothScroll,$anchorScroll,News,exception,$auth,$stateParams,$location,Account,HomePage) {
-
-        if($stateParams.token){
+    //console.log('$stateParams.token',$stateParams.token)
+    if($stateParams.token){
             $auth.setToken({data:{token:$stateParams.token}})
             $location.search('token',null);
+        //console.log($auth.isAuthenticated())
             if($auth.isAuthenticated()){
                 Account.getProfile()
                     .then(function(response) {

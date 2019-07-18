@@ -166,6 +166,7 @@
                             </ui-select>
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left">
                         <div class="">
                             <label class="control-label">комментарии</label>
@@ -267,15 +268,25 @@
                             <input type="number" id="name2" class="form-control"
                                    ng-disabled="$ctrl.item.actived"
                                    ng-model="m.qty"
-                                   step="0.0001"
+                                   step="0.01"
                                    ng-change="$ctrl.changeQty(m)"
                                    ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
                         </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <span ng-bind="$ctrl.getPrice(m)"></span>
                         </div>
-                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                            <span ng-bind="$ctrl.getPriceForSale(m)"></span>
+                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1" >
+                            <span ng-show="$ctrl.item.typeOfContrAgent!='Customer'" ng-bind="$ctrl.getPriceForSale(m)"></span>
+
+                            <input ng-show="$ctrl.item.typeOfContrAgent=='Customer'"
+                                    type="number" id="name222" class="form-control"
+                                   ng-disabled="$ctrl.item.actived"
+                                   ng-model22="m.priceForSale"
+                                   ng-model="m.priceForSaleRateBookkeep"
+                                   step="0.01"
+                                   ng-change22="$ctrl.saveField('materials')"
+                                   ng-change="$ctrl.setPriceForSaleBookkeep(m)"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':250,'blur':0}}"/>
                         </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <span ng-bind="$ctrl.getSum(m)"></span>

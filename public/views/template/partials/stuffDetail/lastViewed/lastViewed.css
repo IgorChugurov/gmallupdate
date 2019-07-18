@@ -1,7 +1,8 @@
 .owl-item img {
     width: 100%;
     /*border: 2px solid transparent;*/
-    transition: all 0.5s ease-out 0.2s;
+    /*transition: all 0.3s ease-out 0s;*/
+    transition: transform 2s cubic-bezier(0.215, 0.61, 0.355, 0.8);
 }
 .owl-item {
     overflow: hidden;
@@ -9,7 +10,8 @@
 }
 .owl-item:hover img {
     /*border: 2px solid transparent;*/
-    transform: scale(1.1);
+    transform: scale(1.2);
+    transition: transform 2s cubic-bezier(0.215, 0.61, 0.355, 0.8);
 }
 .box-overlay {
     height: 100%;
@@ -27,14 +29,4 @@
 .item:hover .half-shadow {
     display: block;
 }
-/*
-.half-shadow{
-    position: absolute;
-    width: 100%;
-    z-index: 1027;
-    bottom: 0;
-    background-repeat: no-repeat;
-    background-size: cover;
-    font-size: 20px;
-    height: 45%;
-}*/
+

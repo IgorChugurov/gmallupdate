@@ -4,15 +4,18 @@ var apiStore = require('../controllers/apiStore');
 var apiAccount = require('../controllers/apiAccount');
 var apiTranslate = require('../controllers/apiTranslate');
 var recalcApi = require('../controllers/api/recalculatePrice');
+var downloadLink = require('../controllers/api/downloadLink');
 var middleware = require('../middleware')
 
 module.exports = function(router) {
+    router.get('/api/stuffs/synchronizeWithBookkeep',middleware.getStore,api.synchronizeWithBookkeep)
     router.get('/api/getAllDataForIndex',api.getAllDataForIndex)
     router.get('/apiStore/createSitemap',middleware.getStore,api.createSitemap)
     router.post('/api/downloadPrice',middleware.getStore,api.downloadPrice)
     router.get('/api/downloadPriceFromFile/:file',middleware.getStore,api.downloadPriceFromFile)
     router.post('/api/downloadPriceXML',middleware.getStore,api.downloadPriceXML)
     router.get('/api/downloadPriceFromFileXML/:file',middleware.getStore,api.downloadPriceFromFileXML)
+    router.get('/api/downloadLink/:store/:url',middleware.getStore,downloadLink.getFile)
     router.post('/api/setTemplate',middleware.getStore,api.setTemplate)
     router.post('/api/translate',middleware.getStore,middleware.getUser,middleware.onlySuperAdminCheck,apiTranslate.translate)
 
@@ -25,6 +28,8 @@ module.exports = function(router) {
     router.get('/api/getBlocksHP/:type',api.getBlocksHP)
     router.get('/api/getBlocksForAll/:type',api.getBlocksForAll)
     router.get('/api/recalculatePrice',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,recalcApi.recalculatePrice)
+
+    router.get('/api/stuffs/changeUrl/:stuff',middleware.getStore,middleware.getUser,middleware.checkPermissionForSeller,api.changeUrl)
 
     router.post('/api/photoUploadResults/:store/:catalog',middleware.getStore,api.photoUploadResults)
 

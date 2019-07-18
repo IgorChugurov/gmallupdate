@@ -75,7 +75,7 @@
                                        skip-focusser="true"
                                        search-enabled="false"
                                        ng-disabled="$ctrl.item.actived"
-                                       ng-change="$ctrl.saveField('currency')"
+                                       ng-change="$ctrl.changeCurrency()"
                                        title="выберите валюту учета">
                                 <ui-select-match  placeholder="валюта накладной">{{$select.selected}}</ui-select-match>
                                 <ui-select-choices repeat="opt in $ctrl.currencyArr">{{ opt }}</ui-select-choices>
@@ -98,19 +98,34 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-left">
-                        <div class="form-group label-floating">
-                            <label for="supl" class="control-label">вид контрагент</label>
-                            <ui-select ng-model="$ctrl.item.typeOfContrAgent"
-                                       id="supl"
-                                       skip-focusser="true"
-                                       search-enabled="true"
-                                       ng-disabled="$ctrl.item.actived"
-                                       ng-change="$ctrl.saveField('typeOfContrAgent')"
-                                       title="выберите тип контрагента">
-                                <ui-select-match  placeholder="контрагент">{{$select.selected.name}}</ui-select-match>
-                                <ui-select-choices repeat="opt.type as opt in $ctrl.typeOfContrAgents">{{ opt.name }}</ui-select-choices>
-                            </ui-select>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="form-group label-floating">
+                                <label for="supl" class="control-label">вид контрагент</label>
+                                <ui-select ng-model="$ctrl.item.typeOfContrAgent"
+                                           id="supl"
+                                           skip-focusser="true"
+                                           search-enabled="true"
+                                           ng-disabled="$ctrl.item.actived || $ctrl.item.type=='return'"
+                                           ng-change="$ctrl.saveField('typeOfContrAgent')"
+                                           title="выберите тип контрагента">
+                                    <ui-select-match  placeholder="контрагент">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="opt.type as opt in $ctrl.typeOfContrAgents">{{ opt.name }}</ui-select-choices>
+                                </ui-select>
+                            </div>
                         </div>
+                        <!--<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" ng-show="$ctrl.item.typeOfContrAgent=='Customer'">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <span ng-if="!$ctrl.item.return">обычный приход</span>
+                                        <span ng-if="$ctrl.item.return">возврат</span>
+                                        <input type="checkbox" ng-model="$ctrl.item.return" ng-change="$ctrl.saveField('return')">
+                                    </label>
+                                </div>
+                            </div>
+                        </div>-->
+
+
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-left">
                         <div class="form-group label-floating">
@@ -120,7 +135,7 @@
                                        skip-focusser="true"
                                        search-enabled="true"
                                        ng-disabled="$ctrl.item.actived"
-                                       ng-change="$ctrl.saveField('contrAgent')"
+                                       ng-change="$ctrl.changeContrAgent()"
                                        title="выберите {{self.conrtAgent.name}}">
                                 <ui-select-match  placeholder="{{self.conrtAgent.name}}">{{$select.selected.name}}</ui-select-match>
                                 <ui-select-choices repeat="opt._id as opt in $ctrl.contrAgents| filter: $select.search"">{{ opt.name }}</ui-select-choices>
@@ -193,7 +208,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="stuff-admin"   ng-repeat="m in $ctrl.item.materials">
-                        <div class="td-list name-goods col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="td-list name-goods col-lg-6 col-md-6 col-sm-6 col-xs-6" ng-if="$ctrl.item.type!='return'">
                             <ui-select ng-model="m.item"
                                        reset-search-input="false"
                                        tagging="$ctrl.tagTransformForMaterial"
@@ -213,6 +228,24 @@
                                 </ui-select-choices>
                             </ui-select>
                         </div>
+                        <div class="td-list name-goods col-lg-6 col-md-6 col-sm-6 col-xs-6" ng-if="$ctrl.item.type=='return'">
+                            <ui-select ng-model="m.item"
+                                       search-enabled="true"
+                                       ng-change="$ctrl.changeMaterial(m.item,$index)"
+                                       ng-disabled="$ctrl.item.actived">
+                                <ui-select-match allow-clear="true" placeholder="введите артикул(код)">
+                                    {{$select.selected.name}}  {{$select.selected.sku}}  {{$select.selected.sku2}}  {{$select.selected.producer.name}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="m in $ctrl.materials | filter: $select.search"
+                                                   refresh="$ctrl.refreshMaterialsForReturn($select.search)"
+                                                   refresh-delay="150">
+                                    <strong ng-bind="m.name"></strong>
+                                    <span ng-bind="m.sku"></span>
+                                    <span ng-bind="m.sku2"></span>
+                                    <span ng-bind="m.producer.name"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <input type="number" id="name2" class="form-control"
                                    ng-disabled="$ctrl.item.actived"
@@ -222,10 +255,10 @@
                         </div>
                         <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             <input type="number" id="name3" class="form-control"
-                                   ng-disabled="$ctrl.item.actived"
+                                   ng-disabled="$ctrl.item.actived || $ctrl.item.type=='return'"
                                    ng-model="m.price"
                                    ng-change="$ctrl.saveField('materials')"
-                                   step="0.0001"
+                                   step="0.01"
                                    ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
                         </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">

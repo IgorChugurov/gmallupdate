@@ -15,13 +15,22 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
                 <div class="header-table">
-                    <div class="td-list-header col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         имя
                     </div>
-                    <div class="td-list-header text-center col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        email
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        телефон
+                    </div>
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        дополнительно
+                    </div>
+                    <div class="td-list-header text-center col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         статус
                     </div>
-                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
+                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
                         редактирование
                     </div>
                     <div class="clearfix"></div>
@@ -29,14 +38,13 @@
                 <div class="stuff-admin ">
                     <div class="" ng-class="{'mobil':global.get('mobile')}">
                         <div class="title-block-stuff text-center" ng-class="{'mobil':global.get('mobile')}">
-                            <div class="td-list col-lg-6 col-md-6 col-sm-6 col-xs-6 name-box">
+                            <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3 name-box">
                                 <div class="">
                                     <input type="text" id="name1" class="form-control name"
                                            ng-model="$ctrl.item.name"
                                            required
                                            ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
-                                           ng-change="$ctrl.refreshData($ctrl.item.name)"
-                                    />
+                                           ng-change="$ctrl.refreshData($ctrl.item.name)"/>
                                 </div>
                                 <div class="all-sku" ng-repeat="m in $ctrl.items">
                                     <p>
@@ -44,7 +52,28 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="td-list  col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center">
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 name-box">
+                                <input type="text" id="email" class="form-control name"
+                                       ng-model="$ctrl.item.email"
+                                       required
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.refreshData($ctrl.item.email)"/>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 name-box">
+                                <input type="text" id="phone" class="form-control name"
+                                       ng-model="$ctrl.item.phone"
+                                       required
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.refreshData($ctrl.item.phone)"/>
+                            </div>
+                            <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2 name-box">
+                                <input type="text" id="adress" class="form-control name"
+                                       ng-model="$ctrl.item.adress"
+                                       required
+                                       ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                       ng-change="$ctrl.refreshData($ctrl.item.adress)"/>
+                            </div>
+                            <div class="td-list  col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
                                 <div class="togglebutton" style="padding-bottom: 0; margin-bottom: 0">
                                     <label for="actived{{$index}}">
                                         <span ng-class="{'active':!item.actived}">не активный</span>
@@ -57,7 +86,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="td-list create col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
                                 <a ng-hide="$ctrl.item._id" class="btn btn-fab btn-fab-mini btn-success pull-right" ng-click="$ctrl.createItem()">
                                     <i class="material-icons">add</i>
                                 </a>

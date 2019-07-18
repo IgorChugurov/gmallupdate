@@ -296,7 +296,7 @@ var modelsName={
 
 
 
-var lengthStyleBlock=61;
+var lengthStyleBlock=65;
 var arrEmptyForProperties=[];
 for(var i=0;i<lengthStyleBlock;i++){arrEmptyForProperties.push('')}
 
@@ -670,7 +670,7 @@ var listOfBlocksForStuffList={
 var tableOfColorsForButton={0:'black-white',1:'pink-white',2:'turquoise-white',3:'yellow-white',4:'bordo-white',5:'braun-white',6:'powder-white',7:'pinklight-white',8:'white-black',9:'black-white'}
 var tableOfButtonsFile={0:'standart',1:'border-radius',2:'no border',3:'inverse',4:'border',5:'transparent'}
 
-var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','likes','lock','lockwhite','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','vk','vkwhite','see','enter','zoom','yt','ytwhite']
+var listOfIcons=['addcart','back','cart','cartin','cartplus','cancelmenu','cancel','cancelzoom','call','caret','categories','change','dialog','down','dot','delete','downslide','gif','envelope','envelopewhite','edit','eur','fb','fbwhite','filters','header','google','googlewhite','humbmobile','chat','inst','instwhite','left','liqpay','likes','lock','lockwhite','mastercard','menu','minus','messageme','messagehe','next','nextgallery','ok','okwhite','pin','pinwhite','plus','privat','prev','prevgallery','right','rub','search','send','setting','spinner','subscription','time','tw','twwhite','uah','up','upslide','user','userhe','userme','usd','videoplay','visa','vk','vkwhite','see','enter','zoom','yt','ytwhite']
 
 var notificationsTypeLang={
     //клиенту
@@ -793,7 +793,7 @@ var ratioClassStuffDetail={
     4:{left:'left-block horizontal-left2 col-lg-8 col-md-8 col-sm-12 col-xs-12',right:'right-block vertical-right2 col-lg-4 col-md-4 col-sm-12 col-xs-12'},
     5:{left:'left-block col-lg-12 col-md-12 col-sm-12 col-xs-12',right:'right-block col-lg-12 col-md-12 col-sm-12 col-xs-12'},
 }
-var elementsList=['a','p','div','h1','h2','h3','h4','ol','ul','li','span','img','hr','iframe','table','tr','th','td']
+var elementsList=['a','p','div','h1','h2','h3','h4','h5','ol','ul','li','span','img','input','hr','iframe','table','tr','th','td','video']
 
 var getNamePropertyCSS = function(i,item,k) {
     if(item){
@@ -859,6 +859,10 @@ var getNamePropertyCSS = function(i,item,k) {
             case 58: return  ['word-break',item];
             case 59: return  ['word-wrap',item];
             case 60: return  ['word-spacing',item];
+            case 61: return  ['background-image',item];
+            case 62: return  ['white-space',item];
+            case 63: return  ['text-overflow',item];
+            case 64: return  ['text-indent',item];
         }
     }else{
         switch (i){
@@ -923,6 +927,10 @@ var getNamePropertyCSS = function(i,item,k) {
             case 58: return  'word-break';
             case 59: return  'word-wrap';
             case 60: return  'word-spacing';
+            case 61: return  'background-image';
+            case 62: return  'white-space';
+            case 63: return  'text-overflow';
+            case 64: return  'text-indent';
         }
     }
 
@@ -997,5 +1005,81 @@ if(typeof window === 'undefined') {
     exports.minTimePart=minTimePart;
     exports.listOfBlocksForStuffDetailBlocks=listOfBlocksForStuffDetailBlocks;
 }
+
+var listOfStuffFields = [
+    {
+        name:'название',
+        value:'name'
+    },
+    {
+        name:'артикул',
+        value:'artikul'
+    },
+    {
+        name:'описание',
+        value:'desc'
+    },
+    {
+        name:'количество',
+        value:'quantity'
+    },
+    {
+        name:'бренд',
+        value:'brand'
+    },
+    {
+        name:'коллекция',
+        value:'brandTag'
+    },
+    {
+        name:'категория',
+        value:'category'
+    },
+    {
+        name:'цена',
+        value:'price'
+    },
+    {
+        name:'цена sale',
+        value:'priceSale'
+    },
+    {
+        name:'цена розница',
+        value:'retail'
+    },
+    {
+        name:'фото',
+        value:'imgs'
+    },
+    {
+        name:'архив фото',
+        value:'zipImg'
+    },
+    {
+        name:'валюта',
+        value:'currency'
+    },
+    {
+        name:'id валюты',
+        value:'currencyId'
+    },
+    {
+        name:'разновидность',
+        value:'sort'
+    },
+    {
+        name:'url',
+        value:'url'
+    },
+    {
+        name:'id категории',
+        value:'categoryId'
+    },
+    {
+        name:'характеристики',
+        value:'tags'
+    },
+]
+
 
 

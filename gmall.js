@@ -27,6 +27,7 @@ if (cluster.isMaster) {
     for (var i = 0; i < numCPUs; i++) {
         //http://www.acuriousanimal.com/2017/08/12/understanding-the-nodejs-cluster-module.html
         const worker = cluster.fork();
+
         /*worker.on('message', function(msg) {
             console.log('Master ' + process.pid + ' received message from worker ' + this.pid + '.', msg);
         });*/
@@ -48,6 +49,12 @@ if (cluster.isMaster) {
 
         });
     }
+    Object.values(cluster.workers).forEach(worker => {
+        worker.on('message', message => {
+            //console.log(cluster.workers.length)
+            console.log("from ",message.pid);
+        });
+    });
     cluster.on('online', function(worker) {
          console.log ('worker is running on %s pid', worker.process.pid);
     });
@@ -61,20 +68,36 @@ if (cluster.isMaster) {
     /*process.on('message', function(msg) {
         console.log('Worker ' + process.pid + ' received message from master.', msg.msg);
     });*/
+    /*var cache2=require('./lib/cache');
+    if(!cache2.num){
+        cache2.num=1
+    }else{
+        cache2.num++
+    }*/
 
     process.on('message', function(message) {
         if(message.msg =='clearCache'){
+
             var cache=require('./lib/cache');
             var cachePugFunctions=require('./lib/cachePugFunctions');
+
+            /*console.log(process.pid,message.msg);
+            console.log(cache.storeList['process']);*/
+
+            //console.log('cashe.num',cache.num)
             //console.log(message.store.subDomain)
             //console.log("cache.storeList['process']",cache.storeList['process'])
+            /*for(let store in cache.storeList){
+                console.log(process.pid,cache.storeList[store].subDomain)
+            }*/
             if(cache && cache.storeList && cache.storeList[message.store.subDomain]){
                 console.log('cache.storeList[message.store.subDomain] done')
                 delete cache.storeList[message.store.subDomain]
                 //cache.storeList[message.store.subDomain]=message.store
             }
+
             if(cache.stores && cache.stores[message.store._id]){
-                console.log('clear cache.stores')
+                console.log('clear cache.stores for all data')
                 delete cache.stores[message.store._id]
             }
             if(cachePugFunctions &&  cachePugFunctions[message.store._id]){

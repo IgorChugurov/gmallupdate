@@ -7,6 +7,9 @@ const Booking =  mongoose.model('Booking')
 const CartInOrder =  mongoose.model('CartInOrder')
 const config = require('../config/config')
 //console.log(config)
+var request = require('request')
+const ports = require('../../modules/ports')
+var zlib = require('zlib');
 
 var domain = require('domain');
 
@@ -133,7 +136,7 @@ exports.checkoutLiqpayComplite=function(req,res,next){
                             if(!is){
                                 order.pay.push(pay)
                                 order.save(function (err,result) {
-                                    //console.log(err,result)
+                                    console.log('save order after liqpay ',err,result)
                                 })
                             }
 
@@ -179,6 +182,103 @@ exports.checkoutLiqpayEntry=function(req,res,next){
     }else{
         return res.json({})
     }
+}
+
+exports.changeAbonement=function(req,res,next){
+    console.log(req.body)
+    var userHost = 'http://127.0.0.1:'+ports.userPort;
+
+    var urll= userHost+'/api/changeAbomenet/'+req.body.user+'/';
+    if(req.body.add){
+        urll+='plus/'+req.body.a;
+    }else{
+        urll+='minus/'+req.body.a;
+    }
+
+    let options = {
+        url:urll,
+        method: 'GET',
+        //headers: getHeaders(req),
+        json: true,
+        qs: {store:req.store._id},
+    }
+
+    try{
+        let requestForServer = request(options);
+        requestForServer.on('response', function(response) {
+            var chunks = [];
+            response.on('data', function(chunk) {
+                chunks.push(chunk);
+            });
+
+            response.on('end',async function() {
+                var buffer = Buffer.concat(chunks);
+                try{
+                    let orderStr = buffer.toString();
+                    let order = JSON.parse(orderStr)
+                    console.log(order)
+                    return res.json({msg:'OK'})
+
+                }catch(err){
+                    return next(err)
+                }
+
+                return;
+
+
+                /*if(response.statusCode!==200){
+                    let error = (buffer.toString)? new Error(buffer.toString()):response.statusCode;
+                    return next(error)
+                }
+                try{
+                    zlib.unzip(buffer, function(err, unzipbuffer) {
+
+                        if(err){
+                            return next(err)
+                        }
+                        try{
+                            let results =JSON.parse(unzipbuffer.toString('utf8'));
+
+                            return res.json({msg:'OK'})
+                        }catch(err){
+
+                            return next(err)
+                        }
+                    });
+                }catch(err){return next(err)}*/
+
+
+
+
+            });
+            response.on('error', function(err) {
+
+                next(err)
+            })
+        });
+    }catch(err){
+        next(err)
+    }
+}
+exports.checkStuffInOldOrders= async function(req,res,next){
+    //console.log(req.body)
+    let orders = await  Order.find({store:req.store._id,user:req.body.user,status : {$lt: 3}}).populate('cart').exec()
+    //console.log(orders)
+    if(orders && orders.length){
+
+        for(let i=0;i<orders.length;i++){
+            for(let j=0;j<orders[i].cart.stuffs.length;j++){
+                //console.log(orders[i].cart.stuffs[j])
+                if(orders[i].cart.stuffs[j]._id===req.body.stuff._id && orders[i].cart.stuffs[j].sort===req.body.stuff.sort){
+                    return res.json({status:true})
+                }
+            }
+        }
+        res.json({status:false})
+    }else{
+        res.json({status:false})
+    }
+
 }
 
 /*console.log('http://'+config.orderHost+'/api/orders/checkoutLiqpayComplite/'+store._id)

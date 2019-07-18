@@ -34,10 +34,12 @@
     "/api/readStoreStore/"
   ],
   "order":[
+    "/api/orders/changeAbonement",
     "/api/orders/checkoutLiqpay",
     "/api/orders/checkoutLiqpayInvoice",
     "/api/orders/checkoutLiqpayEntry",
-    "/api/readStoreOrder/"
+    "/api/readStoreOrder/",
+    "/api/orders/checkStuffInOldOrders"
   ],
   "photo":[
     "/api/copyPhotos",
@@ -67,7 +69,10 @@
     "/api/stuffs/changeMPCategory",
     "/api/reNewKeyWords",
     "/api/readStoreStuff/",
-    "/api/collections/Stuff/"
+    "/api/collections/Stuff/",
+    "/api/stuffs/synchronizeWithBookkeep",
+    "/api/downloadLink",
+    "/api/stuffs/changeUrl/"
   ],
   "account":[
     "/api/bookkeep/pn",

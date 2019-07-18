@@ -220,7 +220,8 @@
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-8 col-xs-8 number-order" ng-click="$ctrl.$state.go('frame.orders.order',{id:order._id})">
                                 <span>№ <strong  ng-bind="order.num"></strong> </span>
-                                <span>сумма - <strong ng-bind="(order.paySum+((order.totalPay)?order.totalPay:0)).toFixed(2)"></strong>&nbsp{{order.currency}}</span>
+                                <span>сумма - <strong ng-bind="(order.paySum).toFixed(2)"></strong>&nbsp{{order.currency}}</span>
+                                <!--<span>сумма - <strong ng-bind="(order.paySum+((order.totalPay)?order.totalPay:0)).toFixed(2)"></strong>&nbsp{{order.currency}}</span>-->
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -229,10 +230,11 @@
                             <div class="col-lg-4 col-sm-4 col-sm-4 col-xs-4 date-box">
                                 <span class=" order-date"> от <span  ng-bind="$ctrl.moment(order.date).format('LLL')"></span></span><br>
                                     <span ng-switch="order.status">
-                                        <span class="status" ng-switch-when="1">поступил</span>
-                                        <span class="status" ng-switch-when="2">принят</span>
-                                        <span class="status" ng-switch-when="3">оплачен</span>
-                                        <span class="status" ng-switch-when="5">доставлен</span>
+                                        <span class="status status-one" ng-switch-when="1">поступил</span>
+                                        <span class="status status-two" ng-switch-when="2" style="color: #4caf50">принят</span>
+                                        <span class="status status-three" ng-switch-when="3">оплачен</span>
+                                        <span class="status status-four" ng-switch-when="4"style="color: #6886b2">отправлен</span>
+                                        <span class="status status-five" ng-switch-when="5">доставлен</span>
                                         <span class="status del" ng-switch-when="6">удален</span>
                                     </span>
                             </div>
@@ -249,8 +251,8 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 button-box">
-                            <a class="pull-right btn btn-fab btn-fab-mini btn-warning"  ng-disabled="order.status>1"  ng-click="$ctrl.deleteItem(order,$event)">
-                                <i class="material-icons">delete</i><!--ng-if="order.status<2"-->
+                            <a class="pull-right btn btn-fab btn-fab-mini btn-warning" ng-if="order.status<2" ng-disabled="order.status>1"  ng-click="$ctrl.deleteItem(order,$event)">
+                                <i class="material-icons">delete</i>
                             </a>
                             <span class="pull-right chat-badge"  ng-if="order.chatMessages=$ctrl.getUnReadChatMessages(order)">
                                 <a ng-click="$ctrl.$state.go('frame.orders.order',{id:order._id,block:'chat'})"

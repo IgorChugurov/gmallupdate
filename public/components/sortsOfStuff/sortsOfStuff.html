@@ -141,11 +141,14 @@
                     <span ng-bind="tag.name"></span>
                 </td>
                 <td сlass="co-lg-1 text-left border-right-center" ng-repeat="stuff in $ctrl.stuff.sortsOfStuff.stuffs" style="border-right: 1px solid #ccc; padding: 5px 15px 0 15px">
-                    <div class="checkbox" style="padding-bottom: 10px">
+                    <div class="checkbox" style="padding-bottom: 10px" ng-if="!$ctrl.bookkeep">
                         <label>
                             <input type="checkbox" ng-model="stuff.stock[tag._id].quantity" ng-true-value="1" ng-false-value="0" ng-change="$ctrl.changeStock(stuff,tag,stuff.stock[tag._id].quantity)">
                             в наличии
                         </label>
+                    </div>
+                    <div class="" style="padding-bottom: 10px" ng-if="$ctrl.bookkeep">
+                            <input class="form-control" type="number" ng-model="stuff.stock[tag._id].quantity"  ng-change="$ctrl.changeStock(stuff,tag,stuff.stock[tag._id].quantity)">
                     </div>
                     <div class="">
                         <div class="label-floating  form-group" ng-if="$ctrl.stuff.sortsOfStuff.differentPrice">

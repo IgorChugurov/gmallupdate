@@ -102,6 +102,9 @@ exports.list = function(req, res, next) {
         if (req.query.query && req.query.query!='{}') {
             try {
                 options.criteria=JSON.parse(req.query.query);
+                /*console.log(options.criteria.date)
+                console.log(typeof options.criteria.date)*/
+
             } catch (err) {
                 console.log(err)
                 console.log('req.query.query')
@@ -109,6 +112,7 @@ exports.list = function(req, res, next) {
                 options.criteria=req.query.query;
             }
         }
+
         if(!req.query.store){
             return next(new Error('не указан магазин'))
         }else{

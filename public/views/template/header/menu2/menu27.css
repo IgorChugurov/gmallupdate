@@ -123,3 +123,11 @@ width: 100%;
 .inverseColor .icon-user-img {
     display: none;
 }
+.menuColor .icon-search-inverse,
+.menuColor .icon-user-inverse {
+    display: inline-block;
+}
+.menuColor .icon-search-img,
+.menuColor .icon-user-img {
+    display: none;
+}

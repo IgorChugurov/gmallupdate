@@ -18,6 +18,7 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     var $ctrl=self;
     self.setDescForSort=setDescForSort;
     self.lang=global.get('store').val.lang;
+    self.bookkeep =global.get('store').val.bookkeep
 
     function setDescForSort(stuff,tag) {
         //console.log(stuff)
@@ -661,6 +662,9 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
     // delet stuff from sort*********************
     //*******************************************
     self.deleteStuffFromSort=function(stuff,index){
+        /*console.log(stuff);
+        console.log(self.stuff)*/
+
         $q.when()
             .then(function(){
                 // товары в группе
@@ -722,8 +726,9 @@ function sortsOfStuffctrlCtrl($uibModal,$resource,Stuff,$q,createStuffService,ex
                     if(sort) {
                         Items.get({id:sort},function(res){
                             self.stuff.sortsOfStuff=res;
+                            var c = (self.stuff.category && self.stuff.category.length)?self.stuff.category[0]:self.stuff.category;
                             self.stuff.sortsOfStuff.filter=
-                                self.stuff.category.filters.getOFA('_id',self.stuff.sortsOfStuff.filter)
+                                c.filters.getOFA('_id',self.stuff.sortsOfStuff.filter)
                             resolve()
                         },function(err){reject(err)})
                     }else{

@@ -17,7 +17,7 @@
 }
 .filter-box .collection-name {
     display: inline-block;
-    vertical-align: middle;
+    /*vertical-align: middle;*/
 }
 .tag {
     margin-top: 0;

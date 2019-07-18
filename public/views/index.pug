@@ -128,7 +128,7 @@ html(ng-app="gmall",prefix="og: http://ogp.me/ns#")
                   cart-item
           div(ng-class="{'to-top-mobile':global.get('mobile').val}")
             .to-top
-              a(ng-click="mainFrameCtrl.scrollTo('topPage')")
+              a(ng-click="mainFrameCtrl.scrollTo('topPage',true)")
                 span(class='icon-up-img')
           audio(id="soundChat")
             source(src='sounds/chat.mp3')

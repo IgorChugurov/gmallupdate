@@ -3,7 +3,7 @@ angular.module('gmall.directives')
     .directive('driveSale',driveSaleDirective)
     .directive('driveRetail',driveRetailDirective)
 
-.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks','$fileUpload',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks,$fileUpload){
+.directive('stuffEdit',['$anchorScroll','global','Stuff','$stateParams','$window','$q','$http','Category','Filters','Brands','$uibModal','$document','$location','AddInfo','Comments','exception','Photo','$timeout','$rootScope','Confirm','SetCSS','Blocks','$fileUpload','FilterTags','Master',function($anchorScroll,global,Stuff,$stateParams,$window,$q,$http,Category,Filters,Brands,$uibModal,$document,$location,AddInfo,Comments,exception,Photo,$timeout,$rootScope,Confirm,SetCSS,Blocks,$fileUpload,FilterTags,Master){
     return {
         restrict:"E",
         scope:{},
@@ -21,8 +21,10 @@ angular.module('gmall.directives')
             $scope.unitOfMeasure=global.get('store').val.unitOfMeasure;
             $scope.$ctrl.listOfBlocksForStuffDetailBlocks=listOfBlocksForStuffDetailBlocks;
             $scope.$ctrl.listOfBlocks=angular.copy(listOfBlocksForAll);
+            $scope.$ctrl.bookkeep =global.get('store').val.bookkeep
 
             $scope.$ctrl.bookkeep = (global.get('store').val.bookkeep)?true:null;
+            console.log("$scope.$ctrl.bookkeep",$scope.$ctrl.bookkeep)
 
             $scope.$ctrl.addBlock=addBlock;
             $scope.$ctrl.deleteBlock=deleteBlock;
@@ -30,20 +32,68 @@ angular.module('gmall.directives')
             $scope.$ctrl.saveFieldStuff=saveField;
             $scope.$ctrl.type='Stuff';
             $scope.$ctrl.makeMaterial = makeMaterial;
+            $scope.changeUrl=changeUrl;
 
              function makeMaterial(){
 
                  return $q.when()
                      .then(function () {
-                         var q = {_id:$scope.item._id}
-                         return $http.get('/api/collections/Materila?query='+JSON.stringify(q));
+                         var q = {stuff:$scope.item._id}
+                         return $http.get('/api/collections/Material?query='+JSON.stringify(q));
 
                      })
                      .then(function (res) {
                          console.log(res)
+                         console.log($scope.item)
+                         if(res.data && res.data.length){
+                             throw 'материал создан'
+                         }
+                         return FilterTags.getFilterTags()
+
+
+
+                     })
+                     .then(function (filterTags) {
+                         console.log(filterTags);
+                         if(!filterTags){
+                             throw 'ошибка получения списка признаков характеристик'
+                         }
+                         var arr21 =[];
+                         for(var sort in $scope.item.stock){
+                             arr21.push(sort);
+                         }
+
+                         var act = arr21.map(function (sort) {
+                             var o ={
+                                 store:global.get('store').val._id,
+                                 stuff:$scope.item._id,
+                                 sort:sort,
+                                 name : $scope.item.name,
+                                 sku:($scope.item.artikul)?$scope.item.artikul:''
+
+                             }
+
+                             if(sort!=='notag'){
+                                 //console.log(global.get('fiterTags').val)
+                                 var tag = filterTags.getOFA('_id',sort);
+                                 if(tag){
+                                     o.sku += " "+tag.name
+                                 }
+                             }
+                             console.log(o)
+                             return $http.post('/api/collections/Material',o);
+                         })
+                         return $q.all(act)
+                     })
+                     .then(function (res) {
+                         console.log(res)
+                         $scope.$ctrl.materialIs=true;
                      })
                      .catch(function (err) {
+
                          console.log(err)
+                         //err = err.data||err
+                         exception.catcher('удаление комментария')(err)
                      })
                  return
                  /*let qq = {
@@ -459,12 +509,20 @@ angular.module('gmall.directives')
             $scope.$ctrl.paginate1={rows:5,page:0,items:0};
             activate();
             function activate() {
+
                 $q.when()
                     .then(function(){
                         return Filters.getFilters()
                     } )
                     .then(function(filters){
                         $scope.filters=filters;
+                    })
+                    .then(function () {
+                        return Master.getList()
+                    })
+                    .then(function (ms) {
+                        $scope.masters=ms
+                        //console.log(self.masters)
                     })
                     .then(function(){
                         return  Stuff.getItem($stateParams.stuffUrl)
@@ -558,6 +616,19 @@ angular.module('gmall.directives')
                     .then(function(){
                         $anchorScroll();
                         return getAddInfos();
+                    })
+                    .then(function () {
+                        var q = {stuff:$scope.item._id}
+                        return $http.get('/api/collections/Material?query='+JSON.stringify(q));
+
+                    })
+                    .then(function (res) {
+                        $scope.$ctrl.checkedMaterial=true;
+                        if(res.data && res.data.length){
+                            $scope.$ctrl.materialIs = true;
+                        }
+                        console.log(res)
+
                     })
                     .catch(function(err){
                         console.log(err)
@@ -1098,11 +1169,40 @@ angular.module('gmall.directives')
             function changeStock(stuff,tag) {
                 //console.log(stuff)
                 if(stuff.stock && stuff.stock[tag._id]){
-                    stuff.stock[tag._id].quantity=tag.quantity
-                    saveField(stuff,'stock');
+                    if(global.get('store').val.bookkeep){
+                        if(tag.quantity==0){
+                            stuff.stock[tag._id].quantity=tag.quantity
+                            saveField(stuff,'stock');
+                        }else{
+                            exception.catcher('изменение количесва')('изменить количество можно только на ноль')
+                        }
+                    }else{
+                        stuff.stock[tag._id].quantity=tag.quantity
+                        saveField(stuff,'stock');
+                    }
+
                 }
+
+
+
+
                 //console.log(tag)
                 //console.log(tag.quantity)
+            }
+
+            function changeUrl() {
+                return $q.when()
+                    .then(function () {
+                        return $http.get('/api/stuffs/changeUrl/'+$scope.item._id);
+
+                    })
+                    .then(function (res) {
+                        $rootScope.$state.go('frame.stuffs',$rootScope.$stateParams,{reload:reload})
+                    })
+                    .catch(function (err) {
+                        console.log(err)
+                        exception.catcher('удаление комментария')(err)
+                    })
             }
 
 

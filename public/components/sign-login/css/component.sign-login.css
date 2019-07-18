@@ -66,6 +66,7 @@ input:-webkit-autofill {
     margin-top: -13px;
     font-style: italic;
     letter-spacing: 1px;
+    clear: both;
 }
 .sign-login .has-success .form-control:focus {
     border-color: #72ad66;
@@ -131,5 +132,63 @@ input:-webkit-autofill {
     letter-spacing: 2px;
     margin-bottom: 20px;
     text-align: center;
+}
+/*маркер фильтра*/
+.oferta-box .checkbox .checkbox-material .check {
+    margin-right: 3px;
+}
+.oferta-box .tag .checkbox{
+    margin-right: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.oferta-box .checkbox input[type=checkbox]{
+    width: 25px;
+    height: 25px;
+    margin-left: -25px;
+}
+.oferta-box .checkbox label,
+.oferta-box .checkbox-inline label {
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+.oferta-box .checkbox input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    margin: 10px 0 0 7px;
+}
+.oferta-box .checkbox__text {
+    position: relative;
+    padding: 0 0 0 35px;
+    cursor: pointer;
+    line-height: 16px;
+}
+.oferta-box .checkbox__text:before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #CDD1DA;
+    border-radius: 0;
+    background: #FFF;
+}
+.oferta-box .checkbox__text:after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    width: 17px;
+    height: 17px;
+    border-radius: 0;
+    background: #CCC;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.5);
+    opacity: 0;
+    transition: .2s;
+}
+.oferta-box .checkbox input:checked + .checkbox__text:after {
+    opacity: 1;
 }
 

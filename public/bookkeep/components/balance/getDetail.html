@@ -1,6 +1,6 @@
 <div class="select-modal editSA">
     <div class="modal-header">
-        <h3 class="modal-title text-center">Документы</h3>
+        <h4 class="modal-title text-center">Документы</h4>
         <a class="cancel" ng-click="$ctrl.cancel()"></a>
     </div>
     <div class="modal-body">
@@ -26,36 +26,25 @@
                 </div>
                 <div class="stuff-admin"  ng-repeat="d in $ctrl.items">
                     <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                        <div class="form-group">
-                            <a ng-click="$ctrl.goToDoc(d)">
-                                <span ng-bind="d.ed.doc.name"></span>
-                            </a>
-                            <a ng-if="d.ed.zakazName" ng-click="$ctrl.goToDoc(d,'zakaz')">
-                                (<span ng-bind="d.ed.zakazName"></span>)
-                            </a>
-
-                        </div>
+                        <a ng-click="$ctrl.goToDoc(d)">
+                            <span ng-bind="d.ed.doc.name"></span>
+                        </a>
+                        <a ng-if="d.ed.zakazName" ng-click="$ctrl.goToDoc(d,'zakaz')">
+                            (<span ng-bind="d.ed.zakazName"></span>)
+                        </a>
                     </div>
                     <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                        <div class="form-group">
-                            <a ng-click="$ctrl.goToDoc(d)"><span ng-bind="d.ed.name"></span></a>
-                        </div>
+                        <a ng-click="$ctrl.goToDoc(d)"><span ng-bind="d.ed.name"></span></a>
                     </div>
                     <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                        <div class="form-group">
-                            <span ng-bind="d.ed.date"></span>
-                        </div>
+                        <span ng-bind="d.ed.date"></span>
                     </div>
                     <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                        <div class="form-group">
-                            <span ng-bind="d.sum"></span>
-                            <span ng-bind="d.currency"></span>
-                        </div>
+                        <span ng-bind="d.sum"></span>
+                        <span ng-bind="d.currency"></span>
                     </div>
                     <div class="td-list col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                        <div class="form-group">
-                            <span ng-bind="d.ed.comment"></span>
-                        </div>
+                        <span ng-bind="d.ed.comment"></span>
                     </div>
                     <div class="clearfix"></div>
                 </div>

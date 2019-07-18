@@ -32,11 +32,11 @@ angular.module('gmall.directives', [])
                  $(element).fadeOut();
                  });*/
                 $rootScope.$on('$stateChangeStartToStuff',function(){
-                    //console.log('$stateChangeStartToStuff')
+                    console.log('$stateChangeStartToStuff')
                     $(element).fadeIn();
                 });
                 $rootScope.$on('$stateChangeEndToStuff',function(){
-                    //console.log('$stateChangeEndToStuff')
+                    console.log('$stateChangeEndToStuff')
                     $(element).fadeOut();
                 });
             }

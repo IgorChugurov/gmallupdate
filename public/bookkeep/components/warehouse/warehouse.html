@@ -26,13 +26,6 @@
                 </li>
             </ul>
         </div>
-        <div class="text-center tab-nav-stuff pull-right">
-            <paginator-main
-                    paginate="$ctrl.paginate"
-                    getlist="$ctrl.getList()"
-                    scroll="{{scrollId}}">
-            </paginator-main>
-        </div>
     </div>
     <div class="nav-box-stuff-vertical">
         <div class="tab-nav-stuff">
@@ -102,11 +95,17 @@
     </div>
     <div class="clearfix"></div>
     <div class="warehouse">
-        <div ng-show="!$ctrl.items.length" ng-cloak class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-            <p class="no_story">
+        <div ng-cloak class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+            <p ng-show="!$ctrl.items.length" class="no_story">
                 по вашему запросу нет записей
             </p>
+            <paginator-main
+                    paginate="$ctrl.paginate"
+                    getlist="$ctrl.getList()"
+                    scroll="{{scrollId}}">
+            </paginator-main>
         </div>
+
         <div class="news-stuff-container">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="cart-detail">
@@ -131,15 +130,15 @@
                         <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             сумма
                         </div>
-                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             наличие
                         </div>
                         <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             минимальное количество
                         </div>
-                        <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <!--<div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             валюта
-                        </div>
+                        </div>-->
                         <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             редактирование
                         </div>
@@ -183,23 +182,23 @@
                         </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <div class="form-group">
-                                <span ng-bind="item.price"></span>
-                                <span ng-bind="item.currency"></span>
+                                <strong><span ng-bind="item.price"></span></strong>
+                                <small><span ng-bind="item.currency"></span></small>
                             </div>
                         </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <div class="form-group">
-                                <span ng-bind="item.priceForSale"></span>
-                                <span ng-bind="item.currency"></span>
+                                <strong><span ng-bind="item.priceForSale"></span></strong>
+                                <small><span ng-bind="item.currency"></span></small>
                             </div>
                         </div>
                         <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <div class="form-group">
-                                <span ng-bind="item.sum"></span>
-                                <span ng-bind="item.currency"></span>
+                                <strong><span ng-bind="item.sum"></span></strong>
+                                <small><span ng-bind="item.currency"></span></small>
                             </div>
                         </div>
-                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="td-list col-lg-2 col-md-2 col-sm-2 col-xs-2">
                             склад - <span class="real" ng-bind="item.qty"></span><br>
                             резерв - <span ng-bind="item.reserveQty"></span><br>
                             пр-во - <span ng-bind="item.manufactureQty"></span>
@@ -210,11 +209,11 @@
                                 <span ng-bind="item.minqty"></span>
                             </div>
                         </div>
-                        <div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <!--<div class="td-list col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <div class="form-group">
                                 <span ng-bind="item.currency"></span>
                             </div>
-                        </div>
+                        </div>-->
                         <div class="td-list create col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <!--<a class="btn btn-fab btn-fab-mini btn-info" title="подробности" ng-click="$ctrl.getDetail(item._id)">
                                 <i class="material-icons ">
@@ -308,6 +307,7 @@
                     </div>
                 </div>
             </div>
+            <div class="clearfix"></div>
         </div>
     </div>
 </div>

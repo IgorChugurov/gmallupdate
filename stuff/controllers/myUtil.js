@@ -165,6 +165,9 @@ function doSingle(item,lang) {
     if(item.brand){
         doSingle(item.brand,lang)
     }
+    if(item.brandTag){
+        doSingle(item.brandTag,lang)
+    }
 
     if(item.conditionStuffs && item.conditionStuffs.length){
         item.conditionStuffs.forEach(function (tag) {
@@ -191,8 +194,13 @@ function doSingle(item,lang) {
             doSingle(tag,lang)
         })
     }
-    if(item.brandTags && item.brandTags.length){
-        item.brandTags.forEach(function (tag) {
+    if(item.masters && item.masters.length){
+        item.masters.forEach(function (tag) {
+            doSingle(tag,lang)
+        })
+    }
+    if(item.sortsOfStuff && item.sortsOfStuff.stuffs){
+        item.sortsOfStuff.stuffs.forEach(function (tag) {
             doSingle(tag,lang)
         })
     }
@@ -210,11 +218,16 @@ function doSingle(item,lang) {
 
 function setLangField(item,lang) {
     if(item && item.length){
-        item.forEach(function (element) {
-            if(element){
-                doSingle(element,lang)
-            }
-        })
+        if(item.forEach){
+            item.forEach(function (element) {
+                if(element){
+                    doSingle(element,lang)
+                }
+            })
+        }else{
+            //console.log(item,'???')
+        }
+
     }else if(item){
         doSingle(item,lang)
     }

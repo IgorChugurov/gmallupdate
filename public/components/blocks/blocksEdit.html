@@ -60,8 +60,9 @@
                            id="block5{{$index}}"
                            ng-model="block.is"
                            ng-change="$ctrl.saveField('blocks.'+block.i+'.is',block.is)">
-                    <span ng-class="{'active':block.is}">опубликован</span>
+                    <span ng-class="{'active':!!block.is}">опубликован</span>
                 </label>
+                <!--<pre>{{block.is|json}}</pre>-->
             </div>
         </div>
         <div  class="col-lg-3 col-md-3 col-sm-3 col-xs-12">

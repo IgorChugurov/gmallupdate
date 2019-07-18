@@ -57,10 +57,12 @@
         self.moment = moment;
         self.$state = $state;
         self.query = {};
+        self.mainCurrency = global.get('store').val.mainCurrency
+
         self.paginate = {page: 0, rows: 20, items: 0}
-        var currency = global.get('store').val.currency
-        var currencyArr = global.get('store').val.currencyArr
-        console.log(currency)
+        var currency = global.get('store').val.currency;
+        var currencyArr = global.get('store').val.currencyArr;
+        //console.log(currency)
         self.virtualAccounts=global.get('virtualAccounts').val.filter(function (a) {
             return a.actived
         }).reduce(function (o,item) {

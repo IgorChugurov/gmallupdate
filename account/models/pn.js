@@ -25,6 +25,9 @@ var PnSchema = new Schema({
         price:Number,
         qty:Number,
         priceForSale:Number,
+        priceReturn:Number,
+        supplier:{type:Schema.ObjectId, refPath : 'materials.supplierType'},
+        supplierType:String,
     }],
     sum:Number,
     currencyData:{},
@@ -33,6 +36,7 @@ var PnSchema = new Schema({
     /*debet:{type : Schema.ObjectId, ref : 'Account'},
     credit:{type : Schema.ObjectId, ref : 'Account'},*/
     entries:[{}],
+    type:String,// return возврат от покупателей
 }, {
     toObject: {
         virtuals: true

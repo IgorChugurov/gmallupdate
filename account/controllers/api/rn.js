@@ -71,6 +71,7 @@ async function reserveHold(id,store) {
         }
         //console.log(stuffs)
         for(let material of materialsFromDB){
+            //console.log(material.data)
             if(material.data && material.data.length){
                 let qty=0;
                 let price =0;
@@ -93,6 +94,7 @@ async function reserveHold(id,store) {
         if(store.bookkeep && stuffs.length){
             try {
                 await setStockData(stuffs,'-',store._id)
+                //console.log('setStockData setStockData setStockData done')
             }catch (e) {
                 return e;
             }
@@ -128,6 +130,8 @@ async function reserveHold(id,store) {
                         throw 'На складе меньшее количесво чем в накладной '+material.name+' '+material.sku
                     }
                 }
+            }else{
+                throw 'На складе количество '+material.name+' '+material.sku+' = 0';
             }
         }
     } catch (err) {
@@ -365,8 +369,8 @@ async function hold(id,store,invoice) {
 
         rn.entries=[];
         let oForSum=calculate.getTotalSumRateAndTotalSumForSaleRate(rn.materials,currency,rnCurrency,rnCurrencyRate)
-        console.log('rn.materials',rn.materials)
-        console.log('oForSum',oForSum)
+        /*console.log('rn.materials',rn.materials)
+        console.log('oForSum',oForSum)*/
         rn.sum=Math.round(oForSum.sumForSale*100)/100;
         rn.sumUchet=oForSum.sum;
 
@@ -854,6 +858,253 @@ async function  createByAPI(req, res, next){
      * 8 create moneyOrders*/
 }
 
+exports.checkPriceForSaleInRn = checkPriceForSaleInRn;
+async function  checkPriceForSaleInRn(req, res, next){
+     //console.log(req.store)
+    //console.log(req.body)
+    try{
+        if(req.body.materialsFromRns && req.body.materialsFromRns){
+            let  materialsFromRns=req.body.materialsFromRns;
+            let rns={};
+            materialsFromRns.forEach(function (m) {
+                if(!rns[m.rn]){
+                    rns[m.rn]=[];
+                }
+                let o ={
+                    name:m.name,
+                    sku:m.sku,
+                    priceForSale:m.priceForSale,
+                    supplier:m.supplier
+                }
+                rns[m.rn].push(o)
+            })
+            //console.log(rns)
+            let rnsA = [];
+            for(let rn in rns){
+                let o = {
+                    id :rn,
+                    materials :rns[rn]
+                }
+                rnsA.push(o)
+            }
+            //console.log(rnsA);
+            for(let item of rnsA){
+                let rn = await Rn.findOne({_id:item.id}).populate('materials.supplier','name').populate('materials.item','name sku').lean().exec()
+                //console.log(rn.materials)
+                if(rn.materials.length){
+                    let changePriceForSale=false;
+                    rn.materials.forEach(function (m) {
+                       /* console.log(m)
+                        console.log(item.materials)*/
+                        let mFromSite = item.materials.find(function (mFS) {
+                            /*console.log(mFS)
+                            console.log(m.item.name==mFS.name)
+                            console.log(m.item.sku==mFS.sku)*/
+                            return m.item.name==mFS.name && m.item.sku==mFS.sku && m.supplier.name==mFS.supplier
+                        })
+                        if(mFromSite && mFromSite.priceForSale!=m.priceForSale){
+                            changePriceForSale=true;
+                            m.priceForSale=mFromSite.priceForSale;
+                        }
+                    })
+                    if(changePriceForSale){
+                        rn.materials=rn.materials.map(function (m) {
+                            m.item=m.item._id;
+                            m.supplier=m.supplier._id;
+                            m.sum = Math.round((m.qty*m.priceForSale)*100)/100;
+                            return m
+                        })
+                        //console.log(rn.materials);
+                        let r = await Rn.update({_id:item.id},{$set:{materials:rn.materials}})
+                        //console.log(r)
+                        let rnCancelResult = await cancel(item.id,req.store)
+                        if(rnCancelResult){
+                            return next(rnCancelResult)
+                        }
+                        let rnHoldResult = await hold(item.id,req.store,'invoice')
+                        if(rnHoldResult){
+                            return next(rnHoldResult)
+                        }
+                    }
+                }
+
+            }
+            return res.json({})
+
+        }else{
+            return res.json({})
+        }
+    }catch(err){
+        next(err)
+    }
+
+    return res.json({});
+
+    try{
+        const mainCurrency=(req.store.currency.mainCurrency)?req.store.currency.mainCurrency:'UAH'
+        const currency = req.store.currency;
+        let z = req.body;
+
+        let va = {store:req.store._id,name:z.virtualAccount}
+        let virtualAccount = await VirtualAccount.findOne(va).lean().exec();
+        if(!virtualAccount){
+            virtualAccount = new VirtualAccount(va)
+            await virtualAccount.save()
+        }
+        virtualAccount=virtualAccount._id.toString()
+        z.virtualAccount=virtualAccount;
+        if(!z.worker){
+            return next('не установлен исполнитель')
+
+        }else if(z.worker=='any'){
+            let ww={store:req.store._id}
+            let workers = await Worker.find(ww).lean().exec();
+            if(!workers || !workers.length){
+                return next('нет сотрудников')
+            }
+            z.worker=workers[0]._id.toString();
+        }else{
+            let ww={store:req.store._id,name:z.worker}
+            let worker = await Worker.findOne(ww).lean().exec();
+            if(!worker){
+                return next('Такой сотрудник не существует')
+            }
+            z.worker=worker._id.toString();
+        }
+
+        let materials=[]
+        if(z.materials){
+            for(let m of z.materials){
+                let p={store:req.store._id,name:m.producer};
+
+                //let producers = await Producer.find({store:req.store._id}).lean().exec()
+                //console.log(producers)
+                let producer = await Producer.findOne(p).lean().exec()
+                if(!producer){
+                    return next('Такой производитель не существует')
+                }
+                let material = {store:req.store._id};
+                material.producer=producer._id
+                material.name=m.name;
+                if(m.sku){
+                    material.sku=m.sku
+                }
+                let supplier = {store:req.store._id,name:m.supplier}
+                /*let sss = await Supplier.find({store:req.store._id}).lean().exec();
+                console.log(sss)*/
+                let ss = await Supplier.findOne(supplier).lean().exec();
+                if(!ss){
+                    return next('Такой поставщик не существует')
+                }
+                console.log('material',material)
+
+                let mat = await Material.findOne(material).lean().exec();
+                if(!mat){
+                    return next('материал автоматически больше не создается.');
+                }else{
+                    if(mat.data && mat.data.length){
+                        let data = mat.data.find(d=>{
+                            return ((d.virtualAccount.toString)?d.virtualAccount.toString():d.virtualAccount)==virtualAccount
+                                && ((d.supplier.toString)?d.supplier.toString():d.supplier)==ss._id.toString() && d.supplierType=='Supplier'
+                        })
+                        if(!data || !data.qty || data.qty<m.qty){
+                            return next('внесите материал '+mat.name+' '+mat.sku+' на склад')
+                        }
+                        console.log(data)
+                        console.log(m)
+                        let material = {
+                            item:mat._id.toString(),
+                            supplier:ss._id.toString(),
+                            supplierType:'Supplier',
+                            qty:m.qty,
+                            price:data.price,
+                            priceForSale:m.price,
+                            priceRate:0,
+                            priceForSaleRate:0,
+                        }
+                        material.sum = Math.round((material.qty*material.priceForSale)*100)/100;
+                        materials.push(material)
+                    }else{return next('внесите материал '+mat.name+' '+mat.sku+' на склад')}
+                }
+
+
+
+                //mat.virtualAccount=virtualAccount;
+                //console.log(6,mat)]
+
+            }
+        }
+        if(!materials){
+            return next('нет материалов')
+        }
+        z.materials=materials;
+
+
+
+
+
+
+
+
+
+
+        let zzzz = await Rn.find({store: req.store._id}).sort({num: -1}).limit(1).lean().exec();
+        z.num = (zzzz.length && zzzz[0].num && Number(zzzz[0].num)) ? ( Number(zzzz[0].num) + 1 ): 1;
+        z.name +=" -"+z.num;
+        if(!z.store){
+            z.store=req.store._id
+        }
+
+        let rn = new Rn(z)
+
+
+
+
+        console.log(z.worker);
+        console.log('zak.worker');
+        console.log(typeof rn.worker);
+
+        console.log(rn)
+        await rn.save();
+        if(req.body.makeReserve){
+            /*let rnHoldResult = await hold(rn._id,req.store,'reserve')
+            if(rnHoldResult){
+                return next(rnHoldResult)
+            }*/
+
+        }else{
+            let rnHoldResult = await hold(rn._id,req.store,'invoice')
+            if(rnHoldResult){
+                return next(rnHoldResult)
+            }
+
+        }
+
+        return res.json({rn: rn._id.toString()})
+
+
+
+
+
+    }catch (err){
+        return err;
+    }
+
+
+
+    //return res.json({createByAPI:'lskdjfl'});
+    /*1. create virtualAccount
+     * 2. create customer
+     * 3. create materials
+     * 32 create supplier
+     * 33.create producer
+     * 4. create rn
+     * 5. create wokers
+     * 6. create works
+     * 7  create act
+     * 8 create moneyOrders*/
+}
+
 
 exports.deleteByAPI = deleteByAPI;
 async function  deleteByAPI(req, res, next){
@@ -884,7 +1135,7 @@ async function  deleteByAPI(req, res, next){
 exports.createByAPIFromSite = createByAPIFromSite;
 async function  createByAPIFromSite(req, res, next){
     /* console.log(req.store)*/
-    console.log(req.body)
+    //console.log(req.body)
 
     //return res.json({})
     try{
@@ -991,6 +1242,7 @@ async function  createByAPIFromSite(req, res, next){
         try{
             if(z.delivery){
                 let supplier = {store:req.store._id,name:'Доставка'}
+
                 let deliverySupplier = await Supplier.findOne(supplier).lean().exec();
                 if(!deliverySupplier){
                     return next('Поставщик по доставке не существует')
@@ -1009,7 +1261,10 @@ async function  createByAPIFromSite(req, res, next){
                 let zzz = await Pn.find({store: req.store._id}).sort({num: -1}).limit(1).lean().exec();
                 pn.num = (zzz.length && zzz[0].num && Number(zzz[0].num)) ? ( Number(zzz[0].num) + 1 ): 1;
                 pn.name+=pn.num;
-                let query = {store:req.store._id,name:'Доставка'}
+                let query = {store:req.store._id,name:'Доставка'};
+                if(req.store.mainCurrency!=z.currency){
+                    query.name+=' '+z.currency;
+                }
                 let material = await Material.findOne(query).lean().exec();
                 if(!material){
                     return next('Товара для доставки не существует')
@@ -1060,6 +1315,7 @@ async function  createByAPIFromSite(req, res, next){
 
         let rn = new Rn(z)
 
+        //console.log('rn.materials',rn.materials)
        /* console.log(z.worker);
         console.log('zak.worker');
         console.log(typeof rn.worker);*/
@@ -1074,7 +1330,11 @@ async function  createByAPIFromSite(req, res, next){
 
         }
 
-        return res.json({rn: rn._id.toString(),pn:pn._id.toString()})
+        let oo ={rn: rn._id.toString()};
+        if(pn && pn._id){
+            oo.pn=pn._id.toString();
+        }
+        return res.json(oo)
 
 
 
@@ -1119,7 +1379,7 @@ async function  cancelByAPIFromSite(req, res, next){
 
     }
     console.log('rn exec')
-
+    //console.log('req.body.pn',req.body.pn)
     if(req.body.pn){
         let r = await PnController.cancelController(req.body.pn,req.store)
         if(r){
@@ -1156,25 +1416,32 @@ exports.holdByAPIFromSite = async function(req, res, next) {
 }
 
 exports.cancelZakazByAPIFromSite = async function(req, res, next) {
-    let error = await cancel(req.body.rn,req.store);
-    if(error){
-        return  next(error)
-    };
-    try {
-        await Rn.findByIdAndRemove(req.body.rn).exec();
-    } catch (err) {
-        return next(r)
+    console.log(req.body)
+    if(req.body.rn){
+        let error = await cancel(req.body.rn,req.store);
+        if(error){
+            return  next(error)
+        };
+        try {
+            await Rn.findByIdAndRemove(req.body.rn).exec();
+        } catch (err) {
+            return next(r)
+        }
     }
-    error = await PnController.cancelController(req.body.pn,req.store);
-    if(error){
-        return  next(error)
-    };
-    try {
-        await Pn.findByIdAndRemove(req.body.pn).exec();
-    } catch (err) {
-        return next(r)
+    if(req.body.pn){
+        let error = await PnController.cancelController(req.body.pn,req.store);
+        if(error){
+            return  next(error)
+        };
+        try {
+            await Pn.findByIdAndRemove(req.body.pn).exec();
+        } catch (err) {
+            return next(r)
+        }
     }
 
+
+    res.json({msg:'ok'})
 
 }
 
@@ -1187,19 +1454,24 @@ function setStockData(stuffs,sign,store) {
         body: {
             stuffs : stuffs,
             sign : sign,
-            store,store
+            store:store
         },
         json: true // Automatically stringifies the body to JSON
     };
     //console.log(options)
 
-    return  rp(options)
-        .then(function (parsedBody) {
-            console.log(parsedBody)
-        })
-        .catch(function (err) {
-            console.log(err)
-        });
+    try{
+        return  rp(options)
+            .then(function (parsedBody) {
+                console.log(parsedBody)
+            })
+            .catch(function (err) {
+                console.log(err)
+            });
+    }catch(err){
+        console.log(err)
+    }
+
 }
 
 

@@ -1,0 +1,37 @@
+if(dj[key].groupStuffs && dj[key].groupStuffs.length)
+    div(class=dj[key].wrapclass)
+        div(class=mobileWrapper)
+            div(class="home-stuffs stuffs-home")
+                div(class="container")
+                    if(dj[key].name)
+                        h2(class="text-center")=dj[key].name
+                    - var className  ="col-lg-3 col-md-3 col-sm-6 col-xs-12 videoStuff"
+                    if(dj[key].groupStuffs.length == 2)
+                        - className="col-lg-6 col-md-6 col-sm-6 col-xs-12 videoStuff"
+                    else if(dj[key].groupStuffs.length == 3)
+                        - className='col-lg-4 col-md-4 col-sm-4 col-xs-12 videoStuff'
+                    else if(dj[key].groupStuffs.length == 4 || dj[key].groupStuffs.length == 8 || dj[key].groupStuffs.length == 12)
+                        - className="col-lg-3 col-md-3 col-sm-3 col-xs-12 videoStuff"
+                    each stuff in dj[key].groupStuffs
+                        div(class=className)
+                            a(href=stuff.link)
+                                img(src=photoHost + '/' + stuff.img,class="img-responsive")
+                                div(class="box-desc")
+                                    if(stuff.name)
+                                        h4
+                                            span=stuff.name
+                                            | &nbsp;
+                                            span(class="artikul")=stuff.artikul
+                                    if stuff.masters
+                                        h5(class="masters")
+                                            each master,index in stuff.masters
+                                                span=master.name
+                                                if index !== stuff.masters.length - 1 && stuff.masters.length > 1
+                                                    span
+                                                        | &nbsp;
+                                                        | &
+                                                        | &nbsp;
+                                    a(href=stuff.link)
+                                        p(class="begin-box")
+                                            span(class="begin",ng-bind="$ctrl.global.get('lang').val.startPracticing")
+                    div( class="clearfix")

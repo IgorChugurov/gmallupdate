@@ -1,5 +1,6 @@
 'use strict';
-
+// bootstrap slide https://codepen.io/mihnsen/pen/ZejQBJ
+// образец слайдера https://tympanus.net/Development/GammaGallery/?id=8
 /* Directives */
 
 angular.module('gmall.directives', [])

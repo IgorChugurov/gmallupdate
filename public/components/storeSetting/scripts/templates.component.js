@@ -392,6 +392,17 @@ function setFieldsTemplate(item,field){
             item.footerMobile.parts.push(o);
         }
     })
+    if(keysF.length!=item.footerMobile.parts.length){
+        var newParts=[];
+        keysF.forEach(function (k) {
+            //console.log(k)
+            var o =item.footerMobile.parts.getOFA('name',k)
+            //console.log(o)
+            newParts.push(o);
+
+        })
+        item.footerMobile.parts=newParts;
+    }
     //console.log(item.footerTablet.parts)
 
 

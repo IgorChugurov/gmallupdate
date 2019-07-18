@@ -27,7 +27,7 @@ function getFooter(){
 function getEnterButton(store,token,link,frame){
     //console.log(frame,typeof frame,frame[0])
     //console.log(!frame || typeof frame !='string' || frame[0]!='/');
-    if(!frame || typeof frame !='string' || frame[0]!='/'){frame='/home?token'}
+    if(!frame || typeof frame !='string' || frame[0]!='/'){frame='?token'}
     //console.log('frame-',frame)
     var s='<p>'+((store.texts&& store.texts.buttonAuth&& store.texts.buttonAuth[store.lang])?store.texts.buttonAuth[store.lang]:'')+'<br/>'+
         '<a href="'+link+frame+'='+token+'">'+((store.texts&& store.texts.auth&& store.texts.auth[store.lang])?store.texts.auth[store.lang]:'')+'</a></p>';

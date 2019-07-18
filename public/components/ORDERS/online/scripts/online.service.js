@@ -1502,6 +1502,9 @@
                                         if(month<10){month='0'+month}
                                         if(day<10){day='0'+day}
                                         d.date='date'+year+month+day;
+                                        delete d.masterReplace;
+                                        delete d.pays;
+                                        delete d.members;
                                         var newEntryPromise = Booking.save(d);
                                         acts.push(newEntryPromise.$promise)
 

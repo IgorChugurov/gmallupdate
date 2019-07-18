@@ -19,6 +19,15 @@
  * @param object opt
  * @return string
  */
+function timeoutPromise(i) {
+    return new Promise(function (res,rej) {
+        setTimeout(function () {
+            console.log('from f ',i)
+            res();
+        },2000)
+    })
+}
+
 function url_slug(s, opt) {
     if(!s)return'';
     s = String(s);
@@ -150,11 +159,9 @@ function shuffle(len) {
 }
 
 function* getUrl(Collection,store,name,collectionName){
-
     if(collectionName=='Group' && globalVar.reservedFirstParams.indexOf(name)>-1){
         name+='add'
     }
-
     var url=url_slug(name.substring(0,100))
     let query= getQuery(url,store);
 
@@ -194,6 +201,27 @@ function* getUrl(Collection,store,name,collectionName){
     //***********************************
     function getQuery(url,store){
         return {$and:[{url:url},{store:store}]};
+    }
+}
+async function getUrlAsync(Collection,store,name,collectionName){
+    if(collectionName=='Group' && globalVar.reservedFirstParams.indexOf(name)>-1){
+        name+='add'
+    }
+    let uniq;
+    let url=url_slug(name.substring(0,100))
+    while (!uniq) {
+
+        let query= {url:url,store:store};
+        //console.log('query',query)
+        let result=await Collection.findOne(query).exec();
+        //console.log(2)
+        if(!result){
+            uniq=true;
+            //console.log('exit')
+            return url;
+        }
+        //console.log('more 3')
+        url+=shuffle(2);
     }
 }
 function getUrl1(Collection,store,name){
@@ -276,4 +304,5 @@ function getUrl1(Collection,store,name){
     })
 }
 exports.create=getUrl;
+exports.createAsync=getUrlAsync;
 exports.url_slug=url_slug;

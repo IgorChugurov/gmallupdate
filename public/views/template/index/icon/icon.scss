@@ -3,10 +3,12 @@ width: $width;
 height: $height;
 background-size: $width;
 display: $display;
+padding: $padding;
 padding-right: $padding-right;
 padding-left: $padding-left;
 padding-top: $padding-top;
 padding-bottom: $padding-bottom;
+margin: $margin;
 margin-right: $margin-right;
 margin-left: $margin-left;
 margin-top: $margin-top;
@@ -23,5 +25,6 @@ vertical-align: $vertical-align;
 border: $border;
 border-radius: $border-radius;
 background-color: $background-color;
+background-size: $background-size;
 
 

@@ -7,6 +7,6 @@ div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-anim
                     span(class="icon-user-inverse")
                 div(class="clearfix")
             span(class="part",ng-show="global.get('user').val && global.get('user').val._id",ng-cloak)
-                a(class="enter-first",ng-click="global.get('functions').val.changeLocation('/manage')")
+                a(class="enter-first",ng-click="global.get('functions').val.changeLocation('/manage')",ng-class="{'active':$state.current.name=='cabinet'}",title=lang.cabinet)
                     span(class="icon-user-img")
                     span(class="icon-user-inverse")

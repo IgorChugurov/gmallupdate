@@ -5,7 +5,7 @@ div(class=dj[key].wrapclass)
                 span=dj[key].nameBlock
         if item.stuffs
             each stuff,index in item.stuffs
-                div(class="col-lg-6 col-md-6 col-sm-6 col-xs-12")
+                div(class="col-lg-6 col-md-6 col-sm-6 col-xs-12 stuff-block")
                     span(class="index")
                         span(class="number")=index+1
                     //if(stuff.videoLink)
@@ -23,7 +23,10 @@ div(class=dj[key].wrapclass)
                                     | &nbsp;
                             span=stuff.name
                             | &nbsp;
-                            span(class="duration")=stuff.duration
+                            span(class="duration")
+                                | (
+                                span=stuff.duration
+                                | )
                         div
                             | !{stuff.desc}
         div(class="clearfix")

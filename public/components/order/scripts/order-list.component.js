@@ -3,6 +3,7 @@
 
     angular.module('gmall.services')
         .directive('ordersList',ordersListDirective)
+        .directive('reportOrders',reportOrders)
         .directive('emptyList',['$timeout',function($timeout){
             return {
                 restrict:'E',
@@ -31,6 +32,16 @@
             controller: orderListCtrl,
             controllerAs: '$ctrl',
             templateUrl: 'components/order/orders-list.html',
+        }
+    }
+    function reportOrders(){
+        return {
+            scope: {},
+            restrict:'E',
+            bindToController: true,
+            controller: reportOrdersCtrl,
+            controllerAs: '$ctrl',
+            templateUrl: 'components/order/reportOrders.html',
         }
     }
     orderListCtrl.$inject=['Orders','global','$rootScope','$window','$timeout','$location','socket','$q','$user','exception','Confirm','$dialogs','CartInOrder'];
@@ -451,4 +462,387 @@
 
 //***************************************************************************************************
     }
+
+    reportOrdersCtrl.$inject=['Orders','global','$rootScope','$window','$timeout','$location','Stuff','$q','$user','exception','Confirm','$dialogs','CartInOrder','localStorage'];
+    function reportOrdersCtrl(Orders,global,$rootScope,$window,$timeout,$location,Stuff,$q,$user,exception,Confirm,$dialogs,CartInOrder,localStorage){
+        var self=this;
+        self.global=global;
+        self.mobile=global.get('mobile').val
+
+
+        self.propertyName = 'dateForSort';
+        self.reverse = true;
+        self.sortBy = function(propertyName) {
+            if(!propertyName){
+                self.propertyName=null;
+                self.reverse = false;
+                return;
+            }
+            self.reverse = (self.propertyName === propertyName) ? !self.reverse : false;
+            self.propertyName = propertyName;
+        };
+
+// установка диапазона дат для получения списка
+        self.dt  = new Date();
+        self.today = function(t) {
+            if(t){return new Date(self.dt.setHours(0,0,0));}else {return new Date(self.dt.setHours(23,59,59));}
+        };
+        self.maxDate=self.today(true)
+        var dtto = self.today();
+        var dtfrom=self.today(true);
+        dtfrom.setDate(dtfrom.getDate() - 356);
+        self.dtto=dtto;
+        self.dtfrom=dtfrom;
+        var now = new Date();
+        var yesterday=new Date(new Date(self.today(true)).setDate(now.getDate() - 1));
+        var nextWeek = new Date(new Date(self.today(true)).setDate(now.getDate() - 7));
+        var nextMonth = new Date(new Date(self.today(true)).setMonth(now.getMonth() - 1));
+        var y = dtto.getFullYear(), m = dtto.getMonth();
+        var thisMonth = new Date(y, m, 1);
+        var last30day = new Date(new Date(self.today(true)).setDate(now.getDate() - 30));
+
+        self.datePicker={};
+        self.options={
+            "ranges": {
+                "сегодня": [
+                    self.today(true),
+                    dtto
+                ],
+                "вчера": [
+                    yesterday,
+                    self.today(true)
+                ],
+                "последние 7 дней": [
+                    nextWeek,
+                    dtto
+                ],
+                "последние 30 дней": [
+                    last30day,
+                    dtto
+                ],
+                "текущий месяц": [
+                    thisMonth,
+                    dtto
+                ],
+                "прошлый месяц": [
+                    nextMonth,
+                    dtto
+                ]
+            },
+            locale: {
+                applyClass: 'btn-green',
+                applyLabel: "Выбрать",
+                fromLabel: "от",
+                toLabel: "до",
+                cancelLabel: 'Отменить',
+                customRangeLabel: 'прозвольный диапазон',
+                format:"DD.MM.YY",
+                daysOfWeek: ['Пн', 'Вт', 'Ср', 'Чт', 'Пн', 'Сб', 'Вс'],
+                firstDay: 1,
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель','Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь',
+                    'Ноябрь', 'Декабрь'
+                ]
+            }
+        }
+        self.datePicker.date = {
+            startDate: dtfrom,
+            endDate: dtto
+        };
+        moment.locale("ru");
+        self.moment=moment;
+
+        //**********************************************************************************************
+        //*********************************************************************************************
+
+        self.statusO={
+            1:'поступил',
+            2:'принят',
+            3:'оплачен',
+            4:'отправлен',
+            5:'доставлен',
+            6:'удален'
+        }
+
+
+        self.selectStuffs=selectStuffs;
+        self.updateOrderField=updateOrderField;
+        self.saveReport=saveReport;
+
+
+        var subDomain = global.get('store').val.subDomain;
+        self.paginate={page:0,rows:1000}
+
+        activate()
+
+        function activate(){
+            self.oldReports=localStorage.get(subDomain+'-reports');
+            if(!self.oldReports){
+                self.oldReports=[];
+            }
+            //console.log(self.oldReports)
+            if(self.oldReports.length){
+                $timeout(function () {
+                    selectStuffs(self.oldReports[0].stuffs)
+                },500)
+
+            }
+        }
+
+
+
+
+        function selectStuffs(oldData) {
+            $q.when()
+                .then(function () {
+                    if(oldData){
+                        return oldData
+                    }else{
+                        return Stuff.selectStuffs()
+                    }
+
+                })
+                .then(function (stuffs) {
+                    //console.log(stuffs)
+                    self.stuffsInReport = {};
+                    var ss=''
+                    stuffs.forEach(function (s,i) {
+                        var o ={
+                            _id:s._id,
+                            sort:s.sort,
+                            data:[]
+                        };
+                        o.name = s.name;
+                        if(s.artikul){
+                            o.name+=' '+s.artikul;
+                        }
+                        if(s.sortName){
+                            o.name+=' '+s.sortName;
+                        }
+
+                        self.stuffsInReport[s._id+s.sort]=o;
+                        if(i){ss+=' ||| '}
+                        ss+=o.name;
+                    });
+                    var oo={
+                        name:ss,
+                        stuffs:stuffs
+                    }
+
+
+                    if(!oldData){
+                        self.oldReports.unshift(oo)
+                        if(self.oldReports.length>10){
+                            self.oldReports.splise(10)
+                        }
+                        localStorage.set(subDomain+'-reports', self.oldReports);
+                        console.log(self.oldReports)
+                    }
+
+
+
+
+                    self.query={};
+                    if (!global.get('seller' ) || !global.get('seller' ).val){
+                        self.query['user']=global.get('user' ).val._id;
+                    }
+                    self.query.date={$gte:new Date(self.datePicker.date.startDate),$lte: new Date(self.datePicker.date.endDate)};
+                    if(stuffs.length==1){
+                        self.query={
+                            'stuffs._id':stuffs[0]._id
+                        };
+                        self.query['stuffs.sort']=stuffs[0].sort;
+                    }else if(stuffs.length>1){
+                        self.query={$or:[]};
+                        for(var i =0;i<stuffs.length;i++){
+                            var o ={}
+                            o['stuffs._id']=stuffs[i]._id;
+                            o['stuffs.sort']=stuffs[i].sort;
+                            self.query.$or.push(o)
+                        }
+                    }
+                    return CartInOrder.getList({page:0,rows:10000},self.query)
+
+
+                })
+                .then(function(res){
+                    //console.log(res);
+                    self.report=[];
+                    res.forEach(function (order) {
+                        //console.log(order)
+                        order.cart.stuffs.forEach(function (s) {
+
+                            if(self.stuffsInReport[s._id+s.sort]){
+                                var o={
+                                    date:moment(order.date).format('LLL'),
+                                    dateForSort:order.date,
+                                    num:order.num,
+                                    fio:(order.profile)?order.profile.fio:'',
+                                    phone:(order.profile)?order.profile.phone:'',
+                                    cena:s.cena,
+                                    sum:s.sum,
+                                    quantity:s.quantity,
+                                    currency:s.currency,
+                                    _id:order._id,
+                                    status:self.statusO[order.status],
+                                    note:order.note
+
+                                }
+                                console.log(order.pay)
+                                if(order.pay && order.pay[0]){
+                                    o.payDate = moment(order.pay[0].date).format('LLL');
+                                }
+                            console.log(o.payDate)
+                                self.stuffsInReport[s._id+s.sort].data.push(o)
+                            }
+                        })
+                    })
+                    //console.log(self.stuffsInReport)
+                })
+        }
+        function saveReport() {
+            var keys = Object.keys(self.stuffsInReport);
+            //console.log(keys)
+            if(!keys.length){return};
+            var s ='';
+            try {
+                var htmlBilder = new createBilderHTML();
+
+                var body = htmlBilder.getBody();
+                var p = htmlBilder.createTag(body,'p',null)
+                var span = htmlBilder.createTag(p,'span',null,moment(self.dtfrom).format('LLL'))
+                span = htmlBilder.createTag(p,'span',null,' - ')
+                span = htmlBilder.createTag(p,'span',null,moment(self.dtto).format('LLL'))
+                for(var k in self.stuffsInReport){
+                    var d = self.stuffsInReport[k];
+                    var h3 = htmlBilder.createTag(body,'h3',null,d.name)
+                    if(d.data.length){
+                        var table = htmlBilder.createTag(body,'table',{border:"1",cellpadding:"10px",style:"border-collapse:collapse"})
+                        var tr = htmlBilder.createTag(table,'tr')
+                        var td = htmlBilder.createTag(tr,'th',null,'заказ')
+                        var td = htmlBilder.createTag(tr,'th',null,'клиент')
+                        var td = htmlBilder.createTag(tr,'th',null,'позиция')
+                        var td = htmlBilder.createTag(tr,'th',null,'статус')
+                    }
+                    d.data.forEach(function (d) {
+                        var tr = htmlBilder.createTag(table,'tr')
+                        var td = htmlBilder.createTag(tr,'td',null,'№-'+d.num+' от '+d.date);
+
+
+                        var td = htmlBilder.createTag(tr,'td',null);
+                        var a = htmlBilder.createTag(td,'a',{href:'tel:'+d.phone},d.fio+'  тел: '+d.phone);
+                        var td = htmlBilder.createTag(tr,'td',null,d.quantity+'*'+d.cena+'='+d.sum+' '+d.currency)
+                        var td = htmlBilder.createTag(tr,'td',null,d.status)
+                    })
+
+                }
+
+
+
+                s = htmlBilder.toSrt()
+
+                //s.toSrt()
+            }catch(err){
+                console.log(err)
+            }
+
+
+            var filename = self.stuffsInReport[keys[0]].name;
+
+
+            var blob = new Blob([s], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, filename+".html");
+        }
+
+        function createBilderHTML(){
+            var o={
+                    html:{
+                        name:'html',
+                        tags:[
+                            {
+                                name:'head',
+                                tags:[
+                                    {
+                                        name:'meta',
+                                        tags:[],
+                                        attrs:{
+                                            charset:"UTF-8"
+                                        }
+                                    }
+                                ],
+                                attrs:{}
+                            },
+                            {
+                                name:'body',
+                                tags:[],
+                                attrs:{}
+                            },
+                        ],
+                        attrs:{
+                            lang:"en"
+                        }
+                    }
+            }
+            o.toSrt=function () {
+                var html = this.html;
+                var s='<!DOCTYPE html>'+"\n"+"<html ";
+                s += handleTag(html)
+                //console.log(s)
+                return s
+            }
+            o.getBody=function () {
+                return o.html.tags[1];
+            }
+            o.createTag=function (tag,name,arrts,content) {
+                //console.log(tag,name)
+                var t = {
+                    name:name,
+                    tags:[],
+                    attrs:arrts|| {},
+                    c:content||null
+                }
+                tag.tags.push(t)
+                return t
+            }
+            function handleTag(tag) {
+                var s='<'+tag.name+' ';
+                var keys = Object.keys(tag.attrs);
+                keys.forEach(function (k) {
+                    s+=k+'="'+tag.attrs[k]+'" ';
+                })
+                s+='>'
+                if(tag.c){
+                    s+=tag.c;
+                }
+                //console.log(tag.tags)
+                if(tag.tags){
+                    tag.tags.forEach(function (tt) {
+                        s +=handleTag(tt)
+                    })
+                    for(var tagInner in tag.tags){
+
+                    }
+                }
+                s+='</'+tag.name+'>'
+                return s;
+
+            }
+            return o;
+        }
+        function updateOrderField(field,val,_id) {
+            var o={ _id:_id}
+            o[field]=val;
+            Orders.save({update:field},o,function(){
+                global.set('saving',true);
+                $timeout(function(){
+                    global.set('saving',false);
+                },1500)
+            },function(err){
+                if(err){
+                    exception.catcher('сохранение ордера')(err)
+                }
+            });
+        }
+    }
+
+
 })()

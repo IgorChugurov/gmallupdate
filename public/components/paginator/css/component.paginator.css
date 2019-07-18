@@ -4,14 +4,16 @@
 }
 .pagination>li>a,
 .pagination>li>span {
-    color: #93b1c6;
+    color: #999;
     border: none;
     background-color: transparent;
     font-weight: normal;
 }
-.pagination>li>a:hover {
-    font-weight: bold;
+.pagination>li a {
+    display: inline-block;
+    padding: 19px 15px;
 }
+
 .pagination>.active>a,
 .pagination>.active>a:focus,
 .pagination>.active>a:hover,
@@ -20,10 +22,15 @@
 .pagination>.active>span:hover {
     background-color: transparent;
     border:none;
-    color: #6d7f8f;
-    font-weight: bold;
+    color: #72d869;
 }
-
+.paginator-box .pagination>li>a:hover,
+.pagination-block .pagination a:hover,
+.pagination-block .pagination>.active>a:hover,
+.pagination-block .pagination>.active>a {
+    color: #72d869;
+    font-weight: normal;
+}
 .pagination>.disabled>a,
 .pagination>.disabled>a:focus,
 .pagination>.disabled>a:hover,
@@ -32,7 +39,7 @@
 .pagination>.disabled>span:hover {
     background-color: transparent;
     border: none;
-    color: #6d7f8f;
+    color: #999;
 }
 .pagination i.material-icons {
     margin-right: 0;

@@ -260,7 +260,7 @@ myApp.config(['$stateProvider', '$urlRouterProvider','$locationProvider','global
             template :'<pns></pns>'
         })
         .state("frame.pns.pn", {
-            url: "/:id",
+            url: "/:id?type",
             template :'<pn></pn>'
         })
         .state("frame.Rn", {

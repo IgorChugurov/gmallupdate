@@ -111,6 +111,10 @@ var MoneyOrder = new Schema({
     virtualAccount:{type : Schema.ObjectId,refPath:'VirtualAccount'},
     entries:[{}],
     zakaz:{type : Schema.ObjectId,ref:'Zakaz'},
+    contrAgentExchange:Boolean,
+    contrAgentExchangeData:{},
+    connectedOrder:{type : Schema.ObjectId,ref:'MoneyOrder'}
+
 }, {
     toObject: {
         virtuals: true

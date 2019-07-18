@@ -172,7 +172,8 @@ textarea.form-control {
 
 input.form-control,
 select {
-  height: 40px; }
+  height: 40px;
+  background-color: transparent; }
 
 .form-control:hover,
 .form-control:focus {
@@ -481,7 +482,11 @@ fieldset[disabled] .btn:hover {
 .modalProject {
   font-size: 18px;
   /*modalProject*/
-  /*sign-login*/ }
+  /*sign-login*/
+  /*.modal-content {
+    padding: 0px !important;
+}*/
+  /*маркер checbox*/ }
   .modalProject .modal-content {
     /*@if $height {
         max-height: $height;
@@ -494,8 +499,46 @@ fieldset[disabled] .btn:hover {
     background-color: transparent; }
   .modalProject .modal-dialog {
     width: 70%; }
+  .modalProject .sign-login .sign,
+  .modalProject .sign-login .login {
+    padding: 15px 0;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc; }
+  .modalProject .sign-login .modal-body-project {
+    padding: 40px 100px; }
+  .modalProject .sign-login .active-tabl {
+    background-color: #f5f5f5; }
+  .modalProject .sign-login .cancel-login {
+    position: static !important;
+    padding: 17px 0 13px 0;
+    border-bottom: 1px solid #ccc; }
+  .modalProject .sign-login .icon-cancel-img {
+    position: static !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-size: 18px !important; }
+  .modalProject .box-sn {
+    display: inline-block;
+    vertical-align: bottom; }
+  .modalProject .icon-fbwhite-img {
+    margin-right: 10px; }
   .modalProject .modal-content .tab-head {
-    margin-bottom: 20px; }
+    margin-bottom: 20px;
+    cursor: pointer; }
+  .modalProject .enter-button-box {
+    padding-top: 40px; }
+  .modalProject .forgot {
+    display: block;
+    padding-bottom: 20px; }
+  .modalProject .text-help {
+    text-align: justify; }
+  .modalProject input[type="checkbox"] {
+    width: 20px;
+    height: 20px; }
+  .modalProject .sign-box .sub-text,
+  .modalProject .oferta-text {
+    display: inline-block;
+    padding-left: 10px; }
   .modalProject .modal-content .tab-head a {
     font-size: 14px;
     color: #ff6600; }
@@ -520,79 +563,99 @@ fieldset[disabled] .btn:hover {
   .modalProject .input-code {
     width: auto;
     display: inline-block; }
-  @media (max-width: 1450px) {
-    .modalProject .modal-content {
-      padding-left: 20px !important;
-      padding-right: 20px !important; } }
-  @media (max-width: 1100px) {
-    .modalProject .modal-content {
-      padding: 20px !important; }
-    .modalProject .shipinfo {
-      width: 90% !important; }
-    .modalProject .witget {
-      width: 90% !important; } }
-  @media (max-width: 992px) {
-    .modalProject {
-      /*.modal-content {
-        padding: 10px !important;
-    }*/ }
-      .modalProject .modal-body-project {
-        margin-left: 20px !important;
-        margin-right: 20px !important; } }
+  .modalProject .btn-facebook {
+    padding: 5px 10px;
+    width: auto;
+    outline: none !important; }
   @media (max-width: 768px) and (min-width: 401px) {
-    .modalProject .login {
-      padding-left: 0;
-      padding-right: 0; }
-    .modalProject .sign {
-      padding-left: 0;
-      padding-right: 0; }
     .modalProject .modal-body-project {
-      padding-right: 0;
-      padding-left: 0; }
+      padding: 40px !important; }
     .modalProject .btn-project.btn-block {
       font-size: 14px;
       min-width: 1px; } }
   @media (max-width: 400px) {
-    .modalProject {
-      /*.modal-header-project {
-        padding-top: 20px;
-    }*/ }
-      .modalProject .modal-dialog {
-        width: 98% !important;
-        margin: 0 auto !important; }
-      .modalProject .modal-content {
-        padding: 10px !important;
-        margin-top: 20px !important; }
-      .modalProject .sign {
-        border-left: none  !important; }
-      .modalProject .login {
-        border-bottom: 1px solid #ccc; }
-      .modalProject .sign,
-      .modalProject .login {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-        padding-bottom: 20px; }
-      .modalProject .modal-body-project {
-        width: 100%;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-        margin-top: 40px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important; }
-      .modalProject .btn-project {
-        font-size: 16.2px !important;
-        letter-spacing: 1px !important; }
-      .modalProject .witget {
-        width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        padding-bottom: 0 !important; }
-      .modalProject .shipinfo {
-        width: 100% !important; } }
+    .modalProject .modal-dialog {
+      width: 98% !important;
+      margin: 20px auto !important; }
+    .modalProject .modal-body-project {
+      padding: 40px 20px !important;
+      width: 100%;
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+      margin-top: 40px !important; }
+    .modalProject .btn-project {
+      font-size: 16.2px !important;
+      letter-spacing: 1px !important; }
+    .modalProject .witget {
+      width: 100% !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important; }
+    .modalProject .shipinfo {
+      width: 100% !important; }
+    .modalProject .cancel {
+      position: static !important; }
+    .modalProject .icon-cancel-img {
+      top: 35px !important;
+      right: 35px !important; } }
   .modalProject .filters-first-box {
     min-height: 250px; }
   .modalProject .ui-select-bootstrap .ui-select-choices-row.active > span {
     background-color: #b9b9b9; }
+  .modalProject .oferta-box .checkbox .checkbox-material .check {
+    margin-right: 3px; }
+  .modalProject .oferta-box .tag .checkbox {
+    margin-right: 20px;
+    margin-top: 0;
+    margin-bottom: 0; }
+  .modalProject .oferta-box a {
+    color: #333333; }
+  .modalProject .oferta-box .checkbox input[type=checkbox] {
+    width: 25px;
+    height: 25px;
+    margin-left: -25px; }
+  .modalProject .oferta-box .checkbox label,
+  .modalProject .oferta-box .checkbox-inline label {
+    padding-left: 0;
+    margin-bottom: 10px; }
+  .modalProject .oferta-box .checkbox input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    margin: 10px 0 0 7px; }
+  .modalProject .oferta-box .checkbox__text {
+    position: relative;
+    padding: 0 0 0 35px;
+    cursor: pointer;
+    line-height: 16px; }
+  .modalProject .oferta-box .checkbox__text:before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 0;
+    width: 25px;
+    height: 25px;
+    border: 1px solid #CDD1DA;
+    border-radius: 0;
+    background: #FFF; }
+  .modalProject .oferta-box .checkbox__text:after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    width: 17px;
+    height: 17px;
+    border-radius: 0;
+    background: #CCC;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: .2s; }
+  .modalProject .oferta-box .checkbox input:checked + .checkbox__text:after {
+    opacity: 1; }
+  .modalProject .oferta-box .checkbox label {
+    padding-left: 0; }
+  .modalProject .button-send {
+    outline: none; }
   .modalProject .modal-footer {
     border-top: none; }
   .modalProject .cancel {
@@ -1118,6 +1181,9 @@ body.ng-pageslide-body-closed::before {
   border-left: 1px solid #999;
   height: 100%;
   min-height: 100vh; }
+
+.ui-select-bootstrap .ui-select-choices-row.active > span {
+  color: #ff6600; }
 
 /*slideMenuhumburger*/
 .humburger {
@@ -2790,6 +2856,12 @@ body.ng-pageslide-body-closed::before {
   .datetime .select-block,
   .datetime .select-block-master {
     margin: 20px; }
+  .datetime .ui-select-bootstrap .ui-select-choices-row.active > span {
+    background-color: #999;
+    padding: 10px 20px;
+    color: #fff; }
+  .datetime .ui-select-bootstrap .ui-select-choices-row > span {
+    padding: 10px 20px; }
   .datetime .value-choice {
     font-size: 14px; }
   .datetime .order-service .service-box {
@@ -3021,7 +3093,7 @@ body.ng-pageslide-body-closed::before {
     bottom: 0;
     font-size: 14px; }
   .datetime .timing {
-    width: 170px;
+    /*width: 170px;*/
     margin-top: 5px; }
   .datetime .timing .ui-select-toggle {
     border-top: none;
@@ -3300,7 +3372,8 @@ body.ng-pageslide-body-closed::before {
   margin-top: 120px;
   position: fixed;
   left: 45%;
-  bottom: 50%; }
+  bottom: 50%;
+  background-size: 120px; }
 
 .icon-prevgallery-img {
   background: url("/img/icon/prevgallery/left1.jpg") center center no-repeat;
@@ -3363,9 +3436,9 @@ body.ng-pageslide-body-closed::before {
 
 .icon-fb-img {
   background: url("/img/icon/fb/facebook.png") center center no-repeat;
-  width: 30px;
-  height: 30px;
-  background-size: 30px;
+  width: 25px;
+  height: 25px;
+  background-size: 25px;
   display: inline-block; }
 
 .icon-envelope-img {

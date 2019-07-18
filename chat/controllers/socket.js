@@ -27,6 +27,9 @@ function sendMessage(data,socket){
         }
     });*/
 }
+
+var orders={};
+
 module.exports = function (sockets) {
 
     this.connect= function(socket){
@@ -41,7 +44,7 @@ module.exports = function (sockets) {
             return;
         }
 
-        socket.nickname=new Date();
+        socket.nickname=socket.id
         sockets.push(socket);
 
 
@@ -49,6 +52,67 @@ module.exports = function (sockets) {
             //console.log(data)
             socket.seller=data;
         })
+        socket.emit('getNewUserInOrder',{nickname:socket.nickname});
+        socket.on('newUserInOrder',function(data){
+
+            //console.log(data.id);
+            if(data.id){
+                socket.orderId=data.id;
+                if(!orders[socket.orderId]){
+                    orders[socket.orderId]=[];
+                }
+                if(!orders[socket.orderId].includes(socket.nickname)){
+                    orders[socket.orderId].push(socket.nickname)
+                }
+
+                if(orders[socket.orderId].length===1){
+                    //console.log('only once')
+                    let o={
+                        editAvaible:true
+                    }
+                    socket.emit('getStatusForOrder',o);
+                }
+            }
+            //console.log('getStatusForOrder',orders)
+
+            //socket.seller=data;
+        })
+        socket.on('UserExitOrder',function(data){
+            socket.orderId=null;
+            //console.log(data.id);
+            if(data.id){
+                let orderId=data.id;
+                if(orders[orderId] && orders[orderId].length){
+                    let i = orders[orderId].indexOf(socket.nickname);
+                    if(i>-1){
+                        orders[orderId].splice(i,1);
+                        if(!orders[orderId].length){
+                            delete orders[orderId]
+                        }else{
+
+                            let sName = orders[orderId][0];
+                            console.log("sName",sName)
+                            let ss = sockets.find(sss=>{
+                                console.log(sss.id)
+                                return sss.id===sName
+                            })
+
+                            if(ss){
+                                console.log('send');
+                                let o={
+                                    editAvaible:true
+                                }
+                                ss.emit('getStatusForOrder',o);
+                            }
+                        }
+                    }
+                }
+            }
+            //console.log('UserExitOrder',orders)
+        })
+
+
+
         socket.on('getSellerStatus',function(){
             //console.log('getSellerStatus')
             setStatus()
@@ -138,6 +202,25 @@ module.exports = function (sockets) {
         })
         socket.on('disconnect',function(data){
             // console.log('disconnected -',socket.nickname)
+            if(orders[socket.orderId] && orders[socket.orderId].length){
+                orders[socket.orderId].splice(orders[socket.orderId].indexOf(socket.nickname),1);
+                if(orders[socket.orderId].length){
+                    let nickname = orders[socket.orderId][0];
+                    for(let s of sockets){
+                        if(s.nickname===nickname){
+                            let o={
+                                editAvaible:true
+                            }
+                            s.emit('getStatusForOrder',o);
+                            break;
+                        }
+                    }
+                }else{
+                    delete orders[socket.orderId];
+                }
+            }
+
+
             sockets.splice(sockets.indexOf(socket),1);
             //console.log('after disconnected sockets.length-',sockets.length,socket.seller)
             // выходит seller сообщаем всем не selleram если такого селлера больше нет в сети

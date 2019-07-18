@@ -481,7 +481,41 @@ fieldset[disabled] .btn:hover {
 .modalProject {
   font-size: 16px;
   /*modalProject*/
-  /*sign-login*/ }
+  /*sign-login*/
+  /*.modal-content {
+    padding: 0px !important;
+}*/
+  /*@media (max-width: 1450px) {
+    .modal-content {
+        @if $padding-left {
+            padding-left: $padding-left*0.5 !important;
+        }
+        @if $padding-right {
+            padding-right: $padding-right*0.5 !important;
+        }
+
+    }
+}*/
+  /*@media  (max-width: 1100px)  {
+    .modal-content {
+        padding: 20px !important;
+    }
+    .shipinfo {
+        width: 90% !important;
+    }
+    .witget {
+        width: 90% !important;
+    }
+}*/
+  /*@media  (max-width: 992px)  {
+    .modal-body-project{
+        margin-left: 20px !important;
+        margin-right: 20px !important;
+    }
+    !*.modal-content {
+        padding: 10px !important;
+    }*!
+}*/ }
   .modalProject .modal-content {
     /*@if $height {
         max-height: $height;
@@ -492,8 +526,46 @@ fieldset[disabled] .btn:hover {
     padding-bottom: 30px; }
   .modalProject .modal-content input {
     background-color: transparent; }
+  .modalProject .sign-login .sign,
+  .modalProject .sign-login .login {
+    padding: 15px 0;
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc; }
+  .modalProject .sign-login .modal-body-project {
+    padding: 40px 100px; }
+  .modalProject .sign-login .active-tabl {
+    background-color: #f5f5f5; }
+  .modalProject .sign-login .cancel-login {
+    position: static !important;
+    padding: 17px 0 13px 0;
+    border-bottom: 1px solid #ccc; }
+  .modalProject .sign-login .icon-cancel-img {
+    position: static !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-size: 18px !important; }
+  .modalProject .box-sn {
+    display: inline-block;
+    vertical-align: bottom; }
+  .modalProject .icon-fbwhite-img {
+    margin-right: 10px; }
   .modalProject .modal-content .tab-head {
-    margin-bottom: 20px; }
+    margin-bottom: 20px;
+    cursor: pointer; }
+  .modalProject .enter-button-box {
+    padding-top: 40px; }
+  .modalProject .forgot {
+    display: block;
+    padding-bottom: 20px; }
+  .modalProject .text-help {
+    text-align: justify; }
+  .modalProject input[type="checkbox"] {
+    width: 20px;
+    height: 20px; }
+  .modalProject .sign-box .sub-text,
+  .modalProject .oferta-text {
+    display: inline-block;
+    padding-left: 10px; }
   .modalProject .modal-content .tab-head a {
     font-size: 14px;
     color: #000000; }
@@ -518,84 +590,54 @@ fieldset[disabled] .btn:hover {
   .modalProject .input-code {
     width: auto;
     display: inline-block; }
-  @media (max-width: 1450px) {
-    .modalProject .modal-content {
-      padding-left: 20px !important;
-      padding-right: 20px !important; } }
-  @media (max-width: 1100px) {
-    .modalProject .modal-content {
-      padding: 20px !important; }
-    .modalProject .shipinfo {
-      width: 90% !important; }
-    .modalProject .witget {
-      width: 90% !important; } }
-  @media (max-width: 992px) {
-    .modalProject {
-      /*.modal-content {
-        padding: 10px !important;
-    }*/ }
-      .modalProject .modal-body-project {
-        margin-left: 20px !important;
-        margin-right: 20px !important; } }
+  .modalProject .btn-facebook {
+    padding: 5px 10px;
+    width: auto;
+    outline: none !important; }
   @media (max-width: 768px) and (min-width: 401px) {
-    .modalProject .login {
-      padding-left: 0;
-      padding-right: 0; }
-    .modalProject .sign {
-      padding-left: 0;
-      padding-right: 0; }
     .modalProject .modal-body-project {
-      padding-right: 0;
-      padding-left: 0; }
+      padding: 40px !important; }
     .modalProject .btn-project.btn-block {
       font-size: 14px;
       min-width: 1px; } }
   @media (max-width: 400px) {
-    .modalProject {
-      /*.modal-header-project {
-        padding-top: 20px;
-    }*/ }
-      .modalProject .modal-dialog {
-        width: 98% !important;
-        margin: 0 auto !important; }
-      .modalProject .modal-content {
-        padding: 10px !important;
-        margin-top: 20px !important; }
-      .modalProject .sign {
-        border-left: none  !important; }
-      .modalProject .login {
-        border-bottom: 1px solid #ccc; }
-      .modalProject .sign,
-      .modalProject .login {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
-        padding-bottom: 20px; }
-      .modalProject .modal-body-project {
-        width: 100%;
-        margin-right: 0 !important;
-        margin-left: 0 !important;
-        margin-top: 40px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important; }
-      .modalProject .btn-project {
-        font-size: 14.4px !important;
-        letter-spacing: 1px !important; }
-      .modalProject .witget {
-        width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        padding-bottom: 0 !important; }
-      .modalProject .shipinfo {
-        width: 100% !important; } }
+    .modalProject .modal-dialog {
+      width: 98% !important;
+      margin: 20px auto !important; }
+    .modalProject .modal-body-project {
+      padding: 40px 20px !important;
+      width: 100%;
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+      margin-top: 40px !important; }
+    .modalProject .btn-project {
+      font-size: 14.4px !important;
+      letter-spacing: 1px !important; }
+    .modalProject .witget {
+      width: 100% !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding-bottom: 0 !important; }
+    .modalProject .shipinfo {
+      width: 100% !important; }
+    .modalProject .cancel {
+      position: static !important; }
+    .modalProject .icon-cancel-img {
+      top: 35px !important;
+      right: 35px !important; } }
   .modalProject .filters-first-box {
     min-height: 250px; }
   .modalProject .ui-select-bootstrap .ui-select-choices-row.active > span {
     background-color: #b9b9b9; }
+  .modalProject .cancel-login {
+    padding-top: 28px !important;
+    padding-bottom: 22px !important;
+    border-bottom: none !important; }
   .modalProject .select-service {
     border: 1px solid #000; }
   .modalProject .modal-dialog {
-    margin-top: 10%;
-    width: 60%; }
+    margin-top: 5%;
+    width: 50%; }
   .modalProject .name-service:hover {
     background-color: #999999; }
   .modalProject .name-service-link {
@@ -627,8 +669,7 @@ fieldset[disabled] .btn:hover {
     width: 110px; }
   .modalProject .btn-facebook {
     margin-right: 10px;
-    display: inline-block;
-    width: 110px; }
+    display: inline-block; }
   .modalProject .btn-project {
     margin-top: 30px;
     margin-bottom: 30px; }
@@ -641,12 +682,15 @@ fieldset[disabled] .btn:hover {
     position: absolute;
     border-left: 1px solid #000; }
   .modalProject .login {
-    padding-top: 40px;
-    padding-bottom: 40px;
-    border-right: 1px solid #eeeeee; }
+    padding-top: 25px !important;
+    padding-bottom: 25px !important;
+    height: 73px;
+    border-bottom: 0px !important; }
   .modalProject .sign {
-    padding-top: 40px;
-    padding-bottom: 40px; }
+    padding-top: 25px !important;
+    padding-bottom: 25px !important;
+    height: 73px;
+    border-bottom: 0px !important; }
   .modalProject .text-help {
     font-size: 12px; }
   .modalProject .text-witget {

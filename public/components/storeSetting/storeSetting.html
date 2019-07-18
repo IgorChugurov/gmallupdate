@@ -71,6 +71,16 @@
                                     <strong>http://{{$ctrl.item.subDomain}}.gmall.io</strong>
                                 </span>
                         </div>
+                        <div class="form-group">
+                            <label for="nameXML" class="control-label">название магазина для XML</label>
+                            <input type="text"
+                                   id="nameXML"
+                                   class="form-control name"
+                                   ng-model="$ctrl.item.nameXml"
+                                   ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                   ng-change="$ctrl.saveField('nameXml')"
+                                   required/>
+                        </div>
                     </div>
                     <div class="cart-detail">
                         <h4 class="text-center name-box">адрес для обратной связи</h4>
@@ -297,6 +307,13 @@
                                            ng-change="$ctrl.saveField('bookkeep')">
                                     <span class="lr" ng-class="{'active':$ctrl.item.bookkeep}">бухгалтерия включена</span>
                                 </label>
+                            </div>
+                            <div  ng-if="$ctrl.item.bookkeep">
+                                <p class="name-box text-center">id подразделения</p>
+                                <div class="form-group label-floating">
+                                    <label class="control-label">id подразделения</label>
+                                    <input class="form-control" type="text" ng-change="$ctrl.saveField('virtualAccount')"ng-model="$ctrl.item.virtualAccount">
+                                </div>
                             </div>
                             <div class="togglebutton">
                                 <label for="scrollblock">

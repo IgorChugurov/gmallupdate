@@ -22,8 +22,8 @@
             templateUrl: 'bookkeep/components/rn/rn.html',
         }
     }
-    itemsCtrl.$inject=['Rn','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','$state','exception']
-    function itemsCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,$state,exception){
+    itemsCtrl.$inject=['Rn','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','$state','exception','Material']
+    function itemsCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,$state,exception,Material){
         var self = this;
         self.mobile = global.get('mobile').val;
         self.global = global;
@@ -130,10 +130,41 @@
             self.virtualAccount=null;
             self.paginate.page = 0;*/
             self.paginate.page = 0;
-            return getList().then(function () {
+            /*return getList().then(function () {
                 delete self.paginate.search
                 console.log('Activated rns list View');
-            });
+            });*/
+            return getList().then(function () {
+
+                console.log('Activated pns list View');
+                if(!self.items.length){
+                    return Material.getList({page:0,rows:100,search:self.paginate.search}, {})
+                        .then(function (data) {
+                            delete self.paginate.search;
+                            if(data && data.length){
+                                var ids =data.map(function(m){return m._id})
+                                var query = {'materials.item' :{$in:ids}}
+                                return Items.getList(self.paginate, query)
+                            }else{
+                                return []
+                            }
+
+
+
+                        }).then(function (data) {
+                            console.log(data)
+                            data.forEach(function (d) {
+                                d.nameOfTypeOfConrtAgent=$scope.getNameTypeOfContrAgent(d.typeOfContrAgent)
+                            })
+                            self.items = data;
+                            $scope.items=data
+                            //console.log(self.items)
+                        });
+                }
+
+            })
+
+
         }
         function deleteItem(item) {
             if(!item.actived){
@@ -239,6 +270,7 @@
         self.setDocument=setDocument;
         self.getPrice=getPrice;
         self.getPriceForSale=getPriceForSale;
+        self.setPriceForSaleBookkeep=setPriceForSaleBookkeep;
         self.getSum=getSum;
         self.changeQty=changeQty
         self.reserveRN=reserveRN
@@ -312,7 +344,19 @@
                     data.date= new Date(data.date)
                     data.materials=data.materials.map(function (m) {
                         if(m.item && m.item.sku2 && m.item.sku2.length){m.item.sku2=m.item.sku2[0]}else{m.item.sku2=''}
-                        m.priceForSaleRate=m.priceForSale;
+
+                        //m.priceForSaleRate=m.priceForSale;
+                        if(data.currency==m.item.currency){
+                            m.priceForSaleRate=m.priceForSale;
+                        }else{
+                            var rnCurrency=(data.currency)?data.currency:'UAH';
+                            var rnCurrencyRate=(currency[rnCurrency]&& currency[rnCurrency][0])?currency[rnCurrency][0]:1;
+                            var materialCurrency = (m.item.currency)?m.item.currency:'UAH';
+                            let materialCurrencyRate =(currency[materialCurrency]&& currency[materialCurrency][0])?currency[materialCurrency][0]:1;
+                            let rate =materialCurrencyRate/rnCurrencyRate;
+                            m.priceForSaleRate = Math.round((m.priceForSale/rate)*100)/100
+                        }
+                        m.priceForSaleRateBookkeep=m.priceForSaleRate
                         return m
                     })
 
@@ -414,6 +458,7 @@
         }
 
         function saveField(field){
+            console.log(field)
             if(field=='typeOfContrAgent'){
                 getContrAgents(self.item[field])
                 self.item.contrAgent=null;
@@ -427,7 +472,7 @@
                 o[field]=self.item[field].filter(function (m) {
                     return m.item && m.item._id
                 }).map(function (m) {
-                    console.log(m)
+                    //console.log(m)
                     //console.log({item:m.item._id,qty:m.qty,price:m.price})
                     return {item:m.item._id,
                         qty:m.qty,
@@ -465,14 +510,33 @@
                 })){
                 exception.showToaster('error','статус','такая позиция есть в накладной')
             }else{
+
+                if(self.item.currency==self.newMaterial.currency){
+                    self.newMaterial.priceForSaleRate=self.newMaterial.priceForSale;
+                }else{
+                    var rnCurrency=(self.item.currency)?self.item.currency:'UAH';
+                    var rnCurrencyRate=(currency[rnCurrency]&& currency[rnCurrency][0])?currency[rnCurrency][0]:1;
+                    var materialCurrency = (self.newMaterial.currency)?self.newMaterial.currency:'UAH';
+                    let materialCurrencyRate =(currency[materialCurrency]&& currency[materialCurrency][0])?currency[materialCurrency][0]:1;
+                    let rate =materialCurrencyRate/rnCurrencyRate;
+                    self.newMaterial.priceForSaleRate = Math.round((self.newMaterial.priceForSale/rate)*100)/100
+                }
+                //self.newMaterial.priceForSaleRateBookkeep=self.newMaterial.priceForSaleRate
                 var o = {
                     item:{_id:self.newMaterial._id,name:self.newMaterial.name,sku:self.newMaterial.sku,sku2:self.newMaterial.sku2,producer:self.newMaterial.producer,currency:self.newMaterial.currency},
                     supplier:self.newMaterial.supplier._id,
                     supplierType:self.newMaterial.supplierType,
                     price:self.newMaterial.price,
                     priceForSale:self.newMaterial.priceForSale,
+                    priceForSaleRate:self.newMaterial.priceForSaleRate,
+                    priceForSaleRateBookkeep:self.newMaterial.priceForSaleRate,
                     qty:1,
                 }
+
+                console.log(o)
+
+
+
                 if(self.item.typeOfZakaz=='return'){
                     o.priceForSale=o.price;
                 }
@@ -556,6 +620,20 @@
                 self.item.materials[idx].priceForSale=item.priceForSale;
                 self.item.materials[idx].supplier=item.supplier._id;
                 self.item.materials[idx].supplierType=item.supplierType;
+
+                if(self.item.currency==self.item.materials[idx].currency){
+                    self.item.materials[idx].priceForSaleRate=self.item.materials[idx].priceForSale;
+                }else{
+                    var rnCurrency=(self.item.currency)?self.item.currency:'UAH';
+                    var rnCurrencyRate=(currency[rnCurrency]&& currency[rnCurrency][0])?currency[rnCurrency][0]:1;
+                    var materialCurrency = (self.item.materials[idx].currency)?self.item.materials[idx].currency:'UAH';
+                    let materialCurrencyRate =(currency[materialCurrency]&& currency[materialCurrency][0])?currency[materialCurrency][0]:1;
+                    let rate =materialCurrencyRate/rnCurrencyRate;
+                    self.item.materials[idx].priceForSaleRate = Math.round((self.item.materials[idx].priceForSale/rate)*100)/100
+                }
+                self.item.materials[idx].priceForSaleRateBookkeep=self.item.materials[idx].priceForSaleRate
+
+
                 saveField('materials')
             }
         }
@@ -668,6 +746,7 @@
 
         function getPrice(m) {
             //console.log(m)
+
             if(self.item.currency==m.item.currency){
                 m.priceRate=m.price
             }else{
@@ -678,9 +757,12 @@
                 let rate =materialCurrencyRate/rnCurrencyRate;
                 m.priceRate=Math.round((m.price/rate)*100)/100
             }
+
+
             //console.log(m.priceRate)
             return (m.priceRate).toFixed(2)
         }
+
         function getPriceForSale(m) {
             if(self.item.currency==m.item.currency){
                 m.priceForSaleRate=m.priceForSale;
@@ -695,6 +777,25 @@
             //console.log(m.priceForSaleRate)
             return (m.priceForSaleRate).toFixed(2)
         }
+        function setPriceForSaleBookkeep(m) {
+            //console.log('b',m.priceForSale)
+            m.priceForSaleRate=m.priceForSaleRateBookkeep;
+            if(self.item.currency==m.item.currency){
+                m.priceForSale=m.priceForSaleRateBookkeep;
+            }else{
+                var rnCurrency=(self.item.currency)?self.item.currency:'UAH';
+                var rnCurrencyRate=(currency[rnCurrency]&& currency[rnCurrency][0])?currency[rnCurrency][0]:1;
+                var materialCurrency = (m.item.currency)?m.item.currency:'UAH';
+                let materialCurrencyRate =(currency[materialCurrency]&& currency[materialCurrency][0])?currency[materialCurrency][0]:1;
+                let rate =materialCurrencyRate/rnCurrencyRate;
+                m.priceForSale = Math.round((m.priceForSaleRateBookkeep*rate)*100)/100
+            }
+            //console.log('a',m.priceForSale)
+            saveField('materials')
+        }
+
+
+
         function getSum(m) {
             m.sum = Math.round((m.priceForSaleRate*m.qty)*100)/100
             return (m.sum).toFixed(2)
@@ -713,7 +814,7 @@
             $q.when()
                 .then(function () {
                     if(m.qty<=0){
-                        return Confirm('количество меньше 1, удалить позицию из накладной?').then(function () {
+                        return Confirm('Количество товара меньше 1. Удалить позицию из накладной?').then(function () {
                             throw 'позиция удалена'
                         })
                     }
@@ -769,8 +870,12 @@
             activeRN:activeRN,
             reserveRN:reserveRN
         }
-        function getList(paginate,query){
-            return Items.query({perPage:paginate.rows ,page:paginate.page,query:query,search:paginate.search} ).$promise
+        function getList(paginate,query,populate){
+            var q = {perPage:paginate.rows ,page:paginate.page,query:query,search:paginate.search};
+            if(populate){
+                q.populate=populate;
+            }
+            return Items.query( q).$promise
                 .then(getListComplete)
                 .catch(getListFailed);
             function getListComplete(response) {

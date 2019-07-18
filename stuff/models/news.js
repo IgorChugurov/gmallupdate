@@ -206,21 +206,36 @@ function img_transform(item){
             })
             for(let i=0;i<item.blocks.length;i++){
                 if(!item.blocks[i].is){continue}
-                if(item.blocks[i].useImg){
-                    if(item.blocks[i].img){
-                        o.img=item.blocks[i].img;
-                        o.imgs=null;
-                        o.video=null;
-                    }else if(item.blocks[i].imgs && item.blocks[i].imgs.length){
-                        o.imgs=item.blocks[i].imgs;
-                        o.img=null;
-                        o.video=null;
-                    }else if(item.blocks[i].videoLink){
-                        o.imgs=null;
-                        o.img=null;
-                        o.video=item.blocks[i].videoLink;
+                try{
+                    if(item.blocks[i].useImg){
+                        if(item.blocks[i].img){
+                            o.img=item.blocks[i].img;
+                            o.imgs=null;
+                            o.video=null;
+                        }else if(item.blocks[i].imgs && item.blocks[i].imgs.length){
+                            o.imgs=item.blocks[i].imgs;
+                            o.img=null;
+                            o.video=null;
+                        }else if(item.blocks[i].videoLink){
+                            o.imgs=null;
+                            o.img=null;
+                            o.video=item.blocks[i].videoLink;
+                        }else if(item.blocks[i].stuffs && item.blocks[i].stuffs.length){
+                            o.imgs=item.blocks[i].stuffs.map(s=>{
+                                if(s.gallery && s.gallery[0]){
+                                    if(s.gallery[0].thumb){
+                                        return {img:s.gallery[0].thumb}
+                                    }else{
+                                        return {img:s.gallery[0].img}
+                                    }
+                                }
+                            });
+                            o.img=null;
+                            o.video=null;
+                        }
                     }
-                }
+                }catch(err){console.log(err)}
+
                 if(item.blocks[i].useDesc && ((item.blocks[i].desc && typeof item.blocks[i].desc=='string') || (item.blocks[i].descL && typeof item.blocks[i].descL=='object'))){
 
                     o.desc=null;
@@ -421,6 +436,7 @@ NewsSchema.statics = {
         }
         this.find(criteria)
             .select('name date gallery url index actived send blocks img imgs descShort video nameL img_tr translated')
+            .populate('blocks.stuffs','gallery')
             .sort({'date': -1}) // sort by date
             .limit(options.perPage)
             .skip(options.perPage * options.page)

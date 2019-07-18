@@ -1,0 +1,227 @@
+@if $className=="h3" {
+  @media  (max-width: 1500px) and (min-width: 1301px) {
+    h3 {
+      @if $top {
+        top: $top*0.9;
+      }
+      @if $bottom {
+        bottom: $bottom*0.9;
+      }
+      @if $right {
+        right: $right*0.9;
+      }
+      @if $left {
+        right: $left*0.9;
+      }
+      @if ($font-size){
+        @if ($font-size>60px) {
+          font-size: $font-size*0.9;
+        }
+        @if ($font-size<20px) {
+          font-size: $font-size;
+        }
+        @if ($font-size==20px) {
+          font-size: $font-size;
+        }
+      }
+      @if $margin-right {
+        margin-right: $margin-right*0.9;
+      }
+      @if $margin-left {
+        margin-left: $margin-left*0.9;
+      }
+
+    }
+  }
+  @media  (max-width: 1300px) and (min-width: 1025px){
+    h3 {
+      @if ($font-size){
+        @if ($font-size<20px){
+          font-size: $font-size;
+        }
+        @if ($font-size==20px){
+          font-size: $font-size;
+        }
+        @if ($font-size>60px){
+          font-size: $font-size*0.8;
+        }
+      }
+
+      @if $letter-spacing {
+        letter-spacing: $letter-spacing*0.8;
+      }
+
+      @if $margin-right {
+        margin-right: $margin-right*0.8;
+      }
+      @if $margin-left {
+        margin-left: $margin-left*0.8;
+      }
+    }
+  }
+  @media  (max-width: 992px) and (min-width: 380px){
+    h3 {
+      @if ($font-size){
+        /*@if ($font-size<20px){
+          font-size: $font-size;
+        }
+        @if ($font-size==20px) {
+          font-size: $font-size;
+        }*/
+        /*@if($font-size>60px ){
+          font-size: $font-size*0.7;
+        }*/
+      }
+
+      @if $letter-spacing {
+        letter-spacing: $letter-spacing*0.7;
+      }
+
+      @if $margin-right {
+        margin-right: $margin-right*0.7;
+      }
+      @if $margin-left {
+        margin-left: $margin-left*0.7;
+      }
+    }
+  }
+}
+@if $className=="container" {
+  @media  (max-width: 1200px) and (min-width: 1101px) {
+    .container {
+      @if $width==65%{
+        width: 70%;
+      }
+      @if $width==85% {
+        width: 85%;
+      }
+      @if $width==100% {
+        width: 100%;
+      }
+    }
+  }
+  @media  (max-width: 1100px) and (min-width: 1025px) {
+    .container {
+      @if $width==65%{
+        width: 75%;
+      }
+      @if $width==85% {
+        width: 85%;
+      }
+      @if $width==100% {
+        width: 100%;
+      }
+    }
+  }
+}
+
+
+@if $className=="btn-project" {
+  @media  (max-width: 1500px)  and (min-width: 1301px){
+    .btn-project {
+      @if $top {
+        top: $top*0.9;
+      }
+      @if $bottom {
+        bottom: $bottom*0.9;
+      }
+      @if $right {
+        right: $right*0.9;
+      }
+      @if $left {
+        left: $left*0.9;
+      }
+    }
+  }
+  @media  (max-width: 1300px) and (min-width: 1025px) {
+    .btn-project {
+      @if $top {
+        top: $top*0.8;
+      }
+      @if $bottom {
+        bottom: $bottom*0.8;
+      }
+      @if $right {
+        right: $right*0.8;
+      }
+      @if $left {
+        left: $left*0.8;
+      }
+    }
+  }
+}
+
+@if $className=="nav-box" {
+  @media  (max-width: 1500px)  and (min-width: 1301px){
+    .nav-box {
+      @if $top {
+        top: $top*0.9;
+      }
+      @if $bottom {
+        bottom: $bottom*0.9;
+      }
+      @if $right {
+        right: $right*0.9;
+      }
+      @if $left {
+        left: $left*0.9;
+      }
+    }
+  }
+  @media  (max-width: 1300px) and (min-width: 1025px) {
+    .nav-box {
+      @if $top {
+        top: $top*0.8;
+      }
+      @if $bottom {
+        bottom: $bottom*0.8;
+      }
+      @if $right {
+        right: $right*0.8;
+      }
+      @if $left {
+        left: $left*0.8;
+      }
+    }
+  }
+}
+/*@if $className=="box-news-img" {
+  .tablet-wrapper {
+    .box-news-img {
+      min-height: 100px;
+      @if $margin-top {
+        margin-top: $margin-top*0.5;
+      }
+      @if $margin-bottom{
+        margin-bottom: $margin-bottom*0.5;
+      }
+    }
+  }
+  .mobile-wrapper {
+    .box-news-img {
+      min-height: 100px;
+      @if $margin-top {
+        margin-top: 20px;
+      }
+      @if $margin-bottom{
+        margin-bottom: 20px;
+      }
+    }
+  }
+}*/
+/*@if $className=="home-section-header" {
+  .tablet-wrapper {
+    .home-section-header {
+      @if $top {
+        top:$top*0.5
+      }
+    }
+  }
+  .mobile-wrapper {
+    .home-section-header {
+      @if $top {
+        top:$top*0.5
+      }
+    }
+  }
+}*/

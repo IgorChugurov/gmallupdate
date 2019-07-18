@@ -60,7 +60,15 @@
                         <label for="desc" class="control-label">описание</label>
                         <textarea type="text" id="desc" class="form-control"
                                   ng-model="item.desc"
-                                  ng-blur="$ctrl.saveField(item,'desc')"></textarea>
+                                  ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                  ng-change="$ctrl.saveField(item,'desc')"></textarea>
+                    </div>
+                    <div class="form-group label-floating ">
+                        <label for="desc" class="control-label">ips</label>
+                        <textarea type="text" id="desc" class="form-control"
+                                  ng-model="item.ips"
+                                  ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"
+                                  ng-change="$ctrl.saveField(item,'ips')"></textarea>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">

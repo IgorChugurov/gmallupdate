@@ -99,10 +99,13 @@ html(ng-app="gmall")
       link(rel='stylesheet', href='components/info/css/info.component.css')
       link(rel='stylesheet', href='views/template/partials/stuffDetail/modal/css/zoom.css')
 
+      link(rel='stylesheet', href='components/CONTENT/links/css/component.list.css')
+      link(rel='stylesheet', href='components/CONTENT/links/css/component.item.css')
+
   body
     block content
       div(class="spinner-box1",id='dimScreen',content-loaded)
-        img(class="spinner1",src='views/clinic/img/spinner.gif')
+        img(class="spinner1",src='img/spinner.gif')
       div(id="o-wrapper" class="o-wrapper",ng-cloak,ng-init1=ngInit)
         toaster-container
         div(class="navbar navbar-default navbar-fixed-top" id='topMenu')
@@ -315,6 +318,11 @@ html(ng-app="gmall")
         script(src='components/CONTENT/master/scripts/master.service.js')
         script(src='components/CONTENT/master/scripts/master-list.component.js')
         script(src='components/CONTENT/master/scripts/master-item.component.js')
+
+        script(src='components/CONTENT/links/scripts/service.js')
+        script(src='components/CONTENT/links/scripts/list.component.js')
+        script(src='components/CONTENT/links/scripts/item.component.js')
+
         script(src='components/CONTENT/groupStuffs/scripts/groupStuffs.service.js')
         script(src='components/CONTENT/groupStuffs/scripts/groupStuffs-list.component.js')
         script(src='components/CONTENT/groupStuffs/scripts/groupStuffs-item.component.js')

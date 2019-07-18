@@ -1081,6 +1081,119 @@ exports.getBlocksForAll=function(req,res,next){
     }
 }
 
+exports.synchronizeWithBookkeep=async function (req,res,next) {
+    //console.log(req.store.virtualAccount);
+    try{
+        if(!req.store.bookkeep){
+            return res.json({msg:'ok'})
+        }
+        if(!req.store.virtualAccount){
+            let error = new Error('не установлено подразделение из бухгалтерии')
+            return next(error)
+        }
+        var parse = require('csv-parse');
+
+        let  inputFile='./public/warehouse/'+req.store.subDomain+'_'+req.store.virtualAccount+'.csv'
+        //let  inputFile='./public/warehouse/'+req.store.subDomain+'_5cc19ed70e3b2718277dcd75'+'.csv'
+        //let  inputFile='./public/warehouse/'+req.store.subDomain+'_5bfe52b1022d257c742d9d1e'+'.csv'
+        let stuffs={};
+        var parser = parse({delimiter: ','}, async function (err, data) {
+            let i=0;
+            let header;
+            for(let line of data){
+                if(!i){
+                    header= line;
+                    //console.log(line)
+                }else{
+                    if(line[2] && line[3]){
+                        if(!stuffs[line[2]]){
+                            stuffs[line[2]]={}
+                        }
+                        if(!stuffs[line[2]][line[3]]){
+                            stuffs[line[2]][line[3]]={}
+                        }
+                        stuffs[line[2]][line[3]].name=line[0];
+                        stuffs[line[2]][line[3]].sku=line[1];
+                        stuffs[line[2]][line[3]].qty=Number(line[4]);
+                    }
+
+
+                }
+                i++;
+            }
+            //console.log(stuffs)
+            let query={store:req.store._id}
+            let stuffsFromBD = await Stuff.find(query).lean().exec()
+            //console.log(stuffsFromBD.length)
+            for (let itemFromDB of stuffsFromBD){
+                let id =itemFromDB._id.toString();
+                itemFromDB.actived=false;
+                for(let k in itemFromDB.stock){
+                    itemFromDB.stock[k].quantity=0;
+                }
+                if(stuffs[id]){
+                    let actived = false;
+                    for(let sort in stuffs[id]){
+                        if(stuffs[id][sort] && stuffs[id][sort].qty && itemFromDB.stock[sort]){
+                            itemFromDB.stock[sort].quantity=stuffs[id][sort].qty;
+
+                            if(!itemFromDB.actived){
+                                itemFromDB.actived=true;
+                            }
+                            //console.log(itemFromDB.name,' ',itemFromDB.artikul,itemFromDB.stock[sort].quantity)
+                        }
+                    }
+                    /*if(itemFromDB.actived){
+                        console.log(itemFromDB.stock)
+                    }*/
+                }else{
+                    console.log('нет в базе',itemFromDB.name,' ',itemFromDB.artikul,' ',itemFromDB.url)
+                }
+                /*console.log(itemFromDB.name)
+                console.log(itemFromDB.stock)
+*/
+                let o = {stock:itemFromDB.stock,actived:itemFromDB.actived};
+                if(itemFromDB.actived && itemFromDB.archived){
+                    //console.log(o)
+                    o.archived=false;
+                }
+                let result = await Stuff.update({_id:itemFromDB._id},{$set:o})
+
+            }
+            console.log('done')
+        });
+        fs.createReadStream(inputFile).pipe(parser);
+
+    }catch (err){
+        return next(err)
+        console.log(err)
+    }
+
+
+    res.json({msg:'ok'})
+}
+
+exports.changeUrl= async function(req,res,next) {
+    let q = {store:req.store._id,_id:req.params.stuff};
+    let stuff = await Stuff.findOne(q).lean().exec();
+    if(stuff){
+        //console.log(stuff.nameL)
+        try{
+            //console.log(stuff.nameL[req.store.lang])
+            stuff.url = await getUrl.createAsync(Stuff,req.store._id,stuff.nameL[req.store.lang],'Stuff');
+        }catch(err){
+            console.log(err)
+        }
+
+        let result  = await Stuff.update({_id:stuff._id},{$set:{url:stuff.url}});
+        //console.log(result)
+        return res.json({msg:'ok'})
+    }else{
+        let err = new Error('not found');
+        return next(err)
+    }
+}
+
 
 
 

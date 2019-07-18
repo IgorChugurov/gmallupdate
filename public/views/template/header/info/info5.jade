@@ -6,15 +6,15 @@ div(class=dj[key].wrapclass+pullClass,set-animate=dj[key].blockAnimate,data-anim
                 each page,index in stats
                     li
                         - var hr = "/stat/"+page.url
-                        a(href=hr,set-animate=dj[key].animate,data-animation=dj[key].animate)
+                        a(href=hr,set-animate=dj[key].animate,data-animation=dj[key].animate,ng-class="{'active':$state.current.name=='stat.item' && $stateParams.id=='"+page.url+"'}")
                             span(class="part")
                                 =page.name
         else
             div(class=c,style='float:left')
-                a(href="/stat/" + stats[0].url)
+                a(href="/stat/" + stats[0].url,ng-class="{'active':$state.current.name=='stat.item' && $stateParams.id==='"+stats[0].url+"'}")
                     span(set-animate=dj[key].animate,data-animation=dj[key].animate)=stats[0].name
             div(class=c,style='float:left')
-                a(href="",ng-click="goToInfo()")
+                a(href="",ng-class="{'active':$state.current.name=='stat.item' && $stateParams.id!=='"+stats[0].url+"'}")
                     span(class="part",set-animate=dj[key].animate,data-animation=dj[key].animate)
                         span=lang.info
                         span(class="caret")

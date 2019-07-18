@@ -43,6 +43,7 @@
             saveField:saveField,
             selectItem:selectItem,
             select:selectItem,
+            selectStuffs:selectItems,
             selectItemWithSort:selectItemWithSort,
             getServicesForOnlineEntry:getServicesForOnlineEntry,
             getAllBonus:getAllBonus,
@@ -578,6 +579,7 @@
                         console.log('tag',tag)
 
                     }*/
+                    //console.log(Number(stuff.stock[k].quantity))
                     if(tag){
                         return {_id:k,index:tag.index,name:tag.name,quantity:Number(stuff.stock[k].quantity)}
                     }else{
@@ -590,8 +592,12 @@
                     return a.index-b.index
                 })
                 /*console.log(stuff.stock)
-                console.log(stuff.stockKeysArray)*/
+                console.log(JSON.stringify(stuff.stockKeysArray))*/
                 var sort_Id=null;
+                if($state.current.name==='stuffs.stuff' && $stateParams.sort && $stateParams.stuffUrl===stuff.url && !stuff.stuffFromList && keys.indexOf($stateParams.sort)>-1){
+                    stuff.sort=$stateParams.sort;
+
+                }
                 //console.log(stuff)
                 stuff.stockKeysArray.forEach(function (key) {
                     //console.log(key,stuff.stock[key._id])
@@ -664,7 +670,9 @@
                         if(stuff.multiple && stuff.minQty){
                             key.quantity= Number(stuff.minQty);
                         }else{
-                            key.quantity=1;
+                            if($state.current.name!='frame.stuffs.stuff' && $state.current.name!='frame.stuffs'){
+                                key.quantity=1;
+                            }
                             stuff.minQty=1;
                         }
                     }
@@ -675,6 +683,8 @@
                         stuff.filterActiveTagName=stuff.stock[key._id].name;
                     }
                 })
+
+                //console.log("JSON.stringify(stuff.stockKeysArray)",JSON.stringify(stuff.stockKeysArray))
 
                 if(stuff.stockKeysArray.length && sort_Id){
                     _changeSortOfStuff.call(stuff,sort_Id);
@@ -926,9 +936,9 @@
                 return $q.reject(error);
             }
         }
-        function search(search,setData){
+        function search(search,setData,allStuffs){
             // setData - если ищем товар в админке для дальнейшего использования необходимо получить с сервера все данные
-            var data ={search:search,setData:setData};
+            var data ={search:search,setData:setData,allStuffs:allStuffs};
             return Items.query(data).$promise
                 .then(getListComplete)
                 .catch(getListFailed);
@@ -1609,6 +1619,23 @@
             })
 
         }
+        function selectItems(){
+            return $q(function(resolve,reject){
+                var modalInstance = $uibModal.open({
+                    animation: true,
+                    templateUrl: 'components/stuff/modal/selectStuffsWithSortModal.html',
+                    controller: selectItemsCtrl,
+                    controllerAs:'$ctrl',
+                    size: 'lg',
+                });
+                modalInstance.result.then(function (stuffs) {
+                    resolve(stuffs)
+                },function(){
+                    reject()
+                });
+            })
+
+        }
         function getServicesForOnlineEntry(){
             //console.log('stuffsService',stuffsService)
             if(stuffsService && stuffsService.length){return stuffsService}
@@ -1982,6 +2009,132 @@
         }
         function getFilterName(_id){
             return self.filters.getOFA('_id',_id ).name||null;
+        }
+
+    }
+    selectItemsCtrl.$inject=['$q','Stuff','$uibModalInstance','Filters','FilterTags','exception','global'];
+    function selectItemsCtrl($q,Stuff,$uibModalInstance,Filters,FilterTags,exception,global){
+        var self=this;
+        self.global=global;
+        self.stuffs=[];
+        self.name='';
+        var paginate={page:0,rows:30,items:0}
+        self.selectedStuffs=[];
+
+        self.deleteStuff=deleteStuff;
+
+        self.getFilterName=getFilterName;
+        self.search = function(name){
+            //console.log(name)
+            if (name.length<3){return}
+            $q.when()
+                .then(function(){
+                    return Stuff.search(name,true,true)
+                })
+                .then(function(res){
+                    if(!global.get('seller') || !global.get('seller').val){
+                        self.stuffs=res.map(function (s) {
+                            //console.log(s)
+                            for(var i=0;i<s.stockKeysArray.length;i++){
+                                if(!s.stockKeysArray[i].quantity){
+                                    s.stockKeysArray.splice(i,1)
+                                    i--;
+                                }
+                            }
+                            return s;
+                        }).filter(function(s){
+                            // /console.log(s)
+                            return s.actived && s.stockKeysArray.length})
+                        //console.log(self.stuffs)
+                    }else{
+                        self.stuffs=res;
+                    }
+                })
+
+
+            return;
+            if(query){
+                if (!query.$and){query={$and:[query]}}
+                query.$and.push({$or:[{name:name},{artikul:name}]})
+            }else{
+                query={$or:[{name:name},{artikul:name}]}
+            }
+            Stuff.getList(paginate,query).then(function(res){
+                query=angular.copy(cashQuery)
+                if(!global.get('seller') || !global.get('seller').val){
+                    self.stuffs=res.map(function (s) {
+                        //console.log(s)
+                        for(var i=0;i<s.stockKeysArray.length;i++){
+                            if(!s.stockKeysArray[i].quantity){
+                                s.stockKeysArray.splice(i,1)
+                                i--;
+                            }
+                        }
+                        return s;
+                    }).filter(function(s){
+                        // /console.log(s)
+                        return s.actived && s.stockKeysArray.length})
+                    //console.log(self.stuffs)
+                }else{
+                    self.stuffs=res;
+                }
+
+            })
+        }
+        self.addStuff=function(stuff){
+            if(stuff.sortsOfStuff && stuff.sortsOfStuff.filter && !stuff.sort){
+                exception.catcher('ошибка')('выберите разновидность')
+            }else {
+                /*var inCart= stuff.getDataForCart()
+                if(inCart.sort){
+                    inCart.addCriterionName=getTagName(inCart.sort);
+                }*/
+                for(var i =0;i<self.selectedStuffs.length;i++){
+                    if(self.selectedStuffs[i]._id===stuff._id && self.selectedStuffs[i].sort===stuff.sort){
+                         return exception.catcher('ошибка')('уже добавлен')
+                    }
+                }
+                var o = {
+                    _id:stuff._id,
+                    name:stuff.name,
+                    artikul:stuff.artikul,
+                    sort:stuff.sort,
+                    sortName:stuff.sortName,
+                }
+                self.selectedStuffs.push(o);
+            }
+        }
+        self.done=function(){
+            $uibModalInstance.close(self.selectedStuffs);
+        }
+        self.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+        activate()
+        function activate(){
+            $q.when()
+                .then(function(){
+                    return Filters.getFilters()
+                })
+                .then(function(filters){
+                    self.filters=filters;
+                })
+                .then(function(){
+                    return FilterTags.getFilterTags()
+                })
+                .then(function(filterTags){
+                    self.filterTags=filterTags;
+                })
+                .catch(function(err){
+                    console.log(err)
+                })
+        }
+        function getFilterName(_id){
+            var o = self.filters.getOFA('_id',_id )
+            return (o && o.name)?o.name:'';
+        }
+        function deleteStuff(i) {
+            self.selectedStuffs.splice(i,1)
         }
 
     }

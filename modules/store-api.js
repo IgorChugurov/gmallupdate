@@ -14,11 +14,12 @@ let cache={};
 const seconds = 30;
 module.exports = {
     getStore: function (req, res, next) {
-        //console.log('req.url',req.url)
+        //console.log('req.url',req.url,req.query)
         var store = (req.body.store) ? req.body.store : (req.params.store || req.query.store)
         //console.log(config.storeHost)
         //
         let urll=urlForStores + "/api/collections/Store/" + store;
+        //console.log('urll',urll)
         if(req.onPhotoHost && ipHost && ipHost.local){
             urll = urlForStoresForLocal + "/api/collections/Store/" + store;
         }
@@ -44,6 +45,7 @@ module.exports = {
             }
             try {
                 req.store = JSON.parse( response.body );
+                //console.log("req.store",req.store.nameXML)
                 if (!req.store.lang) {
                     req.store.lang = 'ru'
                 }

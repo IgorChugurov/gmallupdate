@@ -214,7 +214,7 @@ select {
   background-color: #e2e2e2; }
 
 .ui-select-bootstrap .ui-select-choices-row.active > a {
-  background-color: #82824b; }
+  background-color: rgba(130, 130, 75, 0.88); }
 
 .ui-select-bootstrap .ui-select-choices-row.active > a span {
   color: #fff; }
@@ -227,13 +227,13 @@ ul.pagination {
 
 .pagination > li > a {
   font-size: 16px;
-  color: #82824b;
+  color: rgba(130, 130, 75, 0.88);
   border: none; }
 
 .pagination > li > a:hover,
 .pagination > li > a:active,
 .pagination > li > a:focus {
-  color: #82824b;
+  color: rgba(130, 130, 75, 0.88);
   background-color: rgba(204, 204, 204, 0.22);
   border: none; }
 
@@ -253,7 +253,7 @@ ul.pagination {
 
 .pagination > .disabled > a,
 .pagination > .disabled > a:hover {
-  color: #82824b;
+  color: rgba(130, 130, 75, 0.88);
   border: none; }
 
 /*help-block*/
@@ -270,7 +270,7 @@ ul.pagination {
   box-shadow: none;
   border-color: #f02222; }
 
-/*transparent*/
+/*standart*/
 .btn {
   transition: all 0.3s ease-out; }
 
@@ -302,8 +302,8 @@ ul.pagination {
   font-size: 16px;
   border: 1px solid #82824b;
   border-radius: 0;
-  background-color: transparent;
-  color: #82824b; }
+  background-color: #82824b;
+  color: #ffffff; }
 
 .btn-project:hover,
 .btn-project:focus,
@@ -324,28 +324,24 @@ ul.pagination {
 .btn.disabled, .btn[disabled]:hover,
 fieldset[disabled] .btn:hover {
   background-color: #82824b;
-  color: #ffffff;
   border: 1px solid #82824b;
+  color: #ffffff;
   opacity: 0.8; }
 
-/*.btn-project.btn-border {
-  background-color: transparent;
-  border: $border-width  solid $addColor1;
-  color: $addColor1;
-}
+.btn-project.btn-border {
+  background-color: transparent; }
+
 .btn-project.btn-border:hover,
 .btn-project.btn-border:focus {
-  background-color: $addColor1;
-  border: $border-width  solid $addColor1;
-  color: $addColor4;
-}*/
+  background-color: #82824b; }
+
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn {
   cursor: not-allowed;
   background-color: #82824b;
-  color: #ffffff;
   border: 1px solid #82824b;
+  color: #ffffff;
   opacity: 0.8; }
 
 .btn.disabled:hover,
@@ -364,7 +360,6 @@ fieldset[disabled] .btn:hover {
   font-size: 16px;
   background-color: #82824b;
   border: 1px solid #82824b;
-  font-size: 16px;
   color: #ffffff; }
 
 .btn-project-inv:hover,
@@ -383,8 +378,8 @@ fieldset[disabled] .btn:hover {
 .btn-project-inv:active.focus,
 .btn-project-inv.active.focus,
 .open > .dropdown-toggle.btn-project-inv.focus {
-  background-color: transparent;
-  color: #82824b;
+  background-color: #82824b;
+  color: #ffffff;
   border: 1px solid #82824b; }
 
 .btn-project .icon-btn,
@@ -401,33 +396,152 @@ fieldset[disabled] .btn:hover {
   display: inline-block;
   vertical-align: middle; }
 
-.btn-project.btn-noborder {
+.btn-project-noborder {
   background-color: transparent;
   border: none;
   color: #82824b; }
 
-.btn-project.btn-noborder:active,
-.btn-project.btn-noborder:focus {
+.btn-project-noborder:hover {
   border: none; }
 
-.btn-project.btn-noborder:hover {
+.btn-project-noborder-inv {
   color: #ffffff; }
 
-/*.mobile-wrapper .btn-project */
-/*.tablet-wrapper .btn-project{
-  @if $width{
-    min-width: $width*0.8;
-  }
-  @if font-size{
-    font-size: $font-size*0.8;
-  }
-  letter-spacing: 0;
+/*confirm*/
+/*.modal-body.confirm .btn-project.btn-modal{
+  min-width: 100px;
+}*/
+/*.mobile-wrapper .home-banner.half-section-banner .banner-content .btn-project {
+        font-size: 18px;
+    }
+
+.mobile-wrapper  .home-banner.half-section-banner .banner-content .btn-project {
+    letter-spacing: 0;
+}*/
+/*navbar-toggle*/
+/*
+.navbar-toggle {
+    display: block;
+    width: 60px;
+    height: 60px;
+    z-index: 2000;
+    margin-top: 6px;
+    margin-bottom: 6px;
 }
-.mobile-wrapper .btn-project {
-  @if $width{
-    min-width: $width*0.7;
+.navbar-toggle .icon-bar {
+    background-color: $color;
+    height: 3px;
+    width: 100%;
+    opacity: 1;
+}
+.navbar-toggle:hover .icon-bar {
+    background-color: $color;
+    opacity: 0.8;
+}*/
+/*animation*/
+.btn-animation {
+  /*background: none;
+  border: 0;
+  box-sizing: border-box;
+  margin: 1em;
+  padding: 1em 2em;*/
+  box-shadow: inset 0 0 0 2px transparent;
+  position: relative;
+  vertical-align: middle; }
+  .btn-animation::before, .btn-animation::after {
+    box-sizing: inherit;
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%; }
+
+/*.center {
+  &:hover {
+    color: purple;
+  }
+
+  // Set up base styles, we're going to scale instead of animating width/height
+  &::before,
+  &::after {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    transform-origin: center; // Ensure scaling is done from the center (expands outwards)
+  }
+
+  // scale3d(<scale-horizontal>, <scale-vertical>, <scale-depth>);
+  &::before {
+    border-top: 2px solid purple;
+    border-bottom: 2px solid purple;
+    transform: scale3d(0,1,1); // Shrink only width
+  }
+
+  &::after {
+    border-left: 2px solid purple;
+    border-right: 2px solid purple;
+    transform: scale3d(1,0,1); // Shrink only height
+  }
+
+  &:hover::before,
+  &:hover::after {
+    transform: scale3d(1,1,1); // Show full-size
+    transition: transform 0.5s;
   }
 }*/
+.spin {
+  width: 5em;
+  height: 5em;
+  padding: 0; }
+  .spin:hover {
+    color: blue; }
+  .spin::before, .spin::after {
+    top: 0;
+    left: 0; }
+  .spin::before {
+    border: 2px solid transparent; }
+  .spin:hover::before {
+    border-top-color: blue;
+    border-right-color: blue;
+    border-bottom-color: blue;
+    transition: border-top-color 0.15s linear, border-right-color 0.15s linear 0.1s, border-bottom-color 0.15s linear 0.2s; }
+  .spin::after {
+    border: 0 solid transparent; }
+  .spin:hover::after {
+    border-top: 2px solid blue;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    transform: rotate(270deg);
+    transition: transform 0.4s linear 0s, border-left-width 0s linear 0.35s; }
+
+.circle {
+  border-radius: 100%;
+  box-shadow: none; }
+  .circle::before, .circle::after {
+    border-radius: 100%; }
+
+.thick {
+  color: red; }
+  .thick:hover {
+    color: #fff;
+    font-weight: 700; }
+  .thick::before {
+    border: 2.5em solid transparent;
+    z-index: -1; }
+  .thick::after {
+    mix-blend-mode: color-dodge;
+    z-index: -1; }
+  .thick:hover::before {
+    background: red;
+    border-top-color: red;
+    border-right-color: red;
+    border-bottom-color: red;
+    transition: background 0s linear 0.4s, border-top-color 0.15s linear, border-right-color 0.15s linear 0.15s, border-bottom-color 0.15s linear 0.25s; }
+  .thick:hover::after {
+    border-top: 2.5em solid red;
+    border-left-width: 2.5em;
+    border-right-width: 2.5em; }
+
 .nav-down {
   z-index: 1049;
   position: fixed;
@@ -484,7 +598,7 @@ fieldset[disabled] .btn:hover {
     margin-bottom: 20px; }
   .modalProject .modal-content .tab-head a {
     font-size: 14px;
-    color: #82824b; }
+    color: rgba(130, 130, 75, 0.88); }
   .modalProject .modal-content .head-box {
     padding-top: 10px;
     padding-bottom: 10px; }
@@ -1129,7 +1243,7 @@ body.ng-pageslide-body-closed::before {
   min-height: 100vh; }
 
 .ui-select-bootstrap .ui-select-choices-row.active > span {
-  color: #82824b; }
+  color: rgba(130, 130, 75, 0.88); }
 
 /*slideMenuhumburger*/
 .humburger {
@@ -2233,7 +2347,7 @@ body.ng-pageslide-body-closed::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #82824b;
+  background: rgba(130, 130, 75, 0.88);
   -webkit-transform: scaleX(0);
   transform: scaleX(0);
   -webkit-transform-origin: 0 50%;
@@ -2274,7 +2388,7 @@ body.ng-pageslide-body-closed::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #82824b;
+  background: rgba(130, 130, 75, 0.88);
   -webkit-transform: scaleX(0);
   transform: scaleX(0);
   -webkit-transform-origin: 100% 50%;
@@ -2306,7 +2420,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 1px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out, left .5s ease-in-out;
   left: 0;
   bottom: 0px; }
@@ -2317,7 +2431,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 1px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out;
   left: 0;
   bottom: 0; }
@@ -2342,7 +2456,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 1px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out, left .5s ease-in-out;
   right: 0;
   bottom: 0px; }
@@ -2353,7 +2467,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 1px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out;
   right: 0;
   bottom: 0; }
@@ -2378,7 +2492,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 1px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out, left .5s ease-in-out;
   left: 0;
   bottom: 9px; }
@@ -2389,7 +2503,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 1px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out;
   left: 0;
   bottom: 9px; }
@@ -2413,7 +2527,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 5px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out, left .5s ease-in-out;
   right: 0;
   bottom: 0px; }
@@ -2424,7 +2538,7 @@ body.ng-pageslide-body-closed::before {
   content: "";
   height: 5px;
   width: 0;
-  background-color: #82824b;
+  background-color: rgba(130, 130, 75, 0.88);
   transition: width .5s ease-in-out;
   right: 0;
   bottom: 0; }
@@ -2687,18 +2801,18 @@ body.ng-pageslide-body-closed::before {
   .cabinet .nav-tabs.nav-justified > .active > a,
   .cabinet .nav-tabs.nav-justified > .active > a:hover,
   .cabinet .nav-tabs.nav-justified > .active > a:focus {
-    color: #82824b;
+    color: rgba(130, 130, 75, 0.88);
     border-bottom: 1px solid #666; }
   .cabinet .cancel-entry,
   .cabinet .change {
-    color: #82824b; }
+    color: rgba(130, 130, 75, 0.88); }
   .cabinet .header-order {
     margin-bottom: 20px; }
   .cabinet .btn-pay input {
     font-size: 12px;
     max-width: 150px; }
   .cabinet .ui-select-bootstrap .ui-select-choices-row.active > span {
-    background-color: #82824b;
+    background-color: rgba(130, 130, 75, 0.88);
     padding: 7px 20px; }
   @media (max-width: 1200px) {
     .cabinet .container {
@@ -2760,17 +2874,17 @@ body.ng-pageslide-body-closed::before {
   display: inline-block; }
 
 .icon-likes-img {
-  background: url("/img/icon/likes/likes.png") center center no-repeat;
-  width: 25px;
-  height: 25px;
-  background-size: 25px;
+  background: url("/img/icon/likes/like.png") center center no-repeat;
+  width: 30px;
+  height: 30px;
+  background-size: 30px;
   display: inline-block; }
 
 .icon-likes-inverse {
-  background: url("/img/icon/likes/hearts.png") center center no-repeat;
-  width: 25px;
-  height: 25px;
-  background-size: 25px;
+  background: url("/img/icon/likes/favorite-heart-button1.png") center center no-repeat;
+  width: 30px;
+  height: 30px;
+  background-size: 30px;
   display: inline-block; }
 
 .icon-caret-img {
@@ -2898,16 +3012,16 @@ body.ng-pageslide-body-closed::before {
 
 .icon-cancel-img {
   background: url("/img/icon/cancel/02_X.png") center center no-repeat;
-  width: 15px;
-  height: 15px;
-  background-size: 15px;
+  width: 20px;
+  height: 20px;
+  background-size: 20px;
   display: inline-block; }
 
 .icon-cancel-inverse {
   background: url("/img/icon/cancel/02_X.png") center center no-repeat;
-  width: 15px;
-  height: 15px;
-  background-size: 15px;
+  width: 20px;
+  height: 20px;
+  background-size: 20px;
   display: inline-block; }
 
 .icon-down-img {
@@ -2922,6 +3036,20 @@ body.ng-pageslide-body-closed::before {
   width: 30px;
   height: 30px;
   background-size: 30px;
+  display: inline-block; }
+
+.icon-downslide-img {
+  background: url("/img/icon/downslide/down-arrow5.png") center center no-repeat;
+  width: 16px;
+  height: 14px;
+  background-size: 16px;
+  display: inline-block; }
+
+.icon-upslide-img {
+  background: url("/img/icon/upslide/up-arrow5.png") center center no-repeat;
+  width: 16px;
+  height: 14px;
+  background-size: 16px;
   display: inline-block; }
 
 .icon-cancelmenu-img {

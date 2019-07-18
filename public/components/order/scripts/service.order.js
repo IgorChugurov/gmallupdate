@@ -268,7 +268,7 @@ angular.module('gmall.services')
     this.cartCount=function(){
         return order.totalCount;
     }
-    this.sendOrder=function(user){
+    this.sendOrder=function(user,opt,cabinet){
         var self=this;
         return $q.when()
             .then(function () {
@@ -278,11 +278,16 @@ angular.module('gmall.services')
                             //console.log(user)
                             throw  'не авторизирован!';
                         }
-                    } else{
+                    }else{
                         if(global.get('user' ).val && global.get('user' ).val._id){
                             order.user=global.get('user' ).val;
                             //order.profile=global.get('user').val.profile;
+                            console.log(global.get('user').val.profile)
                             order.profile=angular.copy(global.get('user').val.profile);
+                            if(!order.profile.fio){
+                                order.profile.fio=global.get('user').val.name;
+                            }
+                            //console.log(order.profile)
                         }else{
                             throw  'не авторизирован!';
                         }
@@ -348,6 +353,11 @@ angular.module('gmall.services')
                 })
             })// coupon
             .then(function(){
+                if(opt && typeof opt ==='object'){
+                    for(var key in opt){
+                        order[key]=opt[key];
+                    }
+                }
                 //throw order;
                 //console.log(order)
                 return Orders.save(order).$promise
@@ -389,7 +399,7 @@ angular.module('gmall.services')
 
                 return $q(function(resolve,reject){
                     $email.save(o,function(res){
-                        exception.showToaster('note',global.get('langNote').val.emailSent,'');
+                        //exception.showToaster('note',global.get('langNote').val.emailSent,'');
                         resolve()
                     },function(err){
                         exception.showToaster('warning',global.get('langNote').val.error,err.data)
@@ -399,6 +409,8 @@ angular.module('gmall.services')
             }) //email
             .then(function(){
                 //order.profile=global.get('user').val.profile;
+                /*если регистрация только через телефон,то письмо не отправляем*/
+                if(global.get('store').val.typeOfReg && global.get('store').val.typeOfReg.phone){return}
                 try{
                     // письмо
                     order.user=(user)?user:global.get('user').val;
@@ -440,7 +452,7 @@ angular.module('gmall.services')
 
                 return $q(function(resolve,reject){
                     $notification.save(o,function(res){
-                        exception.showToaster('note', global.get('langNote').val.sent,'');
+                        //exception.showToaster('note', global.get('langNote').val.sent,'');
                         resolve()
                     },function(err){
                         exception.catcher('error')(err);
@@ -450,6 +462,9 @@ angular.module('gmall.services')
             })//notification
             .then(function(){
                 try{
+                    if(cabinet){
+                        return $state.go('cabinet')
+                    }
                     var states= $state.get();
                     if(global.get('paps') && states.some(function(state){return state.name=='thanksPage'})){
                         var pap = global.get('paps').val.getOFA('action','order');
@@ -641,7 +656,7 @@ angular.module('gmall.services')
                         if(s.sortName){
                             n+=' '+s.sortName;
                         }
-                        error +="Необходимое количество "+n+" отсутствует. Перейдите на страницу товара и уточните наличие."
+                        error +="Указанное в корзине количество "+n+" отсутствует на складе. Уменьшите количество данного товара в корзине."
                     })
                     throw {status : "checkWarehouse", message : error};
                     //throw {status:''checkWarehouse,message:error};
@@ -679,8 +694,20 @@ angular.module('gmall.services')
         if(order.shipCost){
             o.delivery = Math.round((Number(order.shipCost))*100)/100;
         }
-
-
+        var percent=0;
+        var percentCart =0;
+        var percentCoupon = 0;
+        if(order.discount.type && order.discount.value){
+            percent = Number(order.discount.value);
+        }
+        if(order.sum0!==order.sum){
+            percentCart=order.sum/order.sum0;
+        }
+        if(order.sum!==order.couponSum){
+            percentCoupon=order.couponSum/order.sum;
+        }
+        console.log(order)
+        console.log('percentCart',percentCart)
         order.cart.stuffs.forEach(function (s) {
             //console.log(s)
             var m = {}
@@ -706,10 +733,21 @@ angular.module('gmall.services')
             m.supplierType = s.supplierType;
             m.virtualAccount=global.get('store').val.virtualAccount;
             //m.supplier = m.supplier.charAt(0).toUpperCase() + m.supplier.slice(1);
+
+            if((order.discount.type==3 || order.discount.type==5 || order.discount.type==6)){
+                m.priceForSale = Math.round(m.priceForSale*(100-percent))/100;
+            }else if(order.discount.type==4   && !s.priceSale){
+                m.priceForSale = Math.round(m.priceForSale*(100-percent))/100;
+            }else if(order.discount.type==7){
+                m.priceForSale = Math.round((m.priceForSale*percentCart)*100)/100;
+            }
+            if(percentCoupon!=0){
+                m.priceForSale = Math.round((m.priceForSale*percentCoupon)*100)/100;
+            }
             o.materials.push(m)
 
         })
-        console.log(o)
+        //console.log(o)
 
 
         if(!o.materials.length){
@@ -802,6 +840,10 @@ angular.module('gmall.services')
             .then(function () {
                 exception.showToaster('info','обработка данных в бухгалтерии','накладная отменена');
             })
+    }
+    
+    this.checkStuff = function (stuff,user) {
+        return $http.post('/api/orders/checkStuffInOldOrders',{stuff:stuff,user:user});
     }
 
 

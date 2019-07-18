@@ -1,14 +1,15 @@
-<div ng-hide="$ctrl.$state.current.name!='frame.Rn'">
+<div class="pns-box" ng-hide="$ctrl.$state.current.name!='frame.Rn'">
     <div class="nav-box-stuff" >
         <div class="tab-nav-stuff">
             <span class="default-btn"></span>
         </div>
         <div class="tab-nav-stuff">
             <h4 class="name-box">
-                Список расходных накладных {{$ctrl.getVirtualAccountName()}}
+                Список расходных
+                <br>накладных {{$ctrl.getVirtualAccountName()}}
             </h4>
         </div>
-        <div class="tab-nav-stuff">
+        <!--<div class="tab-nav-stuff">
             <a class="btn btn-fab btn-fab-mini btn-violet"
                ng-click="$ctrl.createItem('return')"
                title="создать возвратную накладную">
@@ -16,7 +17,7 @@
                     remove_circle
                 </i>
             </a>
-        </div>
+        </div>-->
         <div class="tab-nav-stuff date-box pull-right">
             <div class="form-group label-floating">
                 <label for="date" class="control-label">дата</label>
@@ -134,7 +135,7 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="cart-detail" ng-class="{'mobil':global.get('mobile').val}">
                 <div class="header-table">
-                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="td-list-header col-lg-3 col-md-3 col-sm-3 col-xs-3">
                         название
                     </div>
                     <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
@@ -143,16 +144,16 @@
                     <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
                         сумма
                     </div>
-                    <div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                    <!--<div class="td-list-header col-lg-1 col-md-1 col-sm-1 col-xs-1">
                         валюта
-                    </div>
+                    </div>-->
                     <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         статус
                     </div>
                     <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
                         документ
                     </div>
-                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div class="td-list-header col-lg-2 col-md-2 col-sm-2 col-xs-2 text-center">
                         редактировать
                     </div>
                     <div class="clearfix"></div>
@@ -160,7 +161,7 @@
                 <div class="stuff-admin"  ng-repeat="item in $ctrl.items">
                     <div class="" ng-class="{'mobil':global.get('mobile')}">
                         <div class="title-block-stuff" ng-class="{'mobil':global.get('mobile')}">
-                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 td-list">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 td-list">
                                 <span class="name-item">
                                     <span ng-bind="item.name"></span>
                                 </span>
@@ -169,18 +170,19 @@
                                 <span class="date">{{$ctrl.moment(item.date).format('LLL')}}</span>
                             </div>
                             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 td-list">
-                                <span ng-bind="item.sum"></span>
+                                <strong><span ng-bind="item.sum"></span></strong>
+                                <small><span ng-bind="item.currency"></span></small>
                             </div>
-                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 td-list">
+                            <!--<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 td-list">
                                 <span ng-bind="item.currency"></span>
+                            </div>-->
+                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 td-list">
+                                <span class="red" ng-show="!item.actived" >не проведена</span>
+                                <span class="green" ng-show="item.actived">проведена</span>
                             </div>
                             <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 td-list">
-                                <span  ng-show="!item.actived" >не проведена</span>
-                                <span  ng-show="item.actived">проведена</span>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 td-list">
-                                <small ng-bind="item.zakaz.typeName"></small>
-                                <span ng-bind="item.zakaz.name"></span>
+                                <span ng-bind="item.zakaz.typeName"></span>
+                                <span ng-bind="item.zakaz.name" style="text-transform: uppercase"></span>
                                     <!--<small>
                                         <p>
                                             <span ng-bind="item.nameOfTypeOfConrtAgent">

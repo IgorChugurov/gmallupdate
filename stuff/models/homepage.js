@@ -145,7 +145,7 @@ HomePageSchema.statics = {
             .populate('blocks.info','name nameL')
             .populate({
                 path: 'blocks.groupStuffs',
-                select:'name nameL desc descL url img video video1 link masters',
+                select:'name nameL desc descL url img video video1 link masters media2',
                 // Get friends of friends - populate the 'friends' array for every friend
                 populate: { path: 'masters' ,select:'name nameL url desc descL blocks'}
             })

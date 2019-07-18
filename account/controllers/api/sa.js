@@ -14,6 +14,7 @@ var VirtualAccount=mongoose.model('VirtualAccount');
 var Material=mongoose.model('Material');
 var ClosePeriod=mongoose.model('ClosePeriod');
 var calculate=require('../calculate');
+var csvWriter = require('csv-write-stream')
 
 var Excel = require('exceljs');
 
@@ -311,9 +312,7 @@ function calculateDiff(sa,currency) {
 
 exports.makeBalances = async function (req, res, next) {
     try {
-
         let Model = Material, virtualAccounts, sa, middleDate
-
         if (req.params.id == 'allVirtualAccounts') {
             /*формирование остатков по материалам  на текущую дату по всем подразделениям*/
             virtualAccounts = await VirtualAccount.find({store: req.store._id, actived: true}).lean().exec();
@@ -797,7 +796,6 @@ async function handleDataForGetBalances(store,virtualAccount,itemsFromBD,middleD
         /*обновляем данные для  позиций*/
         for (let itemFromDB of itemsFromBD){
             /*сначала удаляем все данные для подразделения*/
-
             itemFromDB.data = itemFromDB.data.filter(d=>d.virtualAccount).filter(d=>{
                 return ((d.virtualAccount && d.virtualAccount.toString)?d.virtualAccount.toString():d.virtualAccount)!=virtualAccount
             })
@@ -893,68 +891,62 @@ async function handleRns(query,items) {
 
         for(let rn of docs) {
             //console.log(rn.name,rn.actived,rn.reserve)
-            if(rn.reserve){
-                let r = await Rn.update({_id:rn._id},{$set:{reserve:false}})
-                //console.log(r)
-            }else{
-                const virtualAccount = (rn.virtualAccount && rn.virtualAccount.toString)?rn.virtualAccount.toString():rn.virtualAccount;
-                const rnId = (rn._id && rn._id.toString)?rn._id.toString():rn._id;
-
-                rn.materials.forEach(m=>{
-                    let supplier = (m.supplier && m.supplier.toString)?m.supplier.toString():m.supplier;
-                    let mId=(m.item._id.toString)?m.item._id.toString():m.item._id;
-                    let item=items[mId];
-                    //let item= items.find(it=>it.item==((m.item.toString)?m.item.toString():m.item));
-                    if(item){
-                        //console.log(item.data)
-                        /*let mData = item.data.find(function (d) {
-
-                            let dVA = (d.virtualAccount && d.virtualAccount.toString)?d.virtualAccount.toString():d.virtualAccount
-                            return dVA==virtualAccount && (d.supplier.toString()==supplier) && d.supplierType===m.supplierType;
-                        })*/
-
-                        let mData=item.dataO[supplier+'_'+virtualAccount];
-                        /*if(mId=='5b9e481aade3862a30f75222'){
-                            console.log('mData',mData)
-                        }*/
-                        if(!mData){
-                            mData ={virtualAccount:virtualAccount,supplier:rn.contrAgent,supplierType:rn.typeOfContrAgent,qty:0,price:0,priceForSale:0,}
-                            //item.data.push(data)
-                            item.dataO[supplier+'_'+virtualAccount]=mData;
+            const virtualAccount = (rn.virtualAccount && rn.virtualAccount.toString)?rn.virtualAccount.toString():rn.virtualAccount;
+            const rnId = (rn._id && rn._id.toString)?rn._id.toString():rn._id;
+            rn.materials.forEach(m=>{
+                let supplier = (m.supplier && m.supplier.toString)?m.supplier.toString():m.supplier;
+                let mId=(m.item._id.toString)?m.item._id.toString():m.item._id;
+                let item=items[mId];
+                if(item){
+                    let mData=item.dataO[supplier+'_'+virtualAccount];
+                    if(!mData){
+                        mData ={virtualAccount:virtualAccount,supplier:rn.contrAgent,supplierType:rn.typeOfContrAgent,qty:0,price:0,priceForSale:0,}
+                        item.dataO[supplier+'_'+virtualAccount]=mData;
+                    }
+                    if(mData){
+                        if(mData.reserve && mData.reserve.length){
+                            mData.reserve=[];
                         }
-                        /*if(mId=='5b9e481aade3862a30f75222'){
-                            console.log('mData',mData)
-                        }*/
-                        if(mData){
-                            if(mData.reserve && mData.reserve.length){
+                        /******************************/
+                        mData.qty-=m.qty
+                        mData.qty=Math.round(mData.qty*100)/100;
+                        if(mData.qty<0){
+                            throw 'На складе меньшее количесво чем в накладной '+m.item.name+' '+m.item.sku
+                        }
+                        if(rn.typeOfZakaz=='manufacture'){
+                            if(!mData.manufacture){
+                                mData.manufacture=[];
+                            }
+                            let rD = mData.manufacture.find(rd=>{
+                                return ((rd.rn && rd.rn.toString)?rd.rn.toString():rd.rn)==rnId
+                            })
+                            if(!rD){
+                                rD={
+                                    qty:0,
+                                    rn:rnId
+                                }
+                                mData.manufacture.push(rD)
+                            }
+                            rD.qty=m.qty
+                        }else if(rn.reserve && rn.typeOfZakaz=='order'){
+                            if(!mData.reserve){
                                 mData.reserve=[];
                             }
-                            /******************************/
-                            mData.qty-=m.qty
-                            mData.qty=Math.round(mData.qty*100)/100;
-                            if(mData.qty<0){
-                                throw 'На складе меньшее количесво чем в накладной '+m.item.name+' '+m.item.sku
-                            }
-                            if(rn.typeOfZakaz=='manufacture'){
-                                if(!mData.manufacture){
-                                    mData.manufacture=[];
+                            let rD = mData.reserve.find(rd=>{
+                                return ((rd.rn && rd.rn.toString)?rd.rn.toString():rd.rn)==rnId
+                            })
+                            if(!rD){
+                                rD={
+                                    qty:0,
+                                    rn:rnId
                                 }
-                                let rD = mData.manufacture.find(rd=>{
-                                    return ((rd.rn && rd.rn.toString)?rd.rn.toString():rd.rn)==rnId
-                                })
-                                if(!rD){
-                                    rD={
-                                        qty:0,
-                                        rn:rnId
-                                    }
-                                    mData.manufacture.push(rD)
-                                }
-                                rD.qty=m.qty
+                                mData.reserve.push(rD)
                             }
+                            rD.qty=m.qty
                         }
                     }
-                })
-            }
+                }
+            })
         }
     }catch (err){
         console.log(err)
@@ -1036,6 +1028,16 @@ exports.makeBalancesForExcel = async function (req, res, next) {
         if (error) {
             throw error;
         }
+        query = {store: req.store._id}
+        //query['data.virtualAccount']={$in:virtualAccounts}
+        itemsFromBD = await Material.find(query).populate('producer','name').lean().exec();
+        if(virtualAccounts.length===1){
+            let error = await createCSVFFile(req.store, itemsFromBD,virtualAccounts[0])
+            if (error) {
+                throw error;
+            }
+        }
+
 
         return res.json({msg: 'ok'})
     } catch (err) {
@@ -1075,6 +1077,40 @@ function createXLSXFile(store,materials) {
             sheetMaterials.addRow(o)
         }
 
+    }
+
+}
+async function createCSVFFile(store,materials,virtualAccount) {
+    //console.log(materials.length)
+    /*берутся все материалы из базы и если есть stuff и sort соответственно этот материал связан с разновидностью на витрине
+    * и в любом случае должен попасть в файл для синхронизации. а количество определяется уже по подразделению. так как этот материал
+    * может быть использован в другом подразделении*/
+    try{
+        let  filePath='./public/warehouse/'+store.subDomain+'_'+virtualAccount+'.csv'
+        var writer = csvWriter({ headers: ["name","sku","stuff", "sort",'quantity','va']})
+        writer.pipe(fs.createWriteStream(filePath))
+        for(let material of materials){
+            //console.log(material.name,material.sku)
+            let qty=0;
+            material.data.forEach(d=>{
+                if(d.virtualAccount==virtualAccount && d.qty){
+                    qty+=d.qty;
+                    if(d.reserve && d.reserve.length){
+
+                        d.reserve.forEach(r=>{
+                            console.log(material.name,' ',material.sku,r.qty)
+                            if(r.qty){
+                                qty+=r.qty;
+                            }
+                        })
+                    }
+                }
+            })
+            await writer.write([material.name, material.sku,material.stuff,material.sort,qty,virtualAccount])
+        }
+    }catch (err){
+        console.log(err)
+        return err
     }
 
 }

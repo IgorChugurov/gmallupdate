@@ -5,13 +5,13 @@ if(dj[key].stuffs && dj[key].stuffs.length)
                 div(class="container")
                     if(dj[key].name)
                         h2(class="text-center")=dj[key].name
-                    - var className  ="col-lg-3 col-md-3 col-sm-6 col-xs-12 stuffs-box"
+                    - var className  ="col-lg-3 col-md-3 col-sm-6 col-xs-12"
                     if(dj[key].stuffs.length == 2)
-                        - className="col-lg-6 col-md-6 col-sm-6 col-xs-12 stuffs-box"
+                        - className="col-lg-6 col-md-6 col-sm-6 col-xs-12"
                     else if(dj[key].stuffs.length == 3)
-                        - className='col-lg-4 col-md-4 col-sm-4 col-xs-12 stuffs-box'
+                        - className='col-lg-4 col-md-4 col-sm-4 col-xs-12'
                     else if(dj[key].stuffs.length == 4 || dj[key].stuffs.length == 8 || dj[key].stuffs.length == 12)
-                        - className="col-lg-3 col-md-3 col-sm-3 col-xs-12 stuffs-box"
+                        - className="col-lg-3 col-md-3 col-sm-3 col-xs-12"
 
                     each stuff in dj[key].stuffs
                         div(class=className,home-page-stuff=stuff._id)
@@ -26,7 +26,7 @@ if(dj[key].stuffs && dj[key].stuffs.length)
                             a(href=stuff.link)
                                 div(class="box-desc")
                                     if(stuff.name)
-                                        h4(class="stuff-name")
+                                        h4
                                             span=stuff.name
                                             | &nbsp;
                                             span(class="artikul")=stuff.artikul

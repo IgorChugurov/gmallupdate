@@ -2,7 +2,7 @@ extends layout
 
 block content
   div(class="spinner-box",id='dimScreenFull',ng-hide="global.get('user').val")
-    img(class="spinner",src='views/clinic/img/spinner.gif')
+    img(class="spinner",src='img/spinner.gif')
   div( ng-cloak,ng-init2=ngInit)
     toaster-container
     div(class="navbar navbar-fixed-top")
@@ -129,6 +129,7 @@ block content
     var mobileFromServer = !{JSON.stringify(mobile)};
     var local = !{JSON.stringify(local)};
   script(src=socketHref)
+
   - var favicon = photoHost+"/"+store.favicon
   script.
     (function () {
@@ -157,7 +158,7 @@ block content
   //script(src='order.scripts.min.js')
   //script(src='allorder_scripts.min.js')
 
-
+  script(src="assets/FileSaver.js-master/dist/FileSaver.js")
   if(true)
     script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru.js")
     script(src="bower_components/angular-1.6.4/i18n/angular-locale_ru-ru.js")

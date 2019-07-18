@@ -4,15 +4,15 @@
         <a class="cancel"  ng-click="$ctrl.cancel()" > </a>
     </div>
     <div class="modal-body padding-body">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center" ng-if1="$ctrl.sections.length">
-            <a class="no-collection" ng-click="$ctrl.ok(null)">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center" ng-if="$ctrl.sections.length">
+            <!--<a class="no-collection" ng-click="$ctrl.ok(null)">
                 <span><strong>Без коллекции</strong></span>
-            </a>
+            </a>-->
             <h4 class="name-box" ng-bind="$ctrl.global.get('lang').val.section"></h4>
 
-            <div class="section-all">
+            <div class="section-all inline-select"  style="display: inline-block">
                 <div class="section-name pull-left radio" ng-repeat="section in $ctrl.sections">
-                    <label>
+                    <label  class="radio-inline">
                         {{section.name}}<input ng-model="$ctrl.section" value="{{section.url}}" type="radio">
                     </label>
                     <label ng-repeat="child in section.child">

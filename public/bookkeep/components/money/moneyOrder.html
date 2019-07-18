@@ -7,7 +7,7 @@
         </a>
     </div>
     <div class="tab-nav-stuff">
-        <h4 class="name-box" ng-bind="$ctrl.textType"></h4>
+        <h4 class="name-box" > <span ng-bind="$ctrl.textType"></span>  <span style="color:red" ng-show="$ctrl.checkSumInMoneyError()">не вхатает средств</span></h4>
     </div>
 </div>
 <div class="clearfix"></div>
@@ -192,20 +192,47 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-left">
-                        <div class="form-group label-floating">
-                            <label for="sup2" class="control-label">контрагент</label>
-                            <ui-select ng-model="$ctrl.item.contrAgent"
-                                       id="sup2"
-                                       skip-focusser="true"
-                                       search-enabled="true"
-                                       ng-disabled="$ctrl.item.actived"
-                                       ng-change="$ctrl.saveField('contrAgent')"
-                                       title="выберите {{self.conrtAgent.name}}">
-                                <ui-select-match  placeholder="{{self.conrtAgent.name}}">{{$select.selected.name}}</ui-select-match>
-                                <ui-select-choices repeat="opt._id as opt in $ctrl.contrAgents| filter: $select.search">{{ opt.name }}</ui-select-choices>
-                            </ui-select>
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+                            <div class="form-group label-floating">
+                                <label for="sup2" class="control-label">контрагент</label>
+                                <ui-select ng-model="$ctrl.item.contrAgent"
+                                           id="sup2"
+                                           skip-focusser="true"
+                                           search-enabled="true"
+                                           ng-disabled="$ctrl.item.actived"
+                                           ng-change="$ctrl.saveField('contrAgent')"
+                                           title="выберите {{self.conrtAgent.name}}">
+                                    <ui-select-match  placeholder="{{self.conrtAgent.name}}">{{$select.selected.name}}</ui-select-match>
+                                    <ui-select-choices repeat="opt._id as opt in $ctrl.contrAgents| filter: $select.search">{{ opt.name }}</ui-select-choices>
+                                </ui-select>
+                            </div>
                         </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" ng-model="$ctrl.item.contrAgentExchange">
+                                    <span>внутренний обмен</span>
+                                </label>
+                            </div>
+                            <div ng-show2="$ctrl.item.contrAgentExchange">
+                                <p ng-repeat="(key, value) in $ctrl.getDataForContrAgentExchange() ">
+                                    <span ng-bind="key"></span>
+                                    <span> - </span>
+                                    <span ng-bind="value"></span>
+                                    <input type="number" class="form-control name"
+                                           ng-model="$ctrl.item.contrAgentExchangeData[key]"
+                                           ng-change="$ctrl.saveField('contrAgentExchangeData')"
+                                           ng-disabled="$ctrl.item.actived"
+                                           ng-model-options="{'updateOn':'default blur','debounce':{'default':700,'blur':0}}"/>
+                                </p>
+                            </div>
+
+                        </div>
+
                     </div>
+
+
+
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-left" ng-show="$ctrl.item._id && !$ctrl.item.actived">
                         <div class="form-group label-floating">
                             <label for="sup22" class="control-label">вид операции</label>

@@ -79,6 +79,14 @@ exports.turnover = async function(req, res, next) {
         const itemsFromBD = await Models[type].find(query).lean().exec()
         let items  = await getStartBalancesForTurnover(req.store,virtualAccount,itemsFromBD,dateStart,type);
 
+        let saQuery={type:type,store:req.store._id,actived:true,date:{$gt:dateStart},virtualAccount:virtualAccount};
+        //console.log(saQuery)
+        let saInPeriod = await ASA.findOne(saQuery).sort({date : -1}).lean().exec()
+        if(saInPeriod){
+            delete saInPeriod.items
+        }
+        //console.log(saInPeriod)
+
         query = {store:req.store._id,actived:true,date:{$lt:dateEnd,$gte:dateStart},virtualAccount:virtualAccount}
         items.forEach(item=>{
             item.dataS=JSON.parse(JSON.stringify(item.data))
@@ -112,7 +120,7 @@ exports.turnover = async function(req, res, next) {
             foldingBalancesForItem(item,currancyArr)
         })
         //console.log(items)
-        return res.json({items:items})
+        return res.json({items:items,saInPeriod:saInPeriod})
     }catch(err){return next(err)}
 }
 async function getStartBalancesForTurnover(store,virtualAccount,itemsFromBD,middleDate,typeData) {
@@ -122,6 +130,7 @@ async function getStartBalancesForTurnover(store,virtualAccount,itemsFromBD,midd
         /*находим предыдущую проведенную инвентаризацию по данному подразделению и счету ранее даты инвентаризации или текущей даты*/
         let saQuery={type:typeData,store:store._id,actived:true,date:{$lte:middleDate},virtualAccount:virtualAccount};
         let saPrevious = await ASA.findOne(saQuery).sort({date : -1}).lean().exec()
+        //console.log('saPrevious',saPrevious)
         /* запрос для выборки  - проведенные документы ранее даты инветаризации или ранее даты формирования остатков*/
         let query = {store:store._id,actived:true,date:{$lt:middleDate},virtualAccount:virtualAccount}
         /*если есть пердыдущая инвентаризация, документы позднее ее даты, если нет то с начала времен*/

@@ -1,3 +1,4 @@
+// авторизация JWT https://github.com/sahat/satellizer
 /*if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
         console.log(position)
@@ -124,9 +125,9 @@ var _filterTagsO={}
 //console.log(filtersFromServer)
 var _filtersO={}
 filtersFromServer.forEach(function(filter){
-    if(filter._id=='5bc805475f88d44b19fc97d2'){
+   /* if(filter._id=='5bc805475f88d44b19fc97d2'){
         console.log(filter)
-    }
+    }*/
     _filtersO[(filter)._id]=(filter);
     if(filter.tags && filter.tags.length){
         filter.tags.forEach(function (t,i) {
@@ -171,7 +172,7 @@ angular.module('gmall', ['ngRoute',
     //'i-comments'
 ])
 
-.run(['$rootScope', '$state', '$stateParams','global','globalSrv','$window','$location','$anchorScroll','$timeout','seoContent','$order','Campaign','$user','Witget','$auth','Account','Sections','$q','Seopage','$uibModal','Stuff','$injector','$route','$document','$transitions','$sce','$email','exception','$http','$notification','CreateContent','localStorage',function ($rootScope,$state,$stateParams,global,globalSrv,$window,$location,$anchorScroll,$timeout,seoContent,$order,Campaign,$user,Witget,$auth,Account,Sections,$q,Seopage,$uibModal,Stuff,$injector,$route,$document,$transitions,$sce,$email,exception,$http,$notification,CreateContent,localStorage){
+.run(['$rootScope', '$state', '$stateParams','global','globalSrv','$window','$location','$anchorScroll','$timeout','seoContent','$order','Campaign','$user','Witget','$auth','Account','Sections','$q','Seopage','$uibModal','Stuff','$injector','$route','$document','$transitions','$sce','$email','exception','$http','$notification','CreateContent','localStorage','Confirm',function ($rootScope,$state,$stateParams,global,globalSrv,$window,$location,$anchorScroll,$timeout,seoContent,$order,Campaign,$user,Witget,$auth,Account,Sections,$q,Seopage,$uibModal,Stuff,$injector,$route,$document,$transitions,$sce,$email,exception,$http,$notification,CreateContent,localStorage,Confirm){
 
     $rootScope.getDataFromIp=function (data) {
         console.log(data)
@@ -348,6 +349,7 @@ angular.module('gmall', ['ngRoute',
     })
     var scrollPositionNewsList=0;
     $rootScope.$on('$stateChangeSuccess', function (ev, to, toParams, from, fromParams) {
+        //console.log($rootScope.$state.current)
         if(from.name=='news.item' && to.name=='news' && scrollPositionNewsList){
             $timeout(function(){
                 window.scrollTo(0, scrollPositionNewsList);
@@ -360,7 +362,7 @@ angular.module('gmall', ['ngRoute',
         var titles = angular.copy(global.get('store' ).val.seo);
         //console.log(JSON.stringify(titles))
         titles.image=global.get('store').val.logo;
-        if(global.get('store').val.logo.fbPhoto){
+        if(global.get('store').val.fbPhoto){
             titles.image=global.get('store').val.fbPhoto;
         }
         if(titles.image){
@@ -504,6 +506,8 @@ angular.module('gmall', ['ngRoute',
             fbq('track', 'CompleteRegistration');
         }
     })
+
+
 
     /*$rootScope.$on('$allImagesLoadedInHomePage',function(){
         $(function () { objectFitImages() });
@@ -657,7 +661,7 @@ angular.module('gmall', ['ngRoute',
             seller:global.get('store').val.seller._id,
             store:global.get('store').val._id
         })*/
-       // return;
+        // return;
         /*$user.save({update:'coupons'},{_id:global.get('user' ).val._id,coupons:[]},function(res){
 
         },function(err){
@@ -829,6 +833,7 @@ angular.module('gmall', ['ngRoute',
         global.set('seller',store.seller._id);
         //socket.emit('seller',store.seller._id)
         global.set('titles',store.seo)
+        //console.log(store.seo)
         //console.log(global.get('titles' ).val,store.seo);
         //$rootScope.titles=global.get('titles');
         global.set('config',{currency:store.currency});
@@ -853,9 +858,17 @@ angular.module('gmall', ['ngRoute',
             global.set('mastersO',masters.reduce(function(o,m){o[m._id]=m;return o;},{}))
         }
 
-
+        /*setTimeout(function(){
+            console.log('isAuthenticated')
+            $auth.isAuthenticated()
+        },5000)*/
         if(!crawler){
             if($auth.isAuthenticated()){
+                var date = new Date(new Date().getTime() + 60 * 60 * 1000);
+                //document.cookie = "access_token="+$auth.getToken()+"; path=/; expires=" + date.toUTCString();
+
+                //$window.sessionStorage.accessToken=$auth.getToken()
+                //console.log($auth.getToken())
                 Account.getProfile()
                     .then(function(response) {
                         //console.log(coupons)
@@ -1108,7 +1121,25 @@ angular.module('gmall', ['ngRoute',
             cloneStore:_cloneStore,
             orderGroupStuffs:_orderGroupStuffs,
             bookingFromSchedule:bookingFromSchedule,
-            orderStuffDirect:_orderStuffDirect
+            orderStuffDirect:_orderStuffDirect,
+            getActiveClassForGroupUrl:_getActiveClassForGroupUrl
+        }
+
+        function _getActiveClassForGroupUrl(groupUrl) {
+            //console.log(groupUrl)
+            if($stateParams.groupUrl){
+                var s = global.get('sections').val.getOFA('url',groupUrl);
+                //console.log(s)
+                if(s){
+                    if(s.child && s.child.length){
+                        for(var i=0;i<s.child.length;i++){
+                            if(s.child[i].url===$stateParams.groupUrl)
+                            return true;
+                        }
+                    }
+                }
+            }
+
         }
 
         function bookingFromSchedule(entry){
@@ -1311,13 +1342,14 @@ angular.module('gmall', ['ngRoute',
                 })
 
         }
-        function _orderStuffDirect(stuff){
+        function _orderStuffDirect(stuff,cabinet){
             //console.log(stuff)
             $order.clearCart();
             stuff.quantity=1;
             stuff.cena=stuff.price;
             stuff.sum= stuff.cena*stuff.quantity;
             $order.addItemToCart(stuff)
+            var stuffInOrder;
             return $q.when()
                 .then(function(){
                     if(!global.get('user' ).val || !global.get('user' ).val._id){
@@ -1328,15 +1360,32 @@ angular.module('gmall', ['ngRoute',
                     }
                 })
                 .then(function(){
+                    stuffInOrder = $order.getOrder().cart.stuffs[0]
+                    return $order.checkStuff(stuffInOrder,global.get('user').val._id)
+                })
+                .then(function(res){
+                    //console.log(res);
+                    if(res && res.data && res.data.status){
+                        var s ='<div class="confirm-box">Оплатите заказ в <a class="confirm-link" href="/cabinet">кабинете.</a> <br>Хотите оформить еще один заказ?</div>'
+                        return Confirm('У вас уже есть неоплаченый '+stuffInOrder.name+'.',s)
+                    }
+
+
+
+                })
+                .then(function(){
+                    /*console.log('продолжить')
+                    throw null*/
                     //return $order.getShipInfo('short')
                 })
                 .then(function(){
                     $rootScope.$emit('$stateChangeStartToStuff');
                     console.log(2)
-                    return $order.sendOrder()
+                    return $order.sendOrder(null,{status:2},cabinet)
 
                 })
                 .then(function () {
+                    console.log('???????????????')
                     $rootScope.$emit('Purchase',{value:$order.paySum,currency:$order.currency});
                     $rootScope.$emit('$stateChangeEndToStuff');
                     $order.reinitCart()
@@ -1757,6 +1806,8 @@ angular.module('gmall', ['ngRoute',
 
 
 
+
+
 }])
 .config(['$stateProvider', '$urlRouterProvider','$locationProvider','globalProvider','$authProvider','$httpProvider','$animateProvider',function ($stateProvider,$urlRouterProvider,$locationProvider,globalProvider,$authProvider,$httpProvider,$animateProvider){
 /*https://github.com/angular/angular.js/issues/3613*/
@@ -2010,7 +2061,7 @@ angular.module('gmall', ['ngRoute',
             reloadOnSearch : true,
         })
         .state("stuffs.stuff", {
-            url: "/:stuffUrl?param1&param2&store",
+            url: "/:stuffUrl?param1&param2&store&sort",
             templateUrl:'views/template/partials/stuffs/stuffDetail.html',
 
         })

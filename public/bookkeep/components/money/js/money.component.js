@@ -302,16 +302,15 @@
         }
     }
 
-    moneyOrderCtrl.$inject=['MoneyOrder','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','exception','$state','$attrs','Supplier','Worker','Founder','Customer','Contragent','$http']
-    function moneyOrderCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,exception,$state,$attrs,Supplier,Worker,Founder,Customer,Contragent,$http){
+    moneyOrderCtrl.$inject=['MoneyOrder','$stateParams','global','$q','$uibModal','$timeout','$scope','Confirm','exception','$state','$attrs','Supplier','Worker','Founder','Customer','Contragent','$http','Money']
+    function moneyOrderCtrl(Items,$stateParams,global,$q,$uibModal,$timeout,$scope,Confirm,exception,$state,$attrs,Supplier,Worker,Founder,Customer,Contragent,$http,Money){
         var self = this;
         self.mobile = global.get('mobile').val;
         self.global = global;
         self.Items = Items;
         self.moment = moment;
         self.item={date:new Date(),type:$attrs.type,typeOfContrAgent:'Customer',sum:0,currency:"UAH"}
-        //console.log($attrs)
-
+        var delay;
         switch ($attrs.type) {
             case 'Cash_debet': self.item.name="ПКО";self.backLink='frame.MoneyOrderCashDebet';self.textType="Касса приход";self.typeOperation='Cash_debet';break;
             case 'Cash_credit':self.item.name="РКО";self.backLink='frame.MoneyOrderCashCredit';self.textType="Касса расход";self.typeOperation='Cash_credit';break;
@@ -321,6 +320,9 @@
             case 'Bank_exchange':self.item.name="БОбмен";self.backLink='frame.MoneyOrderBankExchange';self.exchange=true;self.textType="Банк обмен";self.typeOperation='Bank_exchange';break;
 
         }
+        var tempVar = self.typeOperation.split('_')
+        self.typeMoney =tempVar[0];
+        self.typeBalance =tempVar[1];
         self.typeOperations=[
             {_id:'Cash_debet',name:'Касса приход'},
             {_id:'Cash_credit',name:'Касса расход'},
@@ -329,29 +331,6 @@
             {_id:'Bank_credit',name:'Банк расход'},
             {_id:'Bank_exchange',name:'Банк обмен'},
         ]
-        self.changeTypeOperation=changeTypeOperation;
-        function changeTypeOperation() {
-            self.item.type=self.typeOperation;
-            $q.when()
-                .then(function () {
-                    return saveField('type')
-                })
-                .then(function () {
-                    var dd = self.item.type.split('_')
-                    //console.log(dd)
-                    var dd1 =dd[1].charAt(0).toUpperCase() + dd[1].slice(1);
-                    var sref = 'frame.MoneyOrder'+dd[0]+dd1+'.item'
-                    //console.log(sref)
-                    $state.go(sref,{id:self.item._id})
-                })
-                .catch(function (err) {
-                    exception.catcher('Смена вида операции')(err)
-                })
-        }
-
-
-
-
 
         self.currencyArr=global.get('store').val.currencyArr
         if(self.currencyArr.length==1){
@@ -366,13 +345,8 @@
         }
 
         self.contrAgents=[];
-        self.typeOfContrAgents=typeOfContrAgents/*.reduce(function (o,item) {
-         o[item.type]=item;
-         return o;
-         },{})*/
+        self.typeOfContrAgents=typeOfContrAgents;
         self.contrAgent=self.typeOfContrAgents.getOFA('type','Customer')
-
-        console.log(self.contrAgent)
         self.virtualAccounts=global.get('virtualAccounts').val.filter(function (a) {
             return a.actived
         })
@@ -390,6 +364,8 @@
         self.dateOptions = {
             startingDay: 1
         };
+        var currencyKeys = Object.keys(global.get('store').val.currency)
+
 
 
 
@@ -397,12 +373,26 @@
         self.saveField=saveField;
         self.back=back;
         self.activeMoneyOrder=activeMoneyOrder;
+        self.changeTypeOperation=changeTypeOperation;
+        self.getDataForContrAgentExchange=getDataForContrAgentExchange;
+        self.checkSumInMoneyError=checkSumInMoneyError;
+
 
 
         activate();
 
         function activate() {
-
+            Money.getList({page:0}).then(function (data) {
+                //console.log(data)
+                if(data && data.length){
+                    var dd = data.getOFA('type',self.typeMoney)
+                    //console.log(dd)
+                    if(dd){
+                        self.moneyData=dd.data.getOFA('virtualAccount',self.item.virtualAccount);
+                        console.log(self.moneyData)
+                    }
+                }
+            })
             if(self.$stateParams[0]!='new'){
                 return getItem($stateParams.id).then(function() {
                 } ).catch(function(err){
@@ -412,19 +402,13 @@
             }else {
                 getContrAgents(self.contrAgent.type)
             }
-
         }
         function getItem(id) {
-            //console.log(id)
             return self.Items.getItem(id)
-            //console.log(id)
                 .then(function(data) {
-                    console.log(data)
                     data.date=new Date(data.date)
                     self.item=data;
                     getContrAgents(data.typeOfContrAgent)
-                    //self.item.actived=true
-
                 } ).catch(function(err){
                     console.log(err)
                     return $q.reject(err)
@@ -433,7 +417,7 @@
         function getContrAgents(type) {
             return $q.when()
                 .then(function () {
-                    console.log(type)
+                    //console.log(type)
                     if(self.models[type]){
                         return self.models[type].getList({page: 0, rows: 1000, totalItems: 0},{})
                     }
@@ -445,7 +429,6 @@
                     }
                 })
         }
-
         function createItem(active) {
             if(self.item._id){return}
             if(!self.item.name){
@@ -514,7 +497,6 @@
             console.log(self.backLink)
             $state.go(self.backLink)
         }
-        var delay;
         function activeMoneyOrder() {
             if(delay){return}
             delay=true;
@@ -568,6 +550,10 @@
                     //saveField('actived')
                     delay=false;
                     $scope.$parent.getList()
+                    exception.showToaster('info','проведение документа','Ok');
+                    if(self.item.contrAgentExchange){
+                        activate()
+                    }
                 })
                 .catch(function (err) {
                     delay=false;
@@ -577,6 +563,65 @@
                 })
 
 
+        }
+        function changeTypeOperation() {
+            self.item.type=self.typeOperation;
+            $q.when()
+                .then(function () {
+                    return saveField('type')
+                })
+                .then(function () {
+                    var dd = self.item.type.split('_')
+                    //console.log(dd)
+                    var dd1 =dd[1].charAt(0).toUpperCase() + dd[1].slice(1);
+                    var sref = 'frame.MoneyOrder'+dd[0]+dd1+'.item'
+                    //console.log(sref)
+                    $state.go(sref,{id:self.item._id})
+                })
+                .catch(function (err) {
+                    exception.catcher('Смена вида операции')(err)
+                })
+        }
+        function getDataForContrAgentExchange() {
+            var d ={};
+            if(self.item.contrAgentExchange && self.item.virtualAccount && self.item.contrAgent && self.contrAgents.length){
+                var side = self.typeOperation.split('_')[1];
+                var cA = self.contrAgents.getOFA('_id',self.item.contrAgent)
+                console.log(self.item.contrAgent,cA)
+                var data = cA.data.getOFA('virtualAccount',self.item.virtualAccount);
+                if(data){
+                    currencyKeys.forEach(function(k){
+                        if(self.item.currency!=k){
+                            if(data[k]){
+                                d[k]=data[k][side]
+                            }else{
+                                d[k]=0;
+                            }
+                            if(!Number(d[k])){
+                                delete d[k]
+                            }
+                        }
+                    })
+                }
+            }
+            return d;
+
+        }
+        function checkSumInMoneyError() {
+            if(self.typeBalance=='credit'){
+                console.log(self.moneyData)
+                if(self.moneyData){
+                    if(!self.moneyData[self.item.currency]){
+                        return '0';
+                    }else if(!self.moneyData[self.item.currency].debet){
+                        return '0';
+                    }else if(self.moneyData[self.item.currency].debet<self.item.sum){
+                        return self.moneyData[self.item.currency].debet;
+                    }
+                }else{
+                    return '0';
+                }
+            }
         }
     }
 

@@ -11,7 +11,7 @@ angular.module('gmall.directives')
             link: function (scope, element, attrs, controller) {
                //console.log('likn paginator',scope.paginate);
                 var store = global.get('store').val
-                var stuffListType = (global.get('sectionType'))?global.get('sectionType').val:'good';
+                var stuffListType = (global.get('sectionType') && global.get('sectionType').val)?global.get('sectionType').val:'good';
                 //console.log(store.template.stuffListType)
                 var rows=(store.template.stuffListType[stuffListType] && store.template.stuffListType[stuffListType].rows)||3;
                 var filterBlock=store.template.stuffListType[stuffListType].parts.find(function(e){return e.name=='filters' && e.is && e.is!='false'})

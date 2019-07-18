@@ -238,7 +238,8 @@
                                 })
                             }
                         }
-                        block.imgs=[]
+                        block.imgs=[];
+                        block.stuffs=[];
                     })
                     //throw 'test'
                     return self.Items.save(self.newItem).$promise

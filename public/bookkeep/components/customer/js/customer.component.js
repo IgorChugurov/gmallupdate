@@ -27,6 +27,7 @@
         var self = this;
         self.mobile = global.get('mobile').val;
         self.global = global;
+        self.mainCurrency = global.get('store').val.mainCurrency
         self.Items = Items;
         self.moment = moment;
         self.$state = $state;
@@ -77,7 +78,7 @@
                         d.creditStr='';
                         d.data= d.data.map(function (p) {
                             p.virtualAccount = self.virtualAccounts[p.virtualAccount]
-                            console.log(p)
+                            //console.log(p)
                             var arr =[]
                             currencyArr.forEach(function (key) {
                                 if(p[key] && p[key].debet){
@@ -94,6 +95,7 @@
                                         debet:(p[key].debet).toFixed(2),
                                         credit:(p[key].credit).toFixed(2),
                                     }
+                                    //console.log(o)
                                     arr.push(o)
                                 }
                             })
@@ -101,8 +103,8 @@
                         }).filter(function (d) {
                             return d
                         })
-                        d.debet=(d.debet).toFixed(2)
-                        d.credit=(d.credit).toFixed(2)
+                        d.debet=(d.debet).toFixed(2);
+                        d.credit=(d.credit).toFixed(2);
                         //console.log(d.debet,d.credit)
 
                     })

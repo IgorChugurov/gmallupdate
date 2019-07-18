@@ -67,7 +67,8 @@ var userSchema = new mongoose.Schema({
     accessPermision : {
         dateBefor:Date,
         level:Number,
-    }
+    },
+    abonement:{type:Number,default:0}// количество посещений по абонементу
 });
 //userSchema.add({list:[]})
 
@@ -240,7 +241,7 @@ userSchema.statics={
         this.find(criteria)
             .sort({'date': -1}) // sort by date
             .limit(options.perPage)
-            .select('name email profile date store visits list subscription confirmEmail addInfo order')
+            .select('name email profile date store visits list subscription confirmEmail addInfo order abonement')
             .skip(options.perPage * options.page)
             .exec(cb)
     },
